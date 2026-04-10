@@ -5,7 +5,7 @@
 /* ============================
    TICKER
    ============================ */
-.ticker{background:var(--acc);height:34px;display:flex;align-items:center;overflow:hidden}
+.ticker{background:var(--acc);height:34px;display:flex;align-items:center;overflow:hidden;max-width:100vw}
 .ticker-label{font-family:var(--fu);font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;background:rgba(0,0,0,.32);height:100%;padding:0 22px 0 18px;display:flex;align-items:center;white-space:nowrap;flex-shrink:0;clip-path:polygon(0 0,100% 0,84% 100%,0 100%)}
 .ticker-scroll{overflow:hidden;flex:1}
 .ticker-track{display:flex;white-space:nowrap;animation:ticker-move 42s linear infinite}
@@ -39,7 +39,7 @@
    HERO
    ============================ */
 .hero-wrap{max-width:var(--max-w);margin:0 auto;padding:28px 32px 0}
-.hero-grid{display:grid;grid-template-columns:1fr 390px;gap:3px;height:558px}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:3px;height:558px}
 .hero-main{position:relative;overflow:hidden;cursor:pointer;background:var(--bg2)}
 .hero-main img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.55) contrast(1.12) brightness(.52);transition:transform .6s ease,filter .4s}
 .hero-main:hover img{transform:scale(1.04);filter:saturate(.7) contrast(1.08) brightness(.46)}
@@ -64,7 +64,7 @@
 /* ============================
    NEWS CARDS
    ============================ */
-.card-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:3px}
+.card-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px}
 .ncard{background:var(--bg1);overflow:hidden;cursor:pointer;display:flex;flex-direction:column;transition:background .2s,opacity .35s,transform .35s}
 .ncard:hover{background:var(--bg2)}
 .ncard.feat{grid-column:span 2}
@@ -85,7 +85,7 @@
 /* ============================
    STANDINGS + RACE
    ============================ */
-.two-col{display:grid;grid-template-columns:1fr 365px;gap:24px;align-items:start}
+.two-col{display:grid;grid-template-columns:minmax(0,1fr) 365px;gap:24px;align-items:start}
 .standings-box{background:var(--bg1);border:1px solid var(--brd);overflow:hidden}
 .s-tabs{display:flex;border-bottom:1px solid var(--brd)}
 .s-tab{font-family:var(--fu);font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:13px 20px;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .2s;background:transparent;border-top:none;border-left:none;border-right:none}
@@ -124,7 +124,7 @@
 /* ============================
    VIDEOS
    ============================ */
-.vid-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:3px}
+.vid-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px}
 .vcard{background:var(--bg1);cursor:pointer;overflow:hidden;position:relative;transition:background .2s}
 .vcard:hover{background:var(--bg2)}
 .vcard.feat{grid-column:span 2}
@@ -145,7 +145,7 @@
 /* ============================
    OPINION + MARKET
    ============================ */
-.split-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.split-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px}
 .op-card{background:var(--bg1);padding:24px;border-left:3px solid var(--acc);cursor:pointer;transition:background .2s;margin-bottom:3px}
 .op-card:hover{background:var(--bg2)}
 .op-tag{font-family:var(--fu);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--acc);margin-bottom:10px}
@@ -169,7 +169,7 @@
 /* ============================
    FEATURED PILOTS SECTION (NEW)
    ============================ */
-.pilots-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:3px}
+.pilots-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px}
 .pilot-card{
   background:var(--bg1);border:1px solid var(--brd);overflow:hidden;
   cursor:pointer;transition:all .25s;position:relative;
@@ -311,19 +311,22 @@
   .hero-grid{grid-template-columns:1fr;height:auto}
   .hero-side{flex-direction:row;height:200px}
   .hero-main{height:400px}
-  .card-grid{grid-template-columns:repeat(2,1fr)}
+  .card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .ncard.feat{grid-column:span 2}
   .two-col{grid-template-columns:1fr}
   .split-grid{grid-template-columns:1fr}
-  .vid-grid{grid-template-columns:repeat(2,1fr)}
+  .vid-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .vcard.feat{grid-column:span 2}
-  .pilots-grid{grid-template-columns:repeat(2,1fr)}
+  .pilots-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media(max-width:720px){
   .hero-side{display:none}
   .hero-main{height:360px}
   .hero-title{font-size:38px}
-  .card-grid{grid-template-columns:1fr 1fr}
+  .card-grid{grid-template-columns:1fr}
+  .ncard.feat{grid-column:span 1}
+  .vid-grid{grid-template-columns:1fr}
+  .vcard.feat{grid-column:span 1}
   .article-modal{margin:20px 12px}
   .article-h1{font-size:32px}
   .pilots-grid{grid-template-columns:1fr}

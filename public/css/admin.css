@@ -149,7 +149,7 @@
 /* ============================
    PRICING PAGE
    ============================ */
-.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin-top:32px}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px;margin-top:32px}
 .pricing-card{
   background:var(--bg1);border:1px solid var(--brd);padding:0;
   position:relative;overflow:hidden;transition:all .25s;
@@ -196,7 +196,7 @@
 .signup-step-dot.done .signup-step-label,.signup-step-dot.current .signup-step-label{color:var(--acc)}
 .signup-panel{display:none}
 .signup-panel.active{display:block}
-.type-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.type-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .type-card{
   background:var(--bg1);border:1px solid var(--brd);padding:28px 20px;
   cursor:pointer;text-align:center;transition:all .22s;position:relative;
@@ -241,7 +241,7 @@
 .pilot-bio{font-size:15px;font-weight:300;color:var(--dim);line-height:1.8;max-width:700px}
 
 /* Conquests */
-.pilot-conquests{display:grid;grid-template-columns:repeat(5,1fr);gap:3px}
+.pilot-conquests{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px}
 .pilot-conquest{
   background:var(--bg1);border:1px solid var(--brd);padding:24px;
   text-align:center;transition:all .22s;
@@ -252,7 +252,7 @@
 .pilot-conquest-lbl{font-family:var(--fu);font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);display:block;margin-top:4px}
 
 /* Gallery */
-.pilot-gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
+.pilot-gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px}
 .pilot-gallery-item{overflow:hidden;height:260px;cursor:pointer;position:relative}
 .pilot-gallery-item img{width:100%;height:100%;object-fit:cover;filter:saturate(.6) brightness(.65);transition:all .4s}
 .pilot-gallery-item:hover img{transform:scale(1.06);filter:saturate(.8) brightness(.55)}
@@ -270,7 +270,7 @@
 .sponsor-content{position:relative;z-index:1;max-width:600px}
 .sponsor-title{font-family:var(--fd);font-size:42px;letter-spacing:2px;line-height:.96;margin-bottom:12px}
 .sponsor-desc{font-size:14px;font-weight:300;color:var(--dim);line-height:1.7;margin-bottom:24px}
-.sponsor-tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
+.sponsor-tiers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:28px}
 .sponsor-tier{
   background:var(--bg);border:1px solid var(--brd);padding:20px;
   text-align:center;transition:all .22s;

@@ -5,7 +5,7 @@
 /* ============================
    DASHBOARD LAYOUT
    ============================ */
-.dash-layout{display:grid;grid-template-columns:260px 1fr;min-height:calc(100vh - 62px)}
+.dash-layout{display:grid;grid-template-columns:260px minmax(0,1fr);min-height:calc(100vh - 62px)}
 .dash-sidebar{
   background:var(--bg1);border-right:1px solid var(--brd);
   padding:24px 0;position:sticky;top:62px;height:calc(100vh - 62px);
