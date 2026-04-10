@@ -37,13 +37,26 @@ CREATE TABLE IF NOT EXISTS public.articles (
   category text
 );
 
--- Habilitar RLS nas tabelas mas deixando uma regra inicial "pública" para testes
+-- Habilitar RLS nas tabelas mas deixando uma regra inicial "pública"-- Ativar segurança
 ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.articles ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Acesso público temporário User Leitura" ON public.users FOR SELECT USING (true);
-CREATE POLICY "Acesso público temporário Articles Leitura" ON public.articles FOR SELECT USING (true);
+-- Políticas super permissivas (temporárias para desenvolvimento)
+DROP POLICY IF EXISTS "Acesso público temporário User Leitura" ON public.users;
+CREATE POLICY "Acesso público temporário User Leitura" ON public.users
+FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Acesso público temporário User Escrita" ON public.users;
+CREATE POLICY "Acesso público temporário User Escrita" ON public.users
+FOR ALL USING (true);
+
+DROP POLICY IF EXISTS "Acesso público temporário Article Leitura" ON public.articles;
+CREATE POLICY "Acesso público temporário Article Leitura" ON public.articles
+FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Acesso público temporário Article Escrita" ON public.articles;
+CREATE POLICY "Acesso público temporário Article Escrita" ON public.articles
+FOR ALL USING (true);
 
 -- 3. SEEDING Inicial (Mock Data Localizados para Vendas SaaS)
 -- Inserindo alguns Usuários chaves
