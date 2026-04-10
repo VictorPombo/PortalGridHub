@@ -320,14 +320,87 @@
   .pilots-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media(max-width:720px){
+  /* ── TICKER ── */
+  .ticker{height:30px}
+  .ticker-label{font-size:9px;padding:0 14px 0 10px;letter-spacing:2px}
+  .ticker-item{font-size:10px;padding:0 18px}
+
+  /* ── HERO ── */
+  .hero-wrap{padding:10px 12px 0}
   .hero-side{display:none}
-  .hero-main{height:360px}
-  .hero-title{font-size:38px}
+  .hero-main{height:300px}
+  .hero-content{padding:16px}
+  .hero-title{font-size:26px;line-height:1}
+  .hero-excerpt{font-size:11px;max-width:100%}
+  .hero-meta{font-size:10px;flex-wrap:wrap}
+
+  /* ── SECTIONS ── */
+  .section{padding:0 12px}
+  .sec-title{font-size:18px}
+  .sec-sub{font-size:10px}
+
+  /* ── CALLOUT ── */
+  .system-callout{padding:0 12px}
+  .callout-box{flex-direction:column;padding:16px;gap:16px}
+  .callout-item{min-width:0;width:100%}
+
+  /* ── CATEGORY STRIP ── */
+  .cat-strip{padding:0 8px;gap:2px;overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch}
+  .cat-pill{min-width:80px;flex-shrink:0;padding:10px 6px}
+  .cat-ico{font-size:16px}
+  .cat-lbl{font-size:9px}
+
+  /* ── NEWS CARDS ── */
   .card-grid{grid-template-columns:1fr}
   .ncard.feat{grid-column:span 1}
+  .ncard-title{font-size:13px}
+  .ncard-meta{font-size:10px;flex-wrap:wrap}
+
+  /* ── VIDEO CARDS ── */
   .vid-grid{grid-template-columns:1fr}
   .vcard.feat{grid-column:span 1}
-  .article-modal{margin:20px 12px}
-  .article-h1{font-size:32px}
+
+  /* ── PILOTS ── */
   .pilots-grid{grid-template-columns:1fr}
+  .pilot-card{min-height:auto}
+  .pilot-cover{height:140px}
+  .pilot-stats{flex-wrap:wrap;gap:4px}
+  .pilot-stats>div{min-width:0}
+  .pilot-stat-n{font-size:14px}
+  .pilot-stat-l{font-size:7px}
+
+  /* ── STANDINGS ── */
+  .two-col{grid-template-columns:1fr}
+  .s-bar-c{display:none}
+  .s-name{font-size:12px}
+  .s-flag{font-size:14px;width:20px}
+  .race-gp{font-size:22px}
+
+  /* ── NEWSLETTER ── */
+  .nl-section{padding:32px 16px}
+  .nl-inner{flex-direction:column;gap:16px;align-items:flex-start}
+  .nl-title{font-size:30px}
+  .nl-desc{max-width:100%;font-size:12px}
+  .nl-form{width:100%;flex-direction:column;gap:0}
+  .nl-input{width:100%;min-width:0;border-right:1px solid var(--brdb);font-size:14px}
+  .nl-btn{width:100%;clip-path:none;padding:13px 20px;padding-right:20px;text-align:center;justify-content:center;display:flex}
+  .nl-note{font-size:8px}
+
+  /* ── SPLIT / OPINION ── */
+  .split-grid{grid-template-columns:1fr}
+  .op-card{padding:16px}
+  .op-title{font-size:14px}
+
+  /* ── MODALS ── */
+  .article-modal{margin:12px 8px 40px}
+  .article-h1{font-size:28px}
+  .article-body{padding:20px 16px}
+  .sub-box{padding:24px 18px}
+  .search-box{margin:0 10px}
+
+  /* ── FOOTER ── */
+  .f-grid{grid-template-columns:1fr}
+  .f-bottom{flex-direction:column;text-align:center}
+  footer{padding:32px 16px 20px}
+  .f-desc{max-width:100%}
 }
