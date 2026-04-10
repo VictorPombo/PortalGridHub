@@ -1,21 +1,22 @@
 import Parser from 'rss-parser';
 import { NextResponse } from 'next/server';
 
-// CACHE de 3600 segundos (1 hora)
-export const revalidate = 3600;
+export const revalidate = 60; // 1 minuto de cache Vercel
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
   const parser = new Parser();
 
-  // Feeds Oficiais de Coleta
   const feedsBrasil = [
     "https://br.motorsport.com/rss/f1/news/",
+    "https://br.motorsport.com/rss/motogp/news/",
     "https://br.motorsport.com/rss/all/news/"
   ];
   
   const feedsGlobal = [
     "https://www.motorsport.com/rss/f1/news/",
-    "https://www.autosport.com/rss/f1/news/" // Autosport (Expansão Obrigatória)
+    "https://www.autosport.com/rss/f1/news/",
+    "https://www.motorsport.com/rss/wec/news/"
   ];
 
   try {

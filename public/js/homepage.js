@@ -260,8 +260,17 @@ async function loadLiveNews() {
       };
     });
     
-    // Mix them (ex: exibir SaaS locais da tabela news_feed misturadas com as reais da API paralela)
-    ARTICLES = [...saasArticles, ...rssArticles];
+    // Mix them: Dar prioridade total absoluta às Notícias Reais (2 Reais para 1 SaaS)
+    const mixed = [];
+    let rIdx = 0, sIdx = 0;
+    while (rIdx < rssArticles.length || sIdx < saasArticles.length) {
+      if (rIdx < rssArticles.length) mixed.push(rssArticles[rIdx++]);
+      if (rIdx < rssArticles.length) mixed.push(rssArticles[rIdx++]);
+      if (rIdx < rssArticles.length) mixed.push(rssArticles[rIdx++]); // 3 Reais
+      if (sIdx < saasArticles.length) mixed.push(saasArticles[sIdx++]); // 1 SaaS
+    }
+    
+    ARTICLES = mixed;
     
     // Agora renderizar dinamicamente na Página inteira!
     renderHeroGrid();
@@ -496,6 +505,9 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   // Initiate parallel fetches for max performance
   renderStandings([]); // Renders "loading"
   
+  // 1. Inicializa Conexão Supabase Primeiro!
+  await PitLane.bootSupabase();
+
   loadLiveStandings();
   initLiveCountdown();
   loadLiveNews();
@@ -506,7 +518,7 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   
   // Restore bookmarks
   bookmarks.forEach(id=>{
-    document.querySelector(`.ncard-bm[onclick*="toggleBookmark(this,${id})"]`)?.classList.add('saved');
+    document.querySelector(`.ncard-bm[onclick*="toggleBookmark(this,'${id}')"]`)?.classList.add('saved');
   });
   
   // Animate news cards
