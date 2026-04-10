@@ -278,6 +278,72 @@ const PitLane = (() => {
   init();
 
   // ============================
+  // LIVE DATA API (F1 + News)
+  // ============================
+  const Live = (() => {
+    const CACHE_MINUTES = 15;
+
+    async function fetchWithCache(url, cacheKey) {
+      const cached = load(cacheKey, null);
+      if (cached && Date.now() - cached.timestamp < CACHE_MINUTES * 60000) {
+        return cached.data;
+      }
+      try {
+        const resp = await fetch(url);
+        if (!resp.ok) throw new Error('API Error');
+        const data = await resp.json();
+        save(cacheKey, { timestamp: Date.now(), data });
+        return data;
+      } catch (e) {
+        console.error('Failed to fetch', url, e);
+        return cached ? cached.data : null;
+      }
+    }
+
+    async function getDriverStandings() {
+      const data = await fetchWithCache('https://api.jolpi.ca/ergast/f1/current/driverStandings.json', 'pl_live_drivers');
+      if (!data) return [];
+      try {
+        return data.MRData.StandingsTable.StandingsLists[0].DriverStandings;
+      } catch(e) { return []; }
+    }
+
+    async function getConstructorStandings() {
+      const data = await fetchWithCache('https://api.jolpi.ca/ergast/f1/current/constructorStandings.json', 'pl_live_constructors');
+      if (!data) return [];
+      try {
+        return data.MRData.StandingsTable.StandingsLists[0].ConstructorStandings;
+      } catch(e) { return []; }
+    }
+
+    async function getNextRace() {
+      const data = await fetchWithCache('https://api.jolpi.ca/ergast/f1/current/next.json', 'pl_live_nextrace');
+      if (!data) return null;
+      try {
+        return data.MRData.RaceTable.Races[0];
+      } catch(e) { return null; }
+    }
+
+    async function getNews() {
+      const url = 'https://api.rss2json.com/v1/api.json?rss_url=https://www.grandepremio.com.br/f1/feed/';
+      const data = await fetchWithCache(url, 'pl_live_news');
+      if (!data) return [];
+      try {
+        return data.items.map(item => ({
+          title: item.title,
+          link: item.link,
+          thumbnail: item.thumbnail || 'https://loremflickr.com/760/320/formula1?lock=' + Math.floor(Math.random()*100),
+          pubDate: item.pubDate,
+          author: item.author || 'Grande Prêmio',
+          categories: item.categories || ['F1']
+        }));
+      } catch(e) { return []; }
+    }
+
+    return { getDriverStandings, getConstructorStandings, getNextRace, getNews };
+  })();
+
+  // ============================
   // PUBLIC API
   // ============================
   return {
@@ -296,6 +362,8 @@ const PitLane = (() => {
     // Helpers
     formatDate, getStatusLabel, getStatusCSS, getPlanName, getPlanPrice,
     PLAN_LIMITS, PLAN_NAMES, PLAN_PRICES, STATUS_LABELS, STATUS_CSS,
+    // Live Modules
+    Live,
     // System
     reset, init,
   };

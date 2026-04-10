@@ -1,65 +1,9 @@
 /* =====================================================
-   PITLANE NEWS — HOMEPAGE JS
+   PITLANE NEWS — HOMEPAGE JS (LIVE DATA)
    ===================================================== */
 
-/* ====== DATA ====== */
-const ARTICLES = [
-  {
-    id:0, cat:'f1', badge:'f1', kicker:'BREAKING NEWS',
-    title:'Verstappen Conquista Pole em Miami sob Chuva Torrencial',
-    author:'Carlos Biasi', av:'CB', date:'10 Abr 2026 · 5 min de leitura',
-    img:'https://loremflickr.com/760/320/formula1,car?lock=3',
-    body:`<p>Max Verstappen mostrou mais uma vez por que é o melhor piloto do mundo em condições adversas. No sábado à tarde no Miami International Autodrome, com chuva intensa e temperatura de 28°C, o holandês da Red Bull Racing cravou uma volta de 1:26.543, superando Lando Norris por apenas 43 milésimos de segundo.</p>
-    <h3>A Volta Perfeita</h3>
-    <p>Verstappen utilizou pneus intermediários durante toda a sessão de classificação e entrou na pista pela última vez faltando apenas 4 minutos para o fim, quando a pista estava em condições ideais.</p>
-    <blockquote><p>"A chuva sempre foi minha aliada. Quando o carro escorrega, você precisa confiar nos instintos." — Max Verstappen</p></blockquote>
-    <h3>O que Esperar da Corrida</h3>
-    <p>Com a pole garantida, Verstappen parte como favorito para a corrida de domingo. A corrida acontece neste domingo, 13 de abril, às 16h (horário de Brasília).</p>`
-  },
-  {
-    id:1, cat:'motogp', badge:'motogp', kicker:'MOTOGP · RACE RESULT',
-    title:'Bagnaia Vence GP da França — Márquez Abandona com Queda',
-    author:'Ana Rocha', av:'AR', date:'9 Abr 2026 · 4 min de leitura',
-    img:'https://loremflickr.com/760/320/motorcycle,racing?lock=7',
-    body:`<p>Francesco Bagnaia conquistou mais uma vitória dominante no GP da França, em Le Mans, em uma prova marcada pelo abandono de Marc Márquez na 18ª volta.</p>
-    <h3>Bagnaia Implacável</h3>
-    <p>Pecco cruzou a linha em primeiro com 4.2 segundos de vantagem para Jorge Martin, que completou o pódio ao lado de Aleix Espargaró.</p>
-    <blockquote><p>"A moto estava perfeita hoje." — Francesco Bagnaia</p></blockquote>`
-  },
-  {
-    id:2, cat:'sim', badge:'sim', kicker:'SIM RACING · ESPECIAL',
-    title:'PitLane Ranking — Os 50 Pilotos Virtuais Mais Rápidos do Brasil',
-    author:'Redação', av:'PL', date:'10 Abr 2026 · 8 min de leitura',
-    img:'https://loremflickr.com/760/320/simracing,gaming?lock=5',
-    body:`<p>Analisamos dados de mais de 3.200 pilotos registrados nas principais plataformas — iRacing, ACC e rFactor 2 — para montar o ranking definitivo.</p>
-    <h3>Os Favoritos</h3>
-    <p>O paulista Rafael "Turbo" Mendes lidera a lista com uma média de consistência de 98.2%.</p>`
-  },
-  {
-    id:3, cat:'wec', badge:'wec', kicker:'WEC · LE MANS',
-    title:'24h de Le Mans 2026: Guia Completo de Categorias e Favoritos',
-    author:'Pedro Neto', av:'PN', date:'8 Abr 2026 · 12 min de leitura',
-    img:'https://loremflickr.com/760/320/lemans,night?lock=12',
-    body:`<p>A corrida mais longa e mais famosa do automobilismo mundial acontece em 13 e 14 de junho de 2026. Grid recorde de 62 carros.</p>
-    <h3>Hypercar: A Briga pelo Topo</h3>
-    <p>Toyota, Ferrari, Porsche, BMW e Cadillac entre os favoritos.</p>`
-  },
-  {
-    id:4, cat:'f1', badge:'f1', kicker:'EDITORIAL',
-    title:'A Fórmula 1 Está Destruindo o que a Tornou Especial com o Excesso de Sprints',
-    author:'Rafael Freitas', av:'RF', date:'7 Abr 2026 · 6 min de leitura',
-    img:'https://loremflickr.com/760/320/formula1,race?lock=30',
-    body:`<p>Com sete corridas sprint no calendário de 2026, chegou a hora de fazer uma pergunta difícil: estamos destruindo o que tornou a Fórmula 1 especial?</p>
-    <blockquote><p>"Nenhuma corrida de sprint jamais ficou na memória da história do esporte." — Rafael Freitas</p></blockquote>`
-  },
-  {
-    id:5, cat:'sim', badge:'sim', kicker:'COLUNA',
-    title:'Sim Racing Não é Mais Hobby — é Categoria Oficial de Automobilismo',
-    author:'Marina Vasconcelos', av:'MV', date:'6 Abr 2026 · 5 min de leitura',
-    img:'https://loremflickr.com/760/320/esports,gaming?lock=55',
-    body:`<p>Com a NASCAR patrocinando campeonatos digitais com prêmio de R$ 2 milhões e pilotos como Lando Norris competindo em ligas virtuais, não há como ignorar.</p>`
-  }
-];
+/* ====== INTERNAL ARTICLES DATA ====== */
+let ARTICLES = []; // Will be populated dynamically
 
 const VIDEOS_DATA = [
   {title:'Onboard Completo: a Volta que Valeu a Pole de Verstappen em Miami', badge:'f1', dur:'18:32', views:'312K VIEWS · 10 ABR 2026', img:'https://loremflickr.com/800/400/formula1,cockpit?lock=22'},
@@ -67,31 +11,80 @@ const VIDEOS_DATA = [
   {title:'Análise Técnica: Aerodinâmica dos Hypercar de Le Mans', badge:'wec', dur:'31:44', views:'54K VIEWS · 7 ABR', img:'https://loremflickr.com/400/280/lemans,hypercar?lock=18'},
 ];
 
-const DRIVERS = [
-  {pos:1,cls:'p1',flag:'🇳🇱',name:'Verstappen',team:'Oracle Red Bull Racing',pts:94,pct:100,color:'var(--acc)'},
-  {pos:2,cls:'p2',flag:'🇬🇧',name:'Norris',team:'McLaren F1 Team',pts:78,pct:83,color:'#ff8000'},
-  {pos:3,cls:'p3',flag:'🇲🇽',name:'Pérez',team:'Oracle Red Bull Racing',pts:64,pct:68,color:'var(--acc)'},
-  {pos:4,cls:'',flag:'🇪🇸',name:'Sainz',team:'Williams Racing',pts:57,pct:61,color:'#005aff'},
-  {pos:5,cls:'',flag:'🇬🇧',name:'Russell',team:'Mercedes-AMG Petronas',pts:50,pct:53,color:'#00d2be'},
-  {pos:6,cls:'',flag:'🇲🇨',name:'Leclerc',team:'Scuderia Ferrari',pts:43,pct:46,color:'#dc0000'},
-  {pos:7,cls:'',flag:'🇦🇺',name:'Piastri',team:'McLaren F1 Team',pts:37,pct:39,color:'#ff8000'},
-  {pos:8,cls:'',flag:'🇩🇪',name:'Hamilton',team:'Scuderia Ferrari',pts:32,pct:34,color:'#dc0000'},
-];
+let liveDrivers = [];
+let liveConstructors = [];
+let maxPoints = 0;
 
-const CONSTRUCTORS = [
-  {pos:1,cls:'p1',flag:'🏴',name:'Red Bull Racing',team:'Oracle · Honda RBPT',pts:158,pct:100,color:'var(--acc)'},
-  {pos:2,cls:'p2',flag:'🏴',name:'McLaren',team:'Mercedes Power Unit',pts:115,pct:73,color:'#ff8000'},
-  {pos:3,cls:'p3',flag:'🏴',name:'Ferrari',team:'Scuderia Ferrari',pts:75,pct:47,color:'#dc0000'},
-  {pos:4,cls:'',flag:'🏴',name:'Mercedes',team:'Mercedes-AMG Petronas',pts:68,pct:43,color:'#00d2be'},
-  {pos:5,cls:'',flag:'🏴',name:'Williams',team:'Williams Racing · Mercedes',pts:57,pct:36,color:'#005aff'},
-  {pos:6,cls:'',flag:'🏴',name:'Aston Martin',team:'Aramco · Honda',pts:34,pct:21,color:'#006f62'},
-];
+/* ====== DATA FETCHING (LIVE) ====== */
+async function loadLiveStandings() {
+  const [d, c] = await Promise.all([
+     PitLane.Live.getDriverStandings(),
+     PitLane.Live.getConstructorStandings()
+  ]);
+  
+  if(d.length > 0) {
+    maxPoints = Math.max(parseFloat(d[0].points), parseFloat(c[0]?.points || 0), 1);
+    
+    liveDrivers = d.map((r, i) => {
+      const p = parseFloat(r.points);
+      return {
+        pos: r.position,
+        cls: i === 0 ? 'p1' : i === 1 ? 'p2' : i === 2 ? 'p3' : '',
+        flag: '🏁', 
+        name: r.Driver.familyName.toUpperCase(),
+        team: r.Constructors[0]?.name || 'Privateer',
+        pts: p,
+        pct: (p / maxPoints) * 100,
+        color: getConstructorColor(r.Constructors[0]?.constructorId)
+      };
+    });
+  }
+  
+  if(c.length > 0) {
+    liveConstructors = c.map((r, i) => {
+      const p = parseFloat(r.points);
+      return {
+        pos: r.position,
+        cls: i === 0 ? 'p1' : i === 1 ? 'p2' : i === 2 ? 'p3' : '',
+        flag: '🏎️', 
+        name: r.Constructor.name.toUpperCase(),
+        team: r.Constructor.nationality,
+        pts: p,
+        pct: (p / maxPoints) * 100,
+        color: getConstructorColor(r.Constructor.constructorId)
+      };
+    });
+  }
+
+  // Initial render
+  setTimeout(() => renderStandings(currentTab === 'drivers' ? liveDrivers : liveConstructors), 100);
+}
+
+function getConstructorColor(id) {
+  const colors = {
+    'red_bull': 'var(--acc)',
+    'ferrari': '#dc0000',
+    'mclaren': '#ff8000',
+    'mercedes': '#00d2be',
+    'aston_martin': '#006f62',
+    'alpine': '#0090ff',
+    'williams': '#005aff',
+    'haas': '#ffffff',
+    'rb': '#1f3cff',
+    'sauber': '#00e701'
+  };
+  return colors[id] || '#666';
+}
 
 /* ====== RENDER STANDINGS ====== */
 let currentTab = 'drivers';
 function renderStandings(data) {
   const t = document.getElementById('standingsTable');
   if(!t) return;
+  if(data.length === 0) {
+    t.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--dim)">Carregando dados da F1 ao vivo...</td></tr>';
+    return;
+  }
   t.innerHTML = '<tbody>' + data.map(r=>`
     <tr onclick="showToast('${r.name} — ${r.pts} pontos · ${r.team}')">
       <td class="s-pos ${r.cls}">${r.pos}</td>
@@ -100,19 +93,30 @@ function renderStandings(data) {
       <td class="s-bar-c"><div class="s-bar-bg"><div class="s-bar" style="width:${r.pct}%;background:${r.color}"></div></div></td>
       <td class="s-pts">${r.pts}</td>
     </tr>`).join('') + '</tbody>';
+    if(window.lucide) window.lucide.createIcons();
 }
+
 function switchTab(el, tab) {
   document.querySelectorAll('.s-tab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
   currentTab = tab;
-  renderStandings(tab === 'drivers' ? DRIVERS : CONSTRUCTORS);
+  renderStandings(tab === 'drivers' ? liveDrivers : liveConstructors);
 }
 
-/* ====== COUNTDOWN ====== */
-function initCountdown() {
-  const raceDate = new Date('2026-04-13T20:00:00Z');
+/* ====== COUNTDOWN (LIVE) ====== */
+async function initLiveCountdown() {
+  const nextRace = await PitLane.Live.getNextRace();
+  if(!nextRace) return;
+  
+  const rcName = document.getElementById('raceCardName');
+  const rcTrack = document.getElementById('raceCardTrack');
+  const rcDate = new Date(`${nextRace.date}T${nextRace.time}`);
+  
+  if(rcName) rcName.textContent = nextRace.raceName.toUpperCase();
+  if(rcTrack) rcTrack.textContent = `${nextRace.Circuit.circuitName.toUpperCase()} · RONDA ${nextRace.round}`;
+
   function tick() {
-    const d = raceDate - new Date();
+    const d = rcDate - new Date();
     if(d <= 0){ const cg = document.querySelector('.countdown-grid'); if(cg) cg.innerHTML = '<div style="grid-column:span 4;text-align:center;padding:18px;font-family:var(--fm);font-size:12px;color:var(--acc)"><i data-lucide="flag" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i> CORRIDA EM ANDAMENTO</div>'; return; }
     const el = (id,v) => { const e = document.getElementById(id); if(e) e.textContent = v; };
     el('cd-days', String(Math.floor(d/86400000)).padStart(2,'0'));
@@ -145,11 +149,11 @@ function renderSearchResults(q) {
   );
   if(!results.length){ wrap.innerHTML='<div class="search-empty">Nenhum resultado para "'+q+'"</div>'; return; }
   wrap.innerHTML = results.map(a=>`
-    <div class="search-result" onclick="closeSearch();openArticleById(${a.id})">
+    <div class="search-result" onclick="closeSearch();showToast('Abrindo Matéria: ${a.title}')">
       <img class="sr-img" src="${a.img}" alt="">
       <div>
         <div class="sr-title">${a.title}</div>
-        <div class="sr-meta">${a.author} · ${a.date}</div>
+        <div class="sr-meta">${a.author} · ${a.cat.toUpperCase()}</div>
       </div>
     </div>`).join('');
 }
@@ -196,21 +200,60 @@ function startVideo() {
 
 /* ====== ARTICLE MODAL ====== */
 function openArticleById(id) {
-  const a = ARTICLES.find(x=>x.id===id);
-  if(!a) return;
-  document.getElementById('articleBreadcrumb').textContent = 'PITLANE NEWS · '+a.cat.toUpperCase();
-  document.getElementById('articleImg').src = a.img;
-  const badge = document.getElementById('articleBadge');
-  badge.className = 'badge '+a.badge;
-  badge.textContent = a.badge.toUpperCase().replace('SIM','SIM RACING');
-  document.getElementById('articleKicker').textContent = a.kicker;
-  document.getElementById('articleTitle').textContent = a.title;
-  document.getElementById('articleAv').textContent = a.av;
-  document.getElementById('articleAuthor').textContent = a.author;
-  document.getElementById('articleDate').textContent = a.date;
-  document.getElementById('articleText').innerHTML = a.body;
   openModal('articleOverlay');
-  document.getElementById('articleOverlay').scrollTop = 0;
+  // Dynamic article logic comes later if needed on homepage. Currently search uses toast.
+}
+
+/* ====== LOAD NEWS (HYBRID RSS + SAAS) ====== */
+async function loadLiveNews() {
+  // 1. Fetch SaaS Published Articles (Admin Interno)
+  const saasArticles = PitLane.getArticlesByStatus('published').map(a => {
+    const u = PitLane.getUserById(a.authorId);
+    return {
+      id: a.id,
+      cat: a.category ? a.category.toLowerCase().replace(' ', '') : 'news',
+      badge: a.category ? a.category : 'SAAS',
+      kicker: u && u.type === 'equipe' ? 'EQUIPE OFICIAL' : 'PILOTO OFICIAL',
+      title: a.title,
+      author: u ? u.name : 'Unknown',
+      av: u ? u.avatar : 'PL',
+      date: PitLane.formatDate(a.publishedAt),
+      img: a.img || 'https://loremflickr.com/760/320/racing?lock='+a.id,
+      body: a.body
+    };
+  });
+  
+  // 2. Fetch Nossa Nova API de Pipeline (Next.js)
+  try {
+    const res = await fetch('/api/news');
+    if (!res.ok) throw new Error('Falha no Pipeline Local');
+    const { data } = await res.json();
+    
+    // Mesclar feed Brasil e Global
+    const pipelineFeed = [...(data.brasil || []), ...(data.global || [])];
+    
+    // Formatar pro modelo do layout
+    const rssArticles = pipelineFeed.map((n, i) => {
+      return {
+        id: 'rss' + i,
+        cat: 'f1',
+        badge: 'f1',
+        kicker: 'LATEST NEWS',
+        title: n.title,
+        author: n.author,
+        av: '📰',
+        date: new Date(n.pubDate).toLocaleDateString('pt-BR'),
+        img: n.thumbnail,
+        body: `<p>Leia a matéria completa na íntegra no site de origem.</p><a href="${n.link}" target="_blank" class="btn-secondary">Ler Matéria Origial →</a>`
+      };
+    });
+    
+    // Mix them (ex: exibir 4 SaaS locais da tabela news_feed mockada e 6 reais da API paralela)
+    ARTICLES = [...saasArticles.slice(0, 4), ...rssArticles.slice(0, 6)];
+    
+  } catch (err) {
+    console.error("News Pipeline Falhou, caindo pro mock...", err);
+  }
 }
 
 /* ====== FILTER NEWS ====== */
@@ -230,18 +273,6 @@ function filterCat(cat) {
   });
   if(cat!=='all') document.getElementById('newsSection')?.scrollIntoView({behavior:'smooth',block:'start'});
   else scrollToTop();
-}
-function filterTag(el, tag) {
-  document.querySelectorAll('.ftag').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  document.querySelectorAll('.ncard').forEach(c=>{
-    const show = tag==='all' || c.dataset.cat===tag;
-    c.classList.toggle('hidden',!show);
-  });
-}
-function catActivate(el) {
-  document.querySelectorAll('.cat-pill').forEach(p=>p.classList.remove('active'));
-  el.classList.add('active');
 }
 
 /* ====== BOOKMARKS ====== */
@@ -273,16 +304,23 @@ function submitNewsletter() {
 }
 
 /* ====== INIT ====== */
-document.addEventListener('DOMContentLoaded', ()=>{
-  renderStandings(DRIVERS);
-  initCountdown();
+document.addEventListener('DOMContentLoaded', async ()=>{
+  // Initiate parallel fetches for max performance
+  renderStandings([]); // Renders "loading"
+  
+  loadLiveStandings();
+  initLiveCountdown();
+  loadLiveNews();
+  
   // Search input listener
   const si = document.getElementById('searchInput');
   if(si) si.addEventListener('input', e=>renderSearchResults(e.target.value));
+  
   // Restore bookmarks
   bookmarks.forEach(id=>{
     document.querySelector(`.ncard-bm[onclick*="toggleBookmark(this,${id})"]`)?.classList.add('saved');
   });
+  
   // Animate news cards
   document.querySelectorAll('.ncard').forEach((c,i)=>{
     c.style.transitionDelay=(i*.07)+'s'; c.classList.add('reveal');
