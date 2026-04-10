@@ -105,36 +105,8 @@
      HERO
      ======================== -->
 <div class="hero-wrap">
-  <div class="hero-grid">
-    <div class="hero-main" onclick="openArticleById(0)">
-      <img src="https://loremflickr.com/1200/600/formula1,racing?lock=42" alt="GP Miami">
-      <div class="hero-content">
-        <span class="badge brk">🔴 Breaking</span>
-        <h1 class="hero-title">Verstappen<br>Conquista Pole<br>em Miami sob Chuva</h1>
-        <p class="hero-excerpt">O tetracampeão volta ao topo com uma volta extraordinária no molhado, superando Norris por apenas 0.043s — a menor diferença da temporada.</p>
-        <div class="hero-meta">
-          <span>Carlos Biasi</span><span>10 Abr 2026</span><span>5 min de leitura</span>
-        </div>
-      </div>
-    </div>
-    <div class="hero-side">
-      <div class="side-card" onclick="openArticleById(1)">
-        <img src="https://loremflickr.com/600/380/motogp,motorcycle?lock=7" alt="MotoGP">
-        <div class="side-content">
-          <span class="badge motogp">MotoGP</span>
-          <div class="side-title">Bagnaia Vence GP da França — Márquez Abandona com Queda</div>
-          <div class="side-meta">Ana Rocha · 9 Abr · 4 min</div>
-        </div>
-      </div>
-      <div class="side-card" onclick="openArticleById(3)">
-        <img src="https://loremflickr.com/600/380/lemans,endurance,night?lock=15" alt="WEC">
-        <div class="side-content">
-          <span class="badge wec">WEC</span>
-          <div class="side-title">Toyota Domina Prologue de Spa com Novo GR010 Evo</div>
-          <div class="side-meta">Pedro Neto · 8 Abr · 6 min</div>
-        </div>
-      </div>
-    </div>
+  <div class="hero-grid" id="heroGrid">
+    <!-- Renderizado via JS -->
   </div>
 </div>
 
@@ -181,42 +153,7 @@
     <button class="ftag" data-tag="sim" onclick="filterTag(this,'sim')">Sim Racing</button>
   </div>
   <div class="card-grid" id="cardGrid">
-    <div class="ncard feat" data-cat="f1" data-id="0" onclick="openArticleById(0)">
-      <div class="ncard-thumb"><img src="https://loremflickr.com/800/440/formula1,car?lock=3" alt=""></div>
-      <div class="ncard-body">
-        <span class="badge f1">F1</span>
-        <div class="ncard-title">Novo Assoalho da Red Bull Testado em Simulador — Ganho de 0.4s por Volta</div>
-        <div class="ncard-excerpt">A equipe austríaca levou ao CFD um pacote aerodinâmico inédito que pode mudar o equilíbrio da temporada.</div>
-        <div class="ncard-meta"><span>10 ABR · CARLOS BIASI · 6 MIN</span><button class="ncard-bm" onclick="event.stopPropagation();toggleBookmark(this,0)" title="Salvar">🔖</button></div>
-      </div>
-    </div>
-    <div class="ncard" data-cat="sim" data-id="2" onclick="openArticleById(2)">
-      <div class="ncard-thumb"><img src="https://loremflickr.com/400/260/simracing,esports?lock=5" alt=""></div>
-      <div class="ncard-body">
-        <span class="badge sim">Sim Racing</span>
-        <div class="ncard-title">PitLane Ranking — Os 50 Pilotos Virtuais Mais Rápidos do Brasil</div>
-        <div class="ncard-excerpt">Levantamos dados de 3.200+ pilotos para o ranking definitivo.</div>
-        <div class="ncard-meta"><span>10 ABR · REDAÇÃO · 8 MIN</span><button class="ncard-bm" onclick="event.stopPropagation();toggleBookmark(this,2)" title="Salvar">🔖</button></div>
-      </div>
-    </div>
-    <div class="ncard" data-cat="motogp" data-id="1" onclick="openArticleById(1)">
-      <div class="ncard-thumb"><img src="https://loremflickr.com/400/260/motorcycle,racing,ducati?lock=9" alt=""></div>
-      <div class="ncard-body">
-        <span class="badge motogp">MotoGP</span>
-        <div class="ncard-title">Análise: Por que a Ducati Domina e o que Outras Marcas Precisam Fazer</div>
-        <div class="ncard-excerpt">Com 8 das 12 motos no grid sendo Ducati, a hegemonia italiana levanta questões sérias.</div>
-        <div class="ncard-meta"><span>9 ABR · ANA ROCHA · 10 MIN</span><button class="ncard-bm" onclick="event.stopPropagation();toggleBookmark(this,1)" title="Salvar">🔖</button></div>
-      </div>
-    </div>
-    <div class="ncard" data-cat="wec" data-id="3" onclick="openArticleById(3)">
-      <div class="ncard-thumb"><img src="https://loremflickr.com/400/260/lemans,racing?lock=12" alt=""></div>
-      <div class="ncard-body">
-        <span class="badge wec">WEC</span>
-        <div class="ncard-title">24h de Le Mans 2026: Guia Completo de Categorias e Favoritos</div>
-        <div class="ncard-excerpt">A corrida mais longa do mundo acontece em junho — saiba tudo.</div>
-        <div class="ncard-meta"><span>8 ABR · PEDRO NETO · 12 MIN</span><button class="ncard-bm" onclick="event.stopPropagation();toggleBookmark(this,3)" title="Salvar">🔖</button></div>
-      </div>
-    </div>
+    <!-- Renderizado via JS -->
   </div>
 </div>
 
@@ -347,47 +284,11 @@
      ======================== -->
 <div class="section reveal">
   <div class="sec-head">
-    <span class="sec-title">Vídeos em Destaque</span>
-    <button class="sec-link" onclick="showToast('Abrindo canal do YouTube...')">CANAL →</button>
+    <span class="sec-title">Vídeos e Destaques</span>
+    <button class="sec-link">VER TODOS →</button>
   </div>
-  <div class="vid-grid">
-    <div class="vcard feat" onclick="openVideoModal(0)">
-      <div class="vthumb">
-        <img src="https://loremflickr.com/800/400/formula1,cockpit?lock=22" alt="">
-        <div class="vbadge">EXCLUSIVO</div>
-        <div class="play-btn"><div class="play-arr"></div></div>
-        <div class="vdur">18:32</div>
-      </div>
-      <div class="vinfo">
-        <span class="badge f1">F1</span>
-        <div class="vtitle">Onboard Completo: a Volta que Valeu a Pole de Verstappen em Miami</div>
-        <div class="vmeta">312K VIEWS · 10 ABR 2026</div>
-      </div>
-    </div>
-    <div class="vcard" onclick="openVideoModal(1)">
-      <div class="vthumb">
-        <img src="https://loremflickr.com/400/280/simracing,wheel?lock=55" alt="">
-        <div class="play-btn"><div class="play-arr"></div></div>
-        <div class="vdur">22:10</div>
-      </div>
-      <div class="vinfo">
-        <span class="badge sim">Sim Racing</span>
-        <div class="vtitle">Setup ACC em Monza — Ganhe 1.5s por Volta</div>
-        <div class="vmeta">87K VIEWS · 8 ABR</div>
-      </div>
-    </div>
-    <div class="vcard" onclick="openVideoModal(2)">
-      <div class="vthumb">
-        <img src="https://loremflickr.com/400/280/lemans,hypercar?lock=18" alt="">
-        <div class="play-btn"><div class="play-arr"></div></div>
-        <div class="vdur">31:44</div>
-      </div>
-      <div class="vinfo">
-        <span class="badge wec">WEC</span>
-        <div class="vtitle">Análise Técnica: Aerodinâmica dos Hypercar de Le Mans</div>
-        <div class="vmeta">54K VIEWS · 7 ABR</div>
-      </div>
-    </div>
+  <div class="vid-grid" id="vidGrid">
+    <!-- Renderizado via JS -->
   </div>
 </div>
 
@@ -398,26 +299,11 @@
   <div class="split-grid">
     <div>
       <div class="sec-head">
-        <span class="sec-title">Opinião</span>
+        <span class="sec-title">Reportagens Especiais</span>
         <button class="sec-link">VER TODAS →</button>
       </div>
-      <div class="op-card" onclick="openArticleById(4)">
-        <div class="op-tag">Editorial</div>
-        <div class="op-title">A Fórmula 1 Está Destruindo o que a Tornou Especial com o Excesso de Sprints</div>
-        <div class="op-excerpt">Com sete corridas sprint no calendário de 2026, o formato perdeu o caráter de novidade.</div>
-        <div class="op-author">
-          <div class="op-avatar">RF</div>
-          <div><div class="op-name">Rafael Freitas</div><div class="op-role">Editor-chefe · PitLane</div></div>
-        </div>
-      </div>
-      <div class="op-card" style="border-left-color:#6222ee" onclick="openArticleById(5)">
-        <div class="op-tag" style="color:#6222ee">Sim Racing</div>
-        <div class="op-title">Sim Racing Não é Mais Hobby — é Categoria Oficial de Automobilismo</div>
-        <div class="op-excerpt">Com pilotos reais em ligas virtuais e a NASCAR patrocinando campeonatos digitais, a linha desapareceu.</div>
-        <div class="op-author">
-          <div class="op-avatar" style="background:#6222ee">MV</div>
-          <div><div class="op-name">Marina Vasconcelos</div><div class="op-role">Colunista · Sim Racing BR</div></div>
-        </div>
+      <div id="opGrid">
+        <!-- Renderizado via JS -->
       </div>
     </div>
     <div>
@@ -425,17 +311,8 @@
         <span class="sec-title">Mercado & Técnico</span>
         <button class="sec-link">VER TODAS →</button>
       </div>
-      <div class="mkt-card" onclick="showToast('Abrindo: Aston Martin Honda 2026...')">
-        <div class="mkt-thumb"><img src="https://loremflickr.com/200/160/astonmartin,car?lock=31" alt=""></div>
-        <div class="mkt-body"><span class="badge f1">F1</span><div class="mkt-title">Aston Martin Confirma Motor Honda para a Temporada 2026</div><div class="mkt-meta">9 ABR · 4 MIN</div></div>
-      </div>
-      <div class="mkt-card" onclick="showToast('Abrindo: NASCAR Next Gen 2...')">
-        <div class="mkt-thumb"><img src="https://loremflickr.com/200/160/nascar,racing?lock=44" alt=""></div>
-        <div class="mkt-body"><span class="badge nascar">NASCAR</span><div class="mkt-title">NASCAR Next Gen 2 Terá Motor Elétrico Auxiliar para 2027</div><div class="mkt-meta">7 ABR · 6 MIN</div></div>
-      </div>
-      <div class="mkt-card" onclick="showToast('Abrindo: Fanatec volante háptico...')">
-        <div class="mkt-thumb"><img src="https://loremflickr.com/200/160/simracing,wheel?lock=66" alt=""></div>
-        <div class="mkt-body"><span class="badge sim">Sim Racing</span><div class="mkt-title">Fanatec Anuncia Volante com Feedback de Câmbio Háptico para 2026</div><div class="mkt-meta">6 ABR · 3 MIN</div></div>
+      <div id="mktGrid">
+        <!-- Renderizado via JS -->
       </div>
     </div>
   </div>

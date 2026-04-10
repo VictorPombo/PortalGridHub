@@ -263,23 +263,74 @@ async function loadLiveNews() {
     // Mix them (ex: exibir SaaS locais da tabela news_feed misturadas com as reais da API paralela)
     ARTICLES = [...saasArticles, ...rssArticles];
     
-    // Agora renderizar dinamicamente na Página!
+    // Agora renderizar dinamicamente na Página inteira!
+    renderHeroGrid();
     renderNewsGrid();
+    renderVidGrid();
+    renderSplitGrids();
     renderTicker();
 
   } catch (err) {
     console.error("News Pipeline Falhou, caindo pro mock...", err);
+    renderHeroGrid();
     renderNewsGrid();
+    renderVidGrid();
+    renderSplitGrids();
   }
+}
+
+function renderHeroGrid() {
+  const grid = document.getElementById('heroGrid');
+  if(!grid || ARTICLES.length < 3) return;
+
+  const aM = ARTICLES[0];
+  const aS1 = ARTICLES[1];
+  const aS2 = ARTICLES[2];
+
+  const goM = aM.isReal ? `window.open('${aM.link}', '_blank')` : `openArticleById('${aM.id}')`;
+  const goS1 = aS1.isReal ? `window.open('${aS1.link}', '_blank')` : `openArticleById('${aS1.id}')`;
+  const goS2 = aS2.isReal ? `window.open('${aS2.link}', '_blank')` : `openArticleById('${aS2.id}')`;
+
+  grid.innerHTML = `
+    <div class="hero-main" onclick="${goM}; if(${aM.isReal}) showToast('Redirecionando...')">
+      <img src="${aM.img}" alt="${aM.title}">
+      <div class="hero-content">
+        <span class="badge ${aM.cat}">${aM.badge.toUpperCase()}</span>
+        <h1 class="hero-title">${aM.title}</h1>
+        <p class="hero-excerpt">Destaque do portal — Clique para ler a matéria completa sobre os últimos acontecimentos.</p>
+        <div class="hero-meta">
+          <span>${aM.author}</span><span>${aM.date}</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-side">
+      <div class="side-card" onclick="${goS1}; if(${aS1.isReal}) showToast('Redirecionando...')">
+        <img src="${aS1.img}" alt="">
+        <div class="side-content">
+          <span class="badge ${aS1.cat}">${aS1.badge.toUpperCase()}</span>
+          <div class="side-title">${aS1.title}</div>
+          <div class="side-meta">${aS1.author.slice(0,10)} · ${aS1.date}</div>
+        </div>
+      </div>
+      <div class="side-card" onclick="${goS2}; if(${aS2.isReal}) showToast('Redirecionando...')">
+        <img src="${aS2.img}" alt="">
+        <div class="side-content">
+          <span class="badge ${aS2.cat}">${aS2.badge.toUpperCase()}</span>
+          <div class="side-title">${aS2.title}</div>
+          <div class="side-meta">${aS2.author.slice(0,10)} · ${aS2.date}</div>
+        </div>
+      </div>
+    </div>
+  `;
 }
 
 function renderNewsGrid() {
   const grid = document.getElementById('cardGrid');
   if(!grid) return;
-  if(ARTICLES.length === 0) return;
+  if(ARTICLES.length < 7) return;
 
-  // Pegar as 4 matérias mais recentes (que não são vídeos, etc)
-  const displayArticles = ARTICLES.slice(0, 4);
+  // Pegar matérias do index 3 ao 6
+  const displayArticles = ARTICLES.slice(3, 7);
   
   grid.innerHTML = displayArticles.map((a, i) => {
     // A primeira matéria fica com a classe 'feat'
@@ -292,7 +343,7 @@ function renderNewsGrid() {
         <div class="ncard-body">
           <span class="badge ${a.cat}">${a.badge.toUpperCase()}</span>
           <div class="ncard-title">${a.title}</div>
-          <div class="ncard-excerpt">${isFeat ? 'Leia a matéria completa destaques do dia do automobilismo mundial direto das pistas.' : ''}</div>
+          <div class="ncard-excerpt">${isFeat ? 'Acompanhe de perto as novidades e análises das principais categorias no automobilismo mundial.' : ''}</div>
           <div class="ncard-meta">
             <span>${a.date} · ${a.author.toUpperCase().slice(0,15)}</span>
             <button class="ncard-bm" onclick="event.stopPropagation();toggleBookmark(this,'${a.id}')" title="Salvar">🔖</button>
@@ -310,6 +361,72 @@ function renderNewsGrid() {
     },{threshold:0.07});
     obs.observe(c);
   });
+}
+
+function renderVidGrid() {
+  const grid = document.getElementById('vidGrid');
+  if(!grid || ARTICLES.length < 10) return;
+
+  const displayArticles = ARTICLES.slice(7, 10);
+  
+  grid.innerHTML = displayArticles.map((a, i) => {
+    // Apenas reutilizamos cards de notícia pois não temos a API do Youtube original integrada
+    const isFeat = i === 0;
+    const clickAction = a.isReal ? `window.open('${a.link}', '_blank')` : `openArticleById('${a.id}')`;
+    
+    return `
+      <div class="vcard ${isFeat ? 'feat' : ''}" onclick="${clickAction}; if(a.isReal) showToast('Redirecionando...')">
+        <div class="vthumb">
+          <img src="${a.img}" alt="">
+          <div class="play-btn"><div class="play-arr"></div></div>
+        </div>
+        <div class="vinfo">
+          <span class="badge ${a.cat}">${a.badge.toUpperCase()}</span>
+          <div class="vtitle">${a.title}</div>
+          <div class="vmeta">${a.date} · EM DESTAQUE</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderSplitGrids() {
+  const opGrid = document.getElementById('opGrid');
+  const mktGrid = document.getElementById('mktGrid');
+  if(!opGrid || !mktGrid || ARTICLES.length < 15) return;
+
+  // Opinião -> Index 10 e 11
+  const opArts = ARTICLES.slice(10, 12);
+  opGrid.innerHTML = opArts.map(a => {
+    const clickAction = a.isReal ? `window.open('${a.link}', '_blank')` : `openArticleById('${a.id}')`;
+    return `
+      <div class="op-card" onclick="${clickAction}; if(a.isReal) showToast('Redirecionando...')">
+        <div class="op-tag">Especial</div>
+        <div class="op-title">${a.title}</div>
+        <div class="op-excerpt">Leia a análise aprofundada direto da redação.</div>
+        <div class="op-author">
+          <div class="op-avatar">📰</div>
+          <div><div class="op-name">${a.author}</div><div class="op-role">${a.date}</div></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // Mercado -> Index 12, 13, 14
+  const mktArts = ARTICLES.slice(12, 15);
+  mktGrid.innerHTML = mktArts.map(a => {
+    const clickAction = a.isReal ? `window.open('${a.link}', '_blank')` : `openArticleById('${a.id}')`;
+    return `
+      <div class="mkt-card" onclick="${clickAction}; if(a.isReal) showToast('Redirecionando...')">
+        <div class="mkt-thumb"><img src="${a.img}" alt=""></div>
+        <div class="mkt-body">
+          <span class="badge ${a.cat}">${a.badge.toUpperCase()}</span>
+          <div class="mkt-title">${a.title}</div>
+          <div class="mkt-meta">${a.date}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
 }
 
 function renderTicker() {
