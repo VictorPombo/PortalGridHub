@@ -2,56 +2,7 @@
 /* ── ARTIGOS ──
    Externos: redirecionam para URL real da fonte
    Internos/patrocinados: conteúdo editorial PitLane baseado em fatos reais */
-const ARTICLES=[
-  /* 0 — INTERNO PitLane: editorial baseado em fatos reais da temporada */
-  {id:0,cat:'f1',badge:'b-f1',kicker:'ANÁLISE · TEMPORADA 2026',pago:false,partner:'',
-   title:'Antonelli Lidera: O Mais Jovem a Comandar o Mundial de F1 na Era Moderna',
-   author:'Redação PitLane',av:'PL',date:'10 Abr 2026 · 5 min',
-   img:'https://loremflickr.com/760/310/formula1,mercedes?lock=3',
-   body:`<p>Kimi Antonelli, com apenas 19 anos, lidera o Campeonato Mundial de Fórmula 1 de 2026 com 72 pontos após três Grandes Prêmios — Austrália, China e Japão. O feito faz dele o mais jovem piloto a comandar o campeonato na história recente da modalidade, segundo confirmaram múltiplas fontes do paddock.</p><h3>Os Resultados da Temporada</h3><p>A Mercedes venceu a primeira corrida do ano na Austrália com Russell, antes de Antonelli assumir a liderança com vitórias consecutivas na China e no Japão. No Japão, o italiano venceu com Piastri (McLaren) em segundo e Leclerc (Ferrari) em terceiro.</p><blockquote><p>"Antonelli foi além de qualquer expectativa nas primeiras etapas. A Mercedes chegou 2026 com o melhor carro da história recente da equipe." — análise GPFans</p></blockquote><h3>O Que Esperar em Miami</h3><p>A próxima corrida é o GP de Miami, em 1-3 de maio. A corrida foi antecedida por um intervalo de cinco semanas após o cancelamento dos GPs do Bahrein e da Arábia Saudita por razões de segurança relacionadas ao conflito no Oriente Médio.</p>`},
-
-  /* 1 — INTERNO: FIA confirma revisão das regras 2026 */
-  {id:1,cat:'f1',badge:'b-f1',kicker:'REGULAMENTOS · F1 2026',pago:false,partner:'',
-   title:'FIA Confirma Revisão das Regras de 2026 Após Acidente de Bearman em Suzuka',
-   author:'Redação PitLane',av:'PL',date:'10 Abr 2026 · 4 min',
-   img:'https://loremflickr.com/760/310/formula1,crash?lock=77',
-   body:`<p>A FIA confirmou nesta quinta-feira que irá fazer ajustes nas regulamentações técnicas de 2026, especialmente no sistema de gerenciamento de energia, após a reunião realizada com equipes, pilotos e construtores. O anúncio veio uma semana após o acidente de Oliver Bearman (Haas) no GP do Japão em Suzuka.</p><h3>O Problema das "Super-Frenagens"</h3><p>Os carros de 2026 utilizam uma distribuição 50/50 entre motor de combustão e sistema elétrico. Quando a bateria precisa ser recarregada, o sistema pode forçar o carro a desacelerar abruptamente — o que chamam de "super-clipping". Foi isso que provocou o acidente de Bearman, quando Colapinto (Alpine) desacelerou subitamente à sua frente.</p><blockquote><p>"Como GPDA, avisamos que esses acidentes iriam acontecer. É necessário mudar algo antes que algo pior ocorra." — Carlos Sainz, diretor do GPDA</p></blockquote><p>Mais reuniões estão agendadas para 15, 16 e 20 de abril, quando as mudanças serão oficializadas para o GP de Miami (1-3 de maio).</p>`},
-
-  /* 2 — INTERNO: Verstappen considera aposentadoria */
-  {id:2,cat:'f1',badge:'b-f1',kicker:'BREAKING · MAX VERSTAPPEN',pago:false,partner:'',
-   title:'Verstappen Cogita Aposentar-se da F1 ao Final de 2026 — Fontes do Paddock',
-   author:'Redação PitLane',av:'PL',date:'9 Abr 2026 · 3 min',
-   img:'https://loremflickr.com/760/310/formula1,redbull?lock=5',
-   body:`<p>Max Verstappen, tetracampeão mundial de Fórmula 1, está considerando se aposentar ao final da temporada 2026, segundo relatam fontes do paddock citadas pela ESPN e pela Sky Sports F1. O holandês, que ocupa apenas o 9º lugar no campeonato com 12 pontos, tem sido um dos pilotos mais críticos das novas regulamentações da temporada.</p><h3>Frustração com as Regras de 2026</h3><p>Verstappen foi enfático ao criticar o sistema de gerenciamento de energia dos novos carros. A Red Bull, que dominou os últimos quatro anos do campeonato, tem um carro claramente abaixo das expectativas na nova era de regulamentos, ficando muito atrás da Mercedes e da Ferrari nas três primeiras corridas.</p><blockquote><p>"As corridas não são o que deveriam ser. Se isso não mudar, preciso pensar no que faço com meu futuro." — Verstappen, conforme ESPN</p></blockquote><p>O contrato de Verstappen com a Red Bull se encerra ao final de 2026. A decisão sobre seu futuro — seja permanecer ou se aposentar — deve ser tomada no segundo semestre da temporada.</p>`},
-
-  /* 3 — INTERNO: Miami GP — guia completo */
-  {id:3,cat:'f1',badge:'b-f1',kicker:'PRÓXIMA CORRIDA',pago:false,partner:'',
-   title:'GP de Miami 2026: Guia Completo — Datas, Horários e O que Esperar',
-   author:'Redação PitLane',av:'PL',date:'10 Abr 2026 · 6 min',
-   img:'https://loremflickr.com/760/310/miami,formula1,race?lock=12',
-   body:`<p>O GP de Miami 2026 (Formula 1 Crypto.com Miami Grand Prix) acontece de 1 a 3 de maio no Miami International Autodrome, no complexo do Hard Rock Stadium em Miami Gardens. É a quarta etapa do calendário 2026 e a segunda corrida com formato sprint.</p><h3>Horários (Horário de Brasília)</h3><p>Sexta-feira (01/05): FP1 às 13:30 e Classificação Sprint às 17:30. Sábado (02/05): Sprint Race às 13:00 e Classificação às 17:00. Domingo (03/05): Corrida às 17:00.</p><h3>O Que Esperar</h3><p>Com a Mercedes dominando as três primeiras etapas e possíveis ajustes regulatórios chegando, o GP de Miami pode ser o ponto de virada da temporada. Ferrari e McLaren buscam quebrar a hegemonia da equipe alemã.</p><blockquote><p>"Miami é sempre uma corrida muito especial. Depois de cinco semanas parados, estamos todos com muita vontade de competir." — Kimi Antonelli</p></blockquote><p>O circuito tem 5,412 km, 19 curvas e três zonas de DRS. A corrida principal tem 57 voltas.</p>`},
-
-  /* 4 — INTERNO: Análise temporada Mercedes dominância */
-  {id:4,cat:'f1',badge:'b-f1',kicker:'ANÁLISE TÉCNICA',pago:false,partner:'',
-   title:'Por Que a Mercedes Domina 2026 e o que Ferrari e McLaren Precisam Fazer',
-   author:'Redação PitLane',av:'PL',date:'8 Abr 2026 · 7 min',
-   img:'https://loremflickr.com/760/310/formula1,engine?lock=30',
-   body:`<p>Com 135 pontos no campeonato de construtores — frente a 90 da Ferrari e 46 da McLaren — a Mercedes dominou as três primeiras corridas de 2026 de maneira que não se via desde a era híbrida de 2014-2016. A combinação de Kimi Antonelli e George Russell provou ser devastadora nas novas condições regulatórias.</p><h3>O Segredo Mercedes</h3><p>A vantagem alemã está principalmente na gestão do sistema elétrico. Enquanto Red Bull e outros sofrem com "super-clipping" — as desacelerações forçadas para recarregar a bateria — a Mercedes parece ter resolvido esse problema de forma mais eficiente, com menor perda de tempo por volta.</p><h3>O que Ferrari Precisa Fazer</h3><p>A Ferrari tem o segundo melhor carro com Leclerc (49 pts) e Hamilton (41 pts), mas precisa melhorar a eficiência energética para não perder tempo nas fases de recarga. A equipe de Maranello tem atualizações programadas para Miami que podem reduzir a diferença.</p>`},
-
-  /* 5 — PATROCINADO: Rafael Moura (piloto cliente fictício) */
-  {id:5,cat:'f1',badge:'b-f1',kicker:'CONTEÚDO PATROCINADO',pago:true,partner:'Rafael Moura',
-   title:'Rafael Moura Vence na F4 Brasil e Atrai Interesse de Equipes Europeias',
-   author:'Redação PitLane',av:'PL',date:'9 Abr 2026 · 4 min',
-   img:'https://loremflickr.com/760/310/formula1,driver?lock=33',
-   body:`<p>O piloto paulista Rafael Moura, de 19 anos, conquistou sua terceira vitória na temporada 2026 da F4 Brasil no último final de semana em Interlagos. A performance impressionante chamou atenção de scouts de equipes europeias que estavam presentes no paddock.</p><h3>A Corrida</h3><p>Largando da pole position, Moura defendeu bem a liderança na saída e administrou uma vantagem confortável nas primeiras voltas. O piloto paulista foi cirúrgico na gestão dos pneus e cruzou a linha com 3.7 segundos de vantagem.</p><blockquote><p>"Cada corrida é um passo para o objetivo maior. Quero estar na Fórmula Regional Europeia em 2027 e este ano na F4 é fundamental." — Rafael Moura</p></blockquote><p>Com a vitória, Moura saltou para a terceira posição no campeonato e segue como o piloto com mais poles da temporada.</p>`},
-
-  /* 6 — PATROCINADO: Equipe Turbo Racing */
-  {id:6,cat:'f1',badge:'b-equipe',kicker:'CONTEÚDO PATROCINADO · EQUIPE',pago:true,partner:'Equipe Turbo Racing',
-   title:'Turbo Racing Anuncia Alinhamento para Temporada 2026 da Stock Car Light',
-   author:'Redação PitLane',av:'PL',date:'7 Abr 2026 · 3 min',
-   img:'https://loremflickr.com/760/310/racing,team?lock=77',
-   body:`<p>A Equipe Turbo Racing confirmou nesta semana seus dois pilotos e um novo patrocinador master para a temporada 2026 da Stock Car Light, campeonato que começa em maio com oito etapas no calendário.</p><p>A equipe, que competiu com um único carro em 2025, expande para dois pilotos com o reforço financeiro do patrocinador master, cujo nome será revelado oficialmente na próxima semana. "Estamos muito animados com a temporada que vem. Teremos infraestrutura e equipe técnica para brigar pelo campeonato", disse o gerente esportivo da equipe.</p>`}
-];
+let ARTICLES=[];
 
 /* ── DADOS REAIS F1 2026 ──
    Pilotos: fonte SuperSport / GPFans / formula1.com — após 3 GPs (AUS, CHN, JAP)
@@ -362,3 +313,114 @@ document.addEventListener('keydown',e=>{
     closeMob();
   }
 });
+
+/* ══ DYNAMIC LIVE NEWS PIPELINE ══ */
+document.addEventListener('DOMContentLoaded', async () => {
+  if (window.PitLane && typeof window.PitLane.bootSupabase === 'function') {
+    try {
+      await window.PitLane.bootSupabase();
+    } catch(e) { console.error('Supabase boot fail', e); }
+  }
+  await loadLiveNews();
+});
+
+async function loadLiveNews() {
+  let saasArticles = [];
+  if (window.PitLane) {
+    saasArticles = PitLane.getArticlesByStatus('published').map(a => {
+      const u = PitLane.getUserById(a.authorId) || {};
+      return {
+        id: a.id,
+        cat: a.category ? a.category.toLowerCase().replace(' ', '') : 'news',
+        badge: a.category ? a.category : 'SAAS',
+        kicker: u.type === 'equipe' ? 'EQUIPE OFICIAL' : 'PILOTO OFICIAL',
+        title: a.title,
+        author: u.name || 'Redação PitLane',
+        av: 'PL',
+        date: PitLane.formatDate(a.publishedAt || new Date()),
+        img: a.image_url || ('https://loremflickr.com/760/320/racing?lock='+a.id),
+        body: a.content || a.description || '',
+        isReal: false
+      };
+    });
+  }
+
+  let rssArticles = [];
+  try {
+    const res = await fetch('/api/news');
+    if (res.ok) {
+      const { data } = await res.json();
+      const pipelineFeed = [...(data.brasil || []), ...(data.global || [])];
+      rssArticles = pipelineFeed.map((n, i) => {
+        let cat = 'f1';
+        let badge = 'f1';
+        const cLower = (n.categories || []).join(' ').toLowerCase();
+        if (cLower.includes('motogp')) { cat = 'motogp'; badge = 'motogp'; }
+        else if (cLower.includes('wec') || cLower.includes('endurance')) { cat = 'wec'; badge = 'wec'; }
+        else if (cLower.includes('nascar')) { cat = 'nascar'; badge = 'nascar'; }
+
+        return {
+          id: 'rss' + i,
+          cat: cat,
+          badge: badge,
+          kicker: 'MERCADO / NOTÍCIAS',
+          title: n.title,
+          link: n.link,
+          author: n.author || 'RSS Tracker',
+          av: '📰',
+          date: new Date(n.pubDate).toLocaleDateString('pt-BR'),
+          img: n.thumbnail || 'https://loremflickr.com/400/260/racing,formula1?lock='+i,
+          body: n.contentSnippet || '',
+          isReal: true
+        };
+      });
+    }
+  } catch(e) { console.error('RSS fail', e); }
+
+  const mixed = [];
+  let rIdx = 0, sIdx = 0;
+  while (rIdx < rssArticles.length || sIdx < saasArticles.length) {
+    if (rIdx < rssArticles.length) mixed.push(rssArticles[rIdx++]);
+    if (rIdx < rssArticles.length) mixed.push(rssArticles[rIdx++]);
+    if (rIdx < rssArticles.length) mixed.push(rssArticles[rIdx++]);
+    if (sIdx < saasArticles.length) mixed.push(saasArticles[sIdx++]);
+  }
+
+  ARTICLES = mixed;
+  renderNewsGrid(mixed);
+}
+
+function renderNewsGrid(articles) {
+  const grid = document.getElementById('cardGrid');
+  if (!grid) return;
+  grid.innerHTML = articles.map((a, i) => {
+    const isExt = a.isReal;
+    const clickAction = isExt ? `extLink('${a.link}')` : `openArticle('${a.id}')`;
+    const tag = isExt ? `<span class="tag-ext">🔗 ${a.author}</span>` : `<span class="tag-int">✍ PitLane News</span>`;
+    const dst = isExt ? `<div class="ncard-dest ext">🔗 Abre ${a.author} em nova aba</div>` : `<div class="ncard-dest int">✍ Abre aqui no PitLane News</div>`;
+    const timeToRead = isExt ? 'AGORA' : '5 MIN';
+    const isFeat = i < 2 ? 'feat' : '';
+    
+    return `
+      <div class="ncard ${isFeat} ${isExt?'is-ext':'is-int'} reveal in" data-cat="${a.cat}" data-type="${isExt?'ext':'int'}" data-id="${a.id}" onclick="${clickAction}" style="transition-delay: ${i*0.06}s">
+        <div class="ncard-thumb">
+          <img src="${a.img}" alt="" loading="lazy">
+          <div class="ncard-ribbon"><span class="badge b-${a.cat}">${a.badge.toUpperCase()}</span></div>
+        </div>
+        <div class="ncard-body">
+          <div class="ncard-type-row">
+            ${tag}
+            <span style="font-family:var(--fm);font-size:9px;color:var(--muted)">${isExt?'sai do site':'abre no portal'}</span>
+          </div>
+          <div class="ncard-title">${a.title}</div>
+          <div class="ncard-excerpt">${a.body ? a.body.replace(/<[^>]*>?/gm, '').substring(0, 110) + '...' : ''}</div>
+          <div class="ncard-footer">
+            <span class="ncard-meta">${a.date} · ${a.author.toUpperCase()} · ${timeToRead}</span>
+            ${!isExt ? `<button class="bm-btn" onclick="event.stopPropagation();bookmark(this,'${a.id}')">🔖</button>` : ''}
+          </div>
+        </div>
+        ${dst}
+      </div>
+    `;
+  }).join('');
+}
