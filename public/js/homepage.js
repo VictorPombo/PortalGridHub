@@ -219,7 +219,8 @@ async function loadLiveNews() {
       av: u ? u.avatar : 'PL',
       date: PitLane.formatDate(a.publishedAt),
       img: a.img || 'https://loremflickr.com/760/320/racing?lock='+a.id,
-      body: a.body
+      body: a.body,
+      isReal: false
     };
   });
   
@@ -234,26 +235,96 @@ async function loadLiveNews() {
     
     // Formatar pro modelo do layout
     const rssArticles = pipelineFeed.map((n, i) => {
+      // Define a badge com base nas categorias
+      let cat = 'f1';
+      let badge = 'f1';
+      const cLower = (n.categories || []).join(' ').toLowerCase();
+      if (cLower.includes('motogp')) { cat = 'motogp'; badge = 'motogp'; }
+      else if (cLower.includes('wec') || cLower.includes('endurance') || cLower.includes('lemans')) { cat = 'wec'; badge = 'wec'; }
+      else if (cLower.includes('nascar')) { cat = 'nascar'; badge = 'nascar'; }
+      else if (cLower.includes('sim')) { cat = 'sim'; badge = 'sim'; }
+
       return {
         id: 'rss' + i,
-        cat: 'f1',
-        badge: 'f1',
+        cat: cat,
+        badge: badge,
         kicker: 'LATEST NEWS',
         title: n.title,
+        link: n.link, // Usado para redirecionar
         author: n.author,
         av: '📰',
         date: new Date(n.pubDate).toLocaleDateString('pt-BR'),
         img: n.thumbnail,
-        body: `<p>Leia a matéria completa na íntegra no site de origem.</p><a href="${n.link}" target="_blank" class="btn-secondary">Ler Matéria Origial →</a>`
+        body: '',
+        isReal: true
       };
     });
     
-    // Mix them (ex: exibir 4 SaaS locais da tabela news_feed mockada e 6 reais da API paralela)
-    ARTICLES = [...saasArticles.slice(0, 4), ...rssArticles.slice(0, 6)];
+    // Mix them (ex: exibir SaaS locais da tabela news_feed misturadas com as reais da API paralela)
+    ARTICLES = [...saasArticles, ...rssArticles];
     
+    // Agora renderizar dinamicamente na Página!
+    renderNewsGrid();
+    renderTicker();
+
   } catch (err) {
     console.error("News Pipeline Falhou, caindo pro mock...", err);
+    renderNewsGrid();
   }
+}
+
+function renderNewsGrid() {
+  const grid = document.getElementById('cardGrid');
+  if(!grid) return;
+  if(ARTICLES.length === 0) return;
+
+  // Pegar as 4 matérias mais recentes (que não são vídeos, etc)
+  const displayArticles = ARTICLES.slice(0, 4);
+  
+  grid.innerHTML = displayArticles.map((a, i) => {
+    // A primeira matéria fica com a classe 'feat'
+    const isFeat = i === 0;
+    const clickAction = a.isReal ? `window.open('${a.link}', '_blank')` : `openArticleById('${a.id}')`;
+    
+    return `
+      <div class="ncard ${isFeat ? 'feat' : ''}" data-cat="${a.cat}" data-id="${a.id}" onclick="${clickAction}; if(a.isReal) showToast('Redirecionando para matéria oficial...')">
+        <div class="ncard-thumb"><img src="${a.img}" alt=""></div>
+        <div class="ncard-body">
+          <span class="badge ${a.cat}">${a.badge.toUpperCase()}</span>
+          <div class="ncard-title">${a.title}</div>
+          <div class="ncard-excerpt">${isFeat ? 'Leia a matéria completa destaques do dia do automobilismo mundial direto das pistas.' : ''}</div>
+          <div class="ncard-meta">
+            <span>${a.date} · ${a.author.toUpperCase().slice(0,15)}</span>
+            <button class="ncard-bm" onclick="event.stopPropagation();toggleBookmark(this,'${a.id}')" title="Salvar">🔖</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // Reaplicar a animação (obs) se necessário
+  document.querySelectorAll('.ncard').forEach((c,i)=>{
+    c.style.transitionDelay=(i*.07)+'s'; c.classList.add('reveal');
+    const obs = new IntersectionObserver(entries=>{
+      entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); });
+    },{threshold:0.07});
+    obs.observe(c);
+  });
+}
+
+function renderTicker() {
+  const track = document.querySelector('.ticker-track');
+  if(!track) return;
+  const breaking = ARTICLES.slice(0, 5); // top 5
+  if(breaking.length === 0) return;
+  
+  // Duplicamos as matérias pro ticker não quebrar no loop do css
+  const itemsHTML = [...breaking, ...breaking, ...breaking].map(a => {
+    const clickAction = a.isReal ? `window.open('${a.link}', '_blank')` : `openArticleById('${a.id}')`;
+    return `<span class="ticker-item" onclick="${clickAction}">${a.title}</span>`;
+  }).join('');
+  
+  track.innerHTML = itemsHTML;
 }
 
 /* ====== FILTER NEWS ====== */
