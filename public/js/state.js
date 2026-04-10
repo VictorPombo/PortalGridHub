@@ -14,33 +14,13 @@ const PitLane = (() => {
   };
 
   // ============================
-  // DEFAULT SEED DATA
+  // DATABASE CACHE (Supabase memory)
   // ============================
-  const SEED_USERS = [
-    { id: 'u1', name: 'Rafael Mendes', email: 'rafael@mendes.com', type: 'piloto', plan: 'pro', number: '07', category: 'Stock Car', avatar: 'RM', bio: 'Rafael Mendes é um dos pilotos mais talentosos da sua geração no automobilismo brasileiro. Nascido em Campinas, SP, em 1997, começou no kart aos 8 anos.', instagram: '@rafaelmendes07', youtube: 'youtube.com/rafaelmendes', flag: '🇧🇷', conquests: { titles: 3, wins: 12, podiums: 48, poles: 7, fastlaps: 9 }, social: { ig: '@rafaelmendes07', yt: 'youtube.com/rafaelmendes', x: '@rmendes07' }, createdAt: '2026-01-15', status: 'active' },
-    { id: 'u2', name: 'Lucas Andrade', email: 'lucas@andrade.com', type: 'piloto', plan: 'starter', number: '22', category: 'F4 Brasil', avatar: 'LA', bio: 'Jovem promessa do automobilismo paulista.', flag: '🇧🇷', conquests: { titles: 1, wins: 5, podiums: 18 }, createdAt: '2026-02-10', status: 'active' },
-    { id: 'u3', name: 'Camila Torres', email: 'camila@torres.com', type: 'piloto', plan: 'starter', number: '33', category: 'Porsche Cup', avatar: 'CT', bio: 'Primeira mulher a vencer na Porsche Cup Brasil.', flag: '🇧🇷', conquests: { titles: 2, wins: 7, podiums: 24 }, createdAt: '2026-02-20', status: 'active' },
-    { id: 'u4', name: 'Pedro Silva', email: 'pedro@silva.com', type: 'piloto', plan: 'pro', number: '88', category: 'Sim Racing', avatar: 'PS', bio: 'Piloto virtual profissional de iRacing.', flag: '🇧🇷', conquests: { titles: 4, wins: 31, podiums: 67 }, createdAt: '2026-03-05', status: 'active' },
-    { id: 'u5', name: 'Thunder Racing', email: 'contato@thunderracing.com', type: 'equipe', plan: 'equipe', avatar: 'TR', category: 'Stock Car', bio: 'Equipe de automobilismo fundada em 2018, atuando na Stock Car Brasil com 4 pilotos profissionais.', pilots: ['u1', 'u2', 'u3', 'u4'], createdAt: '2026-01-10', status: 'active' },
-    { id: 'u6', name: 'Stock Car Brasil', email: 'midia@stockcar.com.br', type: 'categoria', plan: 'categoria', avatar: 'SC', category: 'Stock Car', bio: 'A principal categoria do automobilismo brasileiro, com mais de 40 anos de história.', createdAt: '2025-12-01', status: 'active' },
-    { id: 'u7', name: 'Full Throttle Racing', email: 'contato@fullthrottle.com', type: 'equipe', plan: 'equipe', avatar: 'FX', category: 'Stock Car', pilots: [], createdAt: '2026-02-15', status: 'active' },
-    { id: 'u8', name: 'Apex Engineering', email: 'contato@apex.com', type: 'equipe', plan: 'equipe', avatar: 'AE', category: 'Stock Car', pilots: [], createdAt: '2026-03-01', status: 'active' },
-  ];
+  let __dbUsers = [];
+  let __dbArticles = [];
 
-  const SEED_ARTICLES = [
-    { id: 'a1', authorId: 'u1', title: 'Equipe Thunder Racing oficializa novo patrocinador master para o Campeonato Paulista', brief: 'Nova parceria garante investimento crucial para a disputa do título na F1600.', body: '<p>Hoje é um dia especial para a Thunder Racing! Assinamos oficialmente o contrato com nosso novo patrocinador master para a temporada completa do Campeonato Paulista de F1600. Esse apoio reflete o compromisso com o desenvolvimento de pilotos locais.</p>', img: 'https://loremflickr.com/760/320/racing,sponsor?lock=100', status: 'published', publishedAt: '2026-04-10', views: 2340, category: 'Stock Car' },
-    { id: 'a2', authorId: 'u2', title: 'Vitória épica! Lucas Andrade larga em 5º e ganha a corrida em Interlagos', brief: 'Piloto paulista escala o grid sob forte chuva e conquista o lugar mais alto do pódio.', body: '<p>Que corrida inesquecível! Uma prova que exigiu tudo na pista molhada. Escalar o pelotão em Interlagos é sempre um desafio, e essa vitória nos coloca vivos na disputa do campeonato!</p>', img: 'https://loremflickr.com/760/320/interlagos,podium?lock=101', status: 'published', publishedAt: '2026-04-09', views: 1890, category: 'F4 Brasil' },
-    { id: 'a3', authorId: 'u5', title: 'Thunder Racing faz a festa com 2 pilotos no pódio da etapa de Cascavel', brief: 'Final de semana dominante para nossa esquadra com P2 e P3 confirmados.', body: '<p>A equipe fez um trabalho fenomenal nos pits! Levar dois carros para o pódio na mesma etapa num grid super competitivo como este mostra a força da nossa garagem.</p>', img: 'https://loremflickr.com/760/320/pitcrew,celebration?lock=110', status: 'review', submittedAt: '2026-04-09', views: 0, category: 'Stock Car' },
-    { id: 'a4', authorId: 'u4', title: 'Apex Engineering abre programa de Sim Racing para selecionar pilotos reais', brief: 'Os pilotos virtuais mais rápidos ganharão testes num carro de fórmula.', body: '', img: '', status: 'draft', views: 0, category: 'Sim Racing' },
-    { id: 'a5', authorId: 'u6', title: 'MUDANÇAS NO REGULAMENTO: Categoria F4 anuncia novidades e teto de gastos', brief: 'Focada em equilibrar os times menores com as grandes estruturas.', body: '<p>Com o objetivo de revelar novos talentos, a comissão da F4 anunciou as reformas estruturais para a próxima temporada de forma a atrair novas equipes regionais ao grid nacional.</p>', img: 'https://loremflickr.com/760/320/documents,rules?lock=202', status: 'approved', submittedAt: '2026-04-08', views: 4120, category: 'F4 Brasil' },
-    { id: 'a6', authorId: 'u3', title: 'Camila Torres fecha acordo para disputar endurance', brief: 'A pilota da Porsche Cup fará rodada dupla nos 500km de São Paulo.', body: '<p>Depois da Porsche Cup, o novo passo será encarar as longas durações dividindo o cockpit.</p>', img: 'https://loremflickr.com/760/320/helmet,driver?lock=203', status: 'published', publishedAt: '2026-04-03', views: 3480, category: 'Porsche Cup' },
-    { id: 'a7', authorId: 'u3', title: 'Preparação física pré-campeonato', brief: 'Rotina de treinos pesada para suportar a força G.', body: '', img: '', status: 'sent', submittedAt: '2026-04-10', views: 0, category: 'Porsche Cup' },
-    { id: 'a8', authorId: 'u5', title: 'Etapa cancelada e reagendada', brief: 'Fortes chuvas no interior alteram nosso cronograma logístico.', body: '', img: '', status: 'review', submittedAt: '2026-04-10', views: 0, category: 'Stock Car' },
-    { id: 'a9', authorId: 'u8', title: 'Apex revela sua pintura azul metálica para 2026', brief: 'Carros vão para a pista com um visual limpo em parceria com novo fornecedor lubrificante.', body: '<p>O carro 88 ficou espetacular para as câmeras.</p>', img: 'https://loremflickr.com/760/320/racecar,livery?lock=210', status: 'published', publishedAt: '2026-04-08', views: 12340, category: 'Stock Car' },
-    { id: 'a10', authorId: 'u6', title: 'Campeonato Paulista de Automobilismo abre inscrições p/ Kart', brief: 'O grid da federação espera recorde de participantes amadores.', body: '<p>Chamando as promessas da modalidade!</p>', img: 'https://loremflickr.com/760/320/karting,grid?lock=211', status: 'published', publishedAt: '2026-04-07', views: 8960, category: 'Stock Car' },
-  ];
-
-  const SEED_SETTINGS = {
+  // Mantido Settings básico fixo na memória para testes locais sem login
+  let __dbSettings = {
     reviewRequired: true,
     autoCollect: true,
     aiRewrite: true,
@@ -89,58 +69,82 @@ const PitLane = (() => {
   };
 
   // ============================
-  // PERSISTENCE
+  // BOOTSTRAP: FETCH SUPABASE
   // ============================
-  function load(key, fallback) {
+  async function bootSupabase() {
     try {
-      const raw = localStorage.getItem(key);
-      return raw ? JSON.parse(raw) : fallback;
-    } catch { return fallback; }
-  }
-  function save(key, data) {
-    localStorage.setItem(key, JSON.stringify(data));
+      const resp = await fetch('/api/db/sync');
+      if (!resp.ok) throw new Error('Falha ao conectar com Supabase DB via App Router');
+      const data = await resp.json();
+      
+      if (data.success) {
+        // Mapear Snake_Case (Supabase) -> CamelCase (JS Local)
+        __dbUsers = data.users.map(u => ({
+          ...u,
+          createdAt: u.created_at,
+          avatar: u.avatar || u.name.substring(0, 2).toUpperCase()
+        }));
+        
+        __dbArticles = data.articles.map(a => ({
+          ...a,
+          authorId: a.author_id,
+          publishedAt: a.published_at,
+          submittedAt: a.submitted_at
+        }));
+        console.log("[PitLane] Supabase Boot Completo:", __dbArticles.length, "Notícias locais carregadas.");
+      }
+    } catch (err) {
+      console.warn("[PitLane] Boot Supabase falhou, usando arrays vazios.", err);
+      // Fallback para não quebrar a UI
+      __dbUsers = SEED_USERS || [];
+      __dbArticles = SEED_ARTICLES || [];
+    }
   }
 
+  function save(key, data) {
+    // Legacy stub para componentes velhos não quebrarem (auth.html, painel)
+    // No futuro o save fará um POST /api/db/...
+    if(key === KEYS.settings) __dbSettings = data;
+    else if(key === KEYS.users) __dbUsers = data;
+    else if(key === KEYS.articles) __dbArticles = data;
+  }
+
+  // Substituímos o init() antigo por isso
   function init() {
-    if (!localStorage.getItem(KEYS.users)) save(KEYS.users, SEED_USERS);
-    if (!localStorage.getItem(KEYS.articles)) save(KEYS.articles, SEED_ARTICLES);
-    if (!localStorage.getItem(KEYS.settings)) save(KEYS.settings, SEED_SETTINGS);
+    console.log("Aguarde o bootSupabase() em vez de usar init() síncrono.");
   }
 
   function reset() {
-    Object.values(KEYS).forEach(k => localStorage.removeItem(k));
-    init();
+    console.warn("Reset não aplicável em BD Nuvem.");
   }
 
   // ============================
   // USERS
   // ============================
-  function getUsers() { return load(KEYS.users, SEED_USERS); }
+  function getUsers() { return __dbUsers; }
   function getUserById(id) { return getUsers().find(u => u.id === id); }
   function getUsersByType(type) { return getUsers().filter(u => u.type === type); }
   function addUser(user) {
-    const users = getUsers();
-    user.id = 'u' + (users.length + 1) + '_' + Date.now();
+    user.id = 'u' + (__dbUsers.length + 1) + '_' + Date.now(); // Fallback gen
     user.createdAt = new Date().toISOString().split('T')[0];
     user.status = 'active';
     user.avatar = user.name.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
-    users.push(user);
-    save(KEYS.users, users);
+    __dbUsers.push(user);
+    // TODO: POST /api/db/users
     return user;
   }
   function updateUser(id, updates) {
-    const users = getUsers();
-    const idx = users.findIndex(u => u.id === id);
+    const idx = __dbUsers.findIndex(u => u.id === id);
     if (idx === -1) return null;
-    users[idx] = { ...users[idx], ...updates };
-    save(KEYS.users, users);
-    return users[idx];
+    __dbUsers[idx] = { ...__dbUsers[idx], ...updates };
+    // TODO: PUT /api/db/users
+    return __dbUsers[idx];
   }
 
   // ============================
   // ARTICLES
   // ============================
-  function getArticles() { return load(KEYS.articles, SEED_ARTICLES); }
+  function getArticles() { return __dbArticles; }
   function getArticleById(id) { return getArticles().find(a => a.id === id); }
   function getArticlesByAuthor(authorId) { return getArticles().filter(a => a.authorId === authorId); }
   function getArticlesByStatus(status) { return getArticles().filter(a => a.status === status); }
@@ -165,21 +169,19 @@ const PitLane = (() => {
   }
 
   function addArticle(article) {
-    const articles = getArticles();
-    article.id = 'a' + (articles.length + 1) + '_' + Date.now();
+    article.id = 'a' + (__dbArticles.length + 1) + '_' + Date.now();
     article.views = 0;
-    articles.push(article);
-    save(KEYS.articles, articles);
+    __dbArticles.push(article);
+    // TODO: POST /api/db/articles
     return article;
   }
 
   function updateArticle(id, updates) {
-    const articles = getArticles();
-    const idx = articles.findIndex(a => a.id === id);
+    const idx = __dbArticles.findIndex(a => a.id === id);
     if (idx === -1) return null;
-    articles[idx] = { ...articles[idx], ...updates };
-    save(KEYS.articles, articles);
-    return articles[idx];
+    __dbArticles[idx] = { ...__dbArticles[idx], ...updates };
+    // TODO: PUT /api/db/articles
+    return __dbArticles[idx];
   }
 
   function changeArticleStatus(id, newStatus) {
@@ -365,6 +367,6 @@ const PitLane = (() => {
     // Live Modules
     Live,
     // System
-    reset, init,
+    reset, init, bootSupabase,
   };
 })();
