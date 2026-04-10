@@ -230,12 +230,31 @@ lucideScript.onload = () => {
     window.lucide.createIcons();
     
     // Observer for dynamically added icons (like in state.js renders)
+    let isCreatingIcons = false;
     const observer = new MutationObserver((mutations) => {
-      let shouldCreate = false;
+      // Prevent infinite loop from createIcons() adding SVGs to the DOM
+      if (isCreatingIcons) return;
+      
+      let hasNewLucideTag = false;
       mutations.forEach(m => {
-        if (m.addedNodes.length > 0) shouldCreate = true;
+        if (m.type === 'childList') {
+           m.addedNodes.forEach(node => {
+               if (node.nodeType === 1) { // ELEMENT_NODE
+                   // Check if the added node itself is a lucide tag or contains one
+                   if (node.hasAttribute('data-lucide') || node.querySelector('[data-lucide]')) {
+                       hasNewLucideTag = true;
+                   }
+               }
+           });
+        }
       });
-      if (shouldCreate && window.lucide) window.lucide.createIcons();
+      
+      if (hasNewLucideTag && window.lucide) {
+        isCreatingIcons = true;
+        window.lucide.createIcons();
+        // Allow the browser to paint and finish DOM updates before unlocking
+        setTimeout(() => { isCreatingIcons = false; }, 10);
+      }
     });
     observer.observe(document.body, { childList: true, subtree: true });
   }
