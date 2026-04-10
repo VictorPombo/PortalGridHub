@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Piloto — PitLane News</title>
+<meta name="description" content="Perfil profissional de piloto na PitLane News. Conheça a trajetória e patrocine.">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/core.css">
+<link rel="stylesheet" href="css/carbon.css">
+<link rel="stylesheet" href="css/homepage.css">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="carbon-bg">
+<div class="progress" id="pgbar"></div>
+<button class="btt" id="btt" onclick="scrollToTop()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 15l-6-6-6 6"/></svg></button>
+<div class="toast-wrap" id="toastWrap"></div>
+
+<!-- NAV -->
+<nav class="carbon-subtle">
+  <div class="nav-inner">
+    <a class="logo" href="index.html">
+      <div class="logo-badge"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg></div>
+      <div class="logo-text"><span class="logo-name">PitLane</span><span class="logo-tag">News</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Início</a></li>
+      <li><a href="piloto.html" class="active">Pilotos</a></li>
+      <li><a href="planos.html">Planos</a></li>
+    </ul>
+    <div class="nav-right" id="navRight">
+      <a href="cadastro.html" class="btn-nav-action">Entrar</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Content rendered by JS -->
+<div id="pilotContent"></div>
+
+<!-- FOOTER -->
+<footer class="carbon-subtle">
+  <div class="f-inner">
+    <div class="f-grid">
+      <div><div class="f-logo"><div class="dot"></div>PitLane News</div><p class="f-desc">Mídia digital de automobilismo. Plataforma profissional para pilotos, equipes e categorias.</p></div>
+      <div class="f-col"><h4>Plataforma</h4><ul><li><a href="planos.html">Planos</a></li><li><a href="cadastro.html">Cadastro</a></li></ul></div>
+      <div class="f-col"><h4>Legal</h4><ul><li><a href="politica.html">Privacidade</a></li><li><a href="termos.html">Termos</a></li></ul></div>
+    </div>
+    <div class="f-bottom"><div class="f-copy">© 2026 PITLANE MEDIA</div><div class="f-love">FEITO COM ❤ PARA QUEM AMA O ESPORTE</div></div>
+  </div>
+</footer>
+
+<script src="js/core.js"></script>
+<script src="js/state.js"></script>
+<script>
+// Get pilot ID from URL or default to u1 (Rafael Mendes)
+const params = new URLSearchParams(window.location.search);
+const pilotId = params.get('id') || 'u1';
+const pilot = PitLane.getUserById(pilotId);
+
+if (!pilot || pilot.type !== 'piloto') {
+  // Show all pilots listing
+  renderPilotsList();
+} else {
+  renderPilotPage(pilot);
+}
+
+// Update nav if logged in
+if (PitLane.isLoggedIn()) {
+  const u = PitLane.getCurrentUser();
+  const dash = u.type === 'equipe' ? 'dashboard-equipe.html' : u.type === 'categoria' ? 'dashboard-categoria.html' : 'dashboard-piloto.html';
+  document.getElementById('navRight').innerHTML = `
+    <span style="font-family:var(--fm);font-size:10px;color:var(--dim)">${u.name}</span>
+    <a href="${dash}" class="btn-nav-action">Meu Painel</a>
+  `;
+}
+
+function renderPilotsList() {
+  const pilots = PitLane.getUsersByType('piloto');
+  document.title = 'Pilotos — PitLane News';
+  document.getElementById('pilotContent').innerHTML = `
+    <div class="page-header racing-stripe">
+      <div class="container">
+        <div class="breadcrumb"><a href="index.html">PITLANE</a> / PILOTOS</div>
+        <h1>Pilotos Cadastrados</h1>
+        <p class="subtitle">${pilots.length} pilotos ativos na plataforma</p>
+      </div>
+    </div>
+    <div class="section">
+      <div class="pilots-grid">
+        ${pilots.map(p => {
+          const articles = PitLane.getPublishedByAuthor(p.id);
+          return `<div class="pilot-card ${articles.length > 0 ? 'card-featured' : ''}" onclick="window.location='piloto.html?id=${p.id}'" style="cursor:pointer">
+            <div class="pilot-card-img">
+              <img src="https://loremflickr.com/400/300/racing,driver?lock=${parseInt(p.id.replace(/\\D/g,'')) * 7}" alt="${p.name}">
+              <span class="pilot-card-num">#${p.number || '00'}</span>
+            </div>
+            <div class="pilot-card-body">
+              <div class="pilot-card-name">${p.name}</div>
+              <div class="pilot-card-cat">${p.category || 'Automobilismo'} · Brasil</div>
+              <div class="pilot-card-stats">
+                <div class="pilot-card-stat"><span class="pilot-card-stat-val">${p.conquests?.wins || 0}</span><span class="pilot-card-stat-lbl">Vitórias</span></div>
+                <div class="pilot-card-stat"><span class="pilot-card-stat-val">${p.conquests?.titles || 0}</span><span class="pilot-card-stat-lbl">Títulos</span></div>
+                <div class="pilot-card-stat"><span class="pilot-card-stat-val">${articles.length}</span><span class="pilot-card-stat-lbl">Matérias</span></div>
+              </div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div style="text-align:center;margin-top:32px">
+        <a href="cadastro.html" class="btn-primary skew glow-acc">Cadastre-se como Piloto →</a>
+      </div>
+    </div>
+  `;
+}
+
+function renderPilotPage(p) {
+  const articles = PitLane.getPublishedByAuthor(p.id);
+  const stats = PitLane.getUserStats(p.id);
+  const conquests = p.conquests || {};
+  document.title = p.name + ' — PitLane News';
+
+  // If current user is viewing their own page, show edit link
+  const isOwner = PitLane.isLoggedIn() && PitLane.getCurrentUser()?.id === p.id;
+
+  document.getElementById('pilotContent').innerHTML = `
+    <div class="pilot-hero">
+      <img class="pilot-hero-bg" src="https://loremflickr.com/1400/600/racing,car,motorsport?lock=${parseInt(p.id.replace(/\\D/g, '')) * 13}" alt="">
+      <div class="pilot-hero-overlay"></div>
+      <div class="pilot-hero-number">${p.number || '00'}</div>
+      <div class="pilot-hero-content">
+        <span class="pilot-hero-flag">${p.flag || '🇧🇷'}</span>
+        <h1 class="pilot-hero-name">${p.name}</h1>
+        <div class="pilot-hero-category">${p.category || 'Automobilismo'} · Piloto ${PitLane.getPlanName(p.plan)}</div>
+        <div class="pilot-hero-social">
+          ${p.instagram ? '<div class="f-soc" title="Instagram">IG</div>' : ''}
+          <div class="f-soc" title="Twitter/X">X</div>
+          ${isOwner ? `<a href="dashboard-piloto.html" class="btn-secondary" style="padding:6px 12px;font-size:10px;margin-left:8px"><i data-lucide="pencil" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Editar Página</a>` : ''}
+        </div>
+      </div>
+    </div>
+
+    <!-- Conquests -->
+    <div class="pilot-section">
+      <div class="sec-head"><span class="sec-title">Conquistas</span></div>
+      <div class="pilot-conquests">
+        <div class="pilot-conquest"><span class="pilot-conquest-icon"><i data-lucide="trophy" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span><span class="pilot-conquest-val">${conquests.titles || 0}</span><span class="pilot-conquest-lbl">Títulos</span></div>
+        <div class="pilot-conquest"><span class="pilot-conquest-icon"><i data-lucide="medal" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom;color:#f0a000"></i></span><span class="pilot-conquest-val">${conquests.wins || 0}</span><span class="pilot-conquest-lbl">Vitórias</span></div>
+        <div class="pilot-conquest"><span class="pilot-conquest-icon"><i data-lucide="award" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span><span class="pilot-conquest-val">${conquests.podiums || 0}</span><span class="pilot-conquest-lbl">Pódios</span></div>
+        <div class="pilot-conquest"><span class="pilot-conquest-icon"><i data-lucide="timer" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span><span class="pilot-conquest-val">${conquests.poles || 0}</span><span class="pilot-conquest-lbl">Poles</span></div>
+        <div class="pilot-conquest"><span class="pilot-conquest-icon"><i data-lucide="zap" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span><span class="pilot-conquest-val">${conquests.fastlaps || 0}</span><span class="pilot-conquest-lbl">Voltas Rápidas</span></div>
+      </div>
+    </div>
+
+    <!-- Bio -->
+    <div class="pilot-section">
+      <div class="sec-head"><span class="sec-title">Biografia</span></div>
+      <div class="pilot-bio"><p>${p.bio || 'Perfil em construção — o piloto ainda não adicionou sua biografia.'}</p></div>
+    </div>
+
+    <!-- Gallery -->
+    <div class="pilot-section">
+      <div class="sec-head"><span class="sec-title">Galeria</span></div>
+      <div class="pilot-gallery">
+        ${[90, 91, 92, 93, 94, 95].map(lock => `
+          <div class="pilot-gallery-item"><img src="https://loremflickr.com/500/300/racing,car?lock=${lock + parseInt(p.id.replace(/\\D/g, ''))}" alt=""></div>
+        `).join('')}
+      </div>
+    </div>
+
+    <!-- Published Articles -->
+    <div class="pilot-section">
+      <div class="sec-head">
+        <span class="sec-title">Matérias Publicadas</span>
+        <span class="badge piloto" style="margin-left:8px">Conteúdo Patrocinado · ${articles.length} matérias</span>
+      </div>
+      ${articles.length > 0 ? `
+        <div class="card-grid" style="grid-template-columns:repeat(3,1fr)">
+          ${articles.map(a => `
+            <div class="ncard" onclick="showToast('${a.title}')">
+              <div class="ncard-thumb">${a.img ? `<img src="${a.img}" alt="">` : '<div style="height:100%;background:var(--bg3)"></div>'}</div>
+              <div class="ncard-body">
+                <span class="badge" style="background:var(--info);font-size:8px">Matéria</span>
+                <div class="ncard-title">${a.title}</div>
+                <div class="ncard-excerpt">${a.brief || ''}</div>
+                <div class="ncard-meta"><span>${PitLane.formatDate(a.publishedAt)} · ${a.views.toLocaleString()} views</span></div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      ` : `
+        <div style="padding:32px;text-align:center;background:var(--bg1);border:1px solid var(--brd);color:var(--muted);font-size:13px">
+          Nenhuma matéria publicada ainda. ${isOwner ? '<a href="dashboard-piloto.html" style="color:var(--acc)">Publicar primeira matéria →</a>' : ''}
+        </div>
+      `}
+    </div>
+
+    <!-- Sponsorship -->
+    <div class="pilot-section">
+      <div class="sponsor-section carbon-subtle checkered">
+        <div class="sponsor-content">
+          <div style="font-family:var(--fm);font-size:10px;color:var(--acc);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px"><i data-lucide="briefcase" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i> Oportunidade de Patrocínio</div>
+          <div class="sponsor-title">Seja Patrocinador<br>de ${p.name}</div>
+          <p class="sponsor-desc">Associe sua marca a ${p.name}. ${stats.totalViewsFormatted} visualizações acumuladas nas matérias da PitLane News.</p>
+          <div class="sponsor-tiers">
+            <div class="sponsor-tier bronze"><span class="sponsor-tier-icon"><i data-lucide="medal" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom;color:#b07040"></i></span><div class="sponsor-tier-name">Bronze</div><div style="font-family:var(--fm);font-size:10px;color:var(--dim);margin-top:4px">Logo + menções</div></div>
+            <div class="sponsor-tier silver"><span class="sponsor-tier-icon"><i data-lucide="medal" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom;color:#a0a0c0"></i></span><div class="sponsor-tier-name">Prata</div><div style="font-family:var(--fm);font-size:10px;color:var(--dim);margin-top:4px">Logo no carro + conteúdo</div></div>
+            <div class="sponsor-tier gold"><span class="sponsor-tier-icon"><i data-lucide="medal" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom;color:#f0a000"></i></span><div class="sponsor-tier-name">Ouro</div><div style="font-family:var(--fm);font-size:10px;color:var(--dim);margin-top:4px">Naming rights</div></div>
+          </div>
+          <button class="btn-primary skew glow-acc" onclick="showToast('✓ Formulário de contato enviado para ${p.name}!','ok')">Entrar em Contato →</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+</script>
+</body>
+</html>

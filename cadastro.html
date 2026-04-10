@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cadastro — PitLane News</title>
+<meta name="description" content="Crie sua conta na PitLane News. Escolha entre planos para Pilotos, Equipes ou Categorias e comece a publicar matérias profissionais.">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/core.css">
+<link rel="stylesheet" href="css/carbon.css">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="carbon-bg">
+<div class="progress" id="pgbar"></div>
+<div class="toast-wrap" id="toastWrap"></div>
+
+<!-- NAV -->
+<nav class="carbon-subtle">
+  <div class="nav-inner">
+    <a class="logo" href="index.html">
+      <div class="logo-badge"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg></div>
+      <div class="logo-text"><span class="logo-name">PitLane</span><span class="logo-tag">News</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Início</a></li>
+      <li><a href="piloto.html">Pilotos</a></li>
+      <li><a href="planos.html">Planos</a></li>
+    </ul>
+    <div class="nav-right" id="navRight">
+      <a href="cadastro.html" class="btn-nav-action">Entrar</a>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header racing-stripe">
+  <div class="container">
+    <div class="breadcrumb"><a href="index.html">PITLANE</a> / CADASTRO</div>
+    <h1 id="pageTitle">Crie sua Conta</h1>
+    <p class="subtitle">Escolha seu perfil, configure seus dados e comece a publicar matérias profissionais na maior mídia de automobilismo do Brasil.</p>
+  </div>
+</div>
+
+<!-- LOGIN TAB (shown if not registering) -->
+<div class="signup-container">
+
+  <!-- Login / Register Tabs -->
+  <div class="tabs" style="margin-bottom:32px">
+    <button class="tab active" onclick="showMode('register')">Criar Conta</button>
+    <button class="tab" onclick="showMode('login')">Já Tenho Conta</button>
+  </div>
+
+  <!-- LOGIN FORM -->
+  <div id="loginMode" style="display:none">
+    <div style="max-width:400px;margin:0 auto">
+      <div style="font-family:var(--fd);font-size:34px;letter-spacing:2px;margin-bottom:24px;text-align:center">Entrar</div>
+      <div class="form-field">
+        <label class="form-label">E-mail</label>
+        <input class="form-input" id="loginEmail" type="email" placeholder="seu@email.com">
+      </div>
+      <div class="form-field">
+        <label class="form-label">Senha</label>
+        <input class="form-input" id="loginPass" type="password" placeholder="Sua senha">
+      </div>
+      <button class="btn-full" onclick="doLogin()">Entrar →</button>
+      <div style="font-family:var(--fm);font-size:10px;color:var(--muted);text-align:center;margin-top:12px">
+        Demo: use qualquer email cadastrado (ex: rafael@mendes.com)
+      </div>
+    </div>
+  </div>
+
+  <!-- REGISTER FORM -->
+  <div id="registerMode">
+    <!-- Progress -->
+    <div class="signup-progress">
+      <div class="signup-step-dot done" id="dot1"><span class="signup-step-label">Tipo</span></div>
+      <div class="signup-step-dot" id="dot2"><span class="signup-step-label">Dados</span></div>
+      <div class="signup-step-dot" id="dot3"><span class="signup-step-label">Perfil</span></div>
+      <div class="signup-step-dot" id="dot4"><span class="signup-step-label">Plano</span></div>
+      <div class="signup-step-dot" id="dot5"><span class="signup-step-label">Confirmar</span></div>
+    </div>
+
+    <!-- STEP 1: Type -->
+    <div class="signup-panel active" id="panel1">
+      <div style="text-align:center;margin-bottom:32px">
+        <div style="font-family:var(--fd);font-size:34px;letter-spacing:2px">Escolha seu Perfil</div>
+        <p style="font-size:13px;color:var(--dim);margin-top:6px">Selecione o tipo de conta ideal para você</p>
+      </div>
+      <div class="type-cards">
+        <div class="type-card heat-hover" id="typePiloto" onclick="selectType('piloto')">
+          <div class="type-card-icon"><i data-lucide="user" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></div>
+          <div class="type-card-name">Piloto</div>
+          <div class="type-card-price">A partir de R$ 99,90/mês</div>
+          <ul class="type-card-features"><li>Landing page profissional</li><li>1–2 matérias/mês</li><li>Área de patrocínio</li><li>Perfil público</li></ul>
+        </div>
+        <div class="type-card heat-hover" id="typeEquipe" onclick="selectType('equipe')">
+          <div class="type-card-icon"><i data-lucide="car" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></div>
+          <div class="type-card-name">Equipe</div>
+          <div class="type-card-price">R$ 499,90/mês</div>
+          <ul class="type-card-features"><li>Landing page da equipe</li><li>Até 10 matérias/mês</li><li>Gestão de pilotos</li><li>Mídia kit</li></ul>
+        </div>
+        <div class="type-card heat-hover" id="typeCategoria" onclick="selectType('categoria')">
+          <div class="type-card-icon"><i data-lucide="flag" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></div>
+          <div class="type-card-name">Categoria</div>
+          <div class="type-card-price">R$ 999,90/mês</div>
+          <ul class="type-card-features"><li>Landing page exclusiva</li><li>Até 30 matérias/mês</li><li>Calendário integrado</li><li>Destaque na homepage</li></ul>
+        </div>
+      </div>
+      <button class="btn-full" id="btnStep1" onclick="goStep(2)" disabled style="opacity:.4">Selecione um perfil acima</button>
+    </div>
+
+    <!-- STEP 2: Data -->
+    <div class="signup-panel" id="panel2">
+      <div style="font-family:var(--fd);font-size:34px;letter-spacing:2px;margin-bottom:24px">Seus Dados</div>
+      <div class="form-field"><label class="form-label">Nome completo</label><input class="form-input" id="regName" type="text" placeholder="Seu nome completo"></div>
+      <div class="form-field"><label class="form-label">E-mail</label><input class="form-input" id="regEmail" type="email" placeholder="seu@email.com"></div>
+      <div class="form-field"><label class="form-label">Senha</label><input class="form-input" id="regPass" type="password" placeholder="Mínimo 8 caracteres"></div>
+      <div class="form-field">
+        <label class="form-label">Categoria de atuação</label>
+        <select class="form-select" id="regCategory">
+          <option value="">Selecione...</option>
+          <option>Fórmula 1</option><option>Stock Car</option><option>Porsche Cup</option>
+          <option>F4 Brasil</option><option>Kart</option><option>MotoGP</option>
+          <option>NASCAR</option><option>WEC</option><option>Sim Racing</option>
+          <option>Rally</option><option>Drag Race</option><option>Outra</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:10px"><button class="btn-secondary" onclick="goStep(1)" style="flex:1">← Voltar</button><button class="btn-full" onclick="goStep(3)" style="flex:2;margin-top:0">Continuar →</button></div>
+    </div>
+
+    <!-- STEP 3: Profile -->
+    <div class="signup-panel" id="panel3">
+      <div style="font-family:var(--fd);font-size:34px;letter-spacing:2px;margin-bottom:24px">Seu Perfil Público</div>
+      <div class="form-field"><label class="form-label">Bio / Sobre você</label><textarea class="form-textarea" id="regBio" placeholder="Conte sua história no automobilismo..."></textarea></div>
+      <div class="form-field"><label class="form-label">Número (piloto)</label><input class="form-input" id="regNumber" type="text" placeholder="Ex: 07"></div>
+      <div class="form-field"><label class="form-label">Instagram</label><input class="form-input" id="regIG" type="text" placeholder="@seuinstagram"></div>
+      <div style="display:flex;gap:10px"><button class="btn-secondary" onclick="goStep(2)" style="flex:1">← Voltar</button><button class="btn-full" onclick="goStep(4)" style="flex:2;margin-top:0">Continuar →</button></div>
+    </div>
+
+    <!-- STEP 4: Plan -->
+    <div class="signup-panel" id="panel4">
+      <div style="font-family:var(--fd);font-size:34px;letter-spacing:2px;margin-bottom:8px">Escolha seu Plano</div>
+      <p style="font-size:13px;color:var(--dim);margin-bottom:24px">Plano para <strong id="planTypeLabel" style="color:var(--acc)">Piloto</strong></p>
+      <div id="planOptions"></div>
+      <div style="display:flex;gap:10px;margin-top:20px"><button class="btn-secondary" onclick="goStep(3)" style="flex:1">← Voltar</button><button class="btn-full" onclick="goStep(5)" style="flex:2;margin-top:0">Confirmar →</button></div>
+    </div>
+
+    <!-- STEP 5: Confirm -->
+    <div class="signup-panel" id="panel5">
+      <div style="text-align:center;padding:20px 0">
+        <div style="width:80px;height:80px;border-radius:50%;background:rgba(0,187,85,.12);border:2px solid var(--success);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:36px">✓</div>
+        <div style="font-family:var(--fd);font-size:38px;letter-spacing:2px;margin-bottom:8px">Bem-vindo ao Grid!</div>
+        <p style="font-size:14px;color:var(--dim);line-height:1.65;max-width:400px;margin:0 auto 24px">Sua conta foi criada com sucesso. Acesse seu painel para configurar sua landing page e publicar sua primeira matéria.</p>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+          <a id="dashLink" href="dashboard-piloto.html" class="btn-primary skew">Acessar Painel</a>
+          <a href="piloto.html" class="btn-secondary">Ver minha Landing Page</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="carbon-subtle"><div class="f-inner"><div class="f-bottom"><div class="f-copy">© 2026 PITLANE MEDIA</div><div class="f-love"><a href="politica.html" style="color:var(--muted)">Privacidade</a> · <a href="termos.html" style="color:var(--muted)">Termos</a></div></div></div></footer>
+
+<script src="js/core.js"></script>
+<script src="js/state.js"></script>
+<script>
+let selectedType = '';
+let selectedPlan = '';
+let currentStep = 1;
+
+// Check if already logged in
+if (PitLane.isLoggedIn()) {
+  const u = PitLane.getCurrentUser();
+  if (u) {
+    const dash = u.type === 'equipe' ? 'dashboard-equipe.html' : u.type === 'categoria' ? 'dashboard-categoria.html' : 'dashboard-piloto.html';
+    // Show logged-in state in nav
+    document.getElementById('navRight').innerHTML = `
+      <span style="font-family:var(--fm);font-size:10px;color:var(--dim)">${u.name}</span>
+      <a href="${dash}" class="btn-nav-action">Meu Painel</a>
+    `;
+  }
+}
+
+function showMode(mode) {
+  document.getElementById('loginMode').style.display = mode === 'login' ? 'block' : 'none';
+  document.getElementById('registerMode').style.display = mode === 'register' ? 'block' : 'none';
+  document.querySelectorAll('.tabs .tab').forEach((t, i) => t.classList.toggle('active', (mode === 'register' && i === 0) || (mode === 'login' && i === 1)));
+  document.getElementById('pageTitle').textContent = mode === 'login' ? 'Acessar Conta' : 'Crie sua Conta';
+}
+
+function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  if (!email) { showToast('Informe seu e-mail','err'); return; }
+  const user = PitLane.getUsers().find(u => u.email.toLowerCase() === email.toLowerCase());
+  if (!user) { showToast('Usuário não encontrado. Crie uma conta!','err'); return; }
+  PitLane.login(user.id);
+  showToast('✓ Login realizado! Redirecionando...','ok');
+  const dash = user.type === 'equipe' ? 'dashboard-equipe.html' : user.type === 'categoria' ? 'dashboard-categoria.html' : 'dashboard-piloto.html';
+  setTimeout(() => window.location.href = dash, 800);
+}
+
+function selectType(type) {
+  selectedType = type;
+  selectedPlan = type === 'piloto' ? 'pro' : type;
+  document.querySelectorAll('.type-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('type' + type.charAt(0).toUpperCase() + type.slice(1)).classList.add('selected');
+  const btn = document.getElementById('btnStep1');
+  btn.disabled = false; btn.style.opacity = '1';
+  btn.textContent = 'Continuar como ' + type.charAt(0).toUpperCase() + type.slice(1) + ' →';
+}
+
+function goStep(step) {
+  if (step === 2 && !selectedType) { showToast('Selecione um tipo de conta','err'); return; }
+  if (step === 3) {
+    const name = document.getElementById('regName')?.value;
+    const email = document.getElementById('regEmail')?.value;
+    const pass = document.getElementById('regPass')?.value;
+    if (!name || !email) { showToast('Preencha nome e e-mail','err'); return; }
+    if (!isValidEmail(email)) { showToast('E-mail inválido','err'); return; }
+    if (!pass || pass.length < 6) { showToast('Senha deve ter 6+ caracteres','err'); return; }
+    // Check duplicate email
+    if (PitLane.getUsers().find(u => u.email.toLowerCase() === email.toLowerCase())) {
+      showToast('E-mail já cadastrado! Faça login.','err'); return;
+    }
+  }
+  if (step === 4) renderPlanOptions();
+  if (step === 5) {
+    // CREATE USER via PitLane state
+    const newUser = PitLane.addUser({
+      name: document.getElementById('regName').value,
+      email: document.getElementById('regEmail').value,
+      type: selectedType,
+      plan: selectedPlan,
+      category: document.getElementById('regCategory')?.value || '',
+      number: document.getElementById('regNumber')?.value || '',
+      bio: document.getElementById('regBio')?.value || '',
+      instagram: document.getElementById('regIG')?.value || '',
+      flag: '🇧🇷',
+      conquests: { titles: 0, wins: 0, podiums: 0, poles: 0, fastlaps: 0 },
+    });
+    // Auto-login
+    PitLane.login(newUser.id);
+    showToast('✓ Conta criada! Bem-vindo, ' + newUser.name + '!', 'ok');
+
+    // Set correct dashboard link
+    const dash = selectedType === 'equipe' ? 'dashboard-equipe.html' : selectedType === 'categoria' ? 'dashboard-categoria.html' : 'dashboard-piloto.html';
+    document.getElementById('dashLink').href = dash;
+  }
+
+  currentStep = step;
+  document.querySelectorAll('.signup-panel').forEach((p, i) => p.classList.toggle('active', i + 1 === step));
+  document.querySelectorAll('.signup-step-dot').forEach((d, i) => {
+    d.classList.remove('done', 'current');
+    if (i + 1 < step) d.classList.add('done');
+    if (i + 1 === step) d.classList.add('current');
+  });
+  window.scrollTo({ top: 200, behavior: 'smooth' });
+}
+
+function renderPlanOptions() {
+  const label = document.getElementById('planTypeLabel');
+  const container = document.getElementById('planOptions');
+  label.textContent = selectedType.charAt(0).toUpperCase() + selectedType.slice(1);
+
+  const plans = {
+    piloto: [
+      { key: 'starter', name: 'Starter', price: '99,90', features: ['1 matéria/mês', 'Landing page básica', 'Perfil público', 'Área de patrocínio'], rec: false },
+      { key: 'pro', name: 'Pro', price: '149,90', features: ['2 matérias/mês', 'Landing page premium', 'Mídia kit download', 'Destaque na homepage', 'Suporte prioritário'], rec: true },
+    ],
+    equipe: [{ key: 'equipe', name: 'Equipe', price: '499,90', features: ['10 matérias/mês', 'Landing page da equipe', 'Gestão de pilotos', 'Mídia kit completo', 'Suporte premium'], rec: true }],
+    categoria: [{ key: 'categoria', name: 'Categoria', price: '999,90', features: ['30 matérias/mês', 'Landing page exclusiva', 'Calendário integrado', 'Destaque permanente', 'Suporte dedicado'], rec: true }],
+  };
+
+  const opts = plans[selectedType] || plans.piloto;
+  container.innerHTML = opts.map(p => `
+    <div class="card" style="padding:24px;margin-bottom:12px;cursor:pointer;${p.key === selectedPlan ? 'border-color:var(--acc);background:var(--acc-d)' : ''}" onclick="selectPlan('${p.key}',this)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div>
+          <span style="font-family:var(--fd);font-size:24px;letter-spacing:1px">${p.name}</span>
+          ${p.rec ? '<span class="badge status-approved" style="margin-left:8px">Recomendado</span>' : ''}
+        </div>
+        <div style="text-align:right">
+          <span style="font-family:var(--fu);font-size:12px;color:var(--dim)">R$</span>
+          <span style="font-family:var(--fd);font-size:32px">${p.price}</span>
+          <span style="font-family:var(--fm);font-size:10px;color:var(--muted)">/mês</span>
+        </div>
+      </div>
+      <ul style="list-style:none;display:flex;flex-wrap:wrap;gap:6px">
+        ${p.features.map(f => `<li style="font-size:12px;color:var(--dim);padding:3px 10px;border:1px solid var(--brd);display:inline-block">✓ ${f}</li>`).join('')}
+      </ul>
+    </div>`).join('');
+}
+
+function selectPlan(key, el) {
+  selectedPlan = key;
+  el.parentElement.querySelectorAll('.card').forEach(c => { c.style.borderColor = 'var(--brd)'; c.style.background = 'var(--bg1)'; });
+  el.style.borderColor = 'var(--acc)'; el.style.background = 'var(--acc-d)';
+}
+</script>
+</body>
+</html>

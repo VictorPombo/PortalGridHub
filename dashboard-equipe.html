@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel da Equipe — PitLane News</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/core.css">
+<link rel="stylesheet" href="css/carbon.css">
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="carbon-bg">
+<div class="toast-wrap" id="toastWrap"></div>
+<nav class="carbon-subtle">
+  <div class="nav-inner">
+    <a class="logo" href="index.html"><div class="logo-badge"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg></div><div class="logo-text"><span class="logo-name">PitLane</span><span class="logo-tag">News</span></div></a>
+    <ul class="nav-links"><li><a href="index.html">Portal</a></li></ul>
+    <div class="nav-right" id="navUserInfo"></div>
+  </div>
+</nav>
+<div class="dash-layout">
+  <aside class="dash-sidebar carbon-subtle">
+    <div class="dash-profile" id="sidebarProfile"></div>
+    <ul class="dash-nav">
+      <li><a class="active" onclick="eqNav('overview',this)"><span class="nav-icon"><i data-lucide="bar-chart-3" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Visão Geral</a></li>
+      <li><a onclick="eqNav('compose',this)"><span class="nav-icon">✍️</span> Nova Matéria</a></li>
+      <li><a onclick="eqNav('articles',this)"><span class="nav-icon"><i data-lucide="newspaper" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Matérias</a></li>
+      <li><a onclick="eqNav('pilots',this)"><span class="nav-icon"><i data-lucide="car" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Pilotos</a></li>
+      <div class="dash-nav-sep"></div>
+      <li><a onclick="eqNav('profile',this)"><span class="nav-icon"><i data-lucide="user-check" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Editar Equipe</a></li>
+      <li><a href="#" onclick="PitLane.logout();window.location='cadastro.html'"><span class="nav-icon"><i data-lucide="log-out" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Sair</a></li>
+    </ul>
+  </aside>
+  <main class="dash-main">
+    <div id="eq-overview"></div>
+    <div id="eq-compose" style="display:none"></div>
+    <div id="eq-articles" style="display:none"></div>
+    <div id="eq-pilots" style="display:none"></div>
+    <div id="eq-profile" style="display:none"></div>
+  </main>
+</div>
+
+<script src="js/core.js"></script>
+<script src="js/state.js"></script>
+<script>
+if (!PitLane.isLoggedIn()) { window.location = 'cadastro.html'; }
+const USER = PitLane.getCurrentUser();
+if (!USER) { window.location = 'cadastro.html'; }
+
+document.getElementById('navUserInfo').innerHTML = `<span style="font-family:var(--fm);font-size:10px;color:var(--dim)">${USER.name}</span><div style="width:32px;height:32px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:11px;font-weight:700;color:#000">${USER.avatar}</div>`;
+document.getElementById('sidebarProfile').innerHTML = `<div class="dash-avatar" style="background:var(--gold);color:#000">${USER.avatar}</div><div class="dash-user-name">${USER.name}</div><div class="dash-user-plan" style="color:var(--gold)">${PitLane.getPlanName(USER.plan)}</div><div class="dash-plan-badge" style="border-color:var(--gold);color:var(--gold)">EQUIPE</div>`;
+
+function renderOverview() {
+  const stats = PitLane.getUserStats(USER.id);
+  const articles = PitLane.getArticlesByAuthor(USER.id);
+  const pilots = PitLane.getUsersByType('piloto').filter(p => (USER.pilots || []).includes(p.id));
+  const usagePct = stats.limit > 0 ? ((stats.limit - stats.remaining) / stats.limit * 100) : 0;
+
+  document.getElementById('eq-overview').innerHTML = `
+    <div class="dash-header"><h1>Visão Geral da Equipe</h1><div class="dash-header-actions"><button class="btn-primary" onclick="eqNav('compose')">✍️ Nova Matéria</button></div></div>
+    <div class="stat-grid">
+      <div class="stat-card accent" style="--acc:var(--gold)"><div class="stat-label">Matérias Restantes</div><div class="stat-value" style="color:var(--gold)">${stats.remaining}</div><div class="stat-detail">de ${stats.limit} · ${PitLane.getPlanName(USER.plan)}</div><div class="rpm-bar" style="margin-top:10px"><div class="rpm-bar-fill" style="width:${usagePct}%"></div></div></div>
+      <div class="stat-card"><div class="stat-label">Pilotos Vinculados</div><div class="stat-value">${pilots.length}</div><div class="stat-detail">ativos na equipe</div></div>
+      <div class="stat-card"><div class="stat-label">Views Totais</div><div class="stat-value">${stats.totalViewsFormatted}</div><div class="stat-detail">acumulado</div></div>
+      <div class="stat-card"><div class="stat-label">Publicadas</div><div class="stat-value">${stats.totalPublished}</div><div class="stat-detail">total geral</div></div>
+    </div>
+    <div style="font-family:var(--fu);font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin:32px 0 12px">Matérias Recentes</div>
+    <div class="articles-list">${articles.sort((a,b)=>(b.publishedAt||b.submittedAt||'').localeCompare(a.publishedAt||a.submittedAt||'')).slice(0,5).map(a=>`
+      <div class="article-row"><div class="article-row-thumb" style="${a.img?'':'background:var(--bg3)'}">${a.img?`<img src="${a.img}" alt="">`:''}></div><div class="article-row-info"><div class="article-row-title">${a.title}</div><div class="article-row-meta">${PitLane.formatDate(a.publishedAt||a.submittedAt)} · ${a.views>0?a.views.toLocaleString()+' views':PitLane.getStatusLabel(a.status)}</div></div><div class="article-row-status"><span class="badge ${PitLane.getStatusCSS(a.status)}">${PitLane.getStatusLabel(a.status)}</span></div></div>
+    `).join('')}</div>`;
+}
+
+function renderCompose() {
+  const stats = PitLane.getUserStats(USER.id);
+  document.getElementById('eq-compose').innerHTML = `
+    <div class="dash-header"><h1>Nova Matéria</h1></div>
+    ${stats.remaining <= 0 ? '<div class="card" style="padding:32px;text-align:center;border-color:var(--acc)"><div style="font-size:32px;margin-bottom:12px"><i data-lucide="ban" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom;color:#e8002d"></i></div><div style="font-family:var(--fd);font-size:24px;margin-bottom:8px">Limite Atingido</div><p style="font-size:13px;color:var(--dim)">Limite mensal atingido.</p></div>' : `
+    <div class="composer carbon-subtle">
+      <div class="composer-header"><span class="composer-title">Enviar para Redação</span><span style="font-family:var(--fm);font-size:10px;color:var(--muted)">${stats.remaining} restante(s)</span></div>
+      <div class="composer-body">
+        <div class="form-field"><label class="form-label">Título</label><input class="form-input" id="compTitle" type="text" placeholder="Título da matéria"></div>
+        <div class="form-field"><label class="form-label">Descrição</label><textarea class="form-textarea" id="compBrief" placeholder="Descreva o conteúdo..." style="min-height:150px"></textarea></div>
+      </div>
+      <div class="composer-footer">
+        <button class="btn-secondary" onclick="saveDraft()"><i data-lucide="save" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Rascunho</button>
+        <button class="btn-primary" onclick="submitArticle()"><i data-lucide="arrow-right" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Enviar</button>
+      </div>
+    </div>`}`;
+}
+
+function saveDraft() { const t=document.getElementById('compTitle')?.value; if(!t){showToast('Informe o título','err');return;} PitLane.addArticle({authorId:USER.id,title:t,brief:document.getElementById('compBrief')?.value||'',body:'',img:'',status:'draft',category:USER.category||''}); showToast('✓ Rascunho salvo!','ok'); renderOverview(); renderArticles(); }
+function submitArticle() { const t=document.getElementById('compTitle')?.value,b=document.getElementById('compBrief')?.value; if(!t){showToast('Título obrigatório','err');return;} if(!b||b.length<50){showToast('Descrição: mín. 50 caracteres','err');return;} PitLane.addArticle({authorId:USER.id,title:t,brief:b,body:'',img:'',status:'sent',submittedAt:new Date().toISOString().split('T')[0],category:USER.category||''}); showToast('✓ Enviada!','ok'); renderOverview();renderCompose();renderArticles();eqNav('articles'); }
+
+function renderArticles() {
+  const articles = PitLane.getArticlesByAuthor(USER.id).sort((a,b)=>(b.publishedAt||b.submittedAt||'9999').localeCompare(a.publishedAt||a.submittedAt||'9999'));
+  document.getElementById('eq-articles').innerHTML = `
+    <div class="dash-header"><h1>Matérias da Equipe</h1></div>
+    <div class="articles-list">${articles.map(a=>`
+      <div class="article-row"><div class="article-row-thumb" style="${a.img?'':'background:var(--bg3)'}">${a.img?`<img src="${a.img}" alt="">`:''}></div><div class="article-row-info"><div class="article-row-title">${a.title}</div><div class="article-row-meta">${PitLane.formatDate(a.publishedAt||a.submittedAt)} · ${a.views>0?a.views.toLocaleString()+' views':''}</div></div><div class="article-row-status"><span class="badge ${PitLane.getStatusCSS(a.status)}">${PitLane.getStatusLabel(a.status)}</span></div></div>
+    `).join('')}${articles.length===0?'<div style="padding:24px;text-align:center;color:var(--muted)">Nenhuma matéria.</div>':''}</div>`;
+}
+
+function renderPilots() {
+  const pilots = PitLane.getUsersByType('piloto').filter(p => (USER.pilots || []).includes(p.id));
+  document.getElementById('eq-pilots').innerHTML = `
+    <div class="dash-header"><h1>Pilotos da Equipe</h1></div>
+    ${pilots.map(p=>`<div class="user-row"><div class="user-avatar-sm" style="background:var(--acc);color:#fff">${p.avatar}</div><div class="user-info"><div class="user-name">${p.name}</div><div class="user-email">#${p.number||'00'} · ${p.category||''}</div></div><div class="user-status-col"><span class="pulse-dot"></span> ${p.status==='active'?'Ativo':'Inativo'}</div><div style="flex-shrink:0"><a href="piloto.html?id=${p.id}" class="btn-secondary" style="padding:4px 10px;font-size:9px">Ver Página</a></div></div>`).join('')}
+    ${pilots.length===0?'<div style="padding:24px;text-align:center;color:var(--muted)">Nenhum piloto vinculado.</div>':''}`;
+}
+
+function renderProfile() {
+  document.getElementById('eq-profile').innerHTML = `
+    <div class="dash-header"><h1>Editar Equipe</h1></div>
+    <div class="profile-section" style="max-width:600px"><h3>Dados da Equipe</h3>
+      <div class="form-field"><label class="form-label">Nome</label><input class="form-input" id="profName" value="${USER.name}"></div>
+      <div class="form-field"><label class="form-label">Descrição</label><textarea class="form-textarea" id="profBio">${USER.bio||''}</textarea></div>
+      <div class="form-field"><label class="form-label">Categoria</label><select class="form-select" id="profCat">${['Stock Car','Porsche Cup','F4 Brasil','MotoGP','Sim Racing','NASCAR'].map(c=>`<option ${c===USER.category?'selected':''}>${c}</option>`).join('')}</select></div>
+      <button class="btn-primary" onclick="saveEqProfile()">Salvar</button>
+    </div>`;
+}
+function saveEqProfile() { PitLane.updateUser(USER.id,{name:document.getElementById('profName').value,bio:document.getElementById('profBio').value,category:document.getElementById('profCat').value}); showToast('✓ Equipe atualizada!','ok'); }
+
+function eqNav(n, btn) {
+  ['overview','compose','articles','pilots','profile'].forEach(s=>{document.getElementById('eq-'+s).style.display=s===n?'block':'none'});
+  document.querySelectorAll('.dash-nav a').forEach(a=>a.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  window.scrollTo({top:0});
+  if(n==='overview')renderOverview();if(n==='compose')renderCompose();if(n==='articles')renderArticles();if(n==='pilots')renderPilots();if(n==='profile')renderProfile();
+}
+
+renderOverview();
+</script>
+</body>
+</html>

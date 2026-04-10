@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel — PitLane News</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/core.css">
+<link rel="stylesheet" href="css/carbon.css">
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="carbon-bg">
+<div class="toast-wrap" id="toastWrap"></div>
+
+<nav class="carbon-subtle" style="border-bottom-color:var(--acc)">
+  <div class="nav-inner">
+    <a class="logo" href="index.html"><div class="logo-badge"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg></div><div class="logo-text"><span class="logo-name">PitLane</span><span class="logo-tag">Admin</span></div></a>
+    <ul class="nav-links"><li><a href="index.html">Ver Portal</a></li></ul>
+    <div class="nav-right">
+      <span class="admin-badge">ADMIN SUPREMO</span>
+      <div style="width:32px;height:32px;border-radius:50%;background:var(--acc);display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:11px;font-weight:700;color:#fff"><i data-lucide="zap" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></div>
+    </div>
+  </div>
+</nav>
+
+<div class="dash-layout">
+  <aside class="dash-sidebar carbon-subtle">
+    <div class="dash-profile">
+      <div class="dash-avatar" style="background:var(--acc);border-color:var(--acc)"><i data-lucide="zap" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></div>
+      <div class="dash-user-name">Admin Supremo</div>
+      <div class="dash-user-plan" style="color:var(--acc)">Acesso Total</div>
+    </div>
+    <ul class="dash-nav">
+      <li><a class="active" onclick="adminNav('dashboard',this)"><span class="nav-icon"><i data-lucide="bar-chart-3" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Dashboard</a></li>
+      <li><a onclick="adminNav('queue',this)"><span class="nav-icon"><i data-lucide="newspaper" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Fila de Matérias</a></li>
+      <li><a onclick="adminNav('users',this)"><span class="nav-icon"><i data-lucide="users" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Usuários</a></li>
+      <li><a onclick="adminNav('rss',this)"><span class="nav-icon"><i data-lucide="bot" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Notícias Auto</a></li>
+      <div class="dash-nav-sep"></div>
+      <li><a onclick="adminNav('settings',this)"><span class="nav-icon"><i data-lucide="settings" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Configurações</a></li>
+      <li><a href="index.html"><span class="nav-icon"><i data-lucide="log-out" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Sair</a></li>
+    </ul>
+  </aside>
+
+  <main class="dash-main">
+    <div id="adm-dashboard"></div>
+    <div id="adm-queue" style="display:none"></div>
+    <div id="adm-users" style="display:none"></div>
+    <div id="adm-rss" style="display:none"></div>
+    <div id="adm-settings" style="display:none"></div>
+  </main>
+</div>
+
+<script src="js/core.js"></script>
+<script src="js/state.js"></script>
+<script>
+// ============================
+// DASHBOARD
+// ============================
+function renderDashboard() {
+  const s = PitLane.getAdminStats();
+  const articles = PitLane.getArticles();
+  const recentPub = articles.filter(a => a.status === 'published').sort((a, b) => (b.publishedAt || '').localeCompare(a.publishedAt || '')).slice(0, 5);
+
+  document.getElementById('adm-dashboard').innerHTML = `
+    <div class="dash-header">
+      <h1>Dashboard</h1>
+      <div style="font-family:var(--fm);font-size:10px;color:var(--muted)">Atualizado: ${new Date().toLocaleDateString('pt-BR')}</div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-card accent">
+        <div class="stat-label">Receita Mensal</div>
+        <div class="stat-value" style="color:var(--success)">${s.revenueFormatted}</div>
+        <div class="stat-detail">${s.totalActive} assinantes ativos</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Assinantes Ativos</div>
+        <div class="stat-value">${s.totalActive}</div>
+        <div class="stat-detail">${s.pilotsCount} pilotos · ${s.teamsCount} equipes · ${s.categoriesCount} categorias</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Matérias Pendentes</div>
+        <div class="stat-value" style="color:var(--warning)">${s.pendingArticles}</div>
+        <div class="stat-detail">${PitLane.getArticlesByStatus('review').length} revisão · ${PitLane.getArticlesByStatus('sent').length} aguardando IA · ${PitLane.getArticlesByStatus('approved').length} aprovada</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Views Totais</div>
+        <div class="stat-value">${s.totalViewsFormatted}</div>
+        <div class="stat-detail">acumulado todas matérias</div>
+      </div>
+    </div>
+
+    <div class="chart-container carbon-subtle" style="margin-top:24px">
+      <div class="chart-header"><span class="chart-title">Receita Mensal (R$)</span><span class="chart-period">Últimos 6 meses</span></div>
+      <div class="chart-bars">
+        <div class="chart-bar-wrap"><div class="chart-bar" style="height:45%"><span class="chart-bar-value">R$ 3.2K</span></div><span class="chart-bar-label">NOV</span></div>
+        <div class="chart-bar-wrap"><div class="chart-bar" style="height:52%"><span class="chart-bar-value">R$ 3.8K</span></div><span class="chart-bar-label">DEZ</span></div>
+        <div class="chart-bar-wrap"><div class="chart-bar" style="height:60%"><span class="chart-bar-value">R$ 4.5K</span></div><span class="chart-bar-label">JAN</span></div>
+        <div class="chart-bar-wrap"><div class="chart-bar" style="height:72%"><span class="chart-bar-value">R$ 5.8K</span></div><span class="chart-bar-label">FEV</span></div>
+        <div class="chart-bar-wrap"><div class="chart-bar" style="height:85%"><span class="chart-bar-value">R$ 7.2K</span></div><span class="chart-bar-label">MAR</span></div>
+        <div class="chart-bar-wrap"><div class="chart-bar" style="height:100%"><span class="chart-bar-value">${s.revenueFormatted}</span></div><span class="chart-bar-label">ABR</span></div>
+      </div>
+    </div>
+
+    <div style="font-family:var(--fu);font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin:32px 0 12px">Últimas Publicações</div>
+    <div class="articles-list">
+      ${recentPub.map(a => {
+        const author = PitLane.getUserById(a.authorId);
+        return `<div class="article-row">
+          <div class="article-row-thumb" style="${a.img ? '' : 'background:var(--bg3)'}">${a.img ? `<img src="${a.img}" alt="">` : ''}</div>
+          <div class="article-row-info">
+            <div class="article-row-title">${a.title}</div>
+            <div class="article-row-meta">${author ? author.name : 'Desconhecido'} · ${PitLane.formatDate(a.publishedAt)} · ${a.views.toLocaleString()} views</div>
+          </div>
+          <div class="article-row-status"><span class="badge ${PitLane.getStatusCSS(a.status)}">${PitLane.getStatusLabel(a.status)}</span></div>
+        </div>`;
+      }).join('')}
+    </div>
+  `;
+}
+
+// ============================
+// QUEUE
+// ============================
+function renderQueue() {
+  const pending = PitLane.getArticles().filter(a => ['sent', 'review', 'approved'].includes(a.status))
+    .sort((a, b) => { const order = { sent: 0, review: 1, approved: 2 }; return order[a.status] - order[b.status]; });
+
+  const statusFilters = ['all', 'sent', 'review', 'approved'];
+
+  document.getElementById('adm-queue').innerHTML = `
+    <div class="dash-header"><h1>Fila de Matérias</h1></div>
+    <div class="tabs" id="queueTabs">
+      ${statusFilters.map((f, i) => {
+        const count = f === 'all' ? pending.length : pending.filter(a => a.status === f).length;
+        return `<button class="tab ${i === 0 ? 'active' : ''}" onclick="filterQueue('${f}',this)">${f === 'all' ? 'Todas' : PitLane.getStatusLabel(f)} (${count})</button>`;
+      }).join('')}
+    </div>
+    <div id="queueList">
+      ${pending.map(a => {
+        const author = PitLane.getUserById(a.authorId);
+        const borderColor = a.status === 'sent' ? 'var(--info)' : a.status === 'review' ? 'var(--warning)' : 'var(--success)';
+        return `<div class="queue-card" data-status="${a.status}" style="border-left:3px solid ${borderColor}">
+          <div class="queue-card-img" style="${a.img ? '' : 'background:var(--bg3)'}">${a.img ? `<img src="${a.img}" alt="">` : ''}</div>
+          <div class="queue-card-body">
+            <div class="queue-card-title">${a.title}</div>
+            <div class="queue-card-meta">
+              <span class="badge ${PitLane.getStatusCSS(a.status)}" style="font-size:8px">${PitLane.getStatusLabel(a.status)}</span>
+              · ${a.submittedAt ? 'Enviada ' + PitLane.formatDate(a.submittedAt) : ''}
+              ${a.brief ? ' · ' + a.brief.substring(0, 80) + '...' : ''}
+            </div>
+            ${author ? `<div class="queue-card-author">
+              <div class="queue-card-av" style="background:${author.type === 'equipe' ? 'var(--gold)' : author.type === 'categoria' ? '#006e3a' : 'var(--acc)'};${author.type === 'equipe' ? 'color:#000' : 'color:#fff'}">${author.avatar}</div>
+              <div><div class="queue-card-author-name">${author.name}</div><div class="queue-card-author-plan">${PitLane.getPlanName(author.plan)}</div></div>
+            </div>` : ''}
+          </div>
+          <div class="queue-card-actions">
+            ${a.status === 'sent' ? `<button class="btn-primary" style="padding:6px 12px;font-size:10px" onclick="processIA('${a.id}')"><i data-lucide="bot" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i> Processar IA</button>` : ''}
+            ${a.status === 'review' ? `<button class="btn-success" style="padding:6px 12px;font-size:10px" onclick="approveArticle('${a.id}')"><i data-lucide="check-circle-2" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Aprovar</button>` : ''}
+            ${a.status === 'approved' ? `<button class="btn-success" style="padding:6px 12px;font-size:10px" onclick="publishArticle('${a.id}')"><i data-lucide="globe" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Publicar</button>` : ''}
+            ${a.status === 'review' ? `<button class="btn-secondary" style="padding:6px 12px;font-size:10px" onclick="rejectArticle('${a.id}')"><i data-lucide="corner-up-left" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Devolver</button>` : ''}
+            <button class="btn-secondary" style="padding:6px 12px;font-size:10px;color:var(--acc)" onclick="deleteArticle('${a.id}')"><i data-lucide="x" style="width:18px;height:18px;display:inline-block;vertical-align:text-bottom"></i></button>
+          </div>
+        </div>`;
+      }).join('')}
+      ${pending.length === 0 ? '<div style="padding:32px;text-align:center;color:var(--muted);font-size:13px">Nenhuma matéria pendente! <i data-lucide="party-popper" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></div>' : ''}
+    </div>
+  `;
+}
+
+function filterQueue(status, btn) {
+  document.querySelectorAll('#queueTabs .tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#queueList .queue-card').forEach(c => {
+    c.style.display = status === 'all' || c.dataset.status === status ? 'flex' : 'none';
+  });
+}
+
+function processIA(id) {
+  PitLane.changeArticleStatus(id, 'review');
+  showToast('<i data-lucide="bot" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i> Matéria processada por IA! Pronta para revisão.', 'ok');
+  renderQueue(); renderDashboard();
+}
+function approveArticle(id) {
+  PitLane.changeArticleStatus(id, 'approved');
+  showToast('<i data-lucide="check-circle-2" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Matéria aprovada! Aguardando publicação.', 'ok');
+  renderQueue(); renderDashboard();
+}
+function publishArticle(id) {
+  PitLane.changeArticleStatus(id, 'published');
+  showToast('<i data-lucide="globe" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Matéria publicada com sucesso!', 'ok');
+  renderQueue(); renderDashboard();
+}
+function rejectArticle(id) {
+  PitLane.changeArticleStatus(id, 'adjust');
+  showToast('<i data-lucide="corner-up-left" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Matéria devolvida para ajustes.', 'info');
+  renderQueue(); renderDashboard();
+}
+function deleteArticle(id) {
+  PitLane.updateArticle(id, { status: 'draft' });
+  showToast('Matéria removida da fila.', 'info');
+  renderQueue(); renderDashboard();
+}
+
+// ============================
+// USERS
+// ============================
+function renderUsers() {
+  const users = PitLane.getUsers();
+  const types = ['all', 'piloto', 'equipe', 'categoria'];
+
+  document.getElementById('adm-users').innerHTML = `
+    <div class="dash-header"><h1>Gestão de Usuários</h1></div>
+    <div class="tabs" id="userTabs">
+      ${types.map((t, i) => {
+        const count = t === 'all' ? users.length : users.filter(u => u.type === t).length;
+        return `<button class="tab ${i === 0 ? 'active' : ''}" onclick="filterUsers('${t}',this)">${t === 'all' ? 'Todos' : t.charAt(0).toUpperCase() + t.slice(1) + 's'} (${count})</button>`;
+      }).join('')}
+    </div>
+    <div id="userList">
+      ${users.map(u => {
+        const bgColor = u.type === 'equipe' ? 'var(--gold)' : u.type === 'categoria' ? '#006e3a' : 'var(--acc)';
+        const txtColor = u.type === 'equipe' ? '#000' : '#fff';
+        const articles = PitLane.getArticlesByAuthor(u.id);
+        const published = articles.filter(a => a.status === 'published').length;
+        const badgeClass = u.type === 'piloto' ? 'piloto' : u.type === 'equipe' ? 'equipe' : 'categoria';
+        return `<div class="user-row" data-type="${u.type}">
+          <div class="user-avatar-sm" style="background:${bgColor};color:${txtColor}">${u.avatar}</div>
+          <div class="user-info">
+            <div class="user-name">${u.name}</div>
+            <div class="user-email">${u.email}</div>
+          </div>
+          <div class="user-plan-col"><span class="badge ${badgeClass}">${PitLane.getPlanName(u.plan)}</span></div>
+          <div class="user-status-col">
+            <span class="pulse-dot"></span>
+            <span style="font-family:var(--fm);font-size:10px;color:var(--success);margin-left:4px">${u.status === 'active' ? 'Ativo' : 'Inativo'}</span>
+          </div>
+          <div class="user-date-col">${PitLane.formatDate(u.createdAt)}</div>
+          <div style="font-family:var(--fm);font-size:10px;color:var(--dim);width:80px;flex-shrink:0">${published} matéria(s)</div>
+          <div class="user-actions-col">
+            <button class="btn-secondary" style="padding:4px 10px;font-size:9px" onclick="showToast('${u.name} · ${u.email} · ${PitLane.getPlanName(u.plan)} · ${published} matérias publicadas')">Ver</button>
+            <button class="btn-secondary" style="padding:4px 10px;font-size:9px;color:var(--acc)" onclick="toggleUserStatus('${u.id}')">${u.status === 'active' ? 'Bloquear' : 'Ativar'}</button>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+  `;
+}
+
+function filterUsers(type, btn) {
+  document.querySelectorAll('#userTabs .tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#userList .user-row').forEach(r => {
+    r.style.display = type === 'all' || r.dataset.type === type ? 'flex' : 'none';
+  });
+}
+
+function toggleUserStatus(id) {
+  const u = PitLane.getUserById(id);
+  const newStatus = u.status === 'active' ? 'inactive' : 'active';
+  PitLane.updateUser(id, { status: newStatus });
+  showToast(newStatus === 'active' ? '✓ Usuário ativado' : 'Usuário bloqueado', newStatus === 'active' ? 'ok' : 'err');
+  renderUsers(); renderDashboard();
+}
+
+// ============================
+// RSS (static for now)
+// ============================
+function renderRSS() {
+  document.getElementById('adm-rss').innerHTML = `
+    <div class="dash-header">
+      <h1>Notícias Automáticas</h1>
+      <div class="dash-header-actions">
+        <button class="btn-primary" onclick="showToast('<i data-lucide="refresh-cw" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Coletando notícias via RSS...','ok')"><i data-lucide="bot" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i> Executar Coleta</button>
+        <button class="btn-secondary" onclick="PitLane.reset();location.reload()"><i data-lucide="refresh-cw" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Resetar Dados</button>
+      </div>
+    </div>
+    <div class="card carbon-subtle" style="overflow:hidden">
+      <div style="padding:14px 20px;background:var(--bg2);border-bottom:1px solid var(--brd);display:flex;justify-content:space-between;align-items:center">
+        <span style="font-family:var(--fu);font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase">Feed de Notícias Coletadas</span>
+        <span style="font-family:var(--fm);font-size:10px;color:var(--muted)">Última coleta: ${new Date().toLocaleDateString('pt-BR')} · ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span>
+      </div>
+      <div class="rss-item">
+        <div class="rss-source">Motorsport</div>
+        <div class="rss-content">
+          <div class="rss-title">Verstappen: "Miami será um teste crucial para o novo pacote"</div>
+          <div class="rss-excerpt">O piloto holandês afirmou que as atualizações trazidas para Miami podem definir o rumo da temporada...</div>
+          <div class="rss-time">Há 2h · motorsport.com</div>
+        </div>
+        <div class="rss-actions"><button class="btn-primary" style="padding:6px 12px;font-size:9px" onclick="rssPublish('Verstappen: Miami será um teste crucial para o novo pacote','Segundo o piloto holandês, as atualizações trazidas para o GP de Miami serão decisivas.')">Reescrever & Publicar</button></div>
+      </div>
+      <div class="rss-item">
+        <div class="rss-source">Autosport</div>
+        <div class="rss-content">
+          <div class="rss-title">Ferrari traz atualização de floor para Barcelona</div>
+          <div class="rss-excerpt">A Scuderia apresentará um novo pacote aerodinâmico focado em downforce...</div>
+          <div class="rss-time">Há 4h · autosport.com</div>
+        </div>
+        <div class="rss-actions"><button class="btn-primary" style="padding:6px 12px;font-size:9px" onclick="rssPublish('Ferrari confirma novo assoalho para o GP de Barcelona','A Scuderia Ferrari trará um pacote aerodinâmico inédito focado em downforce de baixa velocidade.')">Reescrever & Publicar</button></div>
+      </div>
+      <div class="rss-item">
+        <div class="rss-source">ESPN</div>
+        <div class="rss-content">
+          <div class="rss-title">MotoGP confirma corrida noturna na Arábia Saudita</div>
+          <div class="rss-excerpt">A FIM anunciou que a temporada 2027 terá uma corrida sob holofotes em Jeddah...</div>
+          <div class="rss-time">Há 6h · espn.com.br</div>
+        </div>
+        <div class="rss-actions"><button class="btn-primary" style="padding:6px 12px;font-size:9px" onclick="rssPublish('MotoGP anuncia corrida inédita sob os holofotes em Jeddah','A FIM confirmou que o calendário de 2027 incluirá uma corrida noturna na Arábia Saudita.')">Reescrever & Publicar</button></div>
+      </div>
+    </div>
+  `;
+}
+
+function rssPublish(title, brief) {
+  // Create as admin-authored editorial article, immediately published
+  PitLane.addArticle({
+    authorId: 'admin',
+    title: title,
+    brief: brief,
+    body: '<p>' + brief + '</p>',
+    img: '',
+    status: 'published',
+    publishedAt: new Date().toISOString().split('T')[0],
+    category: 'F1',
+  });
+  showToast('✓ Matéria reescrita pela IA e publicada!', 'ok');
+  renderDashboard();
+}
+
+// ============================
+// SETTINGS
+// ============================
+function renderSettings() {
+  const s = PitLane.getSettings();
+  const rows = [
+    { key: 'reviewRequired', label: 'Revisão Final Obrigatória', desc: 'Exigir revisão do admin antes de qualquer publicação.' },
+    { key: 'autoCollect', label: 'Coleta Automática de Notícias', desc: 'Coletar notícias a cada 4 horas via RSS/APIs configuradas.' },
+    { key: 'aiRewrite', label: 'Reescrita Automática por IA', desc: 'Reescrever automaticamente notícias coletadas.' },
+    { key: 'limitBlock', label: 'Bloqueio de Limite', desc: 'Bloquear envio quando atingir limite mensal do plano.' },
+    { key: 'sponsoredBadge', label: 'Marca "Conteúdo Patrocinado"', desc: 'Exibir badge em todas as matérias pagas.' },
+    { key: 'maintenance', label: 'Modo Manutenção', desc: 'Desativar temporariamente o portal público.' },
+  ];
+
+  document.getElementById('adm-settings').innerHTML = `
+    <div class="dash-header"><h1>Configurações</h1></div>
+    <div class="card carbon-subtle" style="overflow:hidden">
+      ${rows.map(r => `
+        <div class="setting-row">
+          <div class="setting-info">
+            <div class="setting-label">${r.label}</div>
+            <div class="setting-desc">${r.desc}</div>
+          </div>
+          <div class="toggle ${s[r.key] ? 'on' : ''}" onclick="toggleSetting('${r.key}',this)"></div>
+        </div>
+      `).join('')}
+    </div>
+    <div style="margin-top:24px;display:flex;gap:10px">
+      <button class="btn-secondary" onclick="PitLane.reset();location.reload()"><i data-lucide="refresh-cw" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Resetar Todos os Dados (Demo)</button>
+    </div>
+  `;
+}
+
+function toggleSetting(key, el) {
+  const current = PitLane.getSettings()[key];
+  PitLane.updateSetting(key, !current);
+  el.classList.toggle('on');
+  showToast(!current ? '✓ ' + key + ' ativado' : key + ' desativado', !current ? 'ok' : 'info');
+}
+
+// ============================
+// NAVIGATION
+// ============================
+function adminNav(name, btn) {
+  ['dashboard', 'queue', 'users', 'rss', 'settings'].forEach(s => {
+    document.getElementById('adm-' + s).style.display = s === name ? 'block' : 'none';
+  });
+  document.querySelectorAll('.dash-nav a').forEach(a => a.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  window.scrollTo({ top: 0 });
+  if (name === 'dashboard') renderDashboard();
+  if (name === 'queue') renderQueue();
+  if (name === 'users') renderUsers();
+  if (name === 'rss') renderRSS();
+  if (name === 'settings') renderSettings();
+}
+
+// Initial render
+renderDashboard();
+</script>
+</body>
+</html>

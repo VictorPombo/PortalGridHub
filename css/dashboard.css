@@ -1,0 +1,211 @@
+/* =====================================================
+   PITLANE — DASHBOARD STYLES
+   ===================================================== */
+
+/* ============================
+   DASHBOARD LAYOUT
+   ============================ */
+.dash-layout{display:grid;grid-template-columns:260px 1fr;min-height:calc(100vh - 62px)}
+.dash-sidebar{
+  background:var(--bg1);border-right:1px solid var(--brd);
+  padding:24px 0;position:sticky;top:62px;height:calc(100vh - 62px);
+  overflow-y:auto;
+}
+.dash-main{padding:32px;overflow-y:auto}
+
+/* ============================
+   SIDEBAR
+   ============================ */
+.dash-profile{padding:0 20px 20px;border-bottom:1px solid var(--brd);margin-bottom:8px}
+.dash-avatar{
+  width:56px;height:56px;border-radius:50%;
+  background:var(--acc);display:flex;align-items:center;justify-content:center;
+  font-family:var(--fd);font-size:24px;color:#fff;margin-bottom:12px;
+  border:2px solid var(--acc-g);
+}
+.dash-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.dash-user-name{font-family:var(--fu);font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.dash-user-plan{font-family:var(--fm);font-size:10px;color:var(--acc);letter-spacing:1px;margin-top:2px}
+.dash-plan-badge{
+  display:inline-block;font-family:var(--fu);font-size:9px;font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase;padding:3px 10px;
+  border:1px solid var(--acc);color:var(--acc);margin-top:8px;
+}
+
+.dash-nav{list-style:none;padding:0}
+.dash-nav li{}
+.dash-nav a{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 20px;font-family:var(--fu);font-size:13px;
+  font-weight:600;letter-spacing:1px;text-transform:uppercase;
+  color:var(--dim);text-decoration:none;transition:all .18s;
+  border-left:3px solid transparent;
+}
+.dash-nav a:hover{color:var(--text);background:rgba(255,255,255,.02)}
+.dash-nav a.active{color:var(--text);border-left-color:var(--acc);background:rgba(232,0,45,.04)}
+.dash-nav a .nav-icon{width:18px;text-align:center;font-size:14px}
+.dash-nav-sep{height:1px;background:var(--brd);margin:8px 20px}
+
+/* ============================
+   DASHBOARD HEADER
+   ============================ */
+.dash-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--brd);
+}
+.dash-header h1{font-family:var(--fd);font-size:36px;letter-spacing:2px;line-height:1}
+.dash-header-actions{display:flex;gap:10px}
+
+/* ============================
+   ARTICLE STATUS CARDS
+   ============================ */
+.status-flow{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:32px}
+.status-step{
+  flex:1;min-width:120px;background:var(--bg1);border:1px solid var(--brd);
+  padding:14px 16px;position:relative;text-align:center;
+}
+.status-step.active{border-color:var(--acc);background:var(--acc-d)}
+.status-step-num{font-family:var(--fd);font-size:24px;color:var(--muted);line-height:1;display:block}
+.status-step.active .status-step-num{color:var(--acc)}
+.status-step-label{font-family:var(--fu);font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--dim);margin-top:4px;display:block}
+
+/* ============================
+   ARTICLE COMPOSER
+   ============================ */
+.composer{background:var(--bg1);border:1px solid var(--brd);overflow:hidden}
+.composer-header{
+  padding:18px 24px;border-bottom:1px solid var(--brd);
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--bg2);
+}
+.composer-title{font-family:var(--fu);font-size:14px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+.composer-body{padding:24px}
+.composer-footer{padding:16px 24px;border-top:1px solid var(--brd);display:flex;justify-content:flex-end;gap:10px}
+
+/* Image upload area */
+.upload-area{
+  border:2px dashed var(--brdb);background:var(--bg);
+  padding:32px;text-align:center;cursor:pointer;
+  transition:all .22s;margin-top:4px;
+}
+.upload-area:hover{border-color:var(--acc);background:var(--acc-d)}
+.upload-area-icon{font-size:32px;margin-bottom:8px;display:block}
+.upload-area-text{font-family:var(--fu);font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--dim)}
+.upload-area-hint{font-family:var(--fm);font-size:10px;color:var(--muted);margin-top:4px}
+
+/* Upload preview grid */
+.upload-preview{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.upload-thumb{
+  width:100px;height:70px;background:var(--bg2);border:1px solid var(--brd);
+  overflow:hidden;position:relative;
+}
+.upload-thumb img{width:100%;height:100%;object-fit:cover}
+.upload-thumb-remove{
+  position:absolute;top:4px;right:4px;width:20px;height:20px;
+  background:rgba(4,4,10,.8);border:1px solid var(--brd);color:var(--dim);
+  display:flex;align-items:center;justify-content:center;font-size:12px;
+  cursor:pointer;transition:all .2s;
+}
+.upload-thumb-remove:hover{border-color:var(--acc);color:var(--acc)}
+
+/* ============================
+   ARTICLES TABLE
+   ============================ */
+.articles-list{margin-top:24px}
+.article-row{
+  display:flex;align-items:center;gap:16px;
+  padding:16px 20px;background:var(--bg1);border:1px solid var(--brd);
+  margin-bottom:3px;transition:all .18s;cursor:pointer;
+}
+.article-row:hover{border-color:var(--brdb);background:var(--bg2)}
+.article-row-thumb{width:64px;height:44px;overflow:hidden;flex-shrink:0;background:var(--bg2)}
+.article-row-thumb img{width:100%;height:100%;object-fit:cover;filter:saturate(.5)}
+.article-row-info{flex:1;min-width:0}
+.article-row-title{font-family:var(--fu);font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.article-row-meta{font-family:var(--fm);font-size:10px;color:var(--muted);margin-top:3px}
+.article-row-status{flex-shrink:0}
+.article-row-actions{display:flex;gap:6px;flex-shrink:0}
+
+/* ============================
+   PREVIEW CARD
+   ============================ */
+.preview-card{
+  background:var(--bg1);border:1px solid var(--brd);overflow:hidden;
+  max-width:700px;margin:24px auto;
+}
+.preview-card-img{height:240px;overflow:hidden}
+.preview-card-img img{width:100%;height:100%;object-fit:cover;filter:saturate(.6) brightness(.7)}
+.preview-card-body{padding:28px}
+.preview-card-title{font-family:var(--fd);font-size:32px;letter-spacing:1px;line-height:1;margin:10px 0 14px}
+.preview-card-text{font-size:14px;font-weight:300;color:var(--dim);line-height:1.7}
+.preview-card-text p{margin-bottom:14px}
+
+/* ============================
+   PROFILE EDITOR
+   ============================ */
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.profile-section{
+  background:var(--bg1);border:1px solid var(--brd);padding:24px;
+}
+.profile-section h3{
+  font-family:var(--fu);font-size:14px;font-weight:700;letter-spacing:1.5px;
+  text-transform:uppercase;margin-bottom:20px;padding-bottom:12px;
+  border-bottom:1px solid var(--brd);
+}
+.avatar-upload{
+  width:100px;height:100px;border-radius:50%;background:var(--bg2);
+  border:2px dashed var(--brdb);display:flex;align-items:center;
+  justify-content:center;cursor:pointer;transition:all .2s;
+  margin-bottom:16px;overflow:hidden;
+}
+.avatar-upload:hover{border-color:var(--acc)}
+.avatar-upload img{width:100%;height:100%;object-fit:cover}
+
+/* ============================
+   MÍDIA KIT
+   ============================ */
+.media-kit-card{
+  background:var(--bg1);border:1px solid var(--brd);padding:32px;
+  text-align:center;position:relative;overflow:hidden;
+}
+.media-kit-card::before{
+  content:'PRO';position:absolute;top:16px;right:-28px;
+  font-family:var(--fu);font-size:10px;font-weight:700;letter-spacing:2px;
+  background:var(--gold);color:#000;padding:4px 36px;
+  transform:rotate(45deg);
+}
+.media-kit-icon{font-size:48px;margin-bottom:16px}
+.media-kit-title{font-family:var(--fd);font-size:24px;letter-spacing:1px;margin-bottom:8px}
+.media-kit-desc{font-size:13px;color:var(--dim);margin-bottom:20px;line-height:1.6}
+
+/* ============================
+   CONQUEST BADGES
+   ============================ */
+.conquest-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+.conquest-badge{
+  background:var(--bg);border:1px solid var(--brd);padding:16px;
+  text-align:center;transition:all .2s;
+}
+.conquest-badge:hover{border-color:var(--gold)}
+.conquest-icon{font-size:28px;display:block;margin-bottom:6px}
+.conquest-label{font-family:var(--fu);font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--dim);display:block}
+.conquest-value{font-family:var(--fd);font-size:20px;color:var(--gold);display:block;margin-top:2px}
+
+/* ============================
+   RESPONSIVE
+   ============================ */
+@media(max-width:1100px){
+  .dash-layout{grid-template-columns:1fr}
+  .dash-sidebar{
+    position:fixed;top:0;left:0;bottom:0;width:260px;z-index:600;
+    transform:translateX(-100%);transition:transform .3s ease;
+  }
+  .dash-sidebar.open{transform:none}
+  .profile-grid{grid-template-columns:1fr}
+}
+@media(max-width:720px){
+  .dash-main{padding:16px}
+  .status-flow{flex-direction:column}
+  .article-row{flex-direction:column;align-items:flex-start}
+  .article-row-actions{width:100%;justify-content:flex-end}
+}

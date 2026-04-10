@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel do Piloto — PitLane News</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/core.css">
+<link rel="stylesheet" href="css/carbon.css">
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="carbon-bg">
+<div class="toast-wrap" id="toastWrap"></div>
+
+<!-- NAV -->
+<nav class="carbon-subtle">
+  <div class="nav-inner">
+    <a class="logo" href="index.html">
+      <div class="logo-badge"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg></div>
+      <div class="logo-text"><span class="logo-name">PitLane</span><span class="logo-tag">News</span></div>
+    </a>
+    <ul class="nav-links"><li><a href="index.html">Portal</a></li><li><a href="piloto.html">Minha Página</a></li></ul>
+    <div class="nav-right" id="navUserInfo"></div>
+  </div>
+</nav>
+
+<div class="dash-layout">
+  <!-- SIDEBAR -->
+  <aside class="dash-sidebar carbon-subtle">
+    <div class="dash-profile" id="sidebarProfile"></div>
+    <ul class="dash-nav">
+      <li><a class="active" onclick="showSection('overview',this)"><span class="nav-icon"><i data-lucide="bar-chart-3" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Visão Geral</a></li>
+      <li><a onclick="showSection('compose',this)"><span class="nav-icon">✍️</span> Nova Matéria</a></li>
+      <li><a onclick="showSection('articles',this)"><span class="nav-icon"><i data-lucide="newspaper" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Minhas Matérias</a></li>
+      <div class="dash-nav-sep"></div>
+      <li><a onclick="showSection('profile',this)"><span class="nav-icon"><i data-lucide="user-check" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Editar Perfil</a></li>
+      <li><a onclick="showSection('mediakit',this)"><span class="nav-icon"><i data-lucide="paperclip" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Mídia Kit</a></li>
+      <div class="dash-nav-sep"></div>
+      <li><a href="piloto.html"><span class="nav-icon"><i data-lucide="globe" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i></span> Ver Landing Page</a></li>
+      <li><a href="#" onclick="PitLane.logout();window.location='cadastro.html'"><span class="nav-icon"><i data-lucide="log-out" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Sair</a></li>
+    </ul>
+  </aside>
+
+  <main class="dash-main">
+    <!-- OVERVIEW -->
+    <div id="sec-overview"></div>
+    <!-- COMPOSE -->
+    <div id="sec-compose" style="display:none"></div>
+    <!-- ARTICLES -->
+    <div id="sec-articles" style="display:none"></div>
+    <!-- PROFILE -->
+    <div id="sec-profile" style="display:none"></div>
+    <!-- MEDIA KIT -->
+    <div id="sec-mediakit" style="display:none"></div>
+  </main>
+</div>
+
+<script src="js/core.js"></script>
+<script src="js/state.js"></script>
+<script>
+// ============================
+// Auth guard
+// ============================
+if (!PitLane.isLoggedIn()) { window.location = 'cadastro.html'; }
+const USER = PitLane.getCurrentUser();
+if (!USER) { window.location = 'cadastro.html'; }
+
+// ============================
+// Render sidebar
+// ============================
+document.getElementById('navUserInfo').innerHTML = `
+  <span style="font-family:var(--fm);font-size:10px;color:var(--dim)">${USER.name}</span>
+  <div style="width:32px;height:32px;border-radius:50%;background:var(--acc);display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:11px;font-weight:700;color:#fff">${USER.avatar}</div>
+`;
+document.getElementById('sidebarProfile').innerHTML = `
+  <div class="dash-avatar">${USER.avatar}</div>
+  <div class="dash-user-name">${USER.name}</div>
+  <div class="dash-user-plan">${PitLane.getPlanName(USER.plan)} · ${USER.type.charAt(0).toUpperCase() + USER.type.slice(1)}</div>
+  <div class="dash-plan-badge">${USER.plan.toUpperCase()}</div>
+`;
+
+// ============================
+// Render Overview
+// ============================
+function renderOverview() {
+  const stats = PitLane.getUserStats(USER.id);
+  const articles = PitLane.getArticlesByAuthor(USER.id);
+  const recent = articles.filter(a => a.status !== 'draft').sort((a, b) => (b.publishedAt || b.submittedAt || '').localeCompare(a.publishedAt || a.submittedAt || '')).slice(0, 5);
+  const usagePct = stats.limit > 0 ? ((stats.limit - stats.remaining) / stats.limit * 100) : 0;
+
+  // Count by status
+  const statusCounts = {};
+  articles.forEach(a => { statusCounts[a.status] = (statusCounts[a.status] || 0) + 1; });
+
+  document.getElementById('sec-overview').innerHTML = `
+    <div class="dash-header">
+      <h1>Visão Geral</h1>
+      <div class="dash-header-actions"><button class="btn-primary" onclick="showSection('compose')">✍️ Nova Matéria</button></div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-card accent">
+        <div class="stat-label">Matérias Restantes</div>
+        <div class="stat-value">${stats.remaining}</div>
+        <div class="stat-detail">de ${stats.limit} matérias · ${PitLane.getPlanName(USER.plan)}</div>
+        <div class="rpm-bar" style="margin-top:10px"><div class="rpm-bar-fill" style="width:${usagePct}%"></div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Publicadas</div>
+        <div class="stat-value">${stats.totalPublished}</div>
+        <div class="stat-detail">total geral</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Visualizações</div>
+        <div class="stat-value">${stats.totalViewsFormatted}</div>
+        <div class="stat-detail">total acumulado</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Em Andamento</div>
+        <div class="stat-value">${(statusCounts.review || 0) + (statusCounts.sent || 0) + (statusCounts.approved || 0)}</div>
+        <div class="stat-detail">${statusCounts.review || 0} revisão · ${statusCounts.sent || 0} enviado · ${statusCounts.approved || 0} aprovado</div>
+      </div>
+    </div>
+
+    <div style="font-family:var(--fu);font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin:32px 0 12px">Fluxo de Publicação</div>
+    <div class="status-flow">
+      <div class="status-step ${statusCounts.draft ? 'active' : ''}"><span class="status-step-num">${statusCounts.draft || 0}</span><span class="status-step-label">Rascunho</span></div>
+      <div class="status-step ${statusCounts.sent ? 'active' : ''}"><span class="status-step-num">${statusCounts.sent || 0}</span><span class="status-step-label">Enviado</span></div>
+      <div class="status-step ${statusCounts.review ? 'active' : ''}"><span class="status-step-num">${statusCounts.review || 0}</span><span class="status-step-label">Em Revisão</span></div>
+      <div class="status-step ${statusCounts.approved ? 'active' : ''}"><span class="status-step-num">${statusCounts.approved || 0}</span><span class="status-step-label">Aprovado</span></div>
+      <div class="status-step ${statusCounts.published ? 'active' : ''}"><span class="status-step-num">${statusCounts.published || 0}</span><span class="status-step-label">Publicado</span></div>
+    </div>
+
+    <div style="font-family:var(--fu);font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin:32px 0 12px">Matérias Recentes</div>
+    <div class="articles-list">
+      ${recent.map(a => {
+        const author = PitLane.getUserById(a.authorId);
+        return `<div class="article-row" onclick="showSection('articles')">
+          <div class="article-row-thumb" style="${a.img ? '' : 'background:var(--bg3)'}">
+            ${a.img ? `<img src="${a.img}" alt="">` : ''}
+          </div>
+          <div class="article-row-info">
+            <div class="article-row-title">${a.title}</div>
+            <div class="article-row-meta">${PitLane.formatDate(a.publishedAt || a.submittedAt)} · ${a.views > 0 ? a.views.toLocaleString() + ' views' : PitLane.getStatusLabel(a.status)}</div>
+          </div>
+          <div class="article-row-status"><span class="badge ${PitLane.getStatusCSS(a.status)}">${PitLane.getStatusLabel(a.status)}</span></div>
+        </div>`;
+      }).join('')}
+      ${recent.length === 0 ? '<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">Nenhuma matéria ainda. Crie a primeira!</div>' : ''}
+    </div>
+  `;
+}
+
+// ============================
+// Render Compose
+// ============================
+function renderCompose() {
+  const stats = PitLane.getUserStats(USER.id);
+  document.getElementById('sec-compose').innerHTML = `
+    <div class="dash-header"><h1>Nova Matéria</h1></div>
+    ${stats.remaining <= 0 ? `
+      <div class="card" style="padding:32px;text-align:center;border-color:var(--acc)">
+        <div style="font-size:32px;margin-bottom:12px"><i data-lucide="ban" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom;color:#e8002d"></i></div>
+        <div style="font-family:var(--fd);font-size:24px;margin-bottom:8px">Limite Atingido</div>
+        <p style="font-size:13px;color:var(--dim);margin-bottom:16px">Você já usou todas as ${stats.limit} matéria(s) deste mês (${PitLane.getPlanName(USER.plan)}). Faça upgrade para publicar mais!</p>
+        <a href="planos.html" class="btn-primary">Ver Planos →</a>
+      </div>
+    ` : `
+    <div class="composer carbon-subtle">
+      <div class="composer-header">
+        <span class="composer-title">Enviar para Redação</span>
+        <span style="font-family:var(--fm);font-size:10px;color:var(--muted)">${stats.remaining} matéria(s) restante(s) este mês</span>
+      </div>
+      <div class="composer-body">
+        <div class="form-field"><label class="form-label">Título da matéria</label><input class="form-input" id="compTitle" type="text" placeholder="Ex: Como me preparei para a etapa de Interlagos"></div>
+        <div class="form-field"><label class="form-label">Descrição / Briefing</label><textarea class="form-textarea" id="compBrief" placeholder="Descreva o conteúdo. Nossa IA vai transformar em matéria jornalística profissional." style="min-height:150px"></textarea><div class="form-hint">Mínimo 50 caracteres · Quanto mais detalhes, melhor o resultado</div></div>
+        <div class="form-field"><label class="form-label">Categoria</label>
+          <select class="form-select" id="compCategory">
+            <option>${USER.category || 'Stock Car'}</option>
+            <option>Fórmula 1</option><option>MotoGP</option><option>WEC</option><option>Sim Racing</option><option>NASCAR</option><option>Rally</option>
+          </select>
+        </div>
+      </div>
+      <div class="composer-footer">
+        <button class="btn-secondary" onclick="saveDraft()"><i data-lucide="save" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Salvar Rascunho</button>
+        <button class="btn-primary" onclick="submitArticle()"><i data-lucide="arrow-right" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Enviar para Redação</button>
+      </div>
+    </div>
+    `}
+  `;
+}
+
+function saveDraft() {
+  const title = document.getElementById('compTitle')?.value;
+  const brief = document.getElementById('compBrief')?.value;
+  if (!title) { showToast('Informe pelo menos um título','err'); return; }
+  PitLane.addArticle({ authorId: USER.id, title, brief: brief || '', body: '', img: '', status: 'draft', category: document.getElementById('compCategory')?.value || '' });
+  showToast('✓ Rascunho salvo!','ok');
+  renderOverview(); renderArticles();
+}
+
+function submitArticle() {
+  const title = document.getElementById('compTitle')?.value;
+  const brief = document.getElementById('compBrief')?.value;
+  if (!title) { showToast('Informe o título','err'); return; }
+  if (!brief || brief.length < 50) { showToast('Descrição deve ter pelo menos 50 caracteres','err'); return; }
+  PitLane.addArticle({ authorId: USER.id, title, brief, body: '', img: '', status: 'sent', submittedAt: new Date().toISOString().split('T')[0], category: document.getElementById('compCategory')?.value || '' });
+  showToast('✓ Matéria enviada para a redação! Acompanhe o status em "Minhas Matérias".','ok');
+  renderOverview(); renderCompose(); renderArticles();
+  showSection('articles');
+}
+
+// ============================
+// Render Articles
+// ============================
+function renderArticles() {
+  const articles = PitLane.getArticlesByAuthor(USER.id).sort((a, b) => (b.publishedAt || b.submittedAt || '9999').localeCompare(a.publishedAt || a.submittedAt || '9999'));
+  const filterBtns = ['all','published','review','sent','draft'];
+  document.getElementById('sec-articles').innerHTML = `
+    <div class="dash-header"><h1>Minhas Matérias</h1></div>
+    <div class="tabs" id="articleTabs">
+      ${filterBtns.map((f, i) => `<button class="tab ${i === 0 ? 'active' : ''}" onclick="filterArticles('${f}',this)">${f === 'all' ? 'Todas (' + articles.length + ')' : PitLane.getStatusLabel(f) + ' (' + articles.filter(a => a.status === f).length + ')'}</button>`).join('')}
+    </div>
+    <div class="articles-list" id="articlesList">
+      ${articles.map(a => `
+        <div class="article-row" data-status="${a.status}">
+          <div class="article-row-thumb" style="${a.img ? '' : 'background:var(--bg3)'}">
+            ${a.img ? `<img src="${a.img}" alt="">` : ''}
+          </div>
+          <div class="article-row-info">
+            <div class="article-row-title">${a.title}</div>
+            <div class="article-row-meta">${PitLane.formatDate(a.publishedAt || a.submittedAt)} · ${a.views > 0 ? a.views.toLocaleString() + ' views' : a.brief ? a.brief.substring(0, 60) + '...' : ''}</div>
+          </div>
+          <div class="article-row-status"><span class="badge ${PitLane.getStatusCSS(a.status)}">${PitLane.getStatusLabel(a.status)}</span></div>
+          <div class="article-row-actions">
+            ${a.status === 'draft' ? `<button class="btn-secondary" style="padding:6px 12px;font-size:10px" onclick="event.stopPropagation();editDraft('${a.id}')"><i data-lucide="pencil" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Editar</button>` : ''}
+            ${a.status === 'approved' ? `<button class="btn-success" style="padding:6px 12px;font-size:10px" onclick="event.stopPropagation();approvePublish('${a.id}')"><i data-lucide="check-circle-2" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Aprovar</button>` : ''}
+            ${['published','review','approved'].includes(a.status) ? `<button class="btn-secondary" style="padding:6px 12px;font-size:10px" onclick="event.stopPropagation();previewArticle('${a.id}')"><i data-lucide="eye" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Ver</button>` : ''}
+          </div>
+        </div>
+      `).join('')}
+      ${articles.length === 0 ? '<div style="padding:24px;text-align:center;color:var(--muted)">Nenhuma matéria ainda.</div>' : ''}
+    </div>
+  `;
+}
+
+function filterArticles(status, btn) {
+  document.querySelectorAll('#articleTabs .tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#articlesList .article-row').forEach(r => {
+    r.style.display = status === 'all' || r.dataset.status === status ? 'flex' : 'none';
+  });
+}
+
+function editDraft(id) { showToast('Abrindo rascunho para edição...'); showSection('compose'); }
+function approvePublish(id) {
+  PitLane.changeArticleStatus(id, 'published');
+  showToast('✓ Matéria publicada!','ok');
+  renderOverview(); renderArticles();
+}
+function previewArticle(id) {
+  const a = PitLane.getArticleById(id);
+  if (!a) return;
+  showToast(a.title + ' — ' + PitLane.getStatusLabel(a.status));
+}
+
+// ============================
+// Render Profile
+// ============================
+function renderProfile() {
+  document.getElementById('sec-profile').innerHTML = `
+    <div class="dash-header"><h1>Editar Perfil</h1></div>
+    <div class="profile-grid">
+      <div class="profile-section">
+        <h3>Dados Pessoais</h3>
+        <div class="form-field"><label class="form-label">Nome completo</label><input class="form-input" id="profName" type="text" value="${USER.name}"></div>
+        <div class="form-field"><label class="form-label">E-mail</label><input class="form-input" type="email" value="${USER.email}" disabled style="opacity:.5"></div>
+        <div class="form-field"><label class="form-label">Categoria</label>
+          <select class="form-select" id="profCategory">
+            ${['Stock Car','F4 Brasil','Porsche Cup','Fórmula 1','MotoGP','Sim Racing','Kart','NASCAR','WEC','Rally'].map(c => `<option ${c === USER.category ? 'selected' : ''}>${c}</option>`).join('')}
+          </select>
+        </div>
+        <div class="form-field"><label class="form-label">Número</label><input class="form-input" id="profNumber" type="text" value="${USER.number || ''}"></div>
+        <button class="btn-primary" onclick="saveProfile()">Salvar Alterações</button>
+      </div>
+      <div class="profile-section">
+        <h3>Landing Page</h3>
+        <div class="form-field"><label class="form-label">Bio</label><textarea class="form-textarea" id="profBio" style="min-height:120px">${USER.bio || ''}</textarea></div>
+        <div class="form-field"><label class="form-label">Instagram</label><input class="form-input" id="profIG" type="text" value="${USER.instagram || ''}"></div>
+        <button class="btn-primary" onclick="saveLandingPage()">Salvar Landing Page</button>
+      </div>
+    </div>
+  `;
+}
+
+function saveProfile() {
+  const updated = PitLane.updateUser(USER.id, {
+    name: document.getElementById('profName').value,
+    category: document.getElementById('profCategory').value,
+    number: document.getElementById('profNumber').value,
+  });
+  if (updated) { Object.assign(USER, updated); showToast('✓ Perfil atualizado!','ok'); }
+}
+
+function saveLandingPage() {
+  const updated = PitLane.updateUser(USER.id, {
+    bio: document.getElementById('profBio').value,
+    instagram: document.getElementById('profIG').value,
+  });
+  if (updated) { Object.assign(USER, updated); showToast('✓ Landing page atualizada!','ok'); }
+}
+
+// ============================
+// Render Media Kit
+// ============================
+function renderMediaKit() {
+  const stats = PitLane.getUserStats(USER.id);
+  document.getElementById('sec-mediakit').innerHTML = `
+    <div class="dash-header"><h1>Mídia Kit</h1></div>
+    <div class="media-kit-card carbon-subtle">
+      ${USER.plan === 'pro' ? '' : '<div style="font-family:var(--fu);font-size:11px;color:var(--warning);letter-spacing:1px;margin-bottom:16px">⚠️ Recurso disponível no Plano Pro. <a href="planos.html" style="color:var(--acc)">Fazer upgrade</a></div>'}
+      <div class="media-kit-icon"><i data-lucide="paperclip" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></div>
+      <div class="media-kit-title">Mídia Kit de ${USER.name}</div>
+      <div class="media-kit-desc">Material profissional com seus dados, conquistas, ${stats.totalViewsFormatted} visualizações acumuladas e informações para patrocinadores.</div>
+      <button class="btn-primary" onclick="showToast('✓ Download: mídia-kit-${USER.name.toLowerCase().replace(/\\s/g,'-')}.pdf','ok')" ${USER.plan !== 'pro' ? 'disabled style="opacity:.4"' : ''}><i data-lucide="download" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Baixar Mídia Kit (PDF)</button>
+      <p style="font-family:var(--fm);font-size:10px;color:var(--muted);margin-top:12px">Inclui: Bio, conquistas, métricas, cotas de patrocínio</p>
+    </div>
+  `;
+}
+
+// ============================
+// Navigation
+// ============================
+function showSection(name, btnEl) {
+  ['overview','compose','articles','profile','mediakit'].forEach(s => {
+    document.getElementById('sec-' + s).style.display = s === name ? 'block' : 'none';
+  });
+  document.querySelectorAll('.dash-nav a').forEach(a => a.classList.remove('active'));
+  if (btnEl) btnEl.classList.add('active');
+  window.scrollTo({ top: 0 });
+  // Re-render on navigate
+  if (name === 'overview') renderOverview();
+  if (name === 'compose') renderCompose();
+  if (name === 'articles') renderArticles();
+  if (name === 'profile') renderProfile();
+  if (name === 'mediakit') renderMediaKit();
+}
+
+// Initial render
+renderOverview();
+renderCompose();
+renderArticles();
+renderProfile();
+renderMediaKit();
+</script>
+</body>
+</html>

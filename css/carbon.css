@@ -1,0 +1,253 @@
+/* =====================================================
+   PITLANE — CARBON FIBER & SPEED EFFECTS
+   ===================================================== */
+
+/* ============================
+   CARBON FIBER BACKGROUND
+   ============================ */
+.carbon-bg{
+  position:relative;
+}
+.carbon-bg::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 2px,
+      rgba(255,255,255,.012) 2px,
+      rgba(255,255,255,.012) 4px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 2px,
+      rgba(255,255,255,.008) 2px,
+      rgba(255,255,255,.008) 4px
+    );
+  pointer-events:none;
+  z-index:0;
+}
+.carbon-bg>*{position:relative;z-index:1}
+
+/* Subtle version for light areas */
+.carbon-subtle::after{
+  content:'';position:absolute;inset:0;
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 3px,
+      rgba(255,255,255,.006) 3px,
+      rgba(255,255,255,.006) 6px
+    );
+  pointer-events:none;z-index:0;
+}
+
+/* ============================
+   SPEED LINES
+   ============================ */
+.speed-lines{
+  position:relative;overflow:hidden;
+}
+.speed-lines::before{
+  content:'';position:absolute;top:0;left:-100%;width:300%;height:100%;
+  background:repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 48px,
+    rgba(232,0,45,.03) 48px,
+    rgba(232,0,45,.03) 49px
+  );
+  animation:speed-drift 20s linear infinite;
+  pointer-events:none;z-index:0;
+}
+@keyframes speed-drift{
+  from{transform:translateX(0)}
+  to{transform:translateX(33.3333%)}
+}
+
+/* Horizontal racing stripes */
+.racing-stripe{
+  position:relative;
+}
+.racing-stripe::after{
+  content:'';position:absolute;left:0;right:0;bottom:0;height:3px;
+  background:linear-gradient(90deg,var(--acc) 0%,var(--acc) 30%,transparent 30%,transparent 33%,var(--acc) 33%,var(--acc) 36%,transparent 36%);
+}
+.racing-stripe.top::after{top:0;bottom:auto}
+
+/* ============================
+   GLOW EFFECTS
+   ============================ */
+.glow-acc{
+  box-shadow:0 0 0 0 var(--acc-g);
+  transition:box-shadow .3s ease;
+}
+.glow-acc:hover{
+  box-shadow:0 0 30px var(--acc-g),0 0 60px rgba(232,0,45,.1);
+}
+
+/* Red accent line on left */
+.accent-line-left{
+  position:relative;
+}
+.accent-line-left::before{
+  content:'';position:absolute;top:0;left:0;width:3px;height:0;
+  background:var(--acc);transition:height .4s ease;
+}
+.accent-line-left:hover::before{height:100%}
+
+/* ============================
+   METALLIC REFLECTIONS
+   ============================ */
+.metallic-border{
+  border:1px solid transparent;
+  background-clip:padding-box;
+  position:relative;
+}
+.metallic-border::before{
+  content:'';position:absolute;inset:-1px;
+  background:linear-gradient(
+    135deg,
+    rgba(255,255,255,.12) 0%,
+    rgba(255,255,255,.03) 30%,
+    transparent 50%,
+    rgba(255,255,255,.03) 70%,
+    rgba(255,255,255,.08) 100%
+  );
+  z-index:-1;pointer-events:none;
+}
+
+/* ============================
+   BRAKE DISC HEAT EFFECT
+   ============================ */
+.heat-hover{transition:all .3s ease}
+.heat-hover:hover{
+  border-color:var(--acc)!important;
+  box-shadow:0 4px 24px var(--acc-g),inset 0 0 0 1px var(--acc-d);
+}
+
+/* ============================
+   CHECKERED FLAG PATTERN
+   ============================ */
+.checkered{
+  position:relative;
+}
+.checkered::after{
+  content:'';position:absolute;top:0;right:0;width:80px;height:100%;
+  background-image:
+    linear-gradient(45deg,rgba(255,255,255,.04) 25%,transparent 25%),
+    linear-gradient(-45deg,rgba(255,255,255,.04) 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,rgba(255,255,255,.04) 75%),
+    linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.04) 75%);
+  background-size:12px 12px;
+  background-position:0 0,0 6px,6px -6px,-6px 0px;
+  opacity:.5;pointer-events:none;
+  mask-image:linear-gradient(to left,rgba(0,0,0,.5),transparent);
+  -webkit-mask-image:linear-gradient(to left,rgba(0,0,0,.5),transparent);
+}
+
+/* ============================
+   RPM GAUGE ANIMATION
+   ============================ */
+.rpm-bar{
+  height:4px;background:var(--bg3);overflow:hidden;border-radius:2px;
+}
+.rpm-bar-fill{
+  height:100%;border-radius:2px;
+  background:linear-gradient(90deg,var(--success) 0%,var(--warning) 60%,var(--acc) 100%);
+  transition:width 1s ease;
+}
+
+/* ============================
+   TACHOMETER RING
+   ============================ */
+.tach-ring{
+  width:80px;height:80px;border-radius:50%;
+  border:3px solid var(--brd);position:relative;
+  display:flex;align-items:center;justify-content:center;
+}
+.tach-ring::before{
+  content:'';position:absolute;inset:-3px;border-radius:50%;
+  border:3px solid transparent;border-top-color:var(--acc);border-right-color:var(--acc);
+  animation:tach-spin 2s linear infinite;
+}
+@keyframes tach-spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+
+/* ============================
+   SCAN LINE
+   ============================ */
+.scan-line{position:relative;overflow:hidden}
+.scan-line::after{
+  content:'';position:absolute;top:-100%;left:0;width:100%;height:100%;
+  background:linear-gradient(180deg,transparent 0%,rgba(232,0,45,.04) 50%,transparent 100%);
+  animation:scan 4s linear infinite;pointer-events:none;
+}
+@keyframes scan{from{top:-100%}to{top:100%}}
+
+/* ============================
+   PULSE DOT
+   ============================ */
+.pulse-dot{
+  width:8px;height:8px;border-radius:50%;background:var(--acc);
+  position:relative;display:inline-block;
+}
+.pulse-dot::before{
+  content:'';position:absolute;inset:-4px;border-radius:50%;
+  border:2px solid var(--acc);opacity:0;
+  animation:pulse-out 2s ease-out infinite;
+}
+@keyframes pulse-out{
+  0%{transform:scale(.8);opacity:.8}
+  100%{transform:scale(2);opacity:0}
+}
+
+/* ============================
+   SEPARATOR RACING
+   ============================ */
+.separator-racing{
+  height:1px;background:var(--brd);position:relative;margin:32px 0;
+}
+.separator-racing::before{
+  content:'';position:absolute;left:0;top:-1px;width:60px;height:3px;
+  background:var(--acc);
+}
+.separator-racing::after{
+  content:'';position:absolute;left:68px;top:-1px;width:20px;height:3px;
+  background:var(--acc);opacity:.4;
+}
+
+/* ============================
+   NUMBER PLATE
+   ============================ */
+.num-plate{
+  font-family:var(--fd);font-size:72px;letter-spacing:2px;
+  color:rgba(255,255,255,.04);position:absolute;top:10px;right:20px;
+  line-height:1;pointer-events:none;
+}
+
+/* ============================
+   RIBBON CORNER
+   ============================ */
+.ribbon{
+  position:absolute;top:14px;right:-32px;
+  font-family:var(--fu);font-size:10px;font-weight:700;
+  letter-spacing:2px;text-transform:uppercase;
+  background:var(--acc);color:#fff;
+  padding:4px 36px;transform:rotate(45deg);
+  z-index:5;
+}
+.ribbon.gold{background:var(--gold);color:#000}
+
+/* ============================
+   FEATURED CARD GLOW
+   ============================ */
+.card-featured{
+  border:1px solid rgba(232,0,45,.2)!important;
+  box-shadow:0 0 40px rgba(232,0,45,.06);
+}
+.card-featured:hover{
+  border-color:rgba(232,0,45,.4)!important;
+  box-shadow:0 0 60px rgba(232,0,45,.12);
+}
