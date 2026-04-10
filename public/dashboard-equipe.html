@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Painel da Equipe — PitLane News</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
 <link rel="stylesheet" href="css/core.css">
 <link rel="stylesheet" href="css/carbon.css">
 <link rel="stylesheet" href="css/dashboard.css">
@@ -24,7 +25,7 @@
     <div class="dash-profile" id="sidebarProfile"></div>
     <ul class="dash-nav">
       <li><a class="active" onclick="eqNav('overview',this)"><span class="nav-icon"><i data-lucide="bar-chart-3" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Visão Geral</a></li>
-      <li><a onclick="eqNav('compose',this)"><span class="nav-icon">✍️</span> Nova Matéria</a></li>
+      <li><a onclick="eqNav('compose',this)"><span class="nav-icon"><i class="fi fi-rr-pencil"></i></span> Nova Matéria</a></li>
       <li><a onclick="eqNav('articles',this)"><span class="nav-icon"><i data-lucide="newspaper" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Matérias</a></li>
       <li><a onclick="eqNav('pilots',this)"><span class="nav-icon"><i data-lucide="car" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Pilotos</a></li>
       <div class="dash-nav-sep"></div>
@@ -58,7 +59,7 @@ function renderOverview() {
   const usagePct = stats.limit > 0 ? ((stats.limit - stats.remaining) / stats.limit * 100) : 0;
 
   document.getElementById('eq-overview').innerHTML = `
-    <div class="dash-header"><h1>Visão Geral da Equipe</h1><div class="dash-header-actions"><button class="btn-primary" onclick="eqNav('compose')">✍️ Nova Matéria</button></div></div>
+    <div class="dash-header"><h1>Visão Geral da Equipe</h1><div class="dash-header-actions"><button class="btn-primary" onclick="eqNav('compose')"><i class="fi fi-rr-pencil"></i> Nova Matéria</button></div></div>
     <div class="stat-grid">
       <div class="stat-card accent" style="--acc:var(--gold)"><div class="stat-label">Matérias Restantes</div><div class="stat-value" style="color:var(--gold)">${stats.remaining}</div><div class="stat-detail">de ${stats.limit} · ${PitLane.getPlanName(USER.plan)}</div><div class="rpm-bar" style="margin-top:10px"><div class="rpm-bar-fill" style="width:${usagePct}%"></div></div></div>
       <div class="stat-card"><div class="stat-label">Pilotos Vinculados</div><div class="stat-value">${pilots.length}</div><div class="stat-detail">ativos na equipe</div></div>

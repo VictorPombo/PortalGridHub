@@ -130,7 +130,7 @@ function renderSearch(q){
   w.innerHTML=r.map(a=>`<div class="sr-item" onclick="closeOverlay('searchOverlay');openArticle(${a.id})">
     <img class="sr-img" src="${a.img}" alt="">
     <div><div class="sr-title">${a.title}</div>
-    <div class="sr-meta"><span class="badge ${a.badge}" style="font-size:8px">${a.cat.toUpperCase()}</span><span>${a.author}</span>${a.pago?'<span class="tag-pago" style="font-size:8px;padding:1px 6px">⭐ Patrocinado</span>':'<span class="tag-int" style="font-size:8px;padding:1px 6px">✍ PitLane</span>'}</div></div>
+    <div class="sr-meta"><span class="badge ${a.badge}" style="font-size:8px">${a.cat.toUpperCase()}</span><span>${a.author}</span>${a.pago?'<span class="tag-pago" style="font-size:8px;padding:1px 6px"><i class="fi fi-rr-star"></i> Patrocinado</span>':'<span class="tag-int" style="font-size:8px;padding:1px 6px"><i class="fi fi-rr-pencil"></i> PitLane</span>'}</div></div>
   </div>`).join('');
 }
 document.getElementById('searchField').addEventListener('input',e=>renderSearch(e.target.value));
@@ -149,7 +149,7 @@ renderStand(DRIVERS);
 const RACE=new Date('2026-05-03T21:00:00Z');
 function tick(){
   const d=RACE-new Date();
-  if(d<=0){document.querySelector('.cd-grid').innerHTML='<div style="grid-column:span 4;text-align:center;padding:16px;font-family:var(--fm);font-size:11px;color:var(--acc)">🏁 CORRIDA EM ANDAMENTO</div>';return}
+  if(d<=0){document.querySelector('.cd-grid').innerHTML='<div style="grid-column:span 4;text-align:center;padding:16px;font-family:var(--fm);font-size:11px;color:var(--acc)"><i class="fi fi-rr-flag-checkered"></i> CORRIDA EM ANDAMENTO</div>';return}
   document.getElementById('cd-d').textContent=pad(Math.floor(d/86400000));
   document.getElementById('cd-h').textContent=pad(Math.floor((d%86400000)/3600000));
   document.getElementById('cd-m').textContent=pad(Math.floor((d%3600000)/60000));
@@ -367,7 +367,7 @@ async function loadLiveNews() {
           title: n.title,
           link: n.link,
           author: n.author || 'RSS Tracker',
-          av: '📰',
+          av: '<i class="fi fi-rr-newspaper"></i>',
           date: new Date(n.pubDate).toLocaleDateString('pt-BR'),
           img: n.thumbnail || 'https://loremflickr.com/400/260/racing,formula1?lock='+i,
           body: n.contentSnippet || '',
@@ -396,8 +396,8 @@ function renderNewsGrid(articles) {
   grid.innerHTML = articles.map((a, i) => {
     const isExt = a.isReal;
     const clickAction = isExt ? `extLink('${a.link}')` : `openArticle('${a.id}')`;
-    const tag = isExt ? `<span class="tag-ext">🔗 ${a.author}</span>` : `<span class="tag-int">✍ PitLane News</span>`;
-    const dst = isExt ? `<div class="ncard-dest ext">🔗 Abre ${a.author} em nova aba</div>` : `<div class="ncard-dest int">✍ Abre aqui no PitLane News</div>`;
+    const tag = isExt ? `<span class="tag-ext"><i class="fi fi-rr-link"></i> ${a.author}</span>` : `<span class="tag-int"><i class="fi fi-rr-pencil"></i> PitLane News</span>`;
+    const dst = isExt ? `<div class="ncard-dest ext"><i class="fi fi-rr-link"></i> Abre ${a.author} em nova aba</div>` : `<div class="ncard-dest int"><i class="fi fi-rr-pencil"></i> Abre aqui no PitLane News</div>`;
     const timeToRead = isExt ? 'AGORA' : '5 MIN';
     const isFeat = i < 2 ? 'feat' : '';
     
@@ -416,7 +416,7 @@ function renderNewsGrid(articles) {
           <div class="ncard-excerpt">${a.body ? a.body.replace(/<[^>]*>?/gm, '').substring(0, 110) + '...' : ''}</div>
           <div class="ncard-footer">
             <span class="ncard-meta">${a.date} · ${a.author.toUpperCase()} · ${timeToRead}</span>
-            ${!isExt ? `<button class="bm-btn" onclick="event.stopPropagation();bookmark(this,'${a.id}')">🔖</button>` : ''}
+            ${!isExt ? `<button class="bm-btn" onclick="event.stopPropagation();bookmark(this,'${a.id}')"><i class="fi fi-rr-bookmark"></i></button>` : ''}
           </div>
         </div>
         ${dst}

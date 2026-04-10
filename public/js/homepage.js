@@ -30,7 +30,7 @@ async function loadLiveStandings() {
       return {
         pos: r.position,
         cls: i === 0 ? 'p1' : i === 1 ? 'p2' : i === 2 ? 'p3' : '',
-        flag: '🏁', 
+        flag: '<i class="fi fi-rr-flag-checkered"></i>', 
         name: r.Driver.familyName.toUpperCase(),
         team: r.Constructors[0]?.name || 'Privateer',
         pts: p,
@@ -46,7 +46,7 @@ async function loadLiveStandings() {
       return {
         pos: r.position,
         cls: i === 0 ? 'p1' : i === 1 ? 'p2' : i === 2 ? 'p3' : '',
-        flag: '🏎️', 
+        flag: '<i class="fi fi-rr-car-side"></i>', 
         name: r.Constructor.name.toUpperCase(),
         team: r.Constructor.nationality,
         pts: p,
@@ -252,7 +252,7 @@ async function loadLiveNews() {
         title: n.title,
         link: n.link, // Usado para redirecionar
         author: n.author,
-        av: '📰',
+        av: '<i class="fi fi-rr-newspaper"></i>',
         date: new Date(n.pubDate).toLocaleDateString('pt-BR'),
         img: n.thumbnail,
         body: '',
@@ -355,7 +355,7 @@ function renderNewsGrid() {
           <div class="ncard-excerpt">${isFeat ? 'Acompanhe de perto as novidades e análises das principais categorias no automobilismo mundial.' : ''}</div>
           <div class="ncard-meta">
             <span>${a.date} · ${a.author.toUpperCase().slice(0,15)}</span>
-            <button class="ncard-bm" onclick="event.stopPropagation();toggleBookmark(this,'${a.id}')" title="Salvar">🔖</button>
+            <button class="ncard-bm" onclick="event.stopPropagation();toggleBookmark(this,'${a.id}')" title="Salvar"><i class="fi fi-rr-bookmark"></i></button>
           </div>
         </div>
       </div>
@@ -414,7 +414,7 @@ function renderSplitGrids() {
         <div class="op-title">${a.title}</div>
         <div class="op-excerpt">Leia a análise aprofundada direto da redação.</div>
         <div class="op-author">
-          <div class="op-avatar">📰</div>
+          <div class="op-avatar"><i class="fi fi-rr-newspaper"></i></div>
           <div><div class="op-name">${a.author}</div><div class="op-role">${a.date}</div></div>
         </div>
       </div>
@@ -487,7 +487,7 @@ function submitNewsletter() {
     input?.classList.add('err');
     if(input) input.style.animation='shake .4s ease';
     setTimeout(()=>{ if(input) input.style.animation=''; },400);
-    showToast('⚠ Insira um e-mail válido','err'); return;
+    showToast('<i class="fi fi-rr-exclamation"></i> Insira um e-mail válido','err'); return;
   }
   input?.classList.remove('err');
   const wrap = document.getElementById('nlFormWrap');

@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Painel do Piloto — PitLane News</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
 <link rel="stylesheet" href="css/core.css">
 <link rel="stylesheet" href="css/carbon.css">
 <link rel="stylesheet" href="css/dashboard.css">
@@ -31,7 +32,7 @@
     <div class="dash-profile" id="sidebarProfile"></div>
     <ul class="dash-nav">
       <li><a class="active" onclick="showSection('overview',this)"><span class="nav-icon"><i data-lucide="bar-chart-3" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Visão Geral</a></li>
-      <li><a onclick="showSection('compose',this)"><span class="nav-icon">✍️</span> Nova Matéria</a></li>
+      <li><a onclick="showSection('compose',this)"><span class="nav-icon"><i class="fi fi-rr-pencil"></i></span> Nova Matéria</a></li>
       <li><a onclick="showSection('articles',this)"><span class="nav-icon"><i data-lucide="newspaper" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Minhas Matérias</a></li>
       <div class="dash-nav-sep"></div>
       <li><a onclick="showSection('profile',this)"><span class="nav-icon"><i data-lucide="user-check" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Editar Perfil</a></li>
@@ -96,7 +97,7 @@ function renderOverview() {
   document.getElementById('sec-overview').innerHTML = `
     <div class="dash-header">
       <h1>Visão Geral</h1>
-      <div class="dash-header-actions"><button class="btn-primary" onclick="showSection('compose')">✍️ Nova Matéria</button></div>
+      <div class="dash-header-actions"><button class="btn-primary" onclick="showSection('compose')"><i class="fi fi-rr-pencil"></i> Nova Matéria</button></div>
     </div>
     <div class="stat-grid">
       <div class="stat-card accent">
@@ -318,7 +319,7 @@ function renderMediaKit() {
   document.getElementById('sec-mediakit').innerHTML = `
     <div class="dash-header"><h1>Mídia Kit</h1></div>
     <div class="media-kit-card carbon-subtle">
-      ${USER.plan === 'pro' ? '' : '<div style="font-family:var(--fu);font-size:11px;color:var(--warning);letter-spacing:1px;margin-bottom:16px">⚠️ Recurso disponível no Plano Pro. <a href="planos.html" style="color:var(--acc)">Fazer upgrade</a></div>'}
+      ${USER.plan === 'pro' ? '' : '<div style="font-family:var(--fu);font-size:11px;color:var(--warning);letter-spacing:1px;margin-bottom:16px"><i class="fi fi-rr-exclamation"></i> Recurso disponível no Plano Pro. <a href="planos.html" style="color:var(--acc)">Fazer upgrade</a></div>'}
       <div class="media-kit-icon"><i data-lucide="paperclip" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></div>
       <div class="media-kit-title">Mídia Kit de ${USER.name}</div>
       <div class="media-kit-desc">Material profissional com seus dados, conquistas, ${stats.totalViewsFormatted} visualizações acumuladas e informações para patrocinadores.</div>

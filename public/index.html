@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PitLane News</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/toast.css">
 </head>
@@ -24,12 +25,12 @@
 ════════════════════════════════════════ -->
 <div class="mob-overlay" id="mobOverlay" onclick="closeMob()"></div>
 <div class="mob-menu" id="mobMenu">
-  <a onclick="showView('portal');closeMob()">🏠 Início</a>
-  <a onclick="showView('portal');filterCat('f1');closeMob()">🏎 Fórmula 1</a>
-  <a onclick="showView('portal');filterCat('motogp');closeMob()">🏍 MotoGP</a>
-  <a onclick="showView('portal');filterCat('wec');closeMob()">⏱ Endurance</a>
-  <a onclick="showView('pilots-list');closeMob()">👤 Pilotos</a>
-  <a onclick="showView('plans');closeMob()">📋 Planos</a>
+  <a onclick="showView('portal');closeMob()"><i class="fi fi-rr-home"></i> Início</a>
+  <a onclick="showView('portal');filterCat('f1');closeMob()"><i class="fi fi-rr-car-side"></i> Fórmula 1</a>
+  <a onclick="showView('portal');filterCat('motogp');closeMob()"><i class="fi fi-rr-motorcycle"></i> MotoGP</a>
+  <a onclick="showView('portal');filterCat('wec');closeMob()"><i class="fi fi-rr-stopwatch"></i> Endurance</a>
+  <a onclick="showView('pilots-list');closeMob()"><i class="fi fi-rr-user"></i> Pilotos</a>
+  <a onclick="showView('plans');closeMob()"><i class="fi fi-rr-clipboard"></i> Planos</a>
   <div style="margin-top:20px;display:flex;flex-direction:column;gap:8px">
     <button class="btn btn-out btn-full" onclick="showView('login');closeMob()">Entrar</button>
     <button class="btn btn-acc btn-full" onclick="openSubscribeModal();closeMob()">Assinar</button>
@@ -48,12 +49,12 @@
     </div>
     <div class="search-hint">Ctrl+K para abrir · Enter para buscar · Clique em um resultado</div>
     <div class="search-cats">
-      <button class="search-cat" onclick="searchBy('Fórmula 1')">🏎 F1</button>
-      <button class="search-cat" onclick="searchBy('MotoGP')">🏍 MotoGP</button>
-      <button class="search-cat" onclick="searchBy('WEC')">⏱ WEC</button>
-      <button class="search-cat" onclick="searchBy('Sim Racing')">🎮 Sim Racing</button>
-      <button class="search-cat" onclick="searchBy('piloto')">👤 Pilotos</button>
-      <button class="search-cat" onclick="searchBy('equipe')">🏁 Equipes</button>
+      <button class="search-cat" onclick="searchBy('Fórmula 1')"><i class="fi fi-rr-car-side"></i> F1</button>
+      <button class="search-cat" onclick="searchBy('MotoGP')"><i class="fi fi-rr-motorcycle"></i> MotoGP</button>
+      <button class="search-cat" onclick="searchBy('WEC')"><i class="fi fi-rr-stopwatch"></i> WEC</button>
+      <button class="search-cat" onclick="searchBy('Sim Racing')"><i class="fi fi-rr-gamepad"></i> Sim Racing</button>
+      <button class="search-cat" onclick="searchBy('piloto')"><i class="fi fi-rr-user"></i> Pilotos</button>
+      <button class="search-cat" onclick="searchBy('equipe')"><i class="fi fi-rr-flag-checkered"></i> Equipes</button>
     </div>
     <div class="search-results" id="searchResults"></div>
   </div>
@@ -95,7 +96,7 @@
           <span class="cat-chk" onclick="this.classList.toggle('on')">WRC</span>
         </div>
       </div>
-      <button class="btn btn-acc btn-full" onclick="subNext(2)">Assinar Grátis ⚡</button>
+      <button class="btn btn-acc btn-full" onclick="subNext(2)">Assinar Grátis <i class="fi fi-rr-bolt"></i></button>
       <div style="text-align:center;margin-top:10px;font-family:var(--fm);font-size:9px;color:var(--muted)">Passo 2 de 2</div>
     </div>
     <div class="sub-step" id="ss3">
@@ -123,7 +124,7 @@
     </div>
     <img class="art-hero-img" id="artImg" src="" alt="">
     <div class="art-body">
-      <div class="pago-notice hide" id="artPagoNotice">⭐ <strong>Conteúdo em parceria com</strong> <span id="artPagoPartner"></span> · Publicação patrocinada identificada conforme CONAR</div>
+      <div class="pago-notice hide" id="artPagoNotice"><i class="fi fi-rr-star"></i> <strong>Conteúdo em parceria com</strong> <span id="artPagoPartner"></span> · Publicação patrocinada identificada conforme CONAR</div>
       <div class="art-cat-row">
         <span class="badge" id="artBadge">F1</span>
         <span class="art-kicker" id="artKicker"></span>
@@ -199,7 +200,7 @@
 
   <!-- Ticker -->
   <div class="ticker">
-    <div class="ticker-lbl">⚡ AGORA</div>
+    <div class="ticker-lbl"><i class="fi fi-rr-bolt"></i> AGORA</div>
     <div class="ticker-scroll">
       <div class="ticker-track">
         <span class="t-item" onclick="openArticle(0)">Antonelli lidera F1 2026 com 72 pts — ANÁLISE PITLANE</span>
@@ -222,21 +223,21 @@
   <div class="system-callout">
     <div class="callout-box">
       <div class="callout-item">
-        <div class="callout-icon ext">🔗</div>
+        <div class="callout-icon ext"><i class="fi fi-rr-link"></i></div>
         <div class="callout-text">
           <strong>Notícias Externas</strong>
           <p>Matérias de Motorsport.com, Autosport e RaceFans. Clique → vai direto ao site de origem. Não armazenamos nem reescrevemos.</p>
         </div>
       </div>
       <div class="callout-item">
-        <div class="callout-icon int">✍</div>
+        <div class="callout-icon int"><i class="fi fi-rr-pencil"></i></div>
         <div class="callout-text">
           <strong>Conteúdo PitLane</strong>
           <p>Matérias produzidas pela nossa redação ou em parceria com pilotos/equipes. Abre aqui no portal.</p>
         </div>
       </div>
       <div class="callout-item">
-        <div class="callout-icon pago">⭐</div>
+        <div class="callout-icon pago"><i class="fi fi-rr-star"></i></div>
         <div class="callout-text">
           <strong>Conteúdo Patrocinado</strong>
           <p>Matérias criadas para pilotos e equipes clientes. Identificadas como parceria conforme CONAR e LGPD.</p>
@@ -251,7 +252,7 @@
       <div class="hero-main" onclick="openArticle(0)">
         <img src="https://loremflickr.com/1200/600/formula1,mercedes?lock=42" alt="">
         <div class="hero-content">
-          <div class="hero-type int">✍ CONTEÚDO PITLANE</div>
+          <div class="hero-type int"><i class="fi fi-rr-pencil"></i> CONTEÚDO PITLANE</div>
           <span class="badge b-f1">F1 · TEMPORADA 2026</span>
           <h1 class="hero-title">Antonelli Lidera com 72 Pts: O Mais Jovem a Comandar o Mundial Moderno de F1</h1>
           <p class="hero-excerpt">Kimi Antonelli (Mercedes) comanda o campeonato após 3 GPs — Austrália, China e Japão — com duas vitórias e uma perseguição que redefine a nova era da F1.</p>
@@ -262,7 +263,7 @@
         <div class="side-card" onclick="extLink('https://www.skysports.com/f1/news/12433/13529789/f1-2026-regulations-fia-confirm-commitment-to-making-tweaks-to-some-aspects-of-regulations-after-meeting')">
           <img src="https://loremflickr.com/600/380/formula1,fia?lock=7" alt="">
           <div class="side-content">
-            <div style="margin-bottom:5px"><div class="hero-type ext" style="display:inline-flex;font-size:8px;padding:2px 7px">🔗 SKY SPORTS F1 ↗</div></div>
+            <div style="margin-bottom:5px"><div class="hero-type ext" style="display:inline-flex;font-size:8px;padding:2px 7px"><i class="fi fi-rr-link"></i> SKY SPORTS F1 ↗</div></div>
             <span class="badge b-f1">F1 · REGULAMENTOS</span>
             <div class="side-title">FIA Confirma Ajustes nas Regras 2026 Após Acidente de Bearman em Suzuka</div>
             <div class="side-meta">Clicando vai para Sky Sports F1 ↗</div>
@@ -271,7 +272,7 @@
         <div class="side-card" onclick="extLink('https://www.espn.com/f1/story/_/id/48321626/when-next-f1-race-why-such-long-break-bahrain-saudi-arabia-miami-japanese-grand-prix-2026')">
           <img src="https://loremflickr.com/600/380/miami,formula1?lock=15" alt="">
           <div class="side-content">
-            <div style="margin-bottom:5px"><div class="hero-type ext" style="display:inline-flex;font-size:8px;padding:2px 7px">🔗 ESPN ↗</div></div>
+            <div style="margin-bottom:5px"><div class="hero-type ext" style="display:inline-flex;font-size:8px;padding:2px 7px"><i class="fi fi-rr-link"></i> ESPN ↗</div></div>
             <span class="badge b-f1">F1 · MIAMI GP</span>
             <div class="side-title">Próxima Corrida: GP de Miami — 1 a 3 de Maio de 2026</div>
             <div class="side-meta">Clicando vai para ESPN ↗</div>
@@ -283,12 +284,12 @@
 
   <!-- CAT STRIP -->
   <div class="cat-strip" id="catStrip">
-    <div class="cat-pill active" style="--cc:#e8002d" onclick="filterCat('all');catAct(this)"><span class="cat-ico">🏁</span><span class="cat-lbl">Todos</span><span class="cat-cnt">148 notícias</span></div>
-    <div class="cat-pill" style="--cc:#e8002d" onclick="filterCat('f1');catAct(this)"><span class="cat-ico">🏎</span><span class="cat-lbl">F1</span><span class="cat-cnt">52 notícias</span></div>
-    <div class="cat-pill" style="--cc:#0060c8" onclick="filterCat('motogp');catAct(this)"><span class="cat-ico">🏍</span><span class="cat-lbl">MotoGP</span><span class="cat-cnt">38 notícias</span></div>
-    <div class="cat-pill" style="--cc:#006e3a" onclick="filterCat('wec');catAct(this)"><span class="cat-ico">⏱</span><span class="cat-lbl">WEC</span><span class="cat-cnt">24 notícias</span></div>
-    <div class="cat-pill" style="--cc:#d48f00" onclick="filterCat('nascar');catAct(this)"><span class="cat-ico">🔁</span><span class="cat-lbl">NASCAR</span><span class="cat-cnt">18 notícias</span></div>
-    <div class="cat-pill" style="--cc:#6222ee" onclick="filterCat('sim');catAct(this)"><span class="cat-ico">🎮</span><span class="cat-lbl">Sim Racing</span><span class="cat-cnt">31 notícias</span></div>
+    <div class="cat-pill active" style="--cc:#e8002d" onclick="filterCat('all');catAct(this)"><span class="cat-ico"><i class="fi fi-rr-flag-checkered"></i></span><span class="cat-lbl">Todos</span><span class="cat-cnt">148 notícias</span></div>
+    <div class="cat-pill" style="--cc:#e8002d" onclick="filterCat('f1');catAct(this)"><span class="cat-ico"><i class="fi fi-rr-car-side"></i></span><span class="cat-lbl">F1</span><span class="cat-cnt">52 notícias</span></div>
+    <div class="cat-pill" style="--cc:#0060c8" onclick="filterCat('motogp');catAct(this)"><span class="cat-ico"><i class="fi fi-rr-motorcycle"></i></span><span class="cat-lbl">MotoGP</span><span class="cat-cnt">38 notícias</span></div>
+    <div class="cat-pill" style="--cc:#006e3a" onclick="filterCat('wec');catAct(this)"><span class="cat-ico"><i class="fi fi-rr-stopwatch"></i></span><span class="cat-lbl">WEC</span><span class="cat-cnt">24 notícias</span></div>
+    <div class="cat-pill" style="--cc:#d48f00" onclick="filterCat('nascar');catAct(this)"><span class="cat-ico"><i class="fi fi-rr-refresh"></i></span><span class="cat-lbl">NASCAR</span><span class="cat-cnt">18 notícias</span></div>
+    <div class="cat-pill" style="--cc:#6222ee" onclick="filterCat('sim');catAct(this)"><span class="cat-ico"><i class="fi fi-rr-gamepad"></i></span><span class="cat-lbl">Sim Racing</span><span class="cat-cnt">31 notícias</span></div>
     <div class="cat-pill" style="--cc:#a04e00" onclick="filterCat('wrc');catAct(this)"><span class="cat-ico">🪨</span><span class="cat-lbl">WRC</span><span class="cat-cnt">12 notícias</span></div>
   </div>
 
@@ -300,9 +301,9 @@
         <div class="ftag-row" style="margin-bottom:0">
           <button class="ftag active" onclick="filterType(this,'all')">Todos</button>
           <div class="ftag-sep"></div>
-          <button class="ftag ext-filter" onclick="filterType(this,'ext')">🔗 Externas</button>
-          <button class="ftag int-filter" onclick="filterType(this,'int')">✍ PitLane</button>
-          <button class="ftag" style="border-color:rgba(240,160,0,.3);color:var(--gold)" onclick="filterType(this,'pago')">⭐ Patrocinado</button>
+          <button class="ftag ext-filter" onclick="filterType(this,'ext')"><i class="fi fi-rr-link"></i> Externas</button>
+          <button class="ftag int-filter" onclick="filterType(this,'int')"><i class="fi fi-rr-pencil"></i> PitLane</button>
+          <button class="ftag" style="border-color:rgba(240,160,0,.3);color:var(--gold)" onclick="filterType(this,'pago')"><i class="fi fi-rr-star"></i> Patrocinado</button>
         </div>
       </div>
     </div>
@@ -316,17 +317,17 @@
         </div>
         <div class="ncard-body">
           <div class="ncard-type-row">
-            <span class="tag-int">✍ PitLane News</span>
+            <span class="tag-int"><i class="fi fi-rr-pencil"></i> PitLane News</span>
             <span style="font-family:var(--fm);font-size:9px;color:var(--muted)">Abre no portal</span>
           </div>
           <div class="ncard-title">Antonelli Lidera com 72 Pts — Mercedes Domina as 3 Primeiras Corridas de 2026</div>
           <div class="ncard-excerpt">Kimi Antonelli venceu China e Japão e lidera o campeonato com 72 pontos. Russell é 2º com 63. Ferrari e McLaren buscam reduzir a diferença em Miami.</div>
           <div class="ncard-footer">
             <span class="ncard-meta">10 ABR · REDAÇÃO PITLANE · 5 MIN</span>
-            <button class="bm-btn" onclick="event.stopPropagation();bookmark(this,0)">🔖</button>
+            <button class="bm-btn" onclick="event.stopPropagation();bookmark(this,0)"><i class="fi fi-rr-bookmark"></i></button>
           </div>
         </div>
-        <div class="ncard-dest int">✍ Abre aqui no PitLane News</div>
+        <div class="ncard-dest int"><i class="fi fi-rr-pencil"></i> Abre aqui no PitLane News</div>
       </div>
 
       <!-- CARD EXTERNO — Sky Sports: FIA regras 2026 (real, hoje) -->
@@ -346,7 +347,7 @@
             <span style="font-family:var(--fm);font-size:9px;color:var(--blue)">↗ sai do site</span>
           </div>
         </div>
-        <div class="ncard-dest ext">🔗 Abre Sky Sports F1 em nova aba</div>
+        <div class="ncard-dest ext"><i class="fi fi-rr-link"></i> Abre Sky Sports F1 em nova aba</div>
       </div>
 
       <!-- CARD EXTERNO — ESPN: break entre races (real, hoje) -->
@@ -366,7 +367,7 @@
             <span style="font-family:var(--fm);font-size:9px;color:var(--blue)">↗ sai do site</span>
           </div>
         </div>
-        <div class="ncard-dest ext">🔗 Abre ESPN em nova aba</div>
+        <div class="ncard-dest ext"><i class="fi fi-rr-link"></i> Abre ESPN em nova aba</div>
       </div>
 
       <!-- CARD INTERNO — Verstappen cogita aposentar -->
@@ -377,17 +378,17 @@
         </div>
         <div class="ncard-body">
           <div class="ncard-type-row">
-            <span class="tag-int">✍ PitLane News</span>
+            <span class="tag-int"><i class="fi fi-rr-pencil"></i> PitLane News</span>
             <span style="font-family:var(--fm);font-size:9px;color:var(--muted)">Baseado em ESPN / Sky Sports</span>
           </div>
           <div class="ncard-title">Verstappen Cogita Aposentar-se da F1 ao Final de 2026</div>
           <div class="ncard-excerpt">Tetracampeão, insatisfeito com as regras de 2026 e em 9º no campeonato, avalia encerrar carreira no fim da temporada.</div>
           <div class="ncard-footer">
             <span class="ncard-meta">9 ABR · REDAÇÃO PITLANE · 3 MIN</span>
-            <button class="bm-btn" onclick="event.stopPropagation();bookmark(this,2)">🔖</button>
+            <button class="bm-btn" onclick="event.stopPropagation();bookmark(this,2)"><i class="fi fi-rr-bookmark"></i></button>
           </div>
         </div>
-        <div class="ncard-dest int">✍ Abre aqui no PitLane News</div>
+        <div class="ncard-dest int"><i class="fi fi-rr-pencil"></i> Abre aqui no PitLane News</div>
       </div>
 
       <!-- CARD INTERNO — Análise Mercedes domina -->
@@ -398,16 +399,16 @@
         </div>
         <div class="ncard-body">
           <div class="ncard-type-row">
-            <span class="tag-int">✍ PitLane News</span>
+            <span class="tag-int"><i class="fi fi-rr-pencil"></i> PitLane News</span>
           </div>
           <div class="ncard-title">Por Que a Mercedes Domina 2026 e o que Ferrari e McLaren Precisam Fazer</div>
           <div class="ncard-excerpt">Com 135 pts vs 90 da Ferrari, a equipe alemã demonstra superioridade na gestão do sistema elétrico — o diferencial técnico da nova era.</div>
           <div class="ncard-footer">
             <span class="ncard-meta">8 ABR · REDAÇÃO PITLANE · 7 MIN</span>
-            <button class="bm-btn" onclick="event.stopPropagation();bookmark(this,4)">🔖</button>
+            <button class="bm-btn" onclick="event.stopPropagation();bookmark(this,4)"><i class="fi fi-rr-bookmark"></i></button>
           </div>
         </div>
-        <div class="ncard-dest int">✍ Abre aqui no PitLane News</div>
+        <div class="ncard-dest int"><i class="fi fi-rr-pencil"></i> Abre aqui no PitLane News</div>
       </div>
 
       <!-- CARD EXTERNO — Sky Sports: O que equipes fazem no intervalo -->
@@ -427,27 +428,27 @@
             <span style="font-family:var(--fm);font-size:9px;color:var(--blue)">↗ sai do site</span>
           </div>
         </div>
-        <div class="ncard-dest ext">🔗 Abre Sky Sports F1 em nova aba</div>
+        <div class="ncard-dest ext"><i class="fi fi-rr-link"></i> Abre Sky Sports F1 em nova aba</div>
       </div>
 
       <!-- CARD PATROCINADO Rafael Moura -->
       <div class="ncard is-pago" data-cat="f1" data-type="pago" data-id="5" onclick="openArticle(5)">
         <div class="ncard-thumb">
           <img src="https://loremflickr.com/400/260/formula1,driver?lock=33" alt="">
-          <div class="ncard-ribbon"><span class="badge b-pago">⭐ Patrocinado</span></div>
+          <div class="ncard-ribbon"><span class="badge b-pago"><i class="fi fi-rr-star"></i> Patrocinado</span></div>
         </div>
         <div class="ncard-body">
           <div class="ncard-type-row">
-            <span class="tag-pago">⭐ Parceria · Rafael Moura</span>
+            <span class="tag-pago"><i class="fi fi-rr-star"></i> Parceria · Rafael Moura</span>
           </div>
           <div class="ncard-title">Rafael Moura Vence na F4 Brasil e Atrai Interesse de Equipes Europeias</div>
           <div class="ncard-excerpt">Piloto paulista de 19 anos domina as últimas corridas e negocia com equipes da Fórmula Regional para 2027.</div>
           <div class="ncard-footer">
             <span class="ncard-meta">9 ABR · REDAÇÃO PITLANE · 4 MIN</span>
-            <button class="bm-btn" onclick="event.stopPropagation();bookmark(this,5)">🔖</button>
+            <button class="bm-btn" onclick="event.stopPropagation();bookmark(this,5)"><i class="fi fi-rr-bookmark"></i></button>
           </div>
         </div>
-        <div class="ncard-dest int">✍ Abre aqui no PitLane News</div>
+        <div class="ncard-dest int"><i class="fi fi-rr-pencil"></i> Abre aqui no PitLane News</div>
       </div>
 
       <!-- CARD EXTERNO — GPFans: Verstappen retiro -->
@@ -467,7 +468,7 @@
             <span style="font-family:var(--fm);font-size:9px;color:var(--blue)">↗ sai do site</span>
           </div>
         </div>
-        <div class="ncard-dest ext">🔗 Abre GPFans em nova aba</div>
+        <div class="ncard-dest ext"><i class="fi fi-rr-link"></i> Abre GPFans em nova aba</div>
       </div>
 
     </div><!-- /card-grid -->
@@ -526,7 +527,7 @@
   <div class="nl-section">
     <div class="nl-inner">
       <div>
-        <div class="nl-eye">⚡ Briefing Diário</div>
+        <div class="nl-eye"><i class="fi fi-rr-bolt"></i> Briefing Diário</div>
         <div class="nl-title">Fique à Frente<br>do Grid</div>
         <p class="nl-desc">Resumo diário do automobilismo antes das 8h. Sem spam. Apenas o que importa.</p>
       </div>
@@ -655,7 +656,7 @@
             <div class="profile-cats-list" id="profileCatsList"></div>
           </div>
           <div class="profile-mediaki" style="margin-top:16px" id="profileMediaKit">
-            <div><div class="mk-title">📄 Mídia Kit 2026</div><div class="mk-desc">Números, audiência e cotas de patrocínio</div></div>
+            <div><div class="mk-title"><i class="fi fi-rr-document"></i> Mídia Kit 2026</div><div class="mk-desc">Números, audiência e cotas de patrocínio</div></div>
             <button class="btn btn-out btn-sm" onclick="toast('Baixando Mídia Kit PDF...','ok')">Baixar PDF</button>
           </div>
         </div>
@@ -664,7 +665,7 @@
           <div class="sponsor-sub">Escolha a cota ideal e apareça nas corridas, nas redes e nas matérias do piloto.</div>
           <div class="sponsor-cotas" id="sponsorCotas"></div>
           <div class="sponsor-form">
-            <div class="sponsor-form-title">💬 Entre em Contato</div>
+            <div class="sponsor-form-title"><i class="fi fi-rr-comment"></i> Entre em Contato</div>
             <input class="f-input" type="text" placeholder="Seu nome / empresa">
             <input class="f-input" type="email" placeholder="E-mail para retorno">
             <select class="f-input f-select" style="margin-bottom:10px">
@@ -694,9 +695,9 @@
     <div class="plans-title">Apareça no Grid.<br>Feche Patrocínio.</div>
     <div class="plans-sub">Planos mensais para pilotos, equipes e categorias. Matérias otimizadas para o Google + página profissional para atrair patrocinadores.</div>
     <div class="plans-tabs">
-      <button class="plan-tab active" onclick="showPlanGroup(this,'piloto')">👤 Pilotos</button>
-      <button class="plan-tab" onclick="showPlanGroup(this,'equipe')">🏁 Equipes</button>
-      <button class="plan-tab" onclick="showPlanGroup(this,'categoria')">🏆 Categorias</button>
+      <button class="plan-tab active" onclick="showPlanGroup(this,'piloto')"><i class="fi fi-rr-user"></i> Pilotos</button>
+      <button class="plan-tab" onclick="showPlanGroup(this,'equipe')"><i class="fi fi-rr-flag-checkered"></i> Equipes</button>
+      <button class="plan-tab" onclick="showPlanGroup(this,'categoria')"><i class="fi fi-rr-trophy"></i> Categorias</button>
     </div>
   </div>
 
@@ -874,10 +875,10 @@
         <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--brd);text-align:center">
           <div style="font-family:var(--fm);font-size:10px;color:var(--muted);margin-bottom:10px">DEMO — Clique para simular acesso:</div>
           <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap">
-            <button class="btn btn-out btn-sm" onclick="loginAs('admin')">👑 Admin</button>
-            <button class="btn btn-out btn-sm" onclick="loginAs('piloto')">👤 Piloto</button>
-            <button class="btn btn-out btn-sm" onclick="loginAs('equipe')">🏁 Equipe</button>
-            <button class="btn btn-out btn-sm" onclick="loginAs('categoria')">🏆 Categoria</button>
+            <button class="btn btn-out btn-sm" onclick="loginAs('admin')"><i class="fi fi-rr-crown"></i> Admin</button>
+            <button class="btn btn-out btn-sm" onclick="loginAs('piloto')"><i class="fi fi-rr-user"></i> Piloto</button>
+            <button class="btn btn-out btn-sm" onclick="loginAs('equipe')"><i class="fi fi-rr-flag-checkered"></i> Equipe</button>
+            <button class="btn btn-out btn-sm" onclick="loginAs('categoria')"><i class="fi fi-rr-trophy"></i> Categoria</button>
           </div>
         </div>
       </div>
@@ -910,28 +911,28 @@
         <div class="dlt">Portal do Piloto</div>
       </div>
       <nav class="dash-nav">
-        <a class="active" onclick="dashSection('dash-piloto-overview',this)"><span class="nav-icon">📊</span>Dashboard</a>
-        <a onclick="dashSection('dash-piloto-nova',this)"><span class="nav-icon">✍</span>Nova Matéria</a>
-        <a onclick="dashSection('dash-piloto-materias',this)"><span class="nav-icon">📰</span>Minhas Matérias</a>
-        <a onclick="dashSection('dash-piloto-perfil',this)"><span class="nav-icon">👤</span>Meu Perfil</a>
-        <a onclick="dashSection('dash-piloto-plano',this)"><span class="nav-icon">💳</span>Plano & Cobrança</a>
+        <a class="active" onclick="dashSection('dash-piloto-overview',this)"><span class="nav-icon"><i class="fi fi-rr-chart-histogram"></i></span>Dashboard</a>
+        <a onclick="dashSection('dash-piloto-nova',this)"><span class="nav-icon"><i class="fi fi-rr-pencil"></i></span>Nova Matéria</a>
+        <a onclick="dashSection('dash-piloto-materias',this)"><span class="nav-icon"><i class="fi fi-rr-newspaper"></i></span>Minhas Matérias</a>
+        <a onclick="dashSection('dash-piloto-perfil',this)"><span class="nav-icon"><i class="fi fi-rr-user"></i></span>Meu Perfil</a>
+        <a onclick="dashSection('dash-piloto-plano',this)"><span class="nav-icon"><i class="fi fi-rr-credit-card"></i></span>Plano & Cobrança</a>
         <div class="dash-section-lbl">CONTA</div>
-        <a onclick="showView('pilot-profile');loadProfile(0)"><span class="nav-icon">🔗</span>Ver minha página</a>
-        <a onclick="doLogout()"><span class="nav-icon">🚪</span>Sair</a>
+        <a onclick="showView('pilot-profile');loadProfile(0)"><span class="nav-icon"><i class="fi fi-rr-link"></i></span>Ver minha página</a>
+        <a onclick="doLogout()"><span class="nav-icon"><i class="fi fi-rr-exit"></i></span>Sair</a>
       </nav>
     </div>
     <div class="dash-main">
       <!-- Overview -->
       <div id="dash-piloto-overview">
         <div class="dash-header">
-          <div><div class="dash-title">Olá, Rafael! 🏎</div><div class="dash-subtitle">Piloto verificado · Plano Intermediário · Renovação em 01/Mai/2026</div></div>
+          <div><div class="dash-title">Olá, Rafael! <i class="fi fi-rr-car-side"></i></div><div class="dash-subtitle">Piloto verificado · Plano Intermediário · Renovação em 01/Mai/2026</div></div>
           <button class="btn btn-acc btn-sm" onclick="dashSection('dash-piloto-nova',null)">+ Nova Matéria</button>
         </div>
         <div class="kpi-row">
-          <div class="kpi-card" style="--cc:var(--acc)"><div class="kpi-icon">📰</div><div class="kpi-label">Matérias publicadas</div><div class="kpi-value">7</div><div class="kpi-sub">+2 este mês</div></div>
-          <div class="kpi-card" style="--cc:var(--blue)"><div class="kpi-icon">👁</div><div class="kpi-label">Visualizações totais</div><div class="kpi-value">4.2K</div><div class="kpi-sub">+340 esta semana</div></div>
-          <div class="kpi-card" style="--cc:var(--green)"><div class="kpi-icon">💬</div><div class="kpi-label">Contatos de patrocinadores</div><div class="kpi-value">3</div><div class="kpi-sub">2 aguardando resposta</div></div>
-          <div class="kpi-card" style="--cc:var(--gold)"><div class="kpi-icon">💳</div><div class="kpi-label">Matérias disponíveis</div><div class="kpi-value">1/2</div><div class="kpi-sub">Renova em 22 dias</div></div>
+          <div class="kpi-card" style="--cc:var(--acc)"><div class="kpi-icon"><i class="fi fi-rr-newspaper"></i></div><div class="kpi-label">Matérias publicadas</div><div class="kpi-value">7</div><div class="kpi-sub">+2 este mês</div></div>
+          <div class="kpi-card" style="--cc:var(--blue)"><div class="kpi-icon"><i class="fi fi-rr-user"></i></div><div class="kpi-label">Visualizações totais</div><div class="kpi-value">4.2K</div><div class="kpi-sub">+340 esta semana</div></div>
+          <div class="kpi-card" style="--cc:var(--green)"><div class="kpi-icon"><i class="fi fi-rr-comment"></i></div><div class="kpi-label">Contatos de patrocinadores</div><div class="kpi-value">3</div><div class="kpi-sub">2 aguardando resposta</div></div>
+          <div class="kpi-card" style="--cc:var(--gold)"><div class="kpi-icon"><i class="fi fi-rr-credit-card"></i></div><div class="kpi-label">Matérias disponíveis</div><div class="kpi-value">1/2</div><div class="kpi-sub">Renova em 22 dias</div></div>
         </div>
         <div class="panel-box">
           <div class="panel-box-header"><div class="panel-box-title">Uso do Plano — Abril 2026</div><span class="badge b-piloto">Intermediário</span></div>
@@ -961,7 +962,7 @@
       <!-- Nova matéria -->
       <div id="dash-piloto-nova" class="hide">
         <div class="dash-header"><div><div class="dash-title">Nova Matéria</div><div class="dash-subtitle">Envie o conteúdo bruto — a redação transforma em matéria profissional</div></div></div>
-        <div class="alert info">📝 <strong>Como funciona:</strong> Você envia título, fotos e uma descrição do que aconteceu. A redação da PitLane reescreve de forma profissional, otimiza o SEO e publica. Você aprova antes de ir ao ar.</div>
+        <div class="alert info"><i class="fi fi-rr-pencil"></i> <strong>Como funciona:</strong> Você envia título, fotos e uma descrição do que aconteceu. A redação da PitLane reescreve de forma profissional, otimiza o SEO e publica. Você aprova antes de ir ao ar.</div>
         <div class="panel-box">
           <div class="panel-box-header"><div class="panel-box-title">Dados da Matéria</div></div>
           <div class="panel-box-body">
@@ -982,7 +983,7 @@
             </div>
             <div class="f-group" style="margin-bottom:14px">
               <label class="f-label">Imagens *</label>
-              <div class="upload-area"><span class="upload-icon">📷</span><div class="upload-text">Clique ou arraste as fotos aqui<br><small style="color:var(--muted)">JPG, PNG · Máx 5 fotos · 10MB cada</small></div><input type="file" accept="image/*" multiple></div>
+              <div class="upload-area"><span class="upload-icon"><i class="fi fi-rr-camera"></i></span><div class="upload-text">Clique ou arraste as fotos aqui<br><small style="color:var(--muted)">JPG, PNG · Máx 5 fotos · 10MB cada</small></div><input type="file" accept="image/*" multiple></div>
             </div>
             <div class="f-group" style="margin-bottom:14px"><label class="f-label">Contexto adicional (opcional)</label><textarea class="f-input" style="min-height:80px;resize:vertical" placeholder="Informações extras: patrocinadores a mencionar, links relevantes, tom desejado..."></textarea></div>
             <div style="display:flex;gap:10px;margin-top:6px">
@@ -1035,7 +1036,7 @@
               <div class="f-group"><label class="f-label">Instagram</label><input class="f-input" type="text" placeholder="@seuperfil"></div>
               <div class="f-group"><label class="f-label">YouTube</label><input class="f-input" type="text" placeholder="youtube.com/seucanal"></div>
             </div>
-            <div class="f-group" style="margin-bottom:14px"><label class="f-label">Foto de perfil</label><div class="upload-area"><span class="upload-icon">📷</span><div class="upload-text">Foto profissional do piloto<br><small style="color:var(--muted)">JPG, PNG · Mínimo 400×400px</small></div><input type="file" accept="image/*"></div></div>
+            <div class="f-group" style="margin-bottom:14px"><label class="f-label">Foto de perfil</label><div class="upload-area"><span class="upload-icon"><i class="fi fi-rr-camera"></i></span><div class="upload-text">Foto profissional do piloto<br><small style="color:var(--muted)">JPG, PNG · Mínimo 400×400px</small></div><input type="file" accept="image/*"></div></div>
             <button class="btn btn-acc" onclick="toast('Perfil atualizado com sucesso!','ok')">Salvar alterações →</button>
           </div>
         </div>
@@ -1099,19 +1100,19 @@
   <div class="dash-layout">
     <div class="dash-sidebar">
       <div class="dash-logo-area">
-        <div style="font-family:var(--fd);font-size:18px;letter-spacing:3px;display:flex;align-items:center;gap:8px"><span style="color:var(--acc)">👑</span> PitLane</div>
+        <div style="font-family:var(--fd);font-size:18px;letter-spacing:3px;display:flex;align-items:center;gap:8px"><span style="color:var(--acc)"><i class="fi fi-rr-crown"></i></span> PitLane</div>
         <div class="dlt">Painel Admin Supremo</div>
       </div>
       <nav class="dash-nav">
-        <a class="active" onclick="dashSection('adm-overview',this)"><span class="nav-icon">📊</span>Visão Geral</a>
-        <a onclick="dashSection('adm-materias',this)"><span class="nav-icon">📰</span>Fila de Matérias</a>
-        <a onclick="dashSection('adm-users',this)"><span class="nav-icon">👥</span>Usuários</a>
-        <a onclick="dashSection('adm-news',this)"><span class="nav-icon">🔗</span>Feed RSS</a>
+        <a class="active" onclick="dashSection('adm-overview',this)"><span class="nav-icon"><i class="fi fi-rr-chart-histogram"></i></span>Visão Geral</a>
+        <a onclick="dashSection('adm-materias',this)"><span class="nav-icon"><i class="fi fi-rr-newspaper"></i></span>Fila de Matérias</a>
+        <a onclick="dashSection('adm-users',this)"><span class="nav-icon"><i class="fi fi-rr-users"></i></span>Usuários</a>
+        <a onclick="dashSection('adm-news',this)"><span class="nav-icon"><i class="fi fi-rr-link"></i></span>Feed RSS</a>
         <div class="dash-section-lbl">SISTEMA</div>
-        <a onclick="dashSection('adm-financeiro',this)"><span class="nav-icon">💰</span>Financeiro</a>
-        <a onclick="dashSection('adm-config',this)"><span class="nav-icon">⚙</span>Configurações</a>
-        <a onclick="showView('portal')"><span class="nav-icon">🏠</span>Ver portal</a>
-        <a onclick="doLogout()"><span class="nav-icon">🚪</span>Sair</a>
+        <a onclick="dashSection('adm-financeiro',this)"><span class="nav-icon"><i class="fi fi-rr-coin"></i></span>Financeiro</a>
+        <a onclick="dashSection('adm-config',this)"><span class="nav-icon"><i class="fi fi-rr-settings"></i></span>Configurações</a>
+        <a onclick="showView('portal')"><span class="nav-icon"><i class="fi fi-rr-home"></i></span>Ver portal</a>
+        <a onclick="doLogout()"><span class="nav-icon"><i class="fi fi-rr-exit"></i></span>Sair</a>
       </nav>
     </div>
     <div class="dash-main">
@@ -1119,23 +1120,23 @@
       <div id="adm-overview">
         <div class="dash-header"><div><div class="dash-title">Painel Admin</div><div class="dash-subtitle">Controle total do sistema PitLane News</div></div></div>
         <div class="kpi-row">
-          <div class="kpi-card" style="--cc:var(--acc)"><div class="kpi-icon">👥</div><div class="kpi-label">Usuários ativos</div><div class="kpi-value">47</div><div class="kpi-sub">+8 este mês</div></div>
-          <div class="kpi-card" style="--cc:var(--green)"><div class="kpi-icon">💰</div><div class="kpi-label">Receita mensal</div><div class="kpi-value">R$6.4K</div><div class="kpi-sub">+12% vs mês anterior</div></div>
-          <div class="kpi-card" style="--cc:var(--blue)"><div class="kpi-icon">📰</div><div class="kpi-label">Matérias publicadas</div><div class="kpi-value">134</div><div class="kpi-sub">+18 este mês</div></div>
-          <div class="kpi-card" style="--cc:var(--gold)"><div class="kpi-icon">⏳</div><div class="kpi-label">Pendentes de revisão</div><div class="kpi-value">5</div><div class="kpi-sub">Prazo: 48h</div></div>
+          <div class="kpi-card" style="--cc:var(--acc)"><div class="kpi-icon"><i class="fi fi-rr-users"></i></div><div class="kpi-label">Usuários ativos</div><div class="kpi-value">47</div><div class="kpi-sub">+8 este mês</div></div>
+          <div class="kpi-card" style="--cc:var(--green)"><div class="kpi-icon"><i class="fi fi-rr-coin"></i></div><div class="kpi-label">Receita mensal</div><div class="kpi-value">R$6.4K</div><div class="kpi-sub">+12% vs mês anterior</div></div>
+          <div class="kpi-card" style="--cc:var(--blue)"><div class="kpi-icon"><i class="fi fi-rr-newspaper"></i></div><div class="kpi-label">Matérias publicadas</div><div class="kpi-value">134</div><div class="kpi-sub">+18 este mês</div></div>
+          <div class="kpi-card" style="--cc:var(--gold)"><div class="kpi-icon"><i class="fi fi-rr-stopwatch"></i></div><div class="kpi-label">Pendentes de revisão</div><div class="kpi-value">5</div><div class="kpi-sub">Prazo: 48h</div></div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px">
-          <div class="kpi-card" style="--cc:var(--purple)"><div class="kpi-icon">👤</div><div class="kpi-label">Pilotos</div><div class="kpi-value">31</div><div class="kpi-sub">Básico: 18 · Intermediário: 13</div></div>
-          <div class="kpi-card" style="--cc:var(--blue)"><div class="kpi-icon">🏁</div><div class="kpi-label">Equipes</div><div class="kpi-value">12</div><div class="kpi-sub">Todas no plano R$499,90</div></div>
-          <div class="kpi-card" style="--cc:var(--gold)"><div class="kpi-icon">🏆</div><div class="kpi-label">Categorias</div><div class="kpi-value">4</div><div class="kpi-sub">Todas no plano R$999,90</div></div>
-          <div class="kpi-card" style="--cc:var(--green)"><div class="kpi-icon">📡</div><div class="kpi-label">Notícias RSS hoje</div><div class="kpi-value">38</div><div class="kpi-sub">Motorsport · Autosport · RaceFans</div></div>
+          <div class="kpi-card" style="--cc:var(--purple)"><div class="kpi-icon"><i class="fi fi-rr-user"></i></div><div class="kpi-label">Pilotos</div><div class="kpi-value">31</div><div class="kpi-sub">Básico: 18 · Intermediário: 13</div></div>
+          <div class="kpi-card" style="--cc:var(--blue)"><div class="kpi-icon"><i class="fi fi-rr-flag-checkered"></i></div><div class="kpi-label">Equipes</div><div class="kpi-value">12</div><div class="kpi-sub">Todas no plano R$499,90</div></div>
+          <div class="kpi-card" style="--cc:var(--gold)"><div class="kpi-icon"><i class="fi fi-rr-trophy"></i></div><div class="kpi-label">Categorias</div><div class="kpi-value">4</div><div class="kpi-sub">Todas no plano R$999,90</div></div>
+          <div class="kpi-card" style="--cc:var(--green)"><div class="kpi-icon"><i class="fi fi-rr-rss"></i></div><div class="kpi-label">Notícias RSS hoje</div><div class="kpi-value">38</div><div class="kpi-sub">Motorsport · Autosport · RaceFans</div></div>
         </div>
       </div>
 
       <!-- Fila de matérias -->
       <div id="adm-materias" class="hide">
         <div class="dash-header"><div><div class="dash-title">Fila de Matérias</div><div class="dash-subtitle">Revise, edite e publique com um clique</div></div></div>
-        <div class="alert info">📋 <strong>Fluxo:</strong> Piloto envia → aparece como "Pendente" → você edita o texto → aprova → piloto visualiza → publica com um clique.</div>
+        <div class="alert info"><i class="fi fi-rr-clipboard"></i> <strong>Fluxo:</strong> Piloto envia → aparece como "Pendente" → você edita o texto → aprova → piloto visualiza → publica com um clique.</div>
         <div class="panel-box">
           <div class="panel-box-body" style="padding:0">
             <table class="dt">
@@ -1191,7 +1192,7 @@
             <div class="f-group" style="margin-bottom:14px"><label class="f-label">Palavras-chave</label><input class="f-input" type="text" placeholder="f4 brasil, rafael moura, campeonato 2026, stock car light..."></div>
             <div class="f-group" style="margin-bottom:14px"><label class="f-label">Meta description (max 160 chars)</label><input class="f-input" type="text" placeholder="Descrição para o Google..." maxlength="160"></div>
             <div class="f-group" style="margin-bottom:14px"><label class="f-label">Texto da matéria (edite livremente)</label><textarea class="f-input f-textarea" style="min-height:200px">Rafael Moura mais uma vez demonstrou por que é um dos pilotos mais promissores da geração. Na terceira etapa da temporada 2026 da F4 Brasil...</textarea></div>
-            <div class="alert ok">⭐ Lembre-se: adicionar "Conteúdo em parceria com [nome do piloto]" no início da matéria conforme exigência do CONAR para conteúdo patrocinado.</div>
+            <div class="alert ok"><i class="fi fi-rr-star"></i> Lembre-se: adicionar "Conteúdo em parceria com [nome do piloto]" no início da matéria conforme exigência do CONAR para conteúdo patrocinado.</div>
             <button class="btn btn-acc" onclick="toast('✓ Matéria publicada! URL ativa no portal.','ok')">Publicar agora →</button>
           </div>
         </div>
@@ -1218,7 +1219,7 @@
       <!-- Feed RSS -->
       <div id="adm-news" class="hide">
         <div class="dash-header"><div><div class="dash-title">Feed RSS</div><div class="dash-subtitle">Notícias externas puxadas automaticamente — nenhuma é reescrita</div></div><button class="btn btn-acc btn-sm" onclick="toast('Atualizando feeds agora...','ok')">Atualizar agora</button></div>
-        <div class="alert info">🔗 <strong>Lógica do sistema:</strong> As notícias externas são exibidas no portal com título, resumo da fonte e link para o site de origem. Ao clicar, o usuário vai direto para o portal externo em nova aba. Nenhum conteúdo é copiado ou reescrito. Apenas matérias internas (pilotos/equipes clientes) são publicadas e abertas dentro do PitLane.</div>
+        <div class="alert info"><i class="fi fi-rr-link"></i> <strong>Lógica do sistema:</strong> As notícias externas são exibidas no portal com título, resumo da fonte e link para o site de origem. Ao clicar, o usuário vai direto para o portal externo em nova aba. Nenhum conteúdo é copiado ou reescrito. Apenas matérias internas (pilotos/equipes clientes) são publicadas e abertas dentro do PitLane.</div>
         <div class="panel-box">
           <div class="panel-box-header"><div class="panel-box-title">Fontes RSS Ativas</div><button class="btn btn-out btn-sm" onclick="toast('Adicionando nova fonte...','info')">+ Adicionar fonte</button></div>
           <div class="panel-box-body" style="padding:0">
@@ -1233,16 +1234,16 @@
             </table>
           </div>
         </div>
-        <div class="alert" style="margin-top:12px">⚖️ <strong>Compliance legal:</strong> Nenhuma notícia externa é armazenada no banco de dados. O sistema exibe apenas título e link. Todo clique redireciona para o site original. Este modelo segue o padrão do Google News e está em conformidade com a Lei de Direitos Autorais brasileira.</div>
+        <div class="alert" style="margin-top:12px"><i class="fi fi-rr-document"></i> <strong>Compliance legal:</strong> Nenhuma notícia externa é armazenada no banco de dados. O sistema exibe apenas título e link. Todo clique redireciona para o site original. Este modelo segue o padrão do Google News e está em conformidade com a Lei de Direitos Autorais brasileira.</div>
       </div>
 
       <!-- Financeiro -->
       <div id="adm-financeiro" class="hide">
         <div class="dash-header"><div><div class="dash-title">Financeiro</div></div></div>
         <div class="kpi-row">
-          <div class="kpi-card" style="--cc:var(--green)"><div class="kpi-icon">💰</div><div class="kpi-label">MRR (receita mensal)</div><div class="kpi-value">R$6.4K</div><div class="kpi-sub">+12% mês a mês</div></div>
-          <div class="kpi-card" style="--cc:var(--acc)"><div class="kpi-icon">📈</div><div class="kpi-label">ARR (anualizado)</div><div class="kpi-value">R$76.8K</div><div class="kpi-sub">Projeção atual</div></div>
-          <div class="kpi-card" style="--cc:var(--blue)"><div class="kpi-icon">📉</div><div class="kpi-label">Churn este mês</div><div class="kpi-value">2</div><div class="kpi-sub">1 piloto, 1 equipe</div></div>
+          <div class="kpi-card" style="--cc:var(--green)"><div class="kpi-icon"><i class="fi fi-rr-coin"></i></div><div class="kpi-label">MRR (receita mensal)</div><div class="kpi-value">R$6.4K</div><div class="kpi-sub">+12% mês a mês</div></div>
+          <div class="kpi-card" style="--cc:var(--acc)"><div class="kpi-icon"><i class="fi fi-rr-arrow-trend-up"></i></div><div class="kpi-label">ARR (anualizado)</div><div class="kpi-value">R$76.8K</div><div class="kpi-sub">Projeção atual</div></div>
+          <div class="kpi-card" style="--cc:var(--blue)"><div class="kpi-icon"><i class="fi fi-rr-arrow-trend-down"></i></div><div class="kpi-label">Churn este mês</div><div class="kpi-value">2</div><div class="kpi-sub">1 piloto, 1 equipe</div></div>
           <div class="kpi-card" style="--cc:var(--gold)"><div class="kpi-icon">🆕</div><div class="kpi-label">Novos este mês</div><div class="kpi-value">8</div><div class="kpi-sub">Net: +6 clientes</div></div>
         </div>
         <div class="panel-box">
@@ -1314,7 +1315,7 @@
             </div>
           </div>
           <div class="profile-mediaki">
-            <div><div class="mk-title">📄 Mídia Kit 2026</div><div class="mk-desc">Dados de audiência, alcance e cotas</div></div>
+            <div><div class="mk-title"><i class="fi fi-rr-document"></i> Mídia Kit 2026</div><div class="mk-desc">Dados de audiência, alcance e cotas</div></div>
             <button class="btn btn-out btn-sm" onclick="toast('Baixando Mídia Kit PDF...','ok')">Baixar PDF</button>
           </div>
         </div>
@@ -1322,13 +1323,13 @@
           <div class="sponsor-title">Seja Patrocinador</div>
           <div class="sponsor-sub">Apareça nas corridas, redes sociais e matérias do piloto. Escolha a cota ideal.</div>
           <div class="sponsor-cotas">
-            <div class="cota" onclick="toast('Selecionando cota Master...','info')"><div class="cota-top"><span class="cota-name">👑 Master</span><span class="cota-price">R$2.500/mês</span></div><div class="cota-desc">Logo no capacete + macacão + redes + matérias</div></div>
-            <div class="cota" onclick="toast('Selecionando cota Ouro...','info')"><div class="cota-top"><span class="cota-name">🥇 Ouro</span><span class="cota-price">R$1.000/mês</span></div><div class="cota-desc">Logo no macacão + menção em matérias</div></div>
-            <div class="cota" onclick="toast('Selecionando cota Prata...','info')"><div class="cota-top"><span class="cota-name">🥈 Prata</span><span class="cota-price">R$500/mês</span></div><div class="cota-desc">Logo na asa do carro + redes sociais</div></div>
-            <div class="cota" onclick="toast('Selecionando cota Apoiador...','info')"><div class="cota-top"><span class="cota-name">🤝 Apoiador</span><span class="cota-price">R$200/mês</span></div><div class="cota-desc">Menção nas redes e site</div></div>
+            <div class="cota" onclick="toast('Selecionando cota Master...','info')"><div class="cota-top"><span class="cota-name"><i class="fi fi-rr-crown"></i> Master</span><span class="cota-price">R$2.500/mês</span></div><div class="cota-desc">Logo no capacete + macacão + redes + matérias</div></div>
+            <div class="cota" onclick="toast('Selecionando cota Ouro...','info')"><div class="cota-top"><span class="cota-name"><i class="fi fi-rr-medal"></i> Ouro</span><span class="cota-price">R$1.000/mês</span></div><div class="cota-desc">Logo no macacão + menção em matérias</div></div>
+            <div class="cota" onclick="toast('Selecionando cota Prata...','info')"><div class="cota-top"><span class="cota-name"><i class="fi fi-rr-medal"></i> Prata</span><span class="cota-price">R$500/mês</span></div><div class="cota-desc">Logo na asa do carro + redes sociais</div></div>
+            <div class="cota" onclick="toast('Selecionando cota Apoiador...','info')"><div class="cota-top"><span class="cota-name"><i class="fi fi-rr-users"></i> Apoiador</span><span class="cota-price">R$200/mês</span></div><div class="cota-desc">Menção nas redes e site</div></div>
           </div>
           <div class="sponsor-form">
-            <div class="sponsor-form-title">💬 Enviar Proposta</div>
+            <div class="sponsor-form-title"><i class="fi fi-rr-comment"></i> Enviar Proposta</div>
             <input class="f-input" type="text" placeholder="Empresa / nome" style="margin-bottom:8px">
             <input class="f-input" type="email" placeholder="Seu e-mail" style="margin-bottom:8px">
             <select class="f-input f-select" style="margin-bottom:10px"><option>Selecione a cota...</option><option>Master R$2.500</option><option>Ouro R$1.000</option><option>Prata R$500</option><option>Apoiador R$200</option></select>
@@ -1344,7 +1345,7 @@
       <div class="ncard is-pago" onclick="openArticle(5)">
         <div class="ncard-thumb" style="height:150px"><img src="https://loremflickr.com/400/200/formula1,driver?lock=33" alt=""></div>
         <div class="ncard-body">
-          <div class="ncard-type-row"><span class="tag-pago">⭐ Parceria · Rafael Moura</span></div>
+          <div class="ncard-type-row"><span class="tag-pago"><i class="fi fi-rr-star"></i> Parceria · Rafael Moura</span></div>
           <div class="ncard-title">Rafael Moura Vence na F4 Brasil e Atrai Interesse de Equipes Europeias</div>
           <div class="ncard-meta">09/04/2026 · 1.340 views</div>
         </div>
@@ -1352,7 +1353,7 @@
       <div class="ncard is-pago" onclick="openArticle(5)">
         <div class="ncard-thumb" style="height:150px"><img src="https://loremflickr.com/400/200/racing,driver?lock=55" alt=""></div>
         <div class="ncard-body">
-          <div class="ncard-type-row"><span class="tag-pago">⭐ Parceria · Rafael Moura</span></div>
+          <div class="ncard-type-row"><span class="tag-pago"><i class="fi fi-rr-star"></i> Parceria · Rafael Moura</span></div>
           <div class="ncard-title">Estreia na Temporada 2026 Reforça Potencial de Moura</div>
           <div class="ncard-meta">12/03/2026 · 892 views</div>
         </div>
@@ -1360,7 +1361,7 @@
       <div class="ncard is-pago" onclick="openArticle(5)">
         <div class="ncard-thumb" style="height:150px"><img src="https://loremflickr.com/400/200/karting,motorsport?lock=66" alt=""></div>
         <div class="ncard-body">
-          <div class="ncard-type-row"><span class="tag-pago">⭐ Parceria · Rafael Moura</span></div>
+          <div class="ncard-type-row"><span class="tag-pago"><i class="fi fi-rr-star"></i> Parceria · Rafael Moura</span></div>
           <div class="ncard-title">Preparação Intensiva: Moura Revela Treinos para a Temporada</div>
           <div class="ncard-meta">15/02/2026 · 612 views</div>
         </div>
