@@ -46,6 +46,7 @@ function showView(id){
   if(id==='pilots-list')renderPilotsList();
   if(id==='teams-list')renderTeamsList();
   if(id==='portal')renderPilotsHighlight();
+  if(id==='calendar')renderCalendar();
 }
 
 /* ══ NAV ══ */
@@ -423,4 +424,87 @@ function renderNewsGrid(articles) {
       </div>
     `;
   }).join('');
+}
+
+/* ══════════════════════════════════════════
+   CALENDAR
+══════════════════════════════════════════ */
+function renderCalendar(){
+  const races=[
+    {r:1, flag:'\uD83C\uDDE6\uD83C\uDDFA', gp:'GP da Austrália', circuit:'Albert Park, Melbourne', date:'2026-03-14', end:'2026-03-16', sprint:false, winner:'Antonelli'},
+    {r:2, flag:'\uD83C\uDDE8\uD83C\uDDF3', gp:'GP da China', circuit:'Shanghai International Circuit', date:'2026-03-28', end:'2026-03-30', sprint:true, winner:'Antonelli'},
+    {r:3, flag:'\uD83C\uDDEF\uD83C\uDDF5', gp:'GP do Japão', circuit:'Suzuka International Racing Course', date:'2026-04-04', end:'2026-04-06', sprint:false, winner:'Russell'},
+    {r:4, flag:'\uD83C\uDDFA\uD83C\uDDF8', gp:'GP de Miami', circuit:'Miami International Autodrome', date:'2026-05-01', end:'2026-05-03', sprint:true, winner:null},
+    {r:5, flag:'\uD83C\uDDEA\uD83C\uDDF8', gp:'GP da Espanha', circuit:'Circuit de Barcelona-Catalunya', date:'2026-05-17', end:'2026-05-18', sprint:false, winner:null},
+    {r:6, flag:'\uD83C\uDDF2\uD83C\uDDE8', gp:'GP de Mônaco', circuit:'Circuit de Monaco', date:'2026-05-24', end:'2026-05-25', sprint:false, winner:null},
+    {r:7, flag:'\uD83C\uDDE8\uD83C\uDDE6', gp:'GP do Canadá', circuit:'Circuit Gilles Villeneuve, Montreal', date:'2026-06-07', end:'2026-06-08', sprint:false, winner:null},
+    {r:8, flag:'\uD83C\uDDE6\uD83C\uDDF9', gp:'GP da Áustria', circuit:'Red Bull Ring, Spielberg', date:'2026-06-28', end:'2026-06-29', sprint:true, winner:null},
+    {r:9, flag:'\uD83C\uDDEC\uD83C\uDDE7', gp:'GP da Grã-Bretanha', circuit:'Silverstone Circuit', date:'2026-07-05', end:'2026-07-06', sprint:false, winner:null},
+    {r:10, flag:'\uD83C\uDDE7\uD83C\uDDEA', gp:'GP da Bélgica', circuit:'Circuit de Spa-Francorchamps', date:'2026-07-26', end:'2026-07-27', sprint:false, winner:null},
+    {r:11, flag:'\uD83C\uDDED\uD83C\uDDFA', gp:'GP da Hungria', circuit:'Hungaroring, Budapest', date:'2026-08-02', end:'2026-08-03', sprint:false, winner:null},
+    {r:12, flag:'\uD83C\uDDF3\uD83C\uDDF1', gp:'GP da Holanda', circuit:'Circuit Zandvoort', date:'2026-08-30', end:'2026-08-31', sprint:false, winner:null},
+    {r:13, flag:'\uD83C\uDDEE\uD83C\uDDF9', gp:'GP da Itália', circuit:'Autodromo di Monza', date:'2026-09-06', end:'2026-09-07', sprint:false, winner:null},
+    {r:14, flag:'\uD83C\uDDE6\uD83C\uDDFF', gp:'GP do Azerbaijão', circuit:'Baku City Circuit', date:'2026-09-20', end:'2026-09-21', sprint:false, winner:null},
+    {r:15, flag:'\uD83C\uDDF8\uD83C\uDDEC', gp:'GP de Singapura', circuit:'Marina Bay Street Circuit', date:'2026-10-04', end:'2026-10-05', sprint:false, winner:null},
+    {r:16, flag:'\uD83C\uDDFA\uD83C\uDDF8', gp:'GP dos EUA', circuit:'Circuit of the Americas, Austin', date:'2026-10-18', end:'2026-10-19', sprint:true, winner:null},
+    {r:17, flag:'\uD83C\uDDF2\uD83C\uDDFD', gp:'GP do México', circuit:'Autódromo Hermanos Rodríguez', date:'2026-10-25', end:'2026-10-26', sprint:false, winner:null},
+    {r:18, flag:'\uD83C\uDDE7\uD83C\uDDF7', gp:'GP de São Paulo', circuit:'Autódromo de Interlagos', date:'2026-11-08', end:'2026-11-09', sprint:true, winner:null},
+    {r:19, flag:'\uD83C\uDDFA\uD83C\uDDF8', gp:'GP de Las Vegas', circuit:'Las Vegas Strip Circuit', date:'2026-11-21', end:'2026-11-22', sprint:false, winner:null},
+    {r:20, flag:'\uD83C\uDDF6\uD83C\uDDE6', gp:'GP do Qatar', circuit:'Lusail International Circuit', date:'2026-11-29', end:'2026-11-30', sprint:true, winner:null},
+    {r:21, flag:'\uD83C\uDDE6\uD83C\uDDEA', gp:'GP de Abu Dhabi', circuit:'Yas Marina Circuit', date:'2026-12-06', end:'2026-12-07', sprint:false, winner:null}
+  ];
+
+  const now=new Date();
+  const grid=document.getElementById('calGrid');
+  if(!grid) return;
+
+  let nextFound=false;
+  grid.innerHTML=races.map(rc=>{
+    const raceEnd=new Date(rc.end+'T23:59:59');
+    const raceStart=new Date(rc.date+'T00:00:00');
+    const isDone=now>raceEnd;
+    const isNow=now>=raceStart&&now<=raceEnd;
+    const isNext=!isDone&&!isNow&&!nextFound;
+    if(isNext) nextFound=true;
+
+    const status=isDone?'done':(isNow||isNext)?'next':'';
+    const dateStr=formatCalDate(rc.date, rc.end);
+
+    let badges=`<span class="cal-badge">RONDA ${rc.r}</span>`;
+    if(rc.sprint) badges+=`<span class="cal-badge sprint"><i class="fi fi-rr-bolt"></i> SPRINT</span>`;
+    if(isDone) badges+=`<span class="cal-badge done-badge"><i class="fi fi-rr-check"></i></span>`;
+
+    const winnerHtml=isDone&&rc.winner?`<div class="cal-winner"><i class="fi fi-rr-trophy"></i> Vencedor: <strong>${rc.winner}</strong></div>`:'';
+
+    return `<div class="cal-card ${status}" onclick="toast('${rc.gp} — ${dateStr}','info')">
+      <div class="cal-top">
+        <span class="cal-flag">${rc.flag}</span>
+        <div>
+          <div class="cal-gp">${rc.gp}</div>
+          <div class="cal-circuit">${rc.circuit}</div>
+        </div>
+      </div>
+      <div class="cal-body">
+        <div>
+          <div class="cal-date">${dateStr}</div>
+          <div class="cal-round">Ronda ${rc.r} de ${races.length}</div>
+        </div>
+        <div class="cal-badges">${badges}</div>
+      </div>
+      ${winnerHtml}
+    </div>`;
+  }).join('');
+
+  const done=races.filter(r=>now>new Date(r.end+'T23:59:59')).length;
+  document.getElementById('calTitle').textContent=`${races.length} Corridas · ${done} concluída${done!==1?'s':''}`;
+}
+
+function formatCalDate(start,end){
+  const s=new Date(start+'T12:00:00');
+  const e=new Date(end+'T12:00:00');
+  const months=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  if(s.getMonth()===e.getMonth()){
+    return `${s.getDate()}-${e.getDate()} ${months[s.getMonth()]}`;
+  }
+  return `${s.getDate()} ${months[s.getMonth()]} - ${e.getDate()} ${months[e.getMonth()]}`;
 }

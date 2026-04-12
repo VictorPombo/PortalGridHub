@@ -488,7 +488,7 @@
         </div>
       </div>
       <div>
-        <div class="sec-head"><span class="sec-title">Próxima Corrida</span><button class="sec-link btn-ghost btn-sm" onclick="toast('Abrindo calendário...','info')">CALENDÁRIO →</button></div>
+        <div class="sec-head"><span class="sec-title">Próxima Corrida</span><button class="sec-link btn-ghost btn-sm" onclick="showView('calendar')">CALENDÁRIO →</button></div>
           <div class="race-box">
           <div class="race-header">
             <div style="font-size:28px">🇺🇸</div>
@@ -597,6 +597,24 @@
     </div>
   </footer>
 </div><!-- /view-portal -->
+<!-- ════════════════════════════════════════
+     VIEW: CALENDAR
+════════════════════════════════════════ -->
+<div class="view" id="view-calendar">
+  <div class="cal-hero">
+    <div class="badge b-f1" style="margin-bottom:14px">TEMPORADA 2026</div>
+    <div class="cal-hero-title">Calendário F1 2026</div>
+    <div class="cal-hero-sub">Todas as corridas da temporada · Horários em BRT (Brasília)</div>
+  </div>
+  <div class="section">
+    <div class="sec-head">
+      <span class="sec-title" id="calTitle">24 Corridas</span>
+      <button class="btn btn-out btn-sm" onclick="showView('portal')">← Voltar</button>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+    <div style="padding:20px 0;font-family:var(--fm);font-size:10px;color:var(--muted);text-align:center">Fonte: formula1.com · FIA · horários sujeitos a alteração · BRT (UTC-3)</div>
+  </div>
+</div>
 
 <!-- ════════════════════════════════════════
      VIEW: PILOTS LIST
