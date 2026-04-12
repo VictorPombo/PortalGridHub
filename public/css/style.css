@@ -320,6 +320,31 @@ nav{position:sticky;top:0;z-index:500;background:rgba(3,3,10,.92);backdrop-filte
 .cal-winner strong{color:var(--text);font-weight:600}
 
 /* ═══════════════════════════════════════════
+   FULL STANDINGS VIEW
+═══════════════════════════════════════════ */
+.fs-tabs{display:flex;gap:2px;margin-bottom:20px}
+.fs-tab{font-family:var(--fu);font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:10px 24px;background:var(--bg1);border:1px solid var(--brd);color:var(--dim);cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+.fs-tab.active{background:var(--bg2);border-color:var(--acc);color:var(--acc)}
+.fs-tab:hover{border-color:var(--brdb);color:var(--text)}
+.fs-row{display:grid;grid-template-columns:50px 36px 1fr 120px 60px;align-items:center;gap:0;background:var(--bg1);border:1px solid var(--brd);padding:16px 20px;margin-bottom:2px;transition:all .2s;cursor:pointer;position:relative;overflow:hidden}
+.fs-row::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--team-color,var(--brd))}
+.fs-row:hover{background:var(--bg2);border-color:var(--brdb)}
+.fs-row.top3{border-color:var(--brdb)}
+.fs-pos{font-family:var(--fd);font-size:28px;letter-spacing:1px;color:var(--muted);text-align:center;white-space:nowrap}
+.fs-row.p1 .fs-pos{color:var(--gold)}
+.fs-row.p2 .fs-pos{color:#b0b0b0}
+.fs-row.p3 .fs-pos{color:#cd7f32}
+.fs-flag{font-size:20px;text-align:center}
+.fs-info{min-width:0}
+.fs-name{font-family:var(--fu);font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fs-team{font-family:var(--fm);font-size:10px;color:var(--muted);margin-top:1px}
+.fs-bar-wrap{padding:0 12px}
+.fs-bar-bg{height:4px;background:rgba(255,255,255,.04);border-radius:2px;overflow:hidden}
+.fs-bar{height:100%;border-radius:2px;transition:width 1.2s ease;background:var(--team-color,var(--acc))}
+.fs-pts{font-family:var(--fd);font-size:26px;text-align:right;color:var(--text);letter-spacing:1px;white-space:nowrap}
+
+
+/* ═══════════════════════════════════════════
    NEWSLETTER
 ═══════════════════════════════════════════ */
 .nl-section{background:var(--bg1);border-top:1px solid var(--brd);border-bottom:1px solid var(--brd);padding:60px 28px;margin:48px 0;position:relative;overflow:hidden}
@@ -703,6 +728,14 @@ footer{background:var(--bg1);border-top:1px solid var(--brd);padding:52px 28px 2
   .s-bar-c{display:none}
   .s-name{font-size:12px}
   .s-flag{font-size:14px;width:20px}
+
+  /* ── FULL STANDINGS ── */
+  .fs-row{grid-template-columns:36px 28px 1fr 60px;padding:12px 14px}
+  .fs-pos{font-size:20px}
+  .fs-name{font-size:13px}
+  .fs-bar-wrap{display:none}
+  .fs-pts{font-size:20px}
+  .fs-tab{font-size:10px;padding:8px 16px}
 
   /* ── NEWSLETTER ── */
   .nl-section{padding:36px 16px}

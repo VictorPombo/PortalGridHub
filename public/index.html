@@ -478,7 +478,7 @@
   <div class="section reveal">
     <div class="two-col">
       <div>
-        <div class="sec-head"><span class="sec-title">Campeonato F1 2026</span><button class="sec-link btn-ghost btn-sm" onclick="toast('Abrindo classificação completa...','info')">COMPLETO →</button></div>
+        <div class="sec-head"><span class="sec-title">Campeonato F1 2026</span><button class="sec-link btn-ghost btn-sm" onclick="showView('standings')">COMPLETO →</button></div>
         <div class="standings-box">
           <div class="s-tabs">
             <div class="s-tab active" onclick="switchStand(this,'drv')">Pilotos</div>
@@ -608,11 +608,34 @@
   </div>
   <div class="section">
     <div class="sec-head">
-      <span class="sec-title" id="calTitle">24 Corridas</span>
+      <span class="sec-title" id="calTitle">21 Corridas</span>
       <button class="btn btn-out btn-sm" onclick="showView('portal')">← Voltar</button>
     </div>
     <div class="cal-grid" id="calGrid"></div>
     <div style="padding:20px 0;font-family:var(--fm);font-size:10px;color:var(--muted);text-align:center">Fonte: formula1.com · FIA · horários sujeitos a alteração · BRT (UTC-3)</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     VIEW: STANDINGS
+════════════════════════════════════════ -->
+<div class="view" id="view-standings">
+  <div class="cal-hero">
+    <div class="badge b-f1" style="margin-bottom:14px">APÓS 3 GPs · RONDA 3 DE 21</div>
+    <div class="cal-hero-title">Classificação F1 2026</div>
+    <div class="cal-hero-sub">Campeonato Mundial de Pilotos e Construtores · Atualizado após GP do Japão</div>
+  </div>
+  <div class="section">
+    <div class="sec-head">
+      <span class="sec-title">Campeonato Completo</span>
+      <button class="btn btn-out btn-sm" onclick="showView('portal')">← Voltar</button>
+    </div>
+    <div class="fs-tabs">
+      <button class="fs-tab active" onclick="renderFullStandings('drv',this)"><i class="fi fi-rr-user"></i> Pilotos</button>
+      <button class="fs-tab" onclick="renderFullStandings('cns',this)"><i class="fi fi-rr-flag"></i> Construtores</button>
+    </div>
+    <div id="fullStandGrid"></div>
+    <div style="padding:20px 0;font-family:var(--fm);font-size:10px;color:var(--muted);text-align:center">Fonte: formula1.com · GPFans · SuperSport · Dados após GP do Japão (06/04/2026)</div>
   </div>
 </div>
 
@@ -1394,7 +1417,7 @@
 <!-- ════════════════════════════════════════
      JAVASCRIPT
 ════════════════════════════════════════ -->
-<script src="js/app.js"></script>
-<script src="js/state.js"></script>
+<script src="js/app.js?v=3"></script>
+<script src="js/state.js?v=3"></script>
 </body>
 </html>

@@ -47,6 +47,7 @@ function showView(id){
   if(id==='teams-list')renderTeamsList();
   if(id==='portal')renderPilotsHighlight();
   if(id==='calendar')renderCalendar();
+  if(id==='standings')renderFullStandings('drv');
 }
 
 /* ══ NAV ══ */
@@ -507,4 +508,72 @@ function formatCalDate(start,end){
     return `${s.getDate()}-${e.getDate()} ${months[s.getMonth()]}`;
   }
   return `${s.getDate()} ${months[s.getMonth()]} - ${e.getDate()} ${months[e.getMonth()]}`;
+}
+
+/* ══════════════════════════════════════════
+   FULL STANDINGS
+══════════════════════════════════════════ */
+const FULL_DRIVERS=[
+  {pos:1,flag:'🇮🇹',name:'Antonelli',team:'Mercedes-AMG Petronas',pts:72,color:'#00d2be'},
+  {pos:2,flag:'🇬🇧',name:'Russell',team:'Mercedes-AMG Petronas',pts:63,color:'#00d2be'},
+  {pos:3,flag:'🇲🇨',name:'Leclerc',team:'Scuderia Ferrari',pts:49,color:'#dc0000'},
+  {pos:4,flag:'🇬🇧',name:'Hamilton',team:'Scuderia Ferrari',pts:41,color:'#dc0000'},
+  {pos:5,flag:'🇬🇧',name:'Norris',team:'McLaren Mercedes',pts:25,color:'#ff8000'},
+  {pos:6,flag:'🇦🇺',name:'Piastri',team:'McLaren Mercedes',pts:21,color:'#ff8000'},
+  {pos:7,flag:'🇬🇧',name:'Bearman',team:'MoneyGram Haas',pts:17,color:'#aaaaaa'},
+  {pos:8,flag:'🇫🇷',name:'Gasly',team:'BWT Alpine',pts:15,color:'#0093cc'},
+  {pos:9,flag:'🇳🇱',name:'Verstappen',team:'Red Bull Ford',pts:12,color:'#3671c6'},
+  {pos:10,flag:'🇳🇿',name:'Lawson',team:'Racing Bulls Ford',pts:10,color:'#4e7cbf'},
+  {pos:11,flag:'🇫🇷',name:'Doohan',team:'BWT Alpine',pts:8,color:'#0093cc'},
+  {pos:12,flag:'🇩🇪',name:'Hülkenberg',team:'Audi',pts:6,color:'#c0c0c0'},
+  {pos:13,flag:'🇹🇭',name:'Albon',team:'Williams Mercedes',pts:5,color:'#64c4ff'},
+  {pos:14,flag:'🇨🇦',name:'Stroll',team:'Aston Martin Mercedes',pts:4,color:'#006f62'},
+  {pos:15,flag:'🇪🇸',name:'Alonso',team:'Aston Martin Mercedes',pts:3,color:'#006f62'},
+  {pos:16,flag:'🇺🇸',name:'Ocon',team:'MoneyGram Haas',pts:2,color:'#aaaaaa'},
+  {pos:17,flag:'🇦🇷',name:'Colapinto',team:'Williams Mercedes',pts:1,color:'#64c4ff'},
+  {pos:18,flag:'🇯🇵',name:'Tsunoda',team:'Red Bull Ford',pts:1,color:'#3671c6'},
+  {pos:19,flag:'🇧🇷',name:'Bortoleto',team:'Audi',pts:0,color:'#c0c0c0'},
+  {pos:20,flag:'🇬🇧',name:'Hadjar',team:'Racing Bulls Ford',pts:0,color:'#4e7cbf'}
+];
+
+const FULL_CONSTRUCTORS=[
+  {pos:1,flag:'🇩🇪',name:'Mercedes-AMG Petronas',team:'Mercedes',pts:135,color:'#00d2be'},
+  {pos:2,flag:'🇮🇹',name:'Scuderia Ferrari',team:'Ferrari',pts:90,color:'#dc0000'},
+  {pos:3,flag:'🇬🇧',name:'McLaren',team:'Mercedes',pts:46,color:'#ff8000'},
+  {pos:4,flag:'🇺🇸',name:'MoneyGram Haas',team:'Ferrari',pts:19,color:'#aaaaaa'},
+  {pos:5,flag:'🇫🇷',name:'BWT Alpine',team:'Mercedes',pts:23,color:'#0093cc'},
+  {pos:6,flag:'🇦🇹',name:'Red Bull Racing',team:'Ford',pts:13,color:'#3671c6'},
+  {pos:7,flag:'🇮🇹',name:'Racing Bulls',team:'Ford',pts:10,color:'#4e7cbf'},
+  {pos:8,flag:'🇬🇧',name:'Aston Martin',team:'Mercedes',pts:7,color:'#006f62'},
+  {pos:9,flag:'🇬🇧',name:'Williams',team:'Mercedes',pts:6,color:'#64c4ff'},
+  {pos:10,flag:'🇩🇪',name:'Audi',team:'Audi',pts:6,color:'#c0c0c0'}
+];
+
+function renderFullStandings(tab,btnEl){
+  const data=tab==='drv'?FULL_DRIVERS:FULL_CONSTRUCTORS;
+  const maxPts=data[0]?.pts||1;
+  const grid=document.getElementById('fullStandGrid');
+  if(!grid)return;
+
+  if(btnEl){
+    document.querySelectorAll('.fs-tab').forEach(t=>t.classList.remove('active'));
+    btnEl.classList.add('active');
+  }
+
+  grid.innerHTML=data.map(d=>{
+    const pClass=d.pos<=3?'p'+d.pos:'';
+    const barW=maxPts>0?Math.round((d.pts/maxPts)*100):0;
+    return `<div class="fs-row ${pClass}" style="--team-color:${d.color}">
+      <div class="fs-pos">${d.pos}</div>
+      <div class="fs-flag">${d.flag}</div>
+      <div class="fs-info">
+        <div class="fs-name">${d.name}</div>
+        <div class="fs-team">${d.team}</div>
+      </div>
+      <div class="fs-bar-wrap">
+        <div class="fs-bar-bg"><div class="fs-bar" style="width:${barW}%"></div></div>
+      </div>
+      <div class="fs-pts">${d.pts}</div>
+    </div>`;
+  }).join('');
 }
