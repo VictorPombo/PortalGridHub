@@ -655,30 +655,121 @@ function renderNewsGrid(articles) {
 /* ══════════════════════════════════════════
    CALENDAR
 ══════════════════════════════════════════ */
+const CAL_DATA={
+  f1:{
+    title:'Calendário F1 2026', badge:'TEMPORADA 2026', sub:'Todas as corridas da temporada · Horários em BRT (Brasília)',
+    source:'formula1.com · FIA',
+    races:[
+      {r:1,flag:'\ud83c\udde6\ud83c\uddfa',gp:'GP da Austrália',circuit:'Albert Park, Melbourne',date:'2026-03-14',end:'2026-03-16',sprint:false,winner:'Antonelli'},
+      {r:2,flag:'\ud83c\udde8\ud83c\uddf3',gp:'GP da China',circuit:'Shanghai International Circuit',date:'2026-03-28',end:'2026-03-30',sprint:true,winner:'Antonelli'},
+      {r:3,flag:'\ud83c\uddef\ud83c\uddf5',gp:'GP do Japão',circuit:'Suzuka International Racing Course',date:'2026-04-04',end:'2026-04-06',sprint:false,winner:'Russell'},
+      {r:4,flag:'\ud83c\uddfa\ud83c\uddf8',gp:'GP de Miami',circuit:'Miami International Autodrome',date:'2026-05-01',end:'2026-05-03',sprint:true,winner:null},
+      {r:5,flag:'\ud83c\uddea\ud83c\uddf8',gp:'GP da Espanha',circuit:'Circuit de Barcelona-Catalunya',date:'2026-05-17',end:'2026-05-18',sprint:false,winner:null},
+      {r:6,flag:'\ud83c\uddf2\ud83c\udde8',gp:'GP de Mônaco',circuit:'Circuit de Monaco',date:'2026-05-24',end:'2026-05-25',sprint:false,winner:null},
+      {r:7,flag:'\ud83c\udde8\ud83c\udde6',gp:'GP do Canadá',circuit:'Circuit Gilles Villeneuve, Montreal',date:'2026-06-07',end:'2026-06-08',sprint:false,winner:null},
+      {r:8,flag:'\ud83c\udde6\ud83c\uddf9',gp:'GP da Áustria',circuit:'Red Bull Ring, Spielberg',date:'2026-06-28',end:'2026-06-29',sprint:true,winner:null},
+      {r:9,flag:'\ud83c\uddec\ud83c\udde7',gp:'GP da Grã-Bretanha',circuit:'Silverstone Circuit',date:'2026-07-05',end:'2026-07-06',sprint:false,winner:null},
+      {r:10,flag:'\ud83c\udde7\ud83c\uddea',gp:'GP da Bélgica',circuit:'Circuit de Spa-Francorchamps',date:'2026-07-26',end:'2026-07-27',sprint:false,winner:null},
+      {r:11,flag:'\ud83c\udded\ud83c\uddfa',gp:'GP da Hungria',circuit:'Hungaroring, Budapest',date:'2026-08-02',end:'2026-08-03',sprint:false,winner:null},
+      {r:12,flag:'\ud83c\uddf3\ud83c\uddf1',gp:'GP da Holanda',circuit:'Circuit Zandvoort',date:'2026-08-30',end:'2026-08-31',sprint:false,winner:null},
+      {r:13,flag:'\ud83c\uddee\ud83c\uddf9',gp:'GP da Itália',circuit:'Autodromo di Monza',date:'2026-09-06',end:'2026-09-07',sprint:false,winner:null},
+      {r:14,flag:'\ud83c\udde6\ud83c\uddff',gp:'GP do Azerbaijão',circuit:'Baku City Circuit',date:'2026-09-20',end:'2026-09-21',sprint:false,winner:null},
+      {r:15,flag:'\ud83c\uddf8\ud83c\uddec',gp:'GP de Singapura',circuit:'Marina Bay Street Circuit',date:'2026-10-04',end:'2026-10-05',sprint:false,winner:null},
+      {r:16,flag:'\ud83c\uddfa\ud83c\uddf8',gp:'GP dos EUA',circuit:'COTA, Austin',date:'2026-10-18',end:'2026-10-19',sprint:true,winner:null},
+      {r:17,flag:'\ud83c\uddf2\ud83c\uddfd',gp:'GP do México',circuit:'Autódromo Hermanos Rodríguez',date:'2026-10-25',end:'2026-10-26',sprint:false,winner:null},
+      {r:18,flag:'\ud83c\udde7\ud83c\uddf7',gp:'GP de São Paulo',circuit:'Autódromo de Interlagos',date:'2026-11-08',end:'2026-11-09',sprint:true,winner:null},
+      {r:19,flag:'\ud83c\uddfa\ud83c\uddf8',gp:'GP de Las Vegas',circuit:'Las Vegas Strip Circuit',date:'2026-11-21',end:'2026-11-22',sprint:false,winner:null},
+      {r:20,flag:'\ud83c\uddf6\ud83c\udde6',gp:'GP do Qatar',circuit:'Lusail International Circuit',date:'2026-11-29',end:'2026-11-30',sprint:true,winner:null},
+      {r:21,flag:'\ud83c\udde6\ud83c\uddea',gp:'GP de Abu Dhabi',circuit:'Yas Marina Circuit',date:'2026-12-06',end:'2026-12-07',sprint:false,winner:null}
+    ]
+  },
+  motogp:{
+    title:'Calendário MotoGP 2026', badge:'TEMPORADA 2026', sub:'Todas as corridas · Horários em BRT',
+    source:'motogp.com · FIM',
+    races:[
+      {r:1,flag:'\ud83c\uddf9\ud83c\udded',gp:'GP da Tailândia',circuit:'Chang International Circuit, Buriram',date:'2026-03-01',end:'2026-03-02',sprint:true,winner:'Bagnaia'},
+      {r:2,flag:'\ud83c\udde6\ud83c\uddf7',gp:'GP da Argentina',circuit:'Autódromo Termas de Río Hondo',date:'2026-03-15',end:'2026-03-16',sprint:true,winner:'Marc Márquez'},
+      {r:3,flag:'\ud83c\uddfa\ud83c\uddf8',gp:'GP das Américas',circuit:'COTA, Austin',date:'2026-04-12',end:'2026-04-13',sprint:true,winner:'Bagnaia'},
+      {r:4,flag:'\ud83c\uddea\ud83c\uddf8',gp:'GP da Espanha',circuit:'Circuito de Jerez',date:'2026-04-26',end:'2026-04-27',sprint:true,winner:null},
+      {r:5,flag:'\ud83c\uddeb\ud83c\uddf7',gp:'GP da França',circuit:'Le Mans, Bugatti Circuit',date:'2026-05-10',end:'2026-05-11',sprint:true,winner:null},
+      {r:6,flag:'\ud83c\uddec\ud83c\udde7',gp:'GP da Grã-Bretanha',circuit:'Silverstone Circuit',date:'2026-05-24',end:'2026-05-25',sprint:true,winner:null},
+      {r:7,flag:'\ud83c\uddf3\ud83c\uddf1',gp:'GP da Holanda',circuit:'TT Circuit Assen',date:'2026-06-28',end:'2026-06-29',sprint:true,winner:null},
+      {r:8,flag:'\ud83c\udde9\ud83c\uddea',gp:'GP da Alemanha',circuit:'Sachsenring',date:'2026-07-12',end:'2026-07-13',sprint:true,winner:null},
+      {r:9,flag:'\ud83c\udde6\ud83c\uddf9',gp:'GP da Áustria',circuit:'Red Bull Ring, Spielberg',date:'2026-08-16',end:'2026-08-17',sprint:true,winner:null},
+      {r:10,flag:'\ud83c\uddea\ud83c\uddf8',gp:'GP de Aragón',circuit:'MotorLand Aragón',date:'2026-08-30',end:'2026-08-31',sprint:true,winner:null},
+      {r:11,flag:'\ud83c\uddf8\ud83c\uddf2',gp:'GP de San Marino',circuit:'Misano World Circuit',date:'2026-09-13',end:'2026-09-14',sprint:true,winner:null},
+      {r:12,flag:'\ud83c\uddee\ud83c\udde9',gp:'GP da Indonésia',circuit:'Mandalika Circuit, Lombok',date:'2026-09-27',end:'2026-09-28',sprint:true,winner:null},
+      {r:13,flag:'\ud83c\uddef\ud83c\uddf5',gp:'GP do Japão',circuit:'Mobility Resort Motegi',date:'2026-10-04',end:'2026-10-05',sprint:true,winner:null},
+      {r:14,flag:'\ud83c\udde6\ud83c\uddfa',gp:'GP da Austrália',circuit:'Phillip Island Circuit',date:'2026-10-18',end:'2026-10-19',sprint:true,winner:null},
+      {r:15,flag:'\ud83c\uddf2\ud83c\uddfb',gp:'GP da Malásia',circuit:'Sepang International Circuit',date:'2026-11-01',end:'2026-11-02',sprint:true,winner:null},
+      {r:16,flag:'\ud83c\uddea\ud83c\uddf8',gp:'GP de Valencia',circuit:'Circuit Ricardo Tormo',date:'2026-11-15',end:'2026-11-16',sprint:true,winner:null}
+    ]
+  },
+  wec:{
+    title:'Calendário WEC 2025-26', badge:'SUPERTEMPORADA', sub:'FIA World Endurance Championship · Hypercar',
+    source:'fiawec.com · FIA',
+    races:[
+      {r:1,flag:'\ud83c\uddf6\ud83c\udde6',gp:'1812 km do Qatar',circuit:'Lusail International Circuit',date:'2026-02-28',end:'2026-03-01',sprint:false,winner:'Toyota #8'},
+      {r:2,flag:'\ud83c\uddee\ud83c\uddf9',gp:'6h de Ímola',circuit:'Autodromo Enzo e Dino Ferrari',date:'2026-04-18',end:'2026-04-19',sprint:false,winner:null},
+      {r:3,flag:'\ud83c\udde7\ud83c\uddea',gp:'6h de Spa',circuit:'Circuit de Spa-Francorchamps',date:'2026-05-09',end:'2026-05-10',sprint:false,winner:null},
+      {r:4,flag:'\ud83c\uddeb\ud83c\uddf7',gp:'24 Horas de Le Mans',circuit:'Circuit de la Sarthe',date:'2026-06-13',end:'2026-06-14',sprint:false,winner:null},
+      {r:5,flag:'\ud83c\udde7\ud83c\uddf7',gp:'6h de São Paulo',circuit:'Autódromo de Interlagos',date:'2026-07-12',end:'2026-07-13',sprint:false,winner:null},
+      {r:6,flag:'\ud83c\uddfa\ud83c\uddf8',gp:'6h de COTA',circuit:'Circuit of the Americas, Austin',date:'2026-09-05',end:'2026-09-06',sprint:false,winner:null},
+      {r:7,flag:'\ud83c\uddef\ud83c\uddf5',gp:'6h do Fuji',circuit:'Fuji Speedway',date:'2026-10-10',end:'2026-10-11',sprint:false,winner:null},
+      {r:8,flag:'\ud83c\udde7\ud83c\udded',gp:'8h do Bahrain',circuit:'Bahrain Intl Circuit, Sakhir',date:'2026-11-14',end:'2026-11-15',sprint:false,winner:null}
+    ]
+  },
+  nascar:{
+    title:'Calendário NASCAR Cup 2026', badge:'CUP SERIES 2026', sub:'NASCAR Cup Series · 36 corridas',
+    source:'nascar.com · Jayski',
+    races:[
+      {r:1,flag:'\ud83c\uddfa\ud83c\uddf8',gp:'Daytona 500',circuit:'Daytona International Speedway',date:'2026-02-15',end:'2026-02-15',sprint:false,winner:'Larson'},
+      {r:2,flag:'\ud83c\uddfa\ud83c\uddf8',gp:'Atlanta',circuit:'Atlanta Motor Speedway',date:'2026-02-22',end:'2026-02-22',sprint:false,winner:'Elliott'},
+      {r:3,flag:'\ud83c\uddfa\ud83c\uddf8',gp:'Las Vegas',circuit:'Las Vegas Motor Speedway',date:'2026-03-01',end:'2026-03-01',sprint:false,winner:'Byron'},
+      {r:4,flag:'\ud83c\uddfa\ud83c\uddf8',gp:'Phoenix',circuit:'Phoenix Raceway',date:'2026-03-08',end:'2026-03-08',sprint:false,winner:'Blaney'},
+      {r:5,flag:'\ud83c\uddfa\ud83c\uddf8',gp:'Bristol',circuit:'Bristol Motor Speedway',date:'2026-03-22',end:'2026-03-22',sprint:false,winner:'Hamlin'},
+      {r:6,flag:'\ud83c\uddfa\ud83c\uddf8',gp:'COTA',circuit:'Circuit of the Americas, Austin',date:'2026-03-29',end:'2026-03-29',sprint:false,winner:'Chastain'},
+      {r:7,flag:'\ud83c\uddfa\ud83c\uddf8',gp:'Richmond',circuit:'Richmond Raceway',date:'2026-04-05',end:'2026-04-05',sprint:false,winner:'Larson'},
+      {r:8,flag:'\ud83c\uddfa\ud83c\uddf8',gp:'Martinsville',circuit:'Martinsville Speedway',date:'2026-04-12',end:'2026-04-12',sprint:false,winner:'Logano'},
+      {r:9,flag:'\ud83c\uddfa\ud83c\uddf8',gp:'Texas',circuit:'Texas Motor Speedway',date:'2026-04-19',end:'2026-04-19',sprint:false,winner:null},
+      {r:10,flag:'\ud83c\uddfa\ud83c\uddf8',gp:'Talladega',circuit:'Talladega Superspeedway',date:'2026-04-26',end:'2026-04-26',sprint:false,winner:null},
+      {r:11,flag:'\ud83c\uddfa\ud83c\uddf8',gp:'Dover',circuit:'Dover Motor Speedway',date:'2026-05-03',end:'2026-05-03',sprint:false,winner:null},
+      {r:12,flag:'\ud83c\uddfa\ud83c\uddf8',gp:'Kansas',circuit:'Kansas Speedway',date:'2026-05-10',end:'2026-05-10',sprint:false,winner:null},
+      {r:13,flag:'\ud83c\uddfa\ud83c\uddf8',gp:'Darlington',circuit:'Darlington Raceway',date:'2026-05-17',end:'2026-05-17',sprint:false,winner:null},
+      {r:14,flag:'\ud83c\uddfa\ud83c\uddf8',gp:'Charlotte 600',circuit:'Charlotte Motor Speedway',date:'2026-05-24',end:'2026-05-24',sprint:false,winner:null}
+    ]
+  },
+  wrc:{
+    title:'Calendário WRC 2026', badge:'TEMPORADA 2026', sub:'FIA World Rally Championship · 13 rallies',
+    source:'wrc.com · FIA',
+    races:[
+      {r:1,flag:'\ud83c\uddf2\ud83c\udde8',gp:'Rallye Monte-Carlo',circuit:'Monaco / Gap / Col de Turini',date:'2026-01-22',end:'2026-01-25',sprint:false,winner:'Ogier'},
+      {r:2,flag:'\ud83c\uddf8\ud83c\uddea',gp:'Rally da Suécia',circuit:'Umeå / Torsby',date:'2026-02-12',end:'2026-02-15',sprint:false,winner:'Rovanperä'},
+      {r:3,flag:'\ud83c\uddf0\ud83c\uddea',gp:'Safari Rally Kenya',circuit:'Naivasha',date:'2026-03-26',end:'2026-03-29',sprint:false,winner:'Neuville'},
+      {r:4,flag:'\ud83c\uddf5\ud83c\uddf9',gp:'Rally de Portugal',circuit:'Matosinhos / Fafe / Amarante',date:'2026-05-14',end:'2026-05-18',sprint:false,winner:null},
+      {r:5,flag:'\ud83c\uddee\ud83c\uddf9',gp:'Rally da Sardenha',circuit:'Alghero / Olbia',date:'2026-06-04',end:'2026-06-07',sprint:false,winner:null},
+      {r:6,flag:'\ud83c\uddec\ud83c\uddf7',gp:'Acrópolis Rally',circuit:'Lamia / Itea',date:'2026-06-25',end:'2026-06-28',sprint:false,winner:null},
+      {r:7,flag:'\ud83c\uddea\ud83c\uddf8',gp:'Rally RACC Catalunya',circuit:'Salou / Tarragona',date:'2026-07-16',end:'2026-07-19',sprint:false,winner:null},
+      {r:8,flag:'\ud83c\uddeb\ud83c\uddee',gp:'Rally da Finlândia',circuit:'Jyväskylä',date:'2026-07-30',end:'2026-08-02',sprint:false,winner:null},
+      {r:9,flag:'\ud83c\udde8\ud83c\uddf1',gp:'Rally do Chile',circuit:'Concepción / Biobío',date:'2026-09-03',end:'2026-09-06',sprint:false,winner:null},
+      {r:10,flag:'\ud83c\udde9\ud83c\uddea',gp:'Rally da Alemanha',circuit:'Bostalsee / Trier',date:'2026-10-08',end:'2026-10-11',sprint:false,winner:null},
+      {r:11,flag:'\ud83c\uddef\ud83c\uddf5',gp:'Rally do Japão',circuit:'Toyota City / Aichi',date:'2026-11-12',end:'2026-11-15',sprint:false,winner:null}
+    ]
+  }
+};
+
 function renderCalendar(){
-  const races=[
-    {r:1, flag:'\uD83C\uDDE6\uD83C\uDDFA', gp:'GP da Austrália', circuit:'Albert Park, Melbourne', date:'2026-03-14', end:'2026-03-16', sprint:false, winner:'Antonelli'},
-    {r:2, flag:'\uD83C\uDDE8\uD83C\uDDF3', gp:'GP da China', circuit:'Shanghai International Circuit', date:'2026-03-28', end:'2026-03-30', sprint:true, winner:'Antonelli'},
-    {r:3, flag:'\uD83C\uDDEF\uD83C\uDDF5', gp:'GP do Japão', circuit:'Suzuka International Racing Course', date:'2026-04-04', end:'2026-04-06', sprint:false, winner:'Russell'},
-    {r:4, flag:'\uD83C\uDDFA\uD83C\uDDF8', gp:'GP de Miami', circuit:'Miami International Autodrome', date:'2026-05-01', end:'2026-05-03', sprint:true, winner:null},
-    {r:5, flag:'\uD83C\uDDEA\uD83C\uDDF8', gp:'GP da Espanha', circuit:'Circuit de Barcelona-Catalunya', date:'2026-05-17', end:'2026-05-18', sprint:false, winner:null},
-    {r:6, flag:'\uD83C\uDDF2\uD83C\uDDE8', gp:'GP de Mônaco', circuit:'Circuit de Monaco', date:'2026-05-24', end:'2026-05-25', sprint:false, winner:null},
-    {r:7, flag:'\uD83C\uDDE8\uD83C\uDDE6', gp:'GP do Canadá', circuit:'Circuit Gilles Villeneuve, Montreal', date:'2026-06-07', end:'2026-06-08', sprint:false, winner:null},
-    {r:8, flag:'\uD83C\uDDE6\uD83C\uDDF9', gp:'GP da Áustria', circuit:'Red Bull Ring, Spielberg', date:'2026-06-28', end:'2026-06-29', sprint:true, winner:null},
-    {r:9, flag:'\uD83C\uDDEC\uD83C\uDDE7', gp:'GP da Grã-Bretanha', circuit:'Silverstone Circuit', date:'2026-07-05', end:'2026-07-06', sprint:false, winner:null},
-    {r:10, flag:'\uD83C\uDDE7\uD83C\uDDEA', gp:'GP da Bélgica', circuit:'Circuit de Spa-Francorchamps', date:'2026-07-26', end:'2026-07-27', sprint:false, winner:null},
-    {r:11, flag:'\uD83C\uDDED\uD83C\uDDFA', gp:'GP da Hungria', circuit:'Hungaroring, Budapest', date:'2026-08-02', end:'2026-08-03', sprint:false, winner:null},
-    {r:12, flag:'\uD83C\uDDF3\uD83C\uDDF1', gp:'GP da Holanda', circuit:'Circuit Zandvoort', date:'2026-08-30', end:'2026-08-31', sprint:false, winner:null},
-    {r:13, flag:'\uD83C\uDDEE\uD83C\uDDF9', gp:'GP da Itália', circuit:'Autodromo di Monza', date:'2026-09-06', end:'2026-09-07', sprint:false, winner:null},
-    {r:14, flag:'\uD83C\uDDE6\uD83C\uDDFF', gp:'GP do Azerbaijão', circuit:'Baku City Circuit', date:'2026-09-20', end:'2026-09-21', sprint:false, winner:null},
-    {r:15, flag:'\uD83C\uDDF8\uD83C\uDDEC', gp:'GP de Singapura', circuit:'Marina Bay Street Circuit', date:'2026-10-04', end:'2026-10-05', sprint:false, winner:null},
-    {r:16, flag:'\uD83C\uDDFA\uD83C\uDDF8', gp:'GP dos EUA', circuit:'Circuit of the Americas, Austin', date:'2026-10-18', end:'2026-10-19', sprint:true, winner:null},
-    {r:17, flag:'\uD83C\uDDF2\uD83C\uDDFD', gp:'GP do México', circuit:'Autódromo Hermanos Rodríguez', date:'2026-10-25', end:'2026-10-26', sprint:false, winner:null},
-    {r:18, flag:'\uD83C\uDDE7\uD83C\uDDF7', gp:'GP de São Paulo', circuit:'Autódromo de Interlagos', date:'2026-11-08', end:'2026-11-09', sprint:true, winner:null},
-    {r:19, flag:'\uD83C\uDDFA\uD83C\uDDF8', gp:'GP de Las Vegas', circuit:'Las Vegas Strip Circuit', date:'2026-11-21', end:'2026-11-22', sprint:false, winner:null},
-    {r:20, flag:'\uD83C\uDDF6\uD83C\uDDE6', gp:'GP do Qatar', circuit:'Lusail International Circuit', date:'2026-11-29', end:'2026-11-30', sprint:true, winner:null},
-    {r:21, flag:'\uD83C\uDDE6\uD83C\uDDEA', gp:'GP de Abu Dhabi', circuit:'Yas Marina Circuit', date:'2026-12-06', end:'2026-12-07', sprint:false, winner:null}
-  ];
+  const cat=activeCat||'f1';
+  const cal=CAL_DATA[cat]||CAL_DATA.f1;
+  const races=cal.races;
+
+  // Update hero
+  const heroTitle=document.querySelector('#view-calendar .cal-hero-title');
+  const heroBadge=document.querySelector('#view-calendar .badge');
+  const heroSub=document.querySelector('#view-calendar .cal-hero-sub');
+  if(heroTitle) heroTitle.textContent=cal.title;
+  if(heroBadge) heroBadge.textContent=cal.badge;
+  if(heroSub) heroSub.textContent=cal.sub;
 
   const now=new Date();
   const grid=document.getElementById('calGrid');
@@ -702,7 +793,7 @@ function renderCalendar(){
 
     const winnerHtml=isDone&&rc.winner?`<div class="cal-winner"><i class="fi fi-rr-trophy"></i> Vencedor: <strong>${rc.winner}</strong></div>`:'';
 
-    return `<div class="cal-card ${status}" onclick="toast('${rc.gp} — ${dateStr}','info')">
+    return `<div class="cal-card ${status}" onclick="toast('${rc.gp} \u2014 ${dateStr}','info')">
       <div class="cal-top">
         <span class="cal-flag">${rc.flag}</span>
         <div>
@@ -722,7 +813,8 @@ function renderCalendar(){
   }).join('');
 
   const done=races.filter(r=>now>new Date(r.end+'T23:59:59')).length;
-  document.getElementById('calTitle').textContent=`${races.length} Corridas · ${done} concluída${done!==1?'s':''}`;
+  const unit=cat==='wrc'?'Rallies':'Corridas';
+  document.getElementById('calTitle').textContent=`${races.length} ${unit} \u00b7 ${done} conclu\u00edda${done!==1?'s':''}`;
 }
 
 function formatCalDate(start,end){
