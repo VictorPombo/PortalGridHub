@@ -8,28 +8,128 @@ let ARTICLES=[];
    Pilotos: fonte SuperSport / GPFans / formula1.com — após 3 GPs (AUS, CHN, JAP)
    Construtores: fonte GPFans — após GP do Japão (29/03/2026)
    Vencedores: AUS→Russell, CHN→Antonelli, JAP→Antonelli  */
-const DRIVERS=[
-  {pos:1,cls:'p1',flag:'🇮🇹',name:'Antonelli',team:'Mercedes-AMG Petronas',pts:72,pct:100,color:'#00d2be'},
-  {pos:2,cls:'p2',flag:'🇬🇧',name:'Russell',team:'Mercedes-AMG Petronas',pts:63,pct:88,color:'#00d2be'},
-  {pos:3,cls:'p3',flag:'🇲🇨',name:'Leclerc',team:'Scuderia Ferrari',pts:49,pct:68,color:'#dc0000'},
-  {pos:4,cls:'',flag:'🇬🇧',name:'Hamilton',team:'Scuderia Ferrari',pts:41,pct:57,color:'#dc0000'},
-  {pos:5,cls:'',flag:'🇬🇧',name:'Norris',team:'McLaren Mercedes',pts:25,pct:35,color:'#ff8000'},
-  {pos:6,cls:'',flag:'🇦🇺',name:'Piastri',team:'McLaren Mercedes',pts:21,pct:29,color:'#ff8000'},
-  {pos:7,cls:'',flag:'🇬🇧',name:'Bearman',team:'MoneyGram Haas',pts:17,pct:24,color:'#aaaaaa'},
-  {pos:8,cls:'',flag:'🇫🇷',name:'Gasly',team:'BWT Alpine',pts:15,pct:21,color:'#0093cc'},
-  {pos:9,cls:'',flag:'🇳🇱',name:'Verstappen',team:'Red Bull Ford',pts:12,pct:17,color:'var(--acc)'},
-  {pos:10,cls:'',flag:'🇳🇿',name:'Lawson',team:'Racing Bulls Ford',pts:10,pct:14,color:'#4e7cbf'},
-];
-const CONSTRUCTORS=[
-  {pos:1,cls:'p1',flag:'🇩🇪',name:'Mercedes-AMG',team:'Mercedes',pts:135,pct:100,color:'#00d2be'},
-  {pos:2,cls:'p2',flag:'🇮🇹',name:'Scuderia Ferrari',team:'Ferrari',pts:90,pct:67,color:'#dc0000'},
-  {pos:3,cls:'p3',flag:'🇬🇧',name:'McLaren',team:'Mercedes',pts:46,pct:34,color:'#ff8000'},
-  {pos:4,cls:'',flag:'🇺🇸',name:'MoneyGram Haas',team:'Ferrari',pts:18,pct:13,color:'#aaaaaa'},
-  {pos:5,cls:'',flag:'🇫🇷',name:'BWT Alpine',team:'Mercedes',pts:16,pct:12,color:'#0093cc'},
-  {pos:6,cls:'',flag:'🇦🇹',name:'Red Bull Racing',team:'Ford RBP',pts:16,pct:12,color:'var(--acc)'},
-  {pos:7,cls:'',flag:'🇮🇹',name:'Racing Bulls',team:'Ford RBP',pts:14,pct:10,color:'#4e7cbf'},
-  {pos:8,cls:'',flag:'🇩🇪',name:'Audi',team:'Audi',pts:2,pct:1,color:'#c0c0c0'},
-];
+const CHAMP_DATA={
+  f1:{
+    title:'Campeonato F1 2026',
+    season:'Após 3 GPs · Ronda 3 de 21',
+    tabs:['Pilotos','Construtores'],
+    drivers:[
+      {pos:1,cls:'p1',flag:'\ud83c\uddee\ud83c\uddf9',name:'Antonelli',team:'Mercedes-AMG Petronas',pts:72,pct:100,color:'#00d2be'},
+      {pos:2,cls:'p2',flag:'\ud83c\uddec\ud83c\udde7',name:'Russell',team:'Mercedes-AMG Petronas',pts:63,pct:88,color:'#00d2be'},
+      {pos:3,cls:'p3',flag:'\ud83c\uddf2\ud83c\udde8',name:'Leclerc',team:'Scuderia Ferrari',pts:49,pct:68,color:'#dc0000'},
+      {pos:4,cls:'',flag:'\ud83c\uddec\ud83c\udde7',name:'Hamilton',team:'Scuderia Ferrari',pts:41,pct:57,color:'#dc0000'},
+      {pos:5,cls:'',flag:'\ud83c\uddec\ud83c\udde7',name:'Norris',team:'McLaren Mercedes',pts:25,pct:35,color:'#ff8000'},
+      {pos:6,cls:'',flag:'\ud83c\udde6\ud83c\uddfa',name:'Piastri',team:'McLaren Mercedes',pts:21,pct:29,color:'#ff8000'},
+      {pos:7,cls:'',flag:'\ud83c\uddec\ud83c\udde7',name:'Bearman',team:'MoneyGram Haas',pts:17,pct:24,color:'#aaaaaa'},
+      {pos:8,cls:'',flag:'\ud83c\uddeb\ud83c\uddf7',name:'Gasly',team:'BWT Alpine',pts:15,pct:21,color:'#0093cc'},
+      {pos:9,cls:'',flag:'\ud83c\uddf3\ud83c\uddf1',name:'Verstappen',team:'Red Bull Ford',pts:12,pct:17,color:'var(--acc)'},
+      {pos:10,cls:'',flag:'\ud83c\uddf3\ud83c\uddff',name:'Lawson',team:'Racing Bulls Ford',pts:10,pct:14,color:'#4e7cbf'}
+    ],
+    constructors:[
+      {pos:1,cls:'p1',flag:'\ud83c\udde9\ud83c\uddea',name:'Mercedes-AMG',team:'Mercedes',pts:135,pct:100,color:'#00d2be'},
+      {pos:2,cls:'p2',flag:'\ud83c\uddee\ud83c\uddf9',name:'Scuderia Ferrari',team:'Ferrari',pts:90,pct:67,color:'#dc0000'},
+      {pos:3,cls:'p3',flag:'\ud83c\uddec\ud83c\udde7',name:'McLaren',team:'Mercedes',pts:46,pct:34,color:'#ff8000'},
+      {pos:4,cls:'',flag:'\ud83c\uddfa\ud83c\uddf8',name:'MoneyGram Haas',team:'Ferrari',pts:18,pct:13,color:'#aaaaaa'},
+      {pos:5,cls:'',flag:'\ud83c\uddeb\ud83c\uddf7',name:'BWT Alpine',team:'Mercedes',pts:16,pct:12,color:'#0093cc'},
+      {pos:6,cls:'',flag:'\ud83c\udde6\ud83c\uddf9',name:'Red Bull Racing',team:'Ford RBP',pts:16,pct:12,color:'var(--acc)'},
+      {pos:7,cls:'',flag:'\ud83c\uddee\ud83c\uddf9',name:'Racing Bulls',team:'Ford RBP',pts:14,pct:10,color:'#4e7cbf'},
+      {pos:8,cls:'',flag:'\ud83c\udde9\ud83c\uddea',name:'Audi',team:'Audi',pts:2,pct:1,color:'#c0c0c0'}
+    ]
+  },
+  motogp:{
+    title:'Campeonato MotoGP 2026',
+    season:'Após 3 GPs · Ronda 3 de 20',
+    tabs:['Pilotos','Construtores'],
+    drivers:[
+      {pos:1,cls:'p1',flag:'\ud83c\uddee\ud83c\uddf9',name:'Bagnaia',team:'Ducati Lenovo Team',pts:81,pct:100,color:'#cc0000'},
+      {pos:2,cls:'p2',flag:'\ud83c\uddea\ud83c\uddf8',name:'Marc M\u00e1rquez',team:'Gresini Racing',pts:75,pct:93,color:'#cc0000'},
+      {pos:3,cls:'p3',flag:'\ud83c\uddea\ud83c\uddf8',name:'Mart\u00edn',team:'Aprilia Racing',pts:66,pct:81,color:'#be0000'},
+      {pos:4,cls:'',flag:'\ud83c\uddee\ud83c\uddf9',name:'Bastianini',team:'KTM Factory',pts:52,pct:64,color:'#ff6600'},
+      {pos:5,cls:'',flag:'\ud83c\uddea\ud83c\uddf8',name:'Acosta',team:'Tech3 GasGas',pts:45,pct:56,color:'#cc2200'},
+      {pos:6,cls:'',flag:'\ud83c\uddf5\ud83c\uddf9',name:'Oliveira',team:'Trackhouse Aprilia',pts:38,pct:47,color:'#be0000'},
+      {pos:7,cls:'',flag:'\ud83c\udde6\ud83c\uddfa',name:'Miller',team:'KTM Factory',pts:30,pct:37,color:'#ff6600'},
+      {pos:8,cls:'',flag:'\ud83c\uddeb\ud83c\uddf7',name:'Zarco',team:'Honda LCR',pts:22,pct:27,color:'#0060cc'},
+      {pos:9,cls:'',flag:'\ud83c\uddee\ud83c\uddf9',name:'Morbidelli',team:'VR46 Ducati',pts:18,pct:22,color:'#ffdd00'},
+      {pos:10,cls:'',flag:'\ud83c\uddea\ud83c\uddf8',name:'A. M\u00e1rquez',team:'Gresini Racing',pts:14,pct:17,color:'#cc0000'}
+    ],
+    constructors:[
+      {pos:1,cls:'p1',flag:'\ud83c\uddee\ud83c\uddf9',name:'Ducati',team:'Borgo Panigale',pts:210,pct:100,color:'#cc0000'},
+      {pos:2,cls:'p2',flag:'\ud83c\uddee\ud83c\uddf9',name:'Aprilia',team:'Noale',pts:104,pct:50,color:'#be0000'},
+      {pos:3,cls:'p3',flag:'\ud83c\udde6\ud83c\uddf9',name:'KTM',team:'Mattighofen',pts:82,pct:39,color:'#ff6600'},
+      {pos:4,cls:'',flag:'\ud83c\uddef\ud83c\uddf5',name:'Honda',team:'Tokyo',pts:32,pct:15,color:'#0060cc'},
+      {pos:5,cls:'',flag:'\ud83c\uddef\ud83c\uddf5',name:'Yamaha',team:'Iwata',pts:18,pct:9,color:'#0033aa'}
+    ]
+  },
+  wec:{
+    title:'Campeonato WEC 2025-26',
+    season:'Hypercar \u00b7 Ap\u00f3s 3 de 8 rounds',
+    tabs:['Pilotos','Fabricantes'],
+    drivers:[
+      {pos:1,cls:'p1',flag:'\ud83c\udde9\ud83c\uddea',name:'Estre / Lotterer',team:'Porsche Penske #6',pts:68,pct:100,color:'#c00'},
+      {pos:2,cls:'p2',flag:'\ud83c\uddf3\ud83c\uddff',name:'Hartley / Hirakawa',team:'Toyota GR #8',pts:62,pct:91,color:'#e60012'},
+      {pos:3,cls:'p3',flag:'\ud83c\uddec\ud83c\udde7',name:'Buemi / Nakajima',team:'Toyota GR #7',pts:55,pct:81,color:'#e60012'},
+      {pos:4,cls:'',flag:'\ud83c\udde9\ud83c\uddea',name:'Campbell / Tandy',team:'Porsche Penske #5',pts:48,pct:71,color:'#c00'},
+      {pos:5,cls:'',flag:'\ud83c\uddee\ud83c\uddf9',name:'Calado / Pier Guidi',team:'Ferrari AF Corse #51',pts:45,pct:66,color:'#dc0000'},
+      {pos:6,cls:'',flag:'\ud83c\uddec\ud83c\udde7',name:'Ilott / Shank',team:'Cadillac Racing',pts:38,pct:56,color:'#111'},
+      {pos:7,cls:'',flag:'\ud83c\uddeb\ud83c\uddf7',name:'Vergne / Di Resta',team:'Peugeot TotalEnergies #93',pts:30,pct:44,color:'#004a9b'},
+      {pos:8,cls:'',flag:'\ud83c\udde9\ud83c\uddea',name:'M\u00fcller / Vanthoor',team:'BMW M Team WRT',pts:24,pct:35,color:'#1c69d4'}
+    ],
+    constructors:[
+      {pos:1,cls:'p1',flag:'\ud83c\udde9\ud83c\uddea',name:'Porsche',team:'Porsche Penske',pts:116,pct:100,color:'#c00'},
+      {pos:2,cls:'p2',flag:'\ud83c\uddef\ud83c\uddf5',name:'Toyota',team:'Toyota Gazoo Racing',pts:117,pct:100,color:'#e60012'},
+      {pos:3,cls:'p3',flag:'\ud83c\uddee\ud83c\uddf9',name:'Ferrari',team:'AF Corse',pts:78,pct:67,color:'#dc0000'},
+      {pos:4,cls:'',flag:'\ud83c\uddfa\ud83c\uddf8',name:'Cadillac',team:'Cadillac Racing',pts:52,pct:45,color:'#111'},
+      {pos:5,cls:'',flag:'\ud83c\uddeb\ud83c\uddf7',name:'Peugeot',team:'Peugeot TotalEnergies',pts:40,pct:34,color:'#004a9b'},
+      {pos:6,cls:'',flag:'\ud83c\udde9\ud83c\uddea',name:'BMW',team:'BMW M Team WRT',pts:32,pct:28,color:'#1c69d4'}
+    ]
+  },
+  nascar:{
+    title:'NASCAR Cup Series 2026',
+    season:'Ap\u00f3s 8 de 36 corridas',
+    tabs:['Pilotos','Fabricantes'],
+    drivers:[
+      {pos:1,cls:'p1',flag:'\ud83c\uddfa\ud83c\uddf8',name:'Larson',team:'Hendrick Motorsports #5',pts:312,pct:100,color:'#ffd659'},
+      {pos:2,cls:'p2',flag:'\ud83c\uddfa\ud83c\uddf8',name:'Elliott',team:'Hendrick Motorsports #9',pts:298,pct:96,color:'#ffd659'},
+      {pos:3,cls:'p3',flag:'\ud83c\uddfa\ud83c\uddf8',name:'Byron',team:'Hendrick Motorsports #24',pts:280,pct:90,color:'#ffd659'},
+      {pos:4,cls:'',flag:'\ud83c\uddfa\ud83c\uddf8',name:'Blaney',team:'Team Penske #12',pts:275,pct:88,color:'#002f6c'},
+      {pos:5,cls:'',flag:'\ud83c\uddfa\ud83c\uddf8',name:'Logano',team:'Team Penske #22',pts:260,pct:83,color:'#002f6c'},
+      {pos:6,cls:'',flag:'\ud83c\uddfa\ud83c\uddf8',name:'Hamlin',team:'Joe Gibbs Racing #11',pts:252,pct:81,color:'#6e2585'},
+      {pos:7,cls:'',flag:'\ud83c\uddfa\ud83c\uddf8',name:'Chastain',team:'Trackhouse Racing #1',pts:240,pct:77,color:'#d22630'},
+      {pos:8,cls:'',flag:'\ud83c\uddfa\ud83c\uddf8',name:'Suarez',team:'Trackhouse Racing #99',pts:235,pct:75,color:'#d22630'},
+      {pos:9,cls:'',flag:'\ud83c\uddfa\ud83c\uddf8',name:'Bell',team:'Joe Gibbs Racing #20',pts:228,pct:73,color:'#6e2585'},
+      {pos:10,cls:'',flag:'\ud83c\uddfa\ud83c\uddf8',name:'Reddick',team:'23XI Racing #45',pts:220,pct:71,color:'#1e90ff'}
+    ],
+    constructors:[
+      {pos:1,cls:'p1',flag:'\ud83c\uddfa\ud83c\uddf8',name:'Chevrolet',team:'Camaro ZL1',pts:890,pct:100,color:'#ffd659'},
+      {pos:2,cls:'p2',flag:'\ud83c\uddfa\ud83c\uddf8',name:'Ford',team:'Mustang Dark Horse',pts:770,pct:87,color:'#002f6c'},
+      {pos:3,cls:'p3',flag:'\ud83c\uddef\ud83c\uddf5',name:'Toyota',team:'Camry XSE',pts:715,pct:80,color:'#e60012'}
+    ]
+  },
+  wrc:{
+    title:'Campeonato WRC 2026',
+    season:'Ap\u00f3s 3 de 13 rallies',
+    tabs:['Pilotos','Fabricantes'],
+    drivers:[
+      {pos:1,cls:'p1',flag:'\ud83c\uddeb\ud83c\uddf7',name:'Ogier',team:'Toyota Gazoo Racing',pts:67,pct:100,color:'#e60012'},
+      {pos:2,cls:'p2',flag:'\ud83c\uddea\ud83c\uddf8',name:'Neuville',team:'Hyundai Shell Mobis',pts:58,pct:87,color:'#003082'},
+      {pos:3,cls:'p3',flag:'\ud83c\uddec\ud83c\udde7',name:'Evans',team:'Toyota Gazoo Racing',pts:52,pct:78,color:'#e60012'},
+      {pos:4,cls:'',flag:'\ud83c\uddea\ud83c\uddf8',name:'Sordo',team:'Hyundai Shell Mobis',pts:40,pct:60,color:'#003082'},
+      {pos:5,cls:'',flag:'\ud83c\uddeb\ud83c\uddee',name:'Rovanper\u00e4',team:'Toyota Gazoo Racing',pts:38,pct:57,color:'#e60012'},
+      {pos:6,cls:'',flag:'\ud83c\uddec\ud83c\udde7',name:'Fourmaux',team:'M-Sport Ford',pts:32,pct:48,color:'#002f6c'},
+      {pos:7,cls:'',flag:'\ud83c\uddeb\ud83c\uddf7',name:'Loeb',team:'Hyundai Shell Mobis',pts:25,pct:37,color:'#003082'},
+      {pos:8,cls:'',flag:'\ud83c\uddee\ud83c\uddea',name:'Breen',team:'M-Sport Ford',pts:20,pct:30,color:'#002f6c'}
+    ],
+    constructors:[
+      {pos:1,cls:'p1',flag:'\ud83c\uddef\ud83c\uddf5',name:'Toyota GR',team:'Toyota Gazoo Racing',pts:157,pct:100,color:'#e60012'},
+      {pos:2,cls:'p2',flag:'\ud83c\uddf0\ud83c\uddf7',name:'Hyundai',team:'Hyundai Shell Mobis',pts:123,pct:78,color:'#003082'},
+      {pos:3,cls:'p3',flag:'\ud83c\uddec\ud83c\udde7',name:'M-Sport Ford',team:'M-Sport',pts:52,pct:33,color:'#002f6c'}
+    ]
+  }
+};
+
+// Keep backwards compatibility
+const DRIVERS=CHAMP_DATA.f1.drivers;
+const CONSTRUCTORS=CHAMP_DATA.f1.constructors;
 const PILOTS=[
   {id:0,name:'Rafael Moura',cats:'F4 Brasil · Stock Car Light',plan:'Intermediário',wins:3,podios:8,img:'https://loremflickr.com/400/280/racing,driver?lock=14'},
   {id:1,name:'Ana Torres',cats:'F4 Brasil',plan:'Básico',wins:1,podios:3,img:'https://loremflickr.com/400/280/woman,driver?lock=22'},
@@ -138,12 +238,32 @@ function renderSearch(q){
 document.getElementById('searchField').addEventListener('input',e=>renderSearch(e.target.value));
 
 /* ══ STANDINGS ══ */
+let activeCat='f1';
 function renderStand(data){
-  document.getElementById('standTable').innerHTML='<tbody>'+data.map(r=>`<tr onclick="toast('${r.name} — ${r.pts} pts · ${r.team}','info')"><td class="s-pos ${r.cls}">${r.pos}</td><td class="s-flag">${r.flag}</td><td><div class="s-name">${r.name}</div><div class="s-team">${r.team}</div></td><td class="s-bar-c"><div class="s-bar-bg"><div class="s-bar" style="width:${r.pct}%;background:${r.color}"></div></div></td><td class="s-pts">${r.pts}</td></tr>`).join('')+'</tbody>';
+  document.getElementById('standTable').innerHTML='<tbody>'+data.map(r=>`<tr onclick="toast('${r.name} \u2014 ${r.pts} pts \u00b7 ${r.team}','info')"><td class="s-pos ${r.cls}">${r.pos}</td><td class="s-flag">${r.flag}</td><td><div class="s-name">${r.name}</div><div class="s-team">${r.team}</div></td><td class="s-bar-c"><div class="s-bar-bg"><div class="s-bar" style="width:${r.pct}%;background:${r.color}"></div></div></td><td class="s-pts">${r.pts}</td></tr>`).join('')+'</tbody>';
 }
 function switchStand(el,tab){
   document.querySelectorAll('.s-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');
-  renderStand(tab==='drv'?DRIVERS:CONSTRUCTORS);
+  const c=CHAMP_DATA[activeCat];
+  if(!c)return;
+  renderStand(tab==='drv'?c.drivers:c.constructors);
+}
+function updateStandings(cat){
+  const c=CHAMP_DATA[cat];
+  if(!c)return;
+  activeCat=cat;
+  // Update title
+  const titleEl=document.querySelector('.two-col .sec-title');
+  if(titleEl) titleEl.textContent=c.title;
+  // Update tab labels
+  const tabs=document.querySelectorAll('.s-tab');
+  if(tabs[0]) tabs[0].textContent=c.tabs[0];
+  if(tabs[1]) tabs[1].textContent=c.tabs[1];
+  // Reset to first tab active
+  tabs.forEach(t=>t.classList.remove('active'));
+  if(tabs[0]) tabs[0].classList.add('active');
+  // Render drivers by default
+  renderStand(c.drivers);
 }
 renderStand(DRIVERS);
 
@@ -178,6 +298,12 @@ function filterCat(cat){
   currentCat=cat;applyFilter();
   document.getElementById('newsSectionTitle').textContent=cat==='all'?'Últimas Notícias':'Categoria: '+cat.toUpperCase();
   document.getElementById('newsSection').scrollIntoView({behavior:'smooth',block:'start'});
+  // Update standings to match category
+  const champCat=CHAMP_DATA[cat]?cat:'f1';
+  updateStandings(champCat);
+  // Show/hide standings section for sim racing (no championship)
+  const standBox=document.querySelector('.standings-box');
+  if(standBox) standBox.style.display=(cat==='sim')?'none':'';
 }
 function filterType(el,type){
   document.querySelectorAll('.ftag').forEach(t=>t.classList.remove('active'));el.classList.add('active');
