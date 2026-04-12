@@ -264,21 +264,120 @@ function updateStandings(cat){
   if(tabs[0]) tabs[0].classList.add('active');
   // Render drivers by default
   renderStand(c.drivers);
+  // Update next race
+  renderNextRace(cat);
 }
 renderStand(DRIVERS);
 
-/* ══ COUNTDOWN — GP Miami 2026: Corrida Dom 03/05 às 21:00 UTC = 17:00 BRT ══ */
-const RACE=new Date('2026-05-03T21:00:00Z');
-function tick(){
-  const d=RACE-new Date();
-  if(d<=0){document.querySelector('.cd-grid').innerHTML='<div style="grid-column:span 4;text-align:center;padding:16px;font-family:var(--fm);font-size:11px;color:var(--acc)"><i class="fi fi-rr-flag-checkered"></i> CORRIDA EM ANDAMENTO</div>';return}
-  document.getElementById('cd-d').textContent=pad(Math.floor(d/86400000));
-  document.getElementById('cd-h').textContent=pad(Math.floor((d%86400000)/3600000));
-  document.getElementById('cd-m').textContent=pad(Math.floor((d%3600000)/60000));
-  document.getElementById('cd-s').textContent=pad(Math.floor((d%60000)/1000));
+/* ══ NEXT RACE DATA ══ */
+const NEXT_RACES={
+  f1:{
+    flag:'\ud83c\uddfa\ud83c\uddf8',gp:'GP de Miami 2026',circuit:'MIAMI INTERNATIONAL AUTODROME',
+    round:'RONDA 4',extra:'SPRINT WEEKEND',raceDate:'2026-05-03T21:00:00Z',
+    source:'formula1.com \u00b7 GPFans \u00b7 ESPN',
+    sessions:[
+      {name:'FP1',time:'Sex \u00b7 13:30'},
+      {name:'Classif. Sprint',time:'Sex \u00b7 17:30'},
+      {name:'Sprint',time:'S\u00e1b \u00b7 13:00'},
+      {name:'Classifica\u00e7\u00e3o',time:'S\u00e1b \u00b7 17:00'},
+      {name:'Corrida',time:'Dom 03/05 \u00b7 17:00'}
+    ]
+  },
+  motogp:{
+    flag:'\ud83c\uddea\ud83c\uddf8',gp:'GP da Espanha 2026',circuit:'CIRCUITO DE JEREZ',
+    round:'RONDA 4',extra:'',raceDate:'2026-04-27T14:00:00Z',
+    source:'motogp.com \u00b7 MotoSport',
+    sessions:[
+      {name:'FP1',time:'Sex \u00b7 05:45'},
+      {name:'FP2',time:'Sex \u00b7 10:00'},
+      {name:'Classifica\u00e7\u00e3o',time:'S\u00e1b \u00b7 05:50'},
+      {name:'Sprint',time:'S\u00e1b \u00b7 10:00'},
+      {name:'Corrida',time:'Dom 27/04 \u00b7 09:00'}
+    ]
+  },
+  wec:{
+    flag:'\ud83c\uddee\ud83c\uddf9',gp:'6h de \u00cdmola 2026',circuit:'AUTODROMO ENZO E DINO FERRARI',
+    round:'RONDA 4 DE 8',extra:'',raceDate:'2026-07-20T13:00:00Z',
+    source:'fiawec.com \u00b7 FIA',
+    sessions:[
+      {name:'TL1',time:'Sex \u00b7 07:30'},
+      {name:'TL2',time:'Sex \u00b7 12:00'},
+      {name:'Classifica\u00e7\u00e3o',time:'S\u00e1b \u00b7 07:10'},
+      {name:'Corrida (6h)',time:'S\u00e1b 20/07 \u00b7 07:00'}
+    ]
+  },
+  nascar:{
+    flag:'\ud83c\uddfa\ud83c\uddf8',gp:'Talladega 2026',circuit:'TALLADEGA SUPERSPEEDWAY',
+    round:'RONDA 10 DE 36',extra:'',raceDate:'2026-04-27T19:00:00Z',
+    source:'nascar.com \u00b7 Jayski',
+    sessions:[
+      {name:'Pr\u00e1tica',time:'S\u00e1b \u00b7 12:00'},
+      {name:'Classifica\u00e7\u00e3o',time:'S\u00e1b \u00b7 14:00'},
+      {name:'Corrida',time:'Dom 27/04 \u00b7 15:00'}
+    ]
+  },
+  wrc:{
+    flag:'\ud83c\uddf5\ud83c\uddf9',gp:'Rally de Portugal 2026',circuit:'MATOSINHOS / FAFE / AMARANTE',
+    round:'RONDA 4 DE 13',extra:'',raceDate:'2026-05-18T15:00:00Z',
+    source:'wrc.com \u00b7 FIA',
+    sessions:[
+      {name:'Shakedown',time:'Qui \u00b7 08:00'},
+      {name:'SS1-SS8',time:'Sex 16/05 \u00b7 07:00'},
+      {name:'SS9-SS16',time:'S\u00e1b 17/05 \u00b7 07:30'},
+      {name:'Power Stage',time:'Dom 18/05 \u00b7 11:18'}
+    ]
+  }
+};
+
+let activeRaceTimer=null;
+
+function renderNextRace(cat){
+  const r=NEXT_RACES[cat]||NEXT_RACES.f1;
+  const box=document.getElementById('nextRaceBox');
+  if(!box)return;
+
+  const extraBadge=r.extra?` \u00b7 ${r.extra}`:'';
+  const sessHtml=r.sessions.map(s=>`<li class="sess-item"><span class="sess-name">${s.name}</span><span class="sess-time">${s.time}</span></li>`).join('');
+
+  box.innerHTML=`<div class="race-box">
+    <div class="race-header">
+      <div style="font-size:28px">${r.flag}</div>
+      <div class="race-gp">${r.gp}</div>
+      <div class="race-circuit">${r.circuit} \u00b7 ${r.round}${extraBadge}</div>
+    </div>
+    <div class="cd-grid">
+      <div class="cd-box"><span class="cd-n" id="cd-d">00</span><span class="cd-l">Dias</span></div>
+      <div class="cd-box"><span class="cd-n" id="cd-h">00</span><span class="cd-l">Horas</span></div>
+      <div class="cd-box"><span class="cd-n" id="cd-m">00</span><span class="cd-l">Min</span></div>
+      <div class="cd-box"><span class="cd-n" id="cd-s">00</span><span class="cd-l">Seg</span></div>
+    </div>
+    <ul class="sess-list">${sessHtml}</ul>
+    <div style="padding:8px 20px 14px;font-family:var(--fm);font-size:9px;color:var(--muted)">Fonte: ${r.source} \u00b7 hor\u00e1rios em BRT</div>
+  </div>`;
+
+  // Start countdown
+  if(activeRaceTimer) clearInterval(activeRaceTimer);
+  const target=new Date(r.raceDate);
+  function tick(){
+    const d=target-new Date();
+    if(d<=0){
+      const cg=document.querySelector('.cd-grid');
+      if(cg) cg.innerHTML='<div style="grid-column:span 4;text-align:center;padding:16px;font-family:var(--fm);font-size:11px;color:var(--acc)"><i class="fi fi-rr-flag"></i> CORRIDA EM ANDAMENTO</div>';
+      return;
+    }
+    const dd=document.getElementById('cd-d'),dh=document.getElementById('cd-h'),dm=document.getElementById('cd-m'),ds=document.getElementById('cd-s');
+    if(dd) dd.textContent=pad(Math.floor(d/86400000));
+    if(dh) dh.textContent=pad(Math.floor((d%86400000)/3600000));
+    if(dm) dm.textContent=pad(Math.floor((d%3600000)/60000));
+    if(ds) ds.textContent=pad(Math.floor((d%60000)/1000));
+  }
+  tick();
+  activeRaceTimer=setInterval(tick,1000);
 }
 function pad(n){return String(n).padStart(2,'0')}
-tick();setInterval(tick,1000);
+
+// Initial render
+renderNextRace('f1');
 
 /* ══ SCROLL ══ */
 window.addEventListener('scroll',()=>{

@@ -489,27 +489,7 @@
       </div>
       <div>
         <div class="sec-head"><span class="sec-title">Próxima Corrida</span><button class="sec-link btn-ghost btn-sm" onclick="showView('calendar')">CALENDÁRIO →</button></div>
-          <div class="race-box">
-          <div class="race-header">
-            <div style="font-size:28px">🇺🇸</div>
-            <div class="race-gp">GP de Miami 2026</div>
-            <div class="race-circuit">MIAMI INTERNATIONAL AUTODROME · RONDA 4 · SPRINT WEEKEND</div>
-          </div>
-          <div class="cd-grid">
-            <div class="cd-box"><span class="cd-n" id="cd-d">21</span><span class="cd-l">Dias</span></div>
-            <div class="cd-box"><span class="cd-n" id="cd-h">00</span><span class="cd-l">Horas</span></div>
-            <div class="cd-box"><span class="cd-n" id="cd-m">00</span><span class="cd-l">Min</span></div>
-            <div class="cd-box"><span class="cd-n" id="cd-s">00</span><span class="cd-l">Seg</span></div>
-          </div>
-          <ul class="sess-list">
-            <li class="sess-item" onclick="toast('FP1 — Sex 01/05 · 13:30 BRT','info')"><span class="sess-name">FP1</span><span class="sess-time">Sex · 13:30</span></li>
-            <li class="sess-item" onclick="toast('Sprint Quali — Sex 01/05 · 17:30 BRT','info')"><span class="sess-name">Classif. Sprint</span><span class="sess-time">Sex · 17:30</span></li>
-            <li class="sess-item" onclick="toast('Sprint Race — Sáb 02/05 · 13:00 BRT','info')"><span class="sess-name">Sprint</span><span class="sess-time">Sáb · 13:00</span></li>
-            <li class="sess-item" onclick="toast('Classificação — Sáb 02/05 · 17:00 BRT','info')"><span class="sess-name">Classificação</span><span class="sess-time">Sáb · 17:00</span></li>
-            <li class="sess-item"><span class="sess-name">Corrida</span><span class="sess-time">Dom 03/05 · 17:00</span></li>
-          </ul>
-          <div style="padding:8px 20px 14px;font-family:var(--fm);font-size:9px;color:var(--muted)">Fonte: formula1.com · GPFans · ESPN · horários em BRT</div>
-        </div>
+          <div id="nextRaceBox"></div>
       </div>
     </div>
   </div>
@@ -1417,7 +1397,7 @@
 <!-- ════════════════════════════════════════
      JAVASCRIPT
 ════════════════════════════════════════ -->
-<script src="js/app.js?v=4"></script>
-<script src="js/state.js?v=4"></script>
+<script src="js/app.js?v=5"></script>
+<script src="js/state.js?v=5"></script>
 </body>
 </html>
