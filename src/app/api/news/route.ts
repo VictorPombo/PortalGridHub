@@ -7,31 +7,22 @@ export const dynamic = 'force-dynamic';
 export async function GET() {
   const parser = new Parser();
 
+  // Apenas Portais Brasileiros
   const feedsBrasil = [
     "https://br.motorsport.com/rss/f1/news/",
     "https://br.motorsport.com/rss/motogp/news/",
+    "https://br.motorsport.com/rss/stockcar-br/news/",
     "https://br.motorsport.com/rss/all/news/"
   ];
   
-  const feedsGlobal = [
-    "https://www.motorsport.com/rss/f1/news/",
-    "https://www.autosport.com/rss/f1/news/",
-    "https://www.motorsport.com/rss/wec/news/"
-  ];
-
   try {
-    // Busca em Paralelo de Tudo (Promise.all)
-    const [brResults, globalResults] = await Promise.all([
-      Promise.all(feedsBrasil.map(url => parser.parseURL(url).catch(() => null))),
-      Promise.all(feedsGlobal.map(url => parser.parseURL(url).catch(() => null)))
-    ]);
+    const brResults = await Promise.all(
+      feedsBrasil.map(url => parser.parseURL(url).catch(() => null))
+    );
 
     // Set para Desduplicação (Anti-notícia Repetida)
     const brTitles = new Set();
-    const globalTitles = new Set();
-    
     let brNews = [];
-    let globalNews = [];
 
     // Limpeza Brasil
     brResults.forEach(feed => {
@@ -57,42 +48,16 @@ export async function GET() {
       });
     });
 
-    // Limpeza Global
-    globalResults.forEach(feed => {
-      if (!feed) return;
-      feed.items.forEach(item => {
-        if (!globalTitles.has(item.title)) {
-          globalTitles.add(item.title);
-          
-          let img = item.enclosure?.url || '';
-          if (!img && item['media:content']) img = item['media:content']['$']?.url || '';
-          if (!img) img = 'https://images.unsplash.com/photo-1614200187524-dc4b892acf16?q=80&w=1968&auto=format&fit=crop'; // Fallback Internacional
-
-          globalNews.push({
-            id: item.guid || Math.random().toString(),
-            title: item.title,
-            link: item.link,
-            pubDate: item.pubDate,
-            thumbnail: img,
-            author: item.creator || 'Global Motorsport',
-            categories: item.categories || ['F1']
-          });
-        }
-      });
-    });
-
-    // Ordenação e Limite
+    // Ordenação (mais recentes primeiro)
     brNews.sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
-    globalNews.sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
 
-    brNews = brNews.slice(0, 20);
-    globalNews = globalNews.slice(0, 20);
+    brNews = brNews.slice(0, 30); // Limita a 30 notícias mais frescas
 
     return NextResponse.json({
       success: true,
       data: {
         brasil: brNews,
-        global: globalNews
+        global: [] // Retornamos vazio no global para não quebrar o `app.js`
       }
     });
 
