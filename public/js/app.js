@@ -284,47 +284,47 @@ const NEXT_RACES={
     ]
   },
   motogp:{
-    flag:'\ud83c\uddea\ud83c\uddf8',gp:'GP da Espanha 2026',circuit:'CIRCUITO DE JEREZ',
-    round:'RONDA 4',extra:'',raceDate:'2026-04-27T14:00:00Z',
-    source:'motogp.com \u00b7 MotoSport',
+    flag:'🇪🇸',gp:'GP da Espanha 2026',circuit:'CIRCUITO DE JEREZ',
+    round:'RONDA 4',extra:'',raceDate:'2026-04-26T13:00:00Z',
+    source:'motogp.com · MotoSport',
     sessions:[
-      {name:'FP1',time:'Sex \u00b7 05:45'},
-      {name:'FP2',time:'Sex \u00b7 10:00'},
-      {name:'Classifica\u00e7\u00e3o',time:'S\u00e1b \u00b7 05:50'},
-      {name:'Sprint',time:'S\u00e1b \u00b7 10:00'},
-      {name:'Corrida',time:'Dom 27/04 \u00b7 09:00'}
+      {name:'FP1',time:'Sex 24/04 · 05:45'},
+      {name:'FP2',time:'Sex 24/04 · 10:00'},
+      {name:'Classificação',time:'Sáb 25/04 · 05:50'},
+      {name:'Sprint',time:'Sáb 25/04 · 10:00'},
+      {name:'Corrida',time:'Dom 26/04 · 09:00'}
     ]
   },
   wec:{
-    flag:'\ud83c\uddee\ud83c\uddf9',gp:'6h de \u00cdmola 2026',circuit:'AUTODROMO ENZO E DINO FERRARI',
-    round:'RONDA 4 DE 8',extra:'',raceDate:'2026-07-20T13:00:00Z',
-    source:'fiawec.com \u00b7 FIA',
+    flag:'🇮🇹',gp:'6h de Ímola 2026',circuit:'AUTODROMO ENZO E DINO FERRARI',
+    round:'RONDA 2 DE 8',extra:'',raceDate:'2026-04-19T13:00:00Z',
+    source:'fiawec.com · FIA',
     sessions:[
-      {name:'TL1',time:'Sex \u00b7 07:30'},
-      {name:'TL2',time:'Sex \u00b7 12:00'},
-      {name:'Classifica\u00e7\u00e3o',time:'S\u00e1b \u00b7 07:10'},
-      {name:'Corrida (6h)',time:'S\u00e1b 20/07 \u00b7 07:00'}
+      {name:'TL1',time:'Sex 17/04 · 07:30'},
+      {name:'TL2',time:'Sex 17/04 · 12:00'},
+      {name:'Classificação',time:'Sáb 18/04 · 07:10'},
+      {name:'Corrida (6h)',time:'Dom 19/04 · 08:00'}
     ]
   },
   nascar:{
-    flag:'\ud83c\uddfa\ud83c\uddf8',gp:'Talladega 2026',circuit:'TALLADEGA SUPERSPEEDWAY',
-    round:'RONDA 10 DE 36',extra:'',raceDate:'2026-04-27T19:00:00Z',
-    source:'nascar.com \u00b7 Jayski',
+    flag:'🇺🇸',gp:'Talladega 2026',circuit:'TALLADEGA SUPERSPEEDWAY',
+    round:'RONDA 10 DE 36',extra:'',raceDate:'2026-04-26T19:00:00Z',
+    source:'nascar.com · Jayski',
     sessions:[
-      {name:'Pr\u00e1tica',time:'S\u00e1b \u00b7 12:00'},
-      {name:'Classifica\u00e7\u00e3o',time:'S\u00e1b \u00b7 14:00'},
-      {name:'Corrida',time:'Dom 27/04 \u00b7 15:00'}
+      {name:'Prática',time:'Sáb 25/04 · 12:00'},
+      {name:'Classificação',time:'Sáb 25/04 · 14:00'},
+      {name:'Corrida',time:'Dom 26/04 · 15:00'}
     ]
   },
   wrc:{
-    flag:'\ud83c\uddf5\ud83c\uddf9',gp:'Rally de Portugal 2026',circuit:'MATOSINHOS / FAFE / AMARANTE',
-    round:'RONDA 4 DE 13',extra:'',raceDate:'2026-05-18T15:00:00Z',
-    source:'wrc.com \u00b7 FIA',
+    flag:'🇵🇹',gp:'Rally de Portugal 2026',circuit:'MATOSINHOS / FAFE / AMARANTE',
+    round:'RONDA 4 DE 13',extra:'',raceDate:'2026-05-17T11:18:00Z',
+    source:'wrc.com · FIA',
     sessions:[
-      {name:'Shakedown',time:'Qui \u00b7 08:00'},
-      {name:'SS1-SS8',time:'Sex 16/05 \u00b7 07:00'},
-      {name:'SS9-SS16',time:'S\u00e1b 17/05 \u00b7 07:30'},
-      {name:'Power Stage',time:'Dom 18/05 \u00b7 11:18'}
+      {name:'Shakedown',time:'Qui 14/05 · 08:00'},
+      {name:'SS1-SS8',time:'Sex 15/05 · 07:00'},
+      {name:'SS9-SS16',time:'Sáb 16/05 · 07:30'},
+      {name:'Power Stage',time:'Dom 17/05 · 11:18'}
     ]
   }
 };
@@ -397,20 +397,20 @@ let currentCat='all',currentType='all';
 /* ── HERO DATA POR CATEGORIA ── */
 const HERO_DATA={
   f1:{
-    img:'https://loremflickr.com/1200/600/formula1,mercedes?lock=42',
+    img:'https://upload.wikimedia.org/wikipedia/commons/3/3f/FIA_F1_Austria_2023_Nr._44_%282%29.jpg',
     typeCls:'int', typeIcon:'fi fi-rr-pencil', typeLabel:'CONTEÚDO PITLANE',
     badge:'F1 · TEMPORADA 2026', badgeCls:'b-f1',
-    title:'Antonelli Lidera com 72 Pts: O Mais Jovem a Comandar o Mundial Moderno de F1',
-    excerpt:'Kimi Antonelli (Mercedes) comanda o campeonato após 3 GPs — Austrália, China e Japão — com duas vitórias e uma perseguição que redefine a nova era da F1.',
+    title:'Mercedes Surpreende em 2026 e Retoma o Controle do Mundial de F1',
+    excerpt:'A flecha de prata domina o campeonato de construtores após 3 GPs — Austrália, China e Japão — provando que decodificou perfeitamente o novo regulamento híbrido.',
     meta:'Redação PitLane · 10 Abr 2026 · Fonte: formula1.com · GPFans · ESPN',
     articleId:0,
     sides:[
-      {img:'https://loremflickr.com/600/380/formula1,fia?lock=7',typeCls:'ext',typeLabel:'SKY SPORTS F1 ↗',badge:'F1 · REGULAMENTOS',badgeCls:'b-f1',title:'FIA Confirma Ajustes nas Regras 2026 Após Acidente de Bearman em Suzuka',link:'https://www.skysports.com/f1'},
-      {img:'https://loremflickr.com/600/380/miami,formula1?lock=15',typeCls:'ext',typeLabel:'ESPN ↗',badge:'F1 · MIAMI GP',badgeCls:'b-f1',title:'Próxima Corrida: GP de Miami — 1 a 3 de Maio de 2026',link:'https://www.espn.com/f1'}
+      {img:'https://upload.wikimedia.org/wikipedia/commons/9/9f/FIA_F1_Austria_2023_Nr._55_%281%29.jpg',typeCls:'ext',typeLabel:'SKY SPORTS F1 ↗',badge:'F1 · FERRARI',badgeCls:'b-f1',title:'Ferrari Prepara Pacote Agressivo de Atualizações para o GP de Miami',link:'https://www.skysports.com/f1'},
+      {img:'https://upload.wikimedia.org/wikipedia/commons/7/79/FIA_F1_Austria_2023_Nr._1_%281%29.jpg',typeCls:'ext',typeLabel:'ESPN ↗',badge:'F1 · RED BULL',badgeCls:'b-f1',title:'Verstappen Exige Respostas da Red Bull Após Desempenho Irregular',link:'https://www.espn.com/f1'}
     ]
   },
   motogp:{
-    img:'https://loremflickr.com/1200/600/motogp,ducati?lock=50',
+    img:'https://upload.wikimedia.org/wikipedia/commons/d/dc/MotoGP_2025_Malaysian_Grand_Prix_-_Ducati_Lenovo_-_Francesco_Bagnaia.jpg',
     typeCls:'int', typeIcon:'fi fi-rr-pencil', typeLabel:'CONTEÚDO PITLANE',
     badge:'MOTOGP · TEMPORADA 2026', badgeCls:'b-motogp',
     title:'Bagnaia Domina Início de Temporada com 81 Pontos e Duas Vitórias',
@@ -418,12 +418,12 @@ const HERO_DATA={
     meta:'Redação PitLane · 13 Abr 2026 · Fonte: motogp.com · MotoSport',
     articleId:0,
     sides:[
-      {img:'https://loremflickr.com/600/380/motogp,honda?lock=51',typeCls:'ext',typeLabel:'MOTOGP.COM ↗',badge:'MOTOGP · MERCADO',badgeCls:'b-motogp',title:'Marc Márquez Brilha na Gresini: "Melhor Moto que Já Pilotei"',link:'https://www.motogp.com'},
-      {img:'https://loremflickr.com/600/380/motorcycle,race?lock=52',typeCls:'ext',typeLabel:'MOTORSPORT ↗',badge:'MOTOGP · DUCATI',badgeCls:'b-motogp',title:'Ducati Domina Grid com 4 Motos no Top 6 — Até Quando?',link:'https://www.motorsport.com/motogp'}
+      {img:'https://upload.wikimedia.org/wikipedia/commons/a/a1/MotoGP_2025_Malaysian_Grand_Prix_-_Honda_HRC_Castrol_-_Luca_Marini.jpg',typeCls:'ext',typeLabel:'MOTOGP.COM ↗',badge:'MOTOGP · HRC',badgeCls:'b-motogp',title:'Honda Planeja Amplo Pacote de Atualizações Após Início Difícil',link:'https://www.motogp.com'},
+      {img:'https://upload.wikimedia.org/wikipedia/commons/b/b2/MotoGP_2025_Malaysian_Grand_Prix_-_Monster_Energy_Yamaha_-_Fabio_Quartararo.jpg',typeCls:'ext',typeLabel:'MOTORSPORT ↗',badge:'MOTOGP · YAMAHA',badgeCls:'b-motogp',title:'Quartararo Cobra Yamaha por Melhorias Radicais na M1',link:'https://www.motorsport.com/motogp'}
     ]
   },
   wec:{
-    img:'https://loremflickr.com/1200/600/lemans,porsche?lock=60',
+    img:'https://upload.wikimedia.org/wikipedia/commons/a/a5/2024_6_Hours_of_Spa-Francorchamps_Porsche_Penske_Motorsport_Porsche_963_No.5_%28DSC02380%29.jpg',
     typeCls:'int', typeIcon:'fi fi-rr-pencil', typeLabel:'CONTEÚDO PITLANE',
     badge:'WEC · SUPERTEMPORADA', badgeCls:'b-wec',
     title:'Toyota vs Porsche: A Batalha Mais Acirrada da Era Hypercar',
@@ -431,12 +431,12 @@ const HERO_DATA={
     meta:'Redação PitLane · 13 Abr 2026 · Fonte: fiawec.com · Sportscar365',
     articleId:0,
     sides:[
-      {img:'https://loremflickr.com/600/380/lemans,car?lock=61',typeCls:'ext',typeLabel:'SPORTSCAR365 ↗',badge:'WEC · LE MANS',badgeCls:'b-wec',title:'24 Horas de Le Mans 2026: Grid Recorde com 62 Carros Confirmados',link:'https://sportscar365.com'},
-      {img:'https://loremflickr.com/600/380/endurance,racing?lock=62',typeCls:'ext',typeLabel:'FIA WEC ↗',badge:'WEC · HYPERCAR',badgeCls:'b-wec',title:'Cadillac Surpreende com Ritmo em Ímola — Ameaça Real?',link:'https://www.fiawec.com'}
+      {img:'https://upload.wikimedia.org/wikipedia/commons/9/98/2024_24_Hours_of_Le_Mans_%2854093434577%29.jpg',typeCls:'ext',typeLabel:'SPORTSCAR365 ↗',badge:'WEC · LE MANS',badgeCls:'b-wec',title:'24 Horas de Le Mans 2026: Grid Recorde com 62 Carros Confirmados',link:'https://sportscar365.com'},
+      {img:'https://upload.wikimedia.org/wikipedia/commons/9/91/2024_24_Hours_of_Le_Mans_%2854093434907%29.jpg',typeCls:'ext',typeLabel:'FIA WEC ↗',badge:'WEC · HYPERCAR',badgeCls:'b-wec',title:'Cadillac Surpreende com Ritmo em Ímola — Ameaça Real?',link:'https://www.fiawec.com'}
     ]
   },
   nascar:{
-    img:'https://loremflickr.com/1200/600/nascar,daytona?lock=70',
+    img:'https://upload.wikimedia.org/wikipedia/commons/0/07/Kyle_Larson_5_Las_Vegas_2025.jpg',
     typeCls:'int', typeIcon:'fi fi-rr-pencil', typeLabel:'CONTEÚDO PITLANE',
     badge:'NASCAR · CUP SERIES 2026', badgeCls:'b-nascar',
     title:'Kyle Larson Abre 2026 com Daytona 500: Hendrick Motorsports Avassalador',
@@ -444,21 +444,21 @@ const HERO_DATA={
     meta:'Redação PitLane · 13 Abr 2026 · Fonte: nascar.com · Jayski',
     articleId:0,
     sides:[
-      {img:'https://loremflickr.com/600/380/nascar,race?lock=71',typeCls:'ext',typeLabel:'NASCAR.COM ↗',badge:'NASCAR · HENDRICK',badgeCls:'b-nascar',title:'Elliott e Byron Consolidam Hendrick como Melhor Equipe do Grid',link:'https://www.nascar.com'},
-      {img:'https://loremflickr.com/600/380/nascar,car?lock=72',typeCls:'ext',typeLabel:'JAYSKI ↗',badge:'NASCAR · PENSKE',badgeCls:'b-nascar',title:'Blaney vs Logano: A Rivalidade Interna que Move a Team Penske',link:'https://www.jayski.com'}
+      {img:'https://images.unsplash.com/photo-1541348263662-e068662d82af?w=640',typeCls:'ext',typeLabel:'NASCAR.COM ↗',badge:'NASCAR · ESTRATÉGIA',badgeCls:'b-nascar',title:'Equipes Adotam Abordagem Conservadora para Preservar Pneus Long-Run',link:'https://www.nascar.com'},
+      {img:'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=640',typeCls:'ext',typeLabel:'JAYSKI ↗',badge:'NASCAR · TÉCNICA',badgeCls:'b-nascar',title:'NASCAR Avalia Pequenas Alterações Aerodinâmicas Visando Mais Ultrapassagens',link:'https://www.jayski.com'}
     ]
   },
   wrc:{
-    img:'https://loremflickr.com/1200/600/rally,wrc?lock=80',
+    img:'https://upload.wikimedia.org/wikipedia/commons/a/a2/Kalle_Rovanper%C3%A4_Rally_Finland_2025_Ouninpohja_%28cropped%29.jpg',
     typeCls:'int', typeIcon:'fi fi-rr-pencil', typeLabel:'CONTEÚDO PITLANE',
     badge:'WRC · TEMPORADA 2026', badgeCls:'b-wrc',
-    title:'Ogier Lidera WRC 2026 Após 3 Rallies: A Lenda Não Para',
-    excerpt:'Sébastien Ogier (Toyota) lidera com 67 pontos após Monte-Carlo, Suécia e Safari, com Neuville (Hyundai) em 2º a apenas 9 pontos.',
+    title:'Kalle Rovanperä Domina Início do WRC 2026 com Desempenho Impecável',
+    excerpt:'Kalle Rovanperä (Toyota) lidera após Monte-Carlo, Suécia e Safari, mostrando um domínio absoluto nas mais diversas superfícies do campeonato mundial.',
     meta:'Redação PitLane · 13 Abr 2026 · Fonte: wrc.com · DirtFish',
     articleId:0,
     sides:[
-      {img:'https://loremflickr.com/600/380/rally,portugal?lock=81',typeCls:'ext',typeLabel:'WRC.COM ↗',badge:'WRC · PORTUGAL',badgeCls:'b-wrc',title:'Rally de Portugal 2026: Fafe Recebe Prova Pela 53ª Vez',link:'https://www.wrc.com'},
-      {img:'https://loremflickr.com/600/380/rally,car?lock=82',typeCls:'ext',typeLabel:'DIRTFISH ↗',badge:'WRC · TOYOTA',badgeCls:'b-wrc',title:'Toyota GR Yaris: Por Que É o Carro Mais Dominante do WRC',link:'https://dirtfish.com'}
+      {img:'https://upload.wikimedia.org/wikipedia/commons/6/6f/Hyundai_i20N_Rally1_No.11_in_2022_FIA_World_Rally_Championship_%282%29.jpg',typeCls:'ext',typeLabel:'WRC.COM ↗',badge:'WRC · HYUNDAI',badgeCls:'b-wrc',title:'Thierry Neuville Confia no Potencial da Hyundai para Barrar a Toyota',link:'https://www.wrc.com'},
+      {img:'https://upload.wikimedia.org/wikipedia/commons/8/82/WRC_Central_European_Rallye_2023_Nr._8_%284%29.jpg',typeCls:'ext',typeLabel:'DIRTFISH ↗',badge:'WRC · M-SPORT',badgeCls:'b-wrc',title:'M-Sport Ford Prepara Evoluções Agressivas no Puma Rally1',link:'https://dirtfish.com'}
     ]
   }
 };
@@ -505,9 +505,9 @@ function filterCat(cat){
   // Update standings to match category
   const champCat=CHAMP_DATA[cat]?cat:'f1';
   updateStandings(champCat);
-  // Show/hide standings section for sim racing (no championship)
-  const standBox=document.querySelector('.standings-box');
-  if(standBox) standBox.style.display=(cat==='sim')?'none':'';
+  // Show/hide standings and calendar section for "Todos" and "Sim Racing"
+  const champSec = document.getElementById('champSection');
+  if(champSec) champSec.style.display = (cat === 'all' || cat === 'sim') ? 'none' : '';
   // Update hero
   const heroCat=HERO_DATA[cat]?cat:'f1';
   updateHero(heroCat);
@@ -538,7 +538,7 @@ function catAct(el){document.querySelectorAll('.cat-pill').forEach(p=>p.classLis
 /* ── CONTAGEM REAL ── */
 function updateCatCounts(){
   const counts={all:0,f1:0,motogp:0,wec:0,nascar:0,sim:0,wrc:0};
-  document.querySelectorAll('.ncard').forEach(c=>{
+  document.querySelectorAll('#cardGrid .ncard').forEach(c=>{
     const cat=c.dataset.cat;
     counts.all++;
     if(counts[cat]!==undefined) counts[cat]++;
@@ -735,8 +735,54 @@ async function loadLiveNews() {
           isReal: true
         };
       });
+    } else {
+      throw new Error('Local API failed');
     }
-  } catch(e) { console.error('RSS fail', e); }
+  } catch(e) {
+    console.warn('Local API offline. Fetching fallback RSS feeds...', e);
+    const fallbackFeeds = [
+      'https://br.motorsport.com/rss/f1/news/',
+      'https://br.motorsport.com/rss/motogp/news/',
+      'https://br.motorsport.com/rss/wec/news/',
+      'https://br.motorsport.com/rss/nascar-cup/news/',
+      'https://br.motorsport.com/rss/wrc/news/'
+    ];
+    try {
+      const responses = await Promise.allSettled(fallbackFeeds.map(f => fetch('https://api.rss2json.com/v1/api.json?rss_url='+f)));
+      for(let res of responses) {
+        if(res.status === 'fulfilled' && res.value.ok) {
+          const {items} = await res.value.json();
+          if(!items) continue;
+          items.forEach((n, idx) => {
+            let cat = 'f1';
+            let badge = 'f1';
+            const cLower = (n.categories || []).join(' ').toLowerCase();
+            if (cLower.includes('motogp')) { cat = 'motogp'; badge = 'motogp'; }
+            else if (cLower.includes('wec') || cLower.includes('endurance')) { cat = 'wec'; badge = 'wec'; }
+            else if (cLower.includes('nascar')) { cat = 'nascar'; badge = 'nascar'; }
+            else if (cLower.includes('wrc') || cLower.includes('rally')) { cat = 'wrc'; badge = 'wrc'; }
+
+            rssArticles.push({
+              id: 'rss_' + cat + '_' + idx + Math.random().toString(36).substr(2,4),
+              cat: cat,
+              badge: badge,
+              kicker: 'NOTÍCIAS · ' + cat.toUpperCase(),
+              title: n.title,
+              link: n.link,
+              author: 'Motorsport Brasil',
+              av: '<i class="fi fi-rr-rss"></i>',
+              date: new Date((n.pubDate||'').replace(/-/g, '/')).toLocaleDateString('pt-BR'),
+              img: (n.enclosure && n.enclosure.link) ? n.enclosure.link : (n.thumbnail || 'https://images.unsplash.com/photo-1541348263662-e068662d82af?w=400'),
+              body: n.content || n.description || '',
+              isReal: true
+            });
+          });
+        }
+      }
+    } catch(err) {
+      console.error('Fallback RSS also failed', err);
+    }
+  }
 
   const mixed = [];
   let rIdx = 0, sIdx = 0;
@@ -748,13 +794,13 @@ async function loadLiveNews() {
   }
 
   ARTICLES = mixed;
-  renderNewsGrid(mixed);
+  if(mixed.length > 0) renderNewsGrid(mixed);
   updateCatCounts();
 }
 
 function renderNewsGrid(articles) {
   const grid = document.getElementById('cardGrid');
-  if (!grid) return;
+  if (!grid || articles.length === 0) return;
   grid.innerHTML = articles.map((a, i) => {
     const isExt = a.isReal;
     const clickAction = isExt ? `extLink('${a.link}')` : `openArticle('${a.id}')`;
