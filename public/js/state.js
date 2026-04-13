@@ -82,6 +82,7 @@ const PitLane = (() => {
         __dbUsers = data.users.map(u => ({
           ...u,
           createdAt: u.created_at,
+          referredBy: u.referred_by,
           avatar: u.avatar || u.name.substring(0, 2).toUpperCase()
         }));
         

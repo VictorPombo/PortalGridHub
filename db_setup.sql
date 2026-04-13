@@ -18,10 +18,13 @@ CREATE TABLE IF NOT EXISTS public.users (
   flag text,
   conquests jsonb,
   social jsonb,
+  referred_by text,
   created_at timestamp with time zone DEFAULT now(),
   status text DEFAULT 'active'
 );
 
+-- Adiciona a coluna caso a tabela já exista de comandos anteriores
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS referred_by text;
 -- 2. Criação da Tabela ARTICLES (Feed do SaaS e Admin)
 CREATE TABLE IF NOT EXISTS public.articles (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -60,13 +63,13 @@ FOR ALL USING (true);
 
 -- 3. SEEDING Inicial (Mock Data Localizados para Vendas SaaS)
 -- Inserindo alguns Usuários chaves
-INSERT INTO public.users (id, name, email, type, plan, number, category, avatar, flag, status) VALUES
-('b0d74e3a-0b2f-48d6-8bfc-31a89c8a99a1', 'Rafael Mendes', 'rafael@mendes.com', 'piloto', 'pro', '07', 'Stock Car', 'RM', '🇧🇷', 'active'),
-('b0d74e3a-0b2f-48d6-8bfc-31a89c8a99a2', 'Lucas Andrade', 'lucas@andrade.com', 'piloto', 'starter', '22', 'F4 Brasil', 'LA', '🇧🇷', 'active'),
-('b0d74e3a-0b2f-48d6-8bfc-31a89c8a99a3', 'Camila Torres', 'camila@torres.com', 'piloto', 'starter', '33', 'Porsche Cup', 'CT', '🇧🇷', 'active'),
-('b0d74e3a-0b2f-48d6-8bfc-31a89c8a99a4', 'Pedro Silva', 'pedro@silva.com', 'piloto', 'pro', '88', 'Sim Racing', 'PS', '🇧🇷', 'active'),
-('b0d74e3a-0b2f-48d6-8bfc-31a89c8a99a5', 'Thunder Racing', 'contato@thunderracing.com', 'equipe', 'equipe', null, 'Stock Car', 'TR', '🇧🇷', 'active'),
-('b0d74e3a-0b2f-48d6-8bfc-31a89c8a99a6', 'Categoria F4 Brasil', 'contato@f4.com', 'categoria', 'categoria', null, 'F4 Brasil', 'F4', '🇧🇷', 'active')
+INSERT INTO public.users (id, name, email, type, plan, number, category, avatar, flag, referred_by, status) VALUES
+('b0d74e3a-0b2f-48d6-8bfc-31a89c8a99a1', 'Rafael Mendes', 'rafael@mendes.com', 'piloto', 'pro', '07', 'Stock Car', 'RM', '🇧🇷', null, 'active'),
+('b0d74e3a-0b2f-48d6-8bfc-31a89c8a99a2', 'Lucas Andrade', 'lucas@andrade.com', 'piloto', 'starter', '22', 'F4 Brasil', 'LA', '🇧🇷', 'RAFAELMENDES', 'active'),
+('b0d74e3a-0b2f-48d6-8bfc-31a89c8a99a3', 'Camila Torres', 'camila@torres.com', 'piloto', 'starter', '33', 'Porsche Cup', 'CT', '🇧🇷', null, 'active'),
+('b0d74e3a-0b2f-48d6-8bfc-31a89c8a99a4', 'Pedro Silva', 'pedro@silva.com', 'piloto', 'pro', '88', 'Sim Racing', 'PS', '🇧🇷', null, 'active'),
+('b0d74e3a-0b2f-48d6-8bfc-31a89c8a99a5', 'Thunder Racing', 'contato@thunderracing.com', 'equipe', 'equipe', null, 'Stock Car', 'TR', '🇧🇷', null, 'active'),
+('b0d74e3a-0b2f-48d6-8bfc-31a89c8a99a6', 'Categoria F4 Brasil', 'contato@f4.com', 'categoria', 'categoria', null, 'F4 Brasil', 'F4', '🇧🇷', null, 'active')
 ON CONFLICT (id) DO NOTHING;
 
 -- Inserindo Artigos Iniciais

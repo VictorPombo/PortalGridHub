@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PitLane News - Project Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0A0A0A;
+      --surface: #1A1A1A;
+      --border: rgba(255, 255, 255, 0.1);
+      --text: #FFF;
+      --muted: #888;
+      --acc: #E10600; /* Red */
+      --gold: #FFD700;
+      --green: #00e676;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      padding: 40px 20px;
+    }
+    header {
+      max-width: 900px;
+      margin: 0 auto 40px;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 20px;
+    }
+    h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 48px;
+      color: var(--acc);
+      letter-spacing: 1px;
+    }
+    .subtitle { color: var(--muted); font-size: 16px; margin-top: 5px; }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      gap: 30px;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 30px;
+    }
+    .card h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px;
+      margin-bottom: 15px;
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .task-list { list-style: none; }
+    .task-list li {
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      gap: 15px;
+      align-items: flex-start;
+    }
+    .task-list li:last-child { border-bottom: none; }
+    
+    .status {
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .status.done { background: rgba(0, 230, 118, 0.1); color: var(--green); border: 1px solid var(--green); }
+    .status.todo { background: rgba(255, 255, 255, 0.05); color: var(--muted); border: 1px solid var(--border); }
+    .status.doing { background: rgba(255, 215, 0, 0.1); color: var(--gold); border: 1px solid var(--gold); }
+    .status.blocked { background: rgba(225, 6, 0, 0.1); color: var(--acc); border: 1px solid var(--acc); }
+
+    .detail {
+      flex: 1;
+    }
+    .detail strong { color: #FFF; font-size: 16px; display: block; margin-bottom: 4px;}
+    .detail p { color: var(--muted); font-size: 14px; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Project Roadmap & Dashboard</h1>
+    <div class="subtitle">PitLane News - Rastreamento de Roadmaps, Funcionalidades e Integrações Estratégicas</div>
+  </header>
+
+  <div class="container">
+    
+    <!-- CONCLUÍDAS -->
+    <div class="card" style="border-left: 4px solid var(--green)">
+      <h2>✅ FASE 1: Apresentação e Landing Pages</h2>
+      <ul class="task-list">
+        <li>
+          <div class="status done">Concluído</div>
+          <div class="detail">
+            <strong>Limpeza de UI e Dados Iniciais</strong>
+            <p>Remoção de referências estáticas incorretas (Kimi Antonelli), polimento da grade principal, versão mobile-first ajustada.</p>
+          </div>
+        </li>
+        <li>
+          <div class="status done">Concluído</div>
+          <div class="detail">
+            <strong>Landing Page de Planos (Funil de Conversão)</strong>
+            <p>Substituição de tabela simples por um pipeline de 9 etapas de copywriting B2B (Dor do Paddock, SEO, Prova Social Rafael Moura F4, Planos Start/Pro e FAQ).</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- EM CURSO / PRÓXIMO -->
+    <div class="card" style="border-left: 4px solid var(--gold)">
+      <h2>⏳ FASE 2: Checkout e Programa de Embaixadores</h2>
+      <ul class="task-list">
+        <li>
+          <div class="status todo">A Fazer</div>
+          <div class="detail">
+            <strong>Integração Mercado Pago (Assinaturas e Checkout)</strong>
+            <p>Criar rota no servidor (Next.js `/api/checkout`) para gerar Pagamentos e Assinaturas (Preapproval) linkados com o ID interno do piloto.</p>
+          </div>
+        </li>
+        <li>
+          <div class="status todo">A Fazer</div>
+          <div class="detail">
+            <strong>Sistema de Rastreamento de Embaixadores via Link / Cupom</strong>
+            <p>1. Capturar `?ref=ID` invisível no LocalStorage ao carregar a URL.<br>
+               2. Exibir campo "Cupom de Indicação" opcional no cadastro.<br>
+               3. Injetar como *Metadata* na transação do Mercado Pago para comissionamento.</p>
+          </div>
+        </li>
+        <li>
+          <div class="status todo">A Fazer</div>
+          <div class="detail">
+            <strong>Painel e Banco de Dados (Supabase)</strong>
+            <p>Registro do Piloto com atrelamento à coluna `sponsor_id`. Escuta de Webhooks do MPagoe para ativar/cancelar "Plano Pro" dinamicamente no painel do usuário.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- BACKLOG (FUTURO) -->
+    <div class="card" style="border-left: 4px solid var(--muted)">
+      <h2>💡 FASE 3: Automação Operacional (Backlog)</h2>
+      <ul class="task-list">
+        <li>
+          <div class="status todo">A Fazer</div>
+          <div class="detail">
+            <strong>CMS e Automação de Matérias (SEO)</strong>
+            <p>Sistema onde jornalistas cadastram a matéria e automaticamente a página dedicada do Piloto e a Indexação Técnica (Metatags) são geradas.</p>
+          </div>
+        </li>
+        <li>
+          <div class="status todo">A Fazer</div>
+          <div class="detail">
+            <strong>Geração Automática de Mídia Kit Completo</strong>
+            <p>Motor de exportação para PDF das métricas e dados de pista (Antes/Depois) a partir do JSON no painel do piloto para captar patrocinadores offline.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+
+</body>
+</html>

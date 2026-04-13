@@ -126,6 +126,10 @@
           <option>Rally</option><option>Drag Race</option><option>Outra</option>
         </select>
       </div>
+      <div class="form-field">
+        <label class="form-label">Cupom de Indicação (Embaixador) <span style="font-size:11px;color:var(--dim)">(Opcional)</span></label>
+        <input class="form-input" id="regRef" type="text" placeholder="Ex: LUCAS20" style="text-transform:uppercase">
+      </div>
       <div style="display:flex;gap:10px"><button class="btn-secondary" onclick="goStep(1)" style="flex:1">← Voltar</button><button class="btn-full" onclick="goStep(3)" style="flex:2;margin-top:0">Continuar →</button></div>
     </div>
 
@@ -183,6 +187,21 @@ if (PitLane.isLoggedIn()) {
   }
 }
 
+// Embaixador Logic: Catch '?ref=' from URL
+document.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const refCode = urlParams.get('ref');
+  if (refCode) {
+    localStorage.setItem('pl_affiliate_ref', refCode.toUpperCase());
+  }
+  // Try to autofill if exists
+  const storedRef = localStorage.getItem('pl_affiliate_ref');
+  if (storedRef) {
+    const refInput = document.getElementById('regRef');
+    if (refInput) refInput.value = storedRef;
+  }
+});
+
 function showMode(mode) {
   document.getElementById('loginMode').style.display = mode === 'login' ? 'block' : 'none';
   document.getElementById('registerMode').style.display = mode === 'register' ? 'block' : 'none';
@@ -238,6 +257,7 @@ function goStep(step) {
       bio: document.getElementById('regBio')?.value || '',
       instagram: document.getElementById('regIG')?.value || '',
       flag: '🇧🇷',
+      referredBy: document.getElementById('regRef')?.value?.toUpperCase() || null,
       conquests: { titles: 0, wins: 0, podiums: 0, poles: 0, fastlaps: 0 },
     });
     // Auto-login
