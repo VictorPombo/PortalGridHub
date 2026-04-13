@@ -1,0 +1,226 @@
+/* ════════════════════════════════════════
+   PLANOS - LANDING PAGE CSS (PitLane News)
+   Cores: Preto (#0A0A0A), Cinza Escuro (#1A1A1A)
+   Vermelho (#E10600), Amarelo Ouro (#FFD700)
+════════════════════════════════════════ */
+
+.lp-section {
+  padding: 80px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.lp-section.no-border { border-bottom: none; }
+.lp-section.bg-dark {
+  background: #000;
+  max-width: 100%;
+}
+.lp-section.bg-dark .lp-inner {
+  max-width: 1200px; margin: 0 auto;
+}
+
+/* Tipografia LP */
+.lp-title {
+  font-family: var(--fd);
+  font-size: 48px;
+  line-height: 1.1;
+  margin-bottom: 24px;
+  color: #FFF;
+  text-transform: uppercase;
+  letter-spacing: -1px;
+}
+.lp-title.center { text-align: center; }
+.lp-title .hl { color: var(--acc); } /* Destaque Vermelho */
+.lp-title .hl-gold { color: var(--gold); } /* Destaque Ouro */
+
+.lp-subtitle {
+  font-family: var(--fm);
+  font-size: 20px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin-bottom: 40px;
+  font-weight: 300;
+}
+.lp-subtitle.center { text-align: center; max-width: 800px; margin-left: auto; margin-right: auto; }
+
+/* SEÇÃO 1: HERO */
+.lp-hero {
+  text-align: center;
+  padding: 120px 20px 80px;
+  background: radial-gradient(circle at center top, rgba(225, 6, 0, 0.1) 0%, transparent 50%);
+}
+.lp-hero .lp-title { font-size: 64px; }
+.lp-btns { display: flex; gap: 16px; justify-content: center; margin-top: 40px; }
+
+/* SEÇÃO 2: DOR / PROBLEMA */
+.lp-pain-box {
+  background: #111;
+  border-left: 4px solid var(--acc);
+  padding: 40px;
+  border-radius: 4px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+.lp-pain-box p {
+  font-family: var(--fm);
+  font-size: 24px;
+  color: #FFF;
+  line-height: 1.4;
+  margin-bottom: 20px;
+}
+.lp-pain-box p:last-child { margin-bottom: 0; color: var(--muted); font-size: 18px; }
+
+/* SEÇÃO 3: SOLUÇÃO (Grid) */
+.lp-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+.lp-card {
+  background: #111;
+  padding: 30px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.05);
+  transition: transform 0.3s ease;
+}
+.lp-card:hover { transform: translateY(-5px); border-color: rgba(255,255,255,0.1); }
+.lp-card i {
+  font-size: 40px;
+  color: var(--acc);
+  margin-bottom: 20px;
+  display: block;
+}
+.lp-card h3 {
+  font-family: var(--fd);
+  font-size: 24px;
+  margin-bottom: 15px;
+  color: #FFF;
+}
+.lp-card p {
+  color: var(--muted);
+  line-height: 1.5;
+  font-size: 15px;
+}
+
+/* SEÇÃO 4: COMO FUNCIONA (Passo a Passo) */
+.lp-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  position: relative;
+}
+.lp-step {
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+.lp-step-num {
+  width: 60px; height: 60px;
+  background: var(--acc);
+  color: #FFF;
+  font-family: var(--fd);
+  font-size: 28px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  margin: 0 auto 20px;
+}
+.lp-step h3 { font-family: var(--fd); font-size: 22px; margin-bottom: 10px; color:#FFF;}
+.lp-step p { color: var(--muted); font-size: 15px; line-height: 1.5;}
+
+/* SEÇÃO 5: PROVA SOCIAL */
+.lp-stats {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 60px;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+.lp-stat { text-align: center; }
+.lp-stat-num { font-family: var(--fd); font-size: 56px; color: var(--gold); line-height: 1; margin-bottom: 10px;}
+.lp-stat-lbl { font-size: 14px; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: 1px;}
+.lp-case {
+  background: #111;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  display: flex;
+  overflow: hidden;
+}
+.lp-case-img { flex: 0 0 40%; }
+.lp-case-body { flex: 1; padding: 40px; display: flex; flex-direction: column; justify-content: center;}
+.lp-quote { font-family: 'Georgia', serif; font-size: 22px; font-style: italic; color: #FFF; margin-bottom: 20px; line-height: 1.5;}
+.lp-author { color: var(--muted); font-size: 14px; text-transform: uppercase; letter-spacing: 1px;}
+
+/* SEÇÃO 7: COMPARAÇÃO */
+.antes-depois {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  background: #000;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.ad-col { padding: 40px; }
+.ad-col.sem { background: rgba(255,0,0,0.02); border-right: 1px solid rgba(255,255,255,0.05);}
+.ad-col.com { background: rgba(0,255,0,0.02); }
+.ad-title { font-family:var(--fd); font-size:24px; margin-bottom: 30px; display:flex; align-items:center; gap:10px;}
+.ad-col.sem .ad-title { color: #ff4a4a; }
+.ad-col.com .ad-title { color: #00e676; }
+.ad-item { display: flex; gap: 15px; margin-bottom: 20px; color: var(--muted); font-size: 16px; line-height: 1.5; align-items: flex-start;}
+.ad-item i { margin-top:3px; font-size: 18px; }
+.ad-col.sem .ad-item i { color: #ff4a4a; }
+.ad-col.com .ad-item i { color: #00e676; }
+.ad-col.com .ad-item { color: #FFF; }
+
+/* SEÇÃO 8: FAQ */
+.lp-faq { max-width: 800px; margin: 0 auto; }
+.lp-faq details {
+  background: #111;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+.lp-faq summary {
+  padding: 20px;
+  font-family: var(--fm);
+  font-weight: 500;
+  font-size: 18px;
+  color: #FFF;
+  cursor: pointer;
+  outline: none;
+  list-style: none; /* Hide default arrow */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.lp-faq summary::-webkit-details-marker { display: none; }
+.lp-faq summary::after {
+  content: '+';
+  font-size: 24px;
+  color: var(--acc);
+}
+.lp-faq details[open] summary::after { content: '-'; }
+.lp-faq .faq-body {
+  padding: 0 20px 20px 20px;
+  color: var(--muted);
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+/* SEÇÃO 9: CTA FINAL */
+.lp-cta-block {
+  text-align: center;
+  padding: 100px 20px;
+  background: linear-gradient(0deg, rgba(225,6,0,0.1) 0%, rgba(0,0,0,0) 100%);
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .lp-title { font-size: 36px; }
+  .lp-hero .lp-title { font-size: 42px; }
+  .lp-grid-3, .lp-steps, .antes-depois { grid-template-columns: 1fr; }
+  .lp-case { flex-direction: column; }
+  .lp-case-img { width: 100%; height: 200px; }
+  .lp-case-body { width: 100%; padding: 30px; }
+  .lp-btns { flex-direction: column; }
+}

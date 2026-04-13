@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/toast.css">
+<link rel="stylesheet" href="css/plans.css?v=22">
 </head>
 <body>
 
@@ -713,159 +714,258 @@
      VIEW: PLANS
 ════════════════════════════════════════ -->
 <div class="view" id="view-plans">
-  <div class="plans-hero">
-    <div class="plans-title">Apareça no Grid.<br>Feche Patrocínio.</div>
-    <div class="plans-sub">Planos mensais para pilotos, equipes e categorias. Matérias otimizadas para o Google + página profissional para atrair patrocinadores.</div>
-    <div class="plans-tabs">
-      <button class="plan-tab active" onclick="showPlanGroup(this,'piloto')"><i class="fi fi-rr-user"></i> Pilotos</button>
-      <button class="plan-tab" onclick="showPlanGroup(this,'equipe')"><i class="fi fi-rr-flag-checkered"></i> Equipes</button>
-      <button class="plan-tab" onclick="showPlanGroup(this,'categoria')"><i class="fi fi-rr-trophy"></i> Categorias</button>
-    </div>
-  </div>
-
-  <!-- PILOTO PLANS -->
-  <div id="plans-piloto" class="plans-group">
-    <div class="plans-grid" style="grid-template-columns:repeat(2,1fr)">
-      <div class="plan-card">
-        <div class="plan-top">
-          <div class="plan-tier">Piloto · Starter</div>
-          <div class="plan-name">Básico</div>
-          <div class="plan-price">R$99<small>,90/mês</small></div>
-          <div class="plan-period">Faturamento mensal · Cancele quando quiser</div>
-        </div>
-        <div class="plan-body">
-          <div class="plan-feat"><strong>1 matéria/mês</strong> otimizada para Google</div>
-          <div class="plan-feat">Texto profissional pela redação PitLane</div>
-          <div class="plan-feat">Foto de capa inclusa</div>
-          <div class="plan-feat">URL amigável: /piloto/seu-nome</div>
-          <div class="plan-feat">Página de piloto básica</div>
-          <div class="plan-feat">Identificação "Conteúdo Patrocinado" (CONAR)</div>
-          <div class="plan-feat no">Mídia Kit PDF</div>
-          <div class="plan-feat no">LinkedIn do piloto completo</div>
-          <div class="plan-feat no">Cotas de patrocínio na página</div>
-          <div class="plan-feat no">Destaque na home</div>
-        </div>
-        <div class="plan-cta">
-          <button class="btn btn-out btn-full" onclick="showView('login');toast('Crie sua conta para assinar o plano Básico','info')">Começar agora</button>
-          <div class="plan-note">Ideal para pilotos iniciando presença digital</div>
-        </div>
+  <!-- SEÇÃO 1: HERO -->
+  <section class="lp-section no-border lp-hero">
+    <div class="lp-inner">
+      <h1 class="lp-title">Você já investe para correr.<br><span class="hl">Agora invista para ser encontrado.</span></h1>
+      <p class="lp-subtitle center">Transforme seus resultados no asfalto em visibilidade profissional no Google. O portal que atrai patrocinadores enquanto você foca na pilotagem.</p>
+      <div class="lp-btns">
+        <button class="btn btn-acc" style="font-size:18px;padding:15px 30px" onclick="document.getElementById('lp-pricing').scrollIntoView({behavior:'smooth'})">Ver Planos e Preços</button>
+        <button class="btn btn-out" style="font-size:18px;padding:15px 30px" onclick="toast('Fale conosco via WhatsApp para dúvidas','info')"><i class="fi fi-rr-comment"></i> Falar com Especialista</button>
       </div>
-      <div class="plan-card best">
-        <div class="plan-best-tag">✦ MAIS COMPLETO</div>
-        <div class="plan-top">
-          <div class="plan-tier">Piloto · Pro</div>
-          <div class="plan-name">Intermediário</div>
-          <div class="plan-price">R$149<small>,90/mês</small></div>
-          <div class="plan-period">Faturamento mensal · Cancele quando quiser</div>
+    </div>
+  </section>
+
+  <!-- SEÇÃO 2: DOR / PROBLEMA -->
+  <section class="lp-section bg-dark">
+    <div class="lp-inner">
+      <div class="lp-pain-box">
+        <p>A dura realidade do paddock: Correr custa caro e os patrocínios estão cada vez mais difíceis.</p>
+        <p>Você envia um PDF genérico no WhatsApp e a empresa pesquisa seu nome no Google. <strong>O que eles encontram?</strong> Nada profissional. Apenas seu Instagram pessoal que o algoritmo não entrega e resultados perdidos de cronometragem de kart.</p>
+        <p>Você passa 100% do tempo focado no setup do carro e 0% focado no seu marketing esportivo profissional.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEÇÃO 3: A SOLUÇÃO -->
+  <section class="lp-section">
+    <div class="lp-inner">
+      <h2 class="lp-title center">O único portal 100% focado no seu <span class="hl">business</span></h2>
+      <p class="lp-subtitle center">Nós não vendemos curtidas. Nós construímos o seu portfólio definitivo na internet usando o peso jornalístico do PitLane News.</p>
+      
+      <div class="lp-grid-3">
+        <div class="lp-card">
+          <i class="fi fi-rr-search-alt"></i>
+          <h3>SEO de Ponta</h3>
+          <p>Escrevemos as suas matérias com técnicas avançadas para que o seu nome apareça no topo das buscas do Google quando uma empresa pesquisar sobre você.</p>
         </div>
-        <div class="plan-body">
-          <div class="plan-feat"><strong>2 matérias/mês</strong> otimizadas para Google</div>
-          <div class="plan-feat">Texto profissional pela redação PitLane</div>
-          <div class="plan-feat">Fotos de capa inclusas</div>
-          <div class="plan-feat">URL amigável: /piloto/seu-nome</div>
-          <div class="plan-feat"><strong>Página completa de piloto</strong></div>
-          <div class="plan-feat"><strong>Mídia Kit PDF</strong> personalizável</div>
-          <div class="plan-feat"><strong>LinkedIn do piloto</strong> estruturado</div>
-          <div class="plan-feat"><strong>Cotas de patrocínio</strong> na página</div>
-          <div class="plan-feat"><strong>Formulário de contato</strong> para patrocinadores</div>
-          <div class="plan-feat">Destaque na home 1x por mês</div>
+        <div class="lp-card">
+          <i class="fi fi-rr-document"></i>
+          <h3>Mídia Kit Vivo</h3>
+          <p>Chega de enviar PDFs de 5 anos atrás. Sua página no Portal é o seu currículo de Piloto. Com resultados, galerias, notícias e contatos para patrocínio integrados.</p>
         </div>
-        <div class="plan-cta">
-          <button class="btn btn-acc btn-full" onclick="showView('login');toast('Crie sua conta para assinar o plano Intermediário','ok')">Quero o Intermediário →</button>
-          <div class="plan-note">Ideal para pilotos que querem fechar patrocínio</div>
+        <div class="lp-card">
+          <i class="fi fi-rr-shield-check"></i>
+          <h3>Autoridade de Mídia</h3>
+          <p>Temos milhares de leitores. Suas vitórias serão noticiadas lado a lado com conteúdo da F1, MotoGP e WEC. Isso não é Instagram, é jornalismo esportivo real.</p>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- EQUIPE PLANS -->
-  <div id="plans-equipe" class="plans-group hide">
-    <div class="plans-grid" style="max-width:700px">
-      <div class="plan-card best" style="grid-column:1/-1">
-        <div class="plan-best-tag">✦ PLANO EQUIPE</div>
-        <div class="plan-top">
-          <div class="plan-tier">Equipe</div>
-          <div class="plan-name">Equipe Parceira</div>
-          <div class="plan-price">R$499<small>,90/mês</small></div>
-          <div class="plan-period">Faturamento mensal · Mínimo 3 meses</div>
+  <!-- SEÇÃO 4: COMO FUNCIONA -->
+  <section class="lp-section bg-dark">
+    <div class="lp-inner">
+      <h2 class="lp-title center">Como funciona? Simples e rápido.</h2>
+      <p class="lp-subtitle center">Você nos diz o que aconteceu. Nós fazemos a mágica.</p>
+      
+      <div class="lp-steps">
+        <div class="lp-step">
+          <div class="lp-step-num">1</div>
+          <h3>Você reporta</h3>
+          <p>Você ou sua assessoria enviam um breve resumo do final de semana (como foi o treino, qual foi o resultado) via WhatsApp junto com algumas fotos.</p>
         </div>
-        <div class="plan-body" style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <div class="plan-feat"><strong>10 matérias/mês</strong> otimizadas para Google</div>
-          <div class="plan-feat">Texto profissional pela redação PitLane</div>
-          <div class="plan-feat"><strong>Landing page da equipe</strong></div>
-          <div class="plan-feat">Perfis dos pilotos da equipe</div>
-          <div class="plan-feat">Mídia Kit da equipe em PDF</div>
-          <div class="plan-feat">Cotas de patrocínio para a equipe</div>
-          <div class="plan-feat">Destaque na home 4x por mês</div>
-          <div class="plan-feat">Dashboard exclusivo de gestão</div>
-          <div class="plan-feat">Relatório mensal de visitas</div>
-          <div class="plan-feat">Suporte prioritário por WhatsApp</div>
+        <div class="lp-step">
+          <div class="lp-step-num">2</div>
+          <h3>Nós escrevemos</h3>
+          <p>Nossa redação transforma o seu rascunho em uma matéria profissional densa, formatada para indexação pesada em motores de busca (Google, Bing).</p>
         </div>
-        <div class="plan-cta">
-          <button class="btn btn-acc btn-full" onclick="showView('login');toast('Fale com um consultor para o plano equipe','ok')">Quero o Plano Equipe →</button>
+        <div class="lp-step">
+          <div class="lp-step-num">3</div>
+          <h3>Você brilha</h3>
+          <p>Em até 48 horas a matéria está no ar, na home do portal e na sua página dedicada, pronta para ser enviada nas propostas de patrocínio.</p>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- CATEGORIA PLANS -->
-  <div id="plans-categoria" class="plans-group hide">
-    <div class="plans-grid" style="max-width:700px">
-      <div class="plan-card best" style="grid-column:1/-1;border-color:var(--gold)">
-        <div class="plan-best-tag" style="background:var(--gold);color:#000">✦ PLANO CATEGORIA</div>
-        <div class="plan-top">
-          <div class="plan-tier">Categoria</div>
-          <div class="plan-name">Categoria Oficial</div>
-          <div class="plan-price" style="color:var(--gold)">R$999<small style="color:var(--dim)">,90/mês</small></div>
-          <div class="plan-period">Faturamento mensal · Mínimo 6 meses</div>
+  <!-- SEÇÃO 5: PROVA SOCIAL & CASE -->
+  <section class="lp-section">
+    <div class="lp-inner">
+      <div class="lp-stats">
+        <div class="lp-stat"><div class="lp-stat-num">+18.000</div><div class="lp-stat-lbl">Leitores/Mês</div></div>
+        <div class="lp-stat"><div class="lp-stat-num">148</div><div class="lp-stat-lbl">Matérias Publicadas</div></div>
+        <div class="lp-stat"><div class="lp-stat-num">47</div><div class="lp-stat-lbl">Pilotos no Grid</div></div>
+      </div>
+
+      <div class="lp-case">
+        <div class="lp-case-img">
+          <img src="https://images.unsplash.com/photo-1541344930353-85587cece086?w=800&q=80" alt="Piloto no Cockpit" style="width:100%;height:100%;object-fit:cover;display:block">
         </div>
-        <div class="plan-body" style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <div class="plan-feat"><strong>30 matérias/mês</strong> otimizadas para Google</div>
-          <div class="plan-feat">Equipe editorial dedicada</div>
-          <div class="plan-feat"><strong>Landing page da categoria</strong></div>
-          <div class="plan-feat">Perfis de todos os pilotos</div>
-          <div class="plan-feat">Cobertura de todas as etapas</div>
-          <div class="plan-feat">Calendário oficial na plataforma</div>
-          <div class="plan-feat">Classificação ao vivo integrada</div>
-          <div class="plan-feat">Destaque fixo na home</div>
-          <div class="plan-feat">Relatório quinzenal de performance</div>
-          <div class="plan-feat">Account manager dedicado</div>
-        </div>
-        <div class="plan-cta">
-          <button class="btn btn-acc btn-full" style="background:var(--gold);color:#000" onclick="toast('Solicite uma proposta personalizada via WhatsApp','info')">Solicitar Proposta Personalizada →</button>
+        <div class="lp-case-body">
+          <div class="lp-quote">"Rafael Moura, 19 anos, piloto da F4 Brasil. Em 3 meses usando o PitLane, ele recebeu 3 ofertas sólidas de empresas interessadas em patrocínio. Suas matérias geraram mais de 2.800 acessos, tudo porque empresas da região pesquisaram sobre automobilismo no Google e caíram em sua página."</div>
+          <div class="lp-author">— Case de Sucesso: Rafael Moura (F4 Brasil)</div>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- COMPARE TABLE -->
-  <div class="compare-wrap">
-    <div class="compare-title">Comparativo Completo</div>
-    <table class="cmp-table">
-      <thead>
-        <tr>
-          <th>Recurso</th>
-          <th>Piloto Básico<br><span style="color:var(--acc);font-family:var(--fd);font-size:14px">R$99,90</span></th>
-          <th>Piloto Pro<br><span style="color:var(--acc);font-family:var(--fd);font-size:14px">R$149,90</span></th>
-          <th>Equipe<br><span style="color:var(--acc);font-family:var(--fd);font-size:14px">R$499,90</span></th>
-          <th>Categoria<br><span style="color:var(--gold);font-family:var(--fd);font-size:14px">R$999,90</span></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>Matérias/mês</td><td class="cmp-val">1</td><td class="cmp-val">2</td><td class="cmp-val">10</td><td class="cmp-val">30</td></tr>
-        <tr><td>Página no portal</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td></tr>
-        <tr><td>Otimização SEO</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td></tr>
-        <tr><td>Identificação CONAR</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td></tr>
-        <tr><td>Mídia Kit PDF</td><td class="cmp-no">✗</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td></tr>
-        <tr><td>Cotas de patrocínio</td><td class="cmp-no">✗</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td></tr>
-        <tr><td>Formulário para patrocinadores</td><td class="cmp-no">✗</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td></tr>
-        <tr><td>Destaque na home</td><td class="cmp-no">✗</td><td class="cmp-val">1×/mês</td><td class="cmp-val">4×/mês</td><td class="cmp-val">Fixo</td></tr>
-        <tr><td>Dashboard próprio</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td></tr>
-        <tr><td>Landing page dedicada</td><td class="cmp-no">✗</td><td class="cmp-no">✗</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td></tr>
-        <tr><td>Account manager</td><td class="cmp-no">✗</td><td class="cmp-no">✗</td><td class="cmp-no">✗</td><td class="cmp-ok">✓</td></tr>
-      </tbody>
-    </table>
-  </div>
+  <!-- SEÇÃO 6: PRICING (Planos e Preços - Reutilizando e Otimizando a Grade Atual) -->
+  <section class="lp-section bg-dark" id="lp-pricing">
+    <div class="lp-inner">
+      <h2 class="lp-title center">Escolha a sua pole position</h2>
+      <p class="lp-subtitle center">Planos sem fidelidade. Cancele quando quiser.</p>
+      
+      <div class="plans-tabs" style="margin-bottom: 40px">
+        <button class="plan-tab active" onclick="showPlanGroup(this,'piloto')"><i class="fi fi-rr-user"></i> Pilotos</button>
+        <button class="plan-tab" onclick="showPlanGroup(this,'equipe')"><i class="fi fi-rr-flag-checkered"></i> Equipes</button>
+        <button class="plan-tab" onclick="showPlanGroup(this,'categoria')"><i class="fi fi-rr-trophy"></i> Categorias</button>
+      </div>
+
+      <!-- PILOTO PLANS -->
+      <div id="plans-piloto" class="plans-group">
+        <div class="plans-grid" style="grid-template-columns:repeat(2,1fr)">
+          <div class="plan-card">
+            <div class="plan-top">
+              <div class="plan-tier">Piloto · Starter</div>
+              <div class="plan-name">Básico</div>
+              <div class="plan-price">R$99<small>,90/mês</small></div>
+              <div class="plan-period">Cancelamento a qualquer momento</div>
+            </div>
+            <div class="plan-body">
+              <div class="plan-feat"><strong>1 matéria/mês</strong> otimizada (Google)</div>
+              <div class="plan-feat">Texto profissional (Redação)</div>
+              <div class="plan-feat">Página básica de piloto</div>
+              <div class="plan-feat">Selo CONAR (Transparência)</div>
+              <div class="plan-feat no">Mídia Kit Integrado</div>
+              <div class="plan-feat no">Cotas e Formulário de Patrocínio</div>
+              <div class="plan-feat no">Destaque na Home Principal</div>
+            </div>
+            <div class="plan-cta">
+              <button class="btn btn-out btn-full" onclick="showView('login');toast('Crie sua conta para assinar o plano Starter','info')">Começar Agora</button>
+              <div class="plan-note" style="margin-top:10px;text-align:center;color:var(--muted);font-size:12px">Menos de R$3,50 por dia</div>
+            </div>
+          </div>
+          <div class="plan-card best">
+            <div class="plan-best-tag" style="background:var(--acc);color:#fff">MAIS POPULAR</div>
+            <div class="plan-top">
+              <div class="plan-tier" style="color:var(--acc)">Piloto · Pro</div>
+              <div class="plan-name">Intermediário</div>
+              <div class="plan-price">R$149<small>,90/mês</small></div>
+              <div class="plan-period">Cancelamento a qualquer momento</div>
+            </div>
+            <div class="plan-body">
+              <div class="plan-feat"><strong>2 matérias/mês</strong> otimizadas (Google)</div>
+              <div class="plan-feat">Texto profissional (Redação)</div>
+              <div class="plan-feat"><strong>Mídia Kit Automático</strong> (PDF)</div>
+              <div class="plan-feat">Cotas detalhadas para patrocinadores</div>
+              <div class="plan-feat"><strong>Formulário de Interesse direto</strong></div>
+              <div class="plan-feat">Destaque na Home Mensal</div>
+              <div class="plan-feat">Página Premium Completa</div>
+            </div>
+            <div class="plan-cta">
+              <button class="btn btn-acc btn-full" onclick="showView('login');toast('Crie sua conta para assinar o plano Pro','ok')">Quero o Pro</button>
+              <div class="plan-note" style="margin-top:10px;text-align:center;color:var(--muted);font-size:12px">O preço de um café express por dia</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EQUIPE PLANS -->
+      <div id="plans-equipe" class="plans-group hide">
+        <div class="plans-grid" style="max-width:700px">
+          <div class="plan-card best" style="grid-column:1/-1">
+            <div class="plan-best-tag">PARA EQUIPES</div>
+            <div class="plan-top">
+              <div class="plan-tier">Equipe Parceira</div>
+              <div class="plan-price">R$499<small>,90/mês</small></div>
+              <div class="plan-period">Faturamento mensal · Sem carência</div>
+            </div>
+            <div class="plan-body" style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <div class="plan-feat"><strong>10 matérias/mês</strong> otimizadas</div>
+              <div class="plan-feat">Mídia Kit da equipe</div>
+              <div class="plan-feat"><strong>Landing Page da Equipe</strong></div>
+              <div class="plan-feat">Perfis associados (Pilotos)</div>
+              <div class="plan-feat">Destaque na home 4x</div>
+              <div class="plan-feat">Suporte Prioritário VIP</div>
+            </div>
+            <div class="plan-cta">
+              <button class="btn btn-acc btn-full" onclick="toast('Fale conosco via WhatsApp para o plano de equipe','info')">Falar com a Equipe PitLane</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CATEGORIA PLANS (Text Banner) -->
+      <div id="plans-categoria" class="plans-group hide">
+        <div class="lp-pain-box" style="text-align:center;border-left:none;border-top:4px solid var(--gold)">
+          <p style="color:var(--gold);font-family:var(--fd)"><i class="fi fi-rr-trophy"></i> Representa uma Categoria Inteira?</p>
+          <p style="font-size:16px;color:#FFF">Temos um plano monumental com cobertura jornalística completa em todas as etapas, classificação ao vivo via API no portal e equipe dedicadíssima.</p>
+          <p style="font-size:14px">A partir de R$ 999,90 / mês.</p>
+          <button class="btn" style="background:var(--gold);color:#000;margin-top:20px;padding:15px 30px;font-family:var(--fd);font-size:18px" onclick="toast('Encaminhando para solicitacao de proposta corporativa (WhatsApp)','ok')">Solicitar Proposta</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEÇÃO 7: COMPARATIVO ANTES X DEPOIS -->
+  <section class="lp-section">
+    <div class="lp-inner">
+      <h2 class="lp-title center">Compare as Abordagens</h2>
+      <div class="antes-depois">
+        <div class="ad-col sem">
+          <div class="ad-title"><i class="fi fi-rr-skull"></i> Sem o Módulo PITLANE</div>
+          <div class="ad-item"><i class="fi fi-rr-cross"></i> Empresas pesquisam o seu nome e não encontram quase nada além do Instagram ou sites não atualizados.</div>
+          <div class="ad-item"><i class="fi fi-rr-cross"></i> Você insiste em mandar um Mídia Kit PDF genérico pelo WhatsApp que o chefe de marketing mal tem tempo de abrir.</div>
+          <div class="ad-item"><i class="fi fi-rr-cross"></i> O impacto das suas vitórias desaparece e evapora depois de 24h nos Stories.</div>
+          <div class="ad-item"><i class="fi fi-rr-cross"></i> Você gasta R$5.000 num final de semana correndo, mas R$0 em divulgação profissional definitiva.</div>
+        </div>
+        <div class="ad-col com">
+          <div class="ad-title"><i class="fi fi-rr-rocket-lunch"></i> Com o PITLANE PRO</div>
+          <div class="ad-item"><i class="fi fi-rr-check"></i> Sua página domina a primeira págia no Google com métricas, matérias densas e formato amigável B2B.</div>
+          <div class="ad-item"><i class="fi fi-rr-check"></i> Marcas chegam até a sua página orgânicamente e pedem para preencher formulário de interesse na cota.</div>
+          <div class="ad-item"><i class="fi fi-rr-check"></i> Suas conquistas geram artigos eternos de autoridade. Quanto mais matérias, mais forte seu Pagerank.</div>
+          <div class="ad-item"><i class="fi fi-rr-check"></i> Por R$149 você constrói a presença midiática necessária para sustentar a carreira a longo-prazo.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEÇÃO 8: FAQ -->
+  <section class="lp-section bg-dark">
+    <div class="lp-inner">
+      <h2 class="lp-title center">Dúvidas Frequentes</h2>
+      <div class="lp-faq">
+        <details>
+          <summary>Eu preciso escrever as matérias com perfeição?</summary>
+          <div class="faq-body">Dê jeito nenhum. Entendemos que você é piloto, não jornalista. Tudo que nós precisamos é de áudios no WhatsApp ou textos crus informando "o que aconteceu" na corrida, e as fotos em alta resolução. Nossa equipe mastiga tudo e transforma em notícia padrão ESPN.</div>
+        </details>
+        <details>
+          <summary>Esse modelo só funciona pra quem tem milhões de seguidores?</summary>
+          <div class="faq-body">O PitLane é o oposto das mídias sociais. Nós não dependemos de curtidas ou seguidores, operamos construindo autoridade passiva em motores de busca (Google / Bing). O patrocinador pesquisa sobre automobilismo na sua região e o algoritmo faz a intermediação de mercado B2B, você alcança um público extremamente segmentado sem dancinhas de TikTok.</div>
+        </details>
+        <details>
+          <summary>Funciona pra qualquer modalidade? (Ex: StockCar, Kart, AV, etc.)</summary>
+          <div class="faq-body">Exatamente. Nós englobamos competições como a F4 Brasil, Copa HB20, Arrancada, Rally, Truck, Turismo Nacional, Kart Profissional e até os maiores e mais seletos campeonatos de Simuladores Virtuais e E-Sports de grande porte.</div>
+        </details>
+        <details>
+          <summary>E se eu quiser cancelar amanhã?</summary>
+          <div class="faq-body">Confiamos tanto em nosso impacto na sua carreira que oferecemos zero taxas de adesão, multas ou pegadinhas de contratos obscuros na justiça. É uma assinatura simples como a Máfia do Setup ou iRacing. Não curtiu? Tem botão de cancelar dentro do dashboard.</div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEÇÃO 9: CTA FINAL -->
+  <section class="lp-section no-border lp-cta-block">
+    <div class="lp-inner">
+      <h2 class="lp-title">Enquanto você lê isso, patrocinadores estão pesquisando.<br><span class="hl">O que eles lerão sobre você?</span></h2>
+      <div class="lp-btns" style="margin-top:50px">
+        <button class="btn btn-acc" style="font-size:22px;padding:20px 40px" onclick="document.getElementById('lp-pricing').scrollIntoView({behavior:'smooth'})">Quero Começar Agora</button>
+      </div>
+      <p style="margin-top:20px;color:var(--muted);font-family:var(--fm)">Sem contratos amarrados. Publicação de imediato.</p>
+    </div>
+  </section>
 </div><!-- /view-plans -->
 
 <!-- ════════════════════════════════════════
@@ -1398,7 +1498,7 @@
 <!-- ════════════════════════════════════════
      JAVASCRIPT
 ════════════════════════════════════════ -->
-<script src="js/app.js?v=20"></script>
-<script src="js/state.js?v=20"></script>
+<script src="js/app.js?v=22"></script>
+<script src="js/state.js?v=22"></script>
 </body>
 </html>
