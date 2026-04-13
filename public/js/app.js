@@ -393,31 +393,165 @@ document.querySelectorAll('.ncard').forEach((c,i)=>{c.style.transitionDelay=(i*.
 
 /* ══ FILTER ══ */
 let currentCat='all',currentType='all';
+
+/* ── HERO DATA POR CATEGORIA ── */
+const HERO_DATA={
+  f1:{
+    img:'https://loremflickr.com/1200/600/formula1,mercedes?lock=42',
+    typeCls:'int', typeIcon:'fi fi-rr-pencil', typeLabel:'CONTEÚDO PITLANE',
+    badge:'F1 · TEMPORADA 2026', badgeCls:'b-f1',
+    title:'Antonelli Lidera com 72 Pts: O Mais Jovem a Comandar o Mundial Moderno de F1',
+    excerpt:'Kimi Antonelli (Mercedes) comanda o campeonato após 3 GPs — Austrália, China e Japão — com duas vitórias e uma perseguição que redefine a nova era da F1.',
+    meta:'Redação PitLane · 10 Abr 2026 · Fonte: formula1.com · GPFans · ESPN',
+    articleId:0,
+    sides:[
+      {img:'https://loremflickr.com/600/380/formula1,fia?lock=7',typeCls:'ext',typeLabel:'SKY SPORTS F1 ↗',badge:'F1 · REGULAMENTOS',badgeCls:'b-f1',title:'FIA Confirma Ajustes nas Regras 2026 Após Acidente de Bearman em Suzuka',link:'https://www.skysports.com/f1'},
+      {img:'https://loremflickr.com/600/380/miami,formula1?lock=15',typeCls:'ext',typeLabel:'ESPN ↗',badge:'F1 · MIAMI GP',badgeCls:'b-f1',title:'Próxima Corrida: GP de Miami — 1 a 3 de Maio de 2026',link:'https://www.espn.com/f1'}
+    ]
+  },
+  motogp:{
+    img:'https://loremflickr.com/1200/600/motogp,ducati?lock=50',
+    typeCls:'int', typeIcon:'fi fi-rr-pencil', typeLabel:'CONTEÚDO PITLANE',
+    badge:'MOTOGP · TEMPORADA 2026', badgeCls:'b-motogp',
+    title:'Bagnaia Domina Início de Temporada com 81 Pontos e Duas Vitórias',
+    excerpt:'Francesco Bagnaia (Ducati Lenovo) lidera o campeonato após 3 GPs — Tailândia, Argentina e Américas — ameaçado de perto por Marc Márquez na Gresini.',
+    meta:'Redação PitLane · 13 Abr 2026 · Fonte: motogp.com · MotoSport',
+    articleId:0,
+    sides:[
+      {img:'https://loremflickr.com/600/380/motogp,honda?lock=51',typeCls:'ext',typeLabel:'MOTOGP.COM ↗',badge:'MOTOGP · MERCADO',badgeCls:'b-motogp',title:'Marc Márquez Brilha na Gresini: "Melhor Moto que Já Pilotei"',link:'https://www.motogp.com'},
+      {img:'https://loremflickr.com/600/380/motorcycle,race?lock=52',typeCls:'ext',typeLabel:'MOTORSPORT ↗',badge:'MOTOGP · DUCATI',badgeCls:'b-motogp',title:'Ducati Domina Grid com 4 Motos no Top 6 — Até Quando?',link:'https://www.motorsport.com/motogp'}
+    ]
+  },
+  wec:{
+    img:'https://loremflickr.com/1200/600/lemans,porsche?lock=60',
+    typeCls:'int', typeIcon:'fi fi-rr-pencil', typeLabel:'CONTEÚDO PITLANE',
+    badge:'WEC · SUPERTEMPORADA', badgeCls:'b-wec',
+    title:'Toyota vs Porsche: A Batalha Mais Acirrada da Era Hypercar',
+    excerpt:'Com Toyota e Porsche separados por apenas 1 ponto na classificação de fabricantes, a temporada 2025-26 do WEC é a mais emocionante da história.',
+    meta:'Redação PitLane · 13 Abr 2026 · Fonte: fiawec.com · Sportscar365',
+    articleId:0,
+    sides:[
+      {img:'https://loremflickr.com/600/380/lemans,car?lock=61',typeCls:'ext',typeLabel:'SPORTSCAR365 ↗',badge:'WEC · LE MANS',badgeCls:'b-wec',title:'24 Horas de Le Mans 2026: Grid Recorde com 62 Carros Confirmados',link:'https://sportscar365.com'},
+      {img:'https://loremflickr.com/600/380/endurance,racing?lock=62',typeCls:'ext',typeLabel:'FIA WEC ↗',badge:'WEC · HYPERCAR',badgeCls:'b-wec',title:'Cadillac Surpreende com Ritmo em Ímola — Ameaça Real?',link:'https://www.fiawec.com'}
+    ]
+  },
+  nascar:{
+    img:'https://loremflickr.com/1200/600/nascar,daytona?lock=70',
+    typeCls:'int', typeIcon:'fi fi-rr-pencil', typeLabel:'CONTEÚDO PITLANE',
+    badge:'NASCAR · CUP SERIES 2026', badgeCls:'b-nascar',
+    title:'Kyle Larson Abre 2026 com Daytona 500: Hendrick Motorsports Avassalador',
+    excerpt:'Hendrick Motorsports coloca 3 pilotos no top 3 e domina o início da temporada 2026 da NASCAR Cup Series com Larson, Elliott e Byron.',
+    meta:'Redação PitLane · 13 Abr 2026 · Fonte: nascar.com · Jayski',
+    articleId:0,
+    sides:[
+      {img:'https://loremflickr.com/600/380/nascar,race?lock=71',typeCls:'ext',typeLabel:'NASCAR.COM ↗',badge:'NASCAR · HENDRICK',badgeCls:'b-nascar',title:'Elliott e Byron Consolidam Hendrick como Melhor Equipe do Grid',link:'https://www.nascar.com'},
+      {img:'https://loremflickr.com/600/380/nascar,car?lock=72',typeCls:'ext',typeLabel:'JAYSKI ↗',badge:'NASCAR · PENSKE',badgeCls:'b-nascar',title:'Blaney vs Logano: A Rivalidade Interna que Move a Team Penske',link:'https://www.jayski.com'}
+    ]
+  },
+  wrc:{
+    img:'https://loremflickr.com/1200/600/rally,wrc?lock=80',
+    typeCls:'int', typeIcon:'fi fi-rr-pencil', typeLabel:'CONTEÚDO PITLANE',
+    badge:'WRC · TEMPORADA 2026', badgeCls:'b-wrc',
+    title:'Ogier Lidera WRC 2026 Após 3 Rallies: A Lenda Não Para',
+    excerpt:'Sébastien Ogier (Toyota) lidera com 67 pontos após Monte-Carlo, Suécia e Safari, com Neuville (Hyundai) em 2º a apenas 9 pontos.',
+    meta:'Redação PitLane · 13 Abr 2026 · Fonte: wrc.com · DirtFish',
+    articleId:0,
+    sides:[
+      {img:'https://loremflickr.com/600/380/rally,portugal?lock=81',typeCls:'ext',typeLabel:'WRC.COM ↗',badge:'WRC · PORTUGAL',badgeCls:'b-wrc',title:'Rally de Portugal 2026: Fafe Recebe Prova Pela 53ª Vez',link:'https://www.wrc.com'},
+      {img:'https://loremflickr.com/600/380/rally,car?lock=82',typeCls:'ext',typeLabel:'DIRTFISH ↗',badge:'WRC · TOYOTA',badgeCls:'b-wrc',title:'Toyota GR Yaris: Por Que É o Carro Mais Dominante do WRC',link:'https://dirtfish.com'}
+    ]
+  }
+};
+
+function updateHero(cat){
+  const h=HERO_DATA[cat];
+  if(!h)return;
+  const wrap=document.querySelector('.hero-wrap');
+  if(!wrap)return;
+  // Fade out
+  wrap.classList.add('switching');
+  setTimeout(()=>{
+    // Main hero
+    const mainImg=wrap.querySelector('.hero-main img');
+    if(mainImg) mainImg.src=h.img;
+    const heroType=wrap.querySelector('.hero-main .hero-type');
+    if(heroType){heroType.className='hero-type '+h.typeCls;heroType.innerHTML='<i class="'+h.typeIcon+'"></i> '+h.typeLabel}
+    const heroBadge=wrap.querySelector('.hero-main .badge');
+    if(heroBadge){heroBadge.className='badge '+h.badgeCls;heroBadge.textContent=h.badge}
+    const heroTitle=wrap.querySelector('.hero-title');
+    if(heroTitle) heroTitle.textContent=h.title;
+    const heroExcerpt=wrap.querySelector('.hero-excerpt');
+    if(heroExcerpt) heroExcerpt.textContent=h.excerpt;
+    const heroMeta=wrap.querySelector('.hero-meta');
+    if(heroMeta) heroMeta.innerHTML='<span>'+h.meta.split(' · ').join('</span><span>')+'</span>';
+    // Side cards
+    const sides=wrap.querySelectorAll('.side-card');
+    h.sides.forEach((s,i)=>{
+      if(!sides[i])return;
+      sides[i].onclick=()=>extLink(s.link);
+      const sImg=sides[i].querySelector('img');if(sImg) sImg.src=s.img;
+      const sType=sides[i].querySelector('.hero-type');if(sType){sType.className='hero-type '+s.typeCls;sType.style.cssText='display:inline-flex;font-size:8px;padding:2px 7px';sType.innerHTML='<i class="fi fi-rr-link"></i> '+s.typeLabel}
+      const sBadge=sides[i].querySelector('.badge');if(sBadge){sBadge.className='badge '+s.badgeCls;sBadge.textContent=s.badge}
+      const sTitle=sides[i].querySelector('.side-title');if(sTitle) sTitle.textContent=s.title;
+    });
+    // Fade in
+    wrap.classList.remove('switching');
+  },300);
+}
+
 function filterCat(cat){
   currentCat=cat;applyFilter();
-  document.getElementById('newsSectionTitle').textContent=cat==='all'?'Últimas Notícias':'Categoria: '+cat.toUpperCase();
-  document.getElementById('newsSection').scrollIntoView({behavior:'smooth',block:'start'});
+  document.getElementById('newsSectionTitle').textContent=cat==='all'?'Últimas Notícias':'Notícias · '+cat.toUpperCase();
   // Update standings to match category
   const champCat=CHAMP_DATA[cat]?cat:'f1';
   updateStandings(champCat);
   // Show/hide standings section for sim racing (no championship)
   const standBox=document.querySelector('.standings-box');
   if(standBox) standBox.style.display=(cat==='sim')?'none':'';
+  // Update hero
+  const heroCat=HERO_DATA[cat]?cat:'f1';
+  updateHero(heroCat);
 }
 function filterType(el,type){
   document.querySelectorAll('.ftag').forEach(t=>t.classList.remove('active'));el.classList.add('active');
   currentType=type;applyFilter();
 }
 function applyFilter(){
+  let delay=0;
   document.querySelectorAll('.ncard').forEach(c=>{
     const cat=c.dataset.cat,type=c.dataset.type;
     const catOk=currentCat==='all'||cat===currentCat;
     const typeOk=currentType==='all'||type===currentType;
-    c.style.opacity=(catOk&&typeOk)?'1':'0.15';
-    c.style.pointerEvents=(catOk&&typeOk)?'all':'none';
+    if(catOk&&typeOk){
+      c.classList.remove('filtered-out');
+      c.classList.add('filtered-in');
+      c.style.animationDelay=(delay*0.04)+'s';
+      delay++;
+    }else{
+      c.classList.add('filtered-out');
+      c.classList.remove('filtered-in');
+    }
   });
 }
 function catAct(el){document.querySelectorAll('.cat-pill').forEach(p=>p.classList.remove('active'));el.classList.add('active')}
+
+/* ── CONTAGEM REAL ── */
+function updateCatCounts(){
+  const counts={all:0,f1:0,motogp:0,wec:0,nascar:0,sim:0,wrc:0};
+  document.querySelectorAll('.ncard').forEach(c=>{
+    const cat=c.dataset.cat;
+    counts.all++;
+    if(counts[cat]!==undefined) counts[cat]++;
+  });
+  document.querySelectorAll('.cat-pill').forEach(p=>{
+    const cnt=p.querySelector('.cat-cnt');
+    if(!cnt)return;
+    const pCat=p.dataset.cat;
+    if(pCat&&counts[pCat]!==undefined){
+      cnt.textContent=counts[pCat]+' notícia'+(counts[pCat]!==1?'s':'');
+    }
+  });
+}
 
 /* ══ PILOTS ══ */
 function renderPilotsHighlight(){
@@ -615,6 +749,7 @@ async function loadLiveNews() {
 
   ARTICLES = mixed;
   renderNewsGrid(mixed);
+  updateCatCounts();
 }
 
 function renderNewsGrid(articles) {

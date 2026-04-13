@@ -209,6 +209,16 @@ nav{position:sticky;top:0;z-index:500;background:rgba(3,3,10,.92);backdrop-filte
 .ncard{background:var(--bg1);overflow:hidden;cursor:pointer;display:flex;flex-direction:column;transition:background .2s;position:relative}
 .ncard:hover{background:var(--bg2)}
 .ncard.feat{grid-column:span 2}
+/* Filter: real hide/show */
+.ncard.filtered-out{display:none!important}
+.ncard.filtered-in{animation:cardReveal .35s ease forwards}
+@keyframes cardReveal{
+  from{opacity:0;transform:translateY(14px) scale(.97)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+/* Hero transition */
+.hero-wrap{transition:opacity .3s ease}
+.hero-wrap.switching{opacity:0}
 /* Indicador visual lateral por tipo */
 .ncard::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;z-index:1;opacity:0;transition:opacity .2s}
 .ncard.is-ext::before{background:var(--blue);opacity:.7}

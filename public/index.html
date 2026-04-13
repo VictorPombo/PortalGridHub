@@ -284,13 +284,33 @@
 
   <!-- CAT STRIP -->
   <div class="cat-strip" id="catStrip">
-    <div class="cat-pill active" style="--cc:#e8002d" onclick="filterCat('all');catAct(this)"><span class="cat-ico"><i class="fi fi-rr-apps"></i></span><span class="cat-lbl">Todos</span><span class="cat-cnt">148 notícias</span></div>
-    <div class="cat-pill" style="--cc:#e8002d" onclick="filterCat('f1');catAct(this)"><span class="cat-ico"><img src="img/cats/f1.png" alt="F1"></span><span class="cat-lbl">F1</span><span class="cat-cnt">52 notícias</span></div>
-    <div class="cat-pill" style="--cc:#0060c8" onclick="filterCat('motogp');catAct(this)"><span class="cat-ico"><img src="img/cats/motogp.png" alt="MotoGP"></span><span class="cat-lbl">MotoGP</span><span class="cat-cnt">38 notícias</span></div>
-    <div class="cat-pill" style="--cc:#006e3a" onclick="filterCat('wec');catAct(this)"><span class="cat-ico"><img src="img/cats/wec.png" alt="WEC"></span><span class="cat-lbl">WEC</span><span class="cat-cnt">24 notícias</span></div>
-    <div class="cat-pill" style="--cc:#d48f00" onclick="filterCat('nascar');catAct(this)"><span class="cat-ico"><img src="img/cats/nascar.png" alt="NASCAR"></span><span class="cat-lbl">NASCAR</span><span class="cat-cnt">18 notícias</span></div>
-    <div class="cat-pill" style="--cc:#6222ee" onclick="filterCat('sim');catAct(this)"><span class="cat-ico"><i class="fi fi-rr-gamepad"></i></span><span class="cat-lbl">Sim Racing</span><span class="cat-cnt">31 notícias</span></div>
-    <div class="cat-pill" style="--cc:#a04e00" onclick="filterCat('wrc');catAct(this)"><span class="cat-ico"><img src="img/cats/wrc.svg" alt="WRC"></span><span class="cat-lbl">WRC</span><span class="cat-cnt">12 notícias</span></div>
+    <div class="cat-pill active" style="--cc:#e8002d" data-cat="all" onclick="filterCat('all');catAct(this)"><span class="cat-ico"><i class="fi fi-rr-apps"></i></span><span class="cat-lbl">Todos</span><span class="cat-cnt">148 notícias</span></div>
+    <div class="cat-pill" style="--cc:#e8002d" data-cat="f1" onclick="filterCat('f1');catAct(this)"><span class="cat-ico"><img src="img/cats/f1.png" alt="F1"></span><span class="cat-lbl">F1</span><span class="cat-cnt">52 notícias</span></div>
+    <div class="cat-pill" style="--cc:#0060c8" data-cat="motogp" onclick="filterCat('motogp');catAct(this)"><span class="cat-ico"><img src="img/cats/motogp.png" alt="MotoGP"></span><span class="cat-lbl">MotoGP</span><span class="cat-cnt">38 notícias</span></div>
+    <div class="cat-pill" style="--cc:#006e3a" data-cat="wec" onclick="filterCat('wec');catAct(this)"><span class="cat-ico"><img src="img/cats/wec.png" alt="WEC"></span><span class="cat-lbl">WEC</span><span class="cat-cnt">24 notícias</span></div>
+    <div class="cat-pill" style="--cc:#d48f00" data-cat="nascar" onclick="filterCat('nascar');catAct(this)"><span class="cat-ico"><img src="img/cats/nascar.png" alt="NASCAR"></span><span class="cat-lbl">NASCAR</span><span class="cat-cnt">18 notícias</span></div>
+    <div class="cat-pill" style="--cc:#6222ee" data-cat="sim" onclick="filterCat('sim');catAct(this)"><span class="cat-ico"><i class="fi fi-rr-gamepad"></i></span><span class="cat-lbl">Sim Racing</span><span class="cat-cnt">31 notícias</span></div>
+    <div class="cat-pill" style="--cc:#a04e00" data-cat="wrc" onclick="filterCat('wrc');catAct(this)"><span class="cat-ico"><img src="img/cats/wrc.svg" alt="WRC"></span><span class="cat-lbl">WRC</span><span class="cat-cnt">12 notícias</span></div>
+  </div>
+
+  <!-- STANDINGS + RACE -->
+  <div class="section reveal">
+    <div class="two-col">
+      <div>
+        <div class="sec-head"><span class="sec-title">Campeonato F1 2026</span><button class="sec-link btn-ghost btn-sm" onclick="showView('standings')">COMPLETO →</button></div>
+        <div class="standings-box">
+          <div class="s-tabs">
+            <div class="s-tab active" onclick="switchStand(this,'drv')">Pilotos</div>
+            <div class="s-tab" onclick="switchStand(this,'cns')">Construtores</div>
+          </div>
+          <table class="s-table" id="standTable"></table>
+        </div>
+      </div>
+      <div>
+        <div class="sec-head"><span class="sec-title">Próxima Corrida</span><button class="sec-link btn-ghost btn-sm" onclick="showView('calendar')">CALENDÁRIO →</button></div>
+          <div id="nextRaceBox"></div>
+      </div>
+    </div>
   </div>
 
   <!-- NEWS SECTION -->
@@ -472,26 +492,6 @@
       </div>
 
     </div><!-- /card-grid -->
-  </div>
-
-  <!-- STANDINGS + RACE -->
-  <div class="section reveal">
-    <div class="two-col">
-      <div>
-        <div class="sec-head"><span class="sec-title">Campeonato F1 2026</span><button class="sec-link btn-ghost btn-sm" onclick="showView('standings')">COMPLETO →</button></div>
-        <div class="standings-box">
-          <div class="s-tabs">
-            <div class="s-tab active" onclick="switchStand(this,'drv')">Pilotos</div>
-            <div class="s-tab" onclick="switchStand(this,'cns')">Construtores</div>
-          </div>
-          <table class="s-table" id="standTable"></table>
-        </div>
-      </div>
-      <div>
-        <div class="sec-head"><span class="sec-title">Próxima Corrida</span><button class="sec-link btn-ghost btn-sm" onclick="showView('calendar')">CALENDÁRIO →</button></div>
-          <div id="nextRaceBox"></div>
-      </div>
-    </div>
   </div>
 
   <!-- PILOTS HIGHLIGHT -->
@@ -1397,7 +1397,7 @@
 <!-- ════════════════════════════════════════
      JAVASCRIPT
 ════════════════════════════════════════ -->
-<script src="js/app.js?v=6"></script>
-<script src="js/state.js?v=6"></script>
+<script src="js/app.js?v=7"></script>
+<script src="js/state.js?v=7"></script>
 </body>
 </html>
