@@ -260,3 +260,47 @@ lucideScript.onload = () => {
   }
 };
 document.head.appendChild(lucideScript);
+
+// ════════════════════════════════════════
+// COUNTER ANIMATION (Landing Page Stats)
+// ════════════════════════════════════════
+function animateCounters(){
+  document.querySelectorAll('.lp-stat-num[data-target]').forEach(function(el){
+    var target=parseInt(el.dataset.target);
+    var prefix=el.dataset.prefix||'';
+    var suffix=el.dataset.suffix||'';
+    var duration=2000;
+    var start=performance.now();
+    function update(now){
+      var progress=Math.min((now-start)/duration,1);
+      var eased=1-Math.pow(1-progress,3);
+      var current=Math.floor(eased*target);
+      el.textContent=prefix+current.toLocaleString('pt-BR')+suffix;
+      if(progress<1)requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+  });
+}
+var _cntDone=false;
+var statsEl=document.querySelector('.lp-stats');
+if(statsEl){
+  var cntObs=new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting&&!_cntDone){_cntDone=true;animateCounters();cntObs.disconnect();}
+    });
+  },{threshold:0.3});
+  cntObs.observe(statsEl);
+}
+
+// ════════════════════════════════════════
+// SCROLL REVEAL (Landing Page Sections)
+// ════════════════════════════════════════
+var revObs=new IntersectionObserver(function(entries){
+  entries.forEach(function(entry){
+    if(entry.isIntersecting)entry.target.classList.add('revealed');
+  });
+},{threshold:0.08});
+document.querySelectorAll('#view-plans .lp-section').forEach(function(s){
+  s.classList.add('reveal-section');
+  revObs.observe(s);
+});

@@ -1,0 +1,2373 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PitLane News</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   BASE
+═══════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#03030a;--bg1:#07070e;--bg2:#0c0c17;--bg3:#12121f;
+  --acc:#e8002d;--acc-d:rgba(232,0,45,.1);--acc-g:rgba(232,0,45,.3);
+  --gold:#f0a000;--green:#00bb55;--blue:#0060c8;--purple:#6222ee;
+  --text:#f0f0f5;--dim:#8a8aaa;--muted:#3a3a58;
+  --brd:rgba(255,255,255,.05);--brdb:rgba(255,255,255,.1);
+  --fd:'Bebas Neue',sans-serif;
+  --fu:'Barlow Condensed',sans-serif;
+  --fb:'DM Sans',sans-serif;
+  --fm:'JetBrains Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--fb);line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body.locked{overflow:hidden}
+*{scrollbar-width:thin;scrollbar-color:var(--muted) transparent}
+.hide{display:none!important}
+.view{display:none}
+.view.active{display:block}
+
+/* ═══════════════════════════════════════════
+   PROGRESS + BACK TO TOP
+═══════════════════════════════════════════ */
+#pgbar{position:fixed;top:0;left:0;width:0;height:2px;background:var(--acc);box-shadow:0 0 12px var(--acc-g);z-index:10000;transition:width .07s linear}
+#btt{position:fixed;bottom:26px;right:26px;width:42px;height:42px;background:var(--acc);border:none;color:#fff;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s,transform .2s;z-index:400;cursor:pointer}
+#btt.vis{opacity:1;pointer-events:all}
+#btt:hover{transform:translateY(-3px)}
+
+/* ═══════════════════════════════════════════
+   TOASTS
+═══════════════════════════════════════════ */
+#toasts{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:9500;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none}
+.toast{background:var(--bg3);border:1px solid var(--brdb);border-left:3px solid var(--acc);padding:11px 22px;font-family:var(--fu);font-size:13px;font-weight:600;letter-spacing:.5px;color:var(--text);opacity:0;transform:translateY(12px);transition:all .28s;min-width:260px;text-align:center}
+.toast.show{opacity:1;transform:none}
+.toast.ok{border-left-color:var(--green)}.toast.err{border-left-color:var(--acc)}.toast.info{border-left-color:var(--blue)}
+
+/* ═══════════════════════════════════════════
+   BUTTONS
+═══════════════════════════════════════════ */
+.btn{font-family:var(--fu);font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:10px 22px;border:none;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-acc{background:var(--acc);color:#fff;clip-path:polygon(0 0,100% 0,93% 100%,0 100%);padding-right:28px}
+.btn-acc:hover{background:#ff1840}
+.btn-out{background:transparent;border:1px solid var(--brdb);color:var(--dim)}
+.btn-out:hover{border-color:var(--acc);color:var(--acc)}
+.btn-ghost{background:transparent;border:none;color:var(--dim);padding:9px 12px}
+.btn-ghost:hover{color:var(--text)}
+.btn-green{background:var(--green);color:#fff}
+.btn-green:hover{background:#009944}
+.btn-gold{background:var(--gold);color:#000}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-full{width:100%;justify-content:center}
+.btn-sm{padding:6px 14px;font-size:10px;letter-spacing:1.5px}
+.btn-danger{background:#c00020;color:#fff}
+
+/* ═══════════════════════════════════════════
+   BADGES
+═══════════════════════════════════════════ */
+.badge{font-family:var(--fu);font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:3px 10px 3px 10px;clip-path:polygon(0 0,100% 0,91% 100%,0 100%);padding-right:14px;display:inline-block;line-height:1.4}
+.b-f1{background:var(--acc);color:#fff}.b-motogp{background:#0060c8;color:#fff}
+.b-wec{background:#006e3a;color:#fff}.b-nascar{background:#d48f00;color:#000}
+.b-sim{background:var(--purple);color:#fff}.b-wrc{background:#a04e00;color:#fff}
+.b-piloto{background:var(--green);color:#fff}.b-equipe{background:var(--blue);color:#fff}
+.b-cat{background:var(--purple);color:#fff}.b-ext{background:var(--muted);color:var(--dim)}
+.b-pago{background:var(--gold);color:#000}.b-pendente{background:#555;color:#fff}
+.b-aprovado{background:var(--green);color:#fff}.b-rejeitado{background:var(--acc);color:#fff}
+.b-admin{background:var(--acc);color:#fff}.b-breaking{background:var(--acc);color:#fff;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.7}}
+
+/* TAG DE FONTE EXTERNA vs INTERNA */
+.tag-ext{display:inline-flex;align-items:center;gap:5px;font-family:var(--fm);font-size:9px;color:var(--blue);background:rgba(0,96,200,.1);border:1px solid rgba(0,96,200,.2);padding:2px 8px;letter-spacing:.5px}
+.tag-ext svg{width:9px;opacity:.7}
+.tag-int{display:inline-flex;align-items:center;gap:5px;font-family:var(--fm);font-size:9px;color:var(--green);background:rgba(0,187,85,.1);border:1px solid rgba(0,187,85,.2);padding:2px 8px;letter-spacing:.5px}
+.tag-pago{display:inline-flex;align-items:center;gap:5px;font-family:var(--fm);font-size:9px;color:var(--gold);background:rgba(240,160,0,.1);border:1px solid rgba(240,160,0,.2);padding:2px 8px;letter-spacing:.5px}
+
+/* ═══════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════ */
+nav{position:sticky;top:0;z-index:500;background:rgba(3,3,10,.92);backdrop-filter:blur(24px);border-bottom:1px solid var(--brd)}
+.nav-inner{max-width:1400px;margin:0 auto;padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:60px;gap:18px}
+.logo{display:flex;align-items:center;gap:10px;cursor:pointer;flex-shrink:0;text-decoration:none}
+.logo-badge{width:34px;height:34px;background:var(--acc);clip-path:polygon(0 0,100% 0,80% 100%,0 100%);display:flex;align-items:center;justify-content:center}
+.logo-badge svg{width:13px;fill:#fff}
+.logo-text .ln{font-family:var(--fd);font-size:22px;letter-spacing:3px;color:var(--text);display:block;line-height:1}
+.logo-text .lt{font-family:var(--fu);font-size:8px;font-weight:700;letter-spacing:5px;color:var(--acc);display:block;margin-top:-2px}
+.nav-links{display:flex;list-style:none;gap:1px;flex:1;justify-content:center}
+.nav-links a{font-family:var(--fu);font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);padding:6px 12px;position:relative;transition:color .2s;cursor:pointer;display:block;text-decoration:none}
+.nav-links a::after{content:'';position:absolute;bottom:-1px;left:12px;right:12px;height:2px;background:var(--acc);transform:scaleX(0);transform-origin:left;transition:transform .22s}
+.nav-links a:hover,.nav-links a.active{color:var(--text)}
+.nav-links a:hover::after,.nav-links a.active::after{transform:scaleX(1)}
+.nav-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.live-pill{display:flex;align-items:center;gap:6px;font-family:var(--fm);font-size:10px;color:var(--acc);cursor:pointer;white-space:nowrap}
+.live-dot{width:6px;height:6px;background:var(--acc);border-radius:50%;animation:pulse 1.8s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 var(--acc-g)}70%{box-shadow:0 0 0 8px transparent}100%{box-shadow:0 0 0 0 transparent}}
+
+/* Mobile hamburger */
+.hamburger{display:none;background:transparent;border:1px solid var(--brdb);color:var(--dim);width:36px;height:36px;align-items:center;justify-content:center;flex-direction:column;gap:5px;padding:8px;cursor:pointer}
+.hamburger span{display:block;width:18px;height:2px;background:currentColor;transition:all .25s}
+.mob-menu{position:fixed;top:0;right:0;bottom:0;width:280px;z-index:800;background:var(--bg1);border-left:1px solid var(--brd);transform:translateX(110%);transition:transform .3s;padding:76px 28px 28px;overflow-y:auto}
+.mob-menu.open{transform:none}
+.mob-menu a{display:block;font-family:var(--fu);font-size:15px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);padding:13px 0;border-bottom:1px solid var(--brd);cursor:pointer;text-decoration:none;transition:color .2s}
+.mob-menu a:hover{color:var(--acc)}
+.mob-overlay{position:fixed;inset:0;z-index:790;background:rgba(3,3,10,.7);display:none}
+.mob-overlay.show{display:block}
+
+/* ═══════════════════════════════════════════
+   TICKER
+═══════════════════════════════════════════ */
+.ticker{background:var(--acc);height:32px;display:flex;align-items:center;overflow:hidden}
+.ticker-lbl{font-family:var(--fu);font-size:10px;font-weight:800;letter-spacing:3px;background:rgba(0,0,0,.3);height:100%;padding:0 20px;display:flex;align-items:center;flex-shrink:0;clip-path:polygon(0 0,100% 0,85% 100%,0 100%)}
+.ticker-scroll{overflow:hidden;flex:1}
+.ticker-track{display:flex;white-space:nowrap;animation:tk 44s linear infinite}
+.ticker:hover .ticker-track{animation-play-state:paused}
+.t-item{font-family:var(--fu);font-size:11px;font-weight:600;color:#fff;padding:0 0 0 32px;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.t-item::before{content:'';width:4px;height:4px;background:rgba(255,255,255,.5);border-radius:50%;flex-shrink:0}
+.t-item:hover{text-decoration:underline}
+@keyframes tk{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ═══════════════════════════════════════════
+   SECTIONS
+═══════════════════════════════════════════ */
+.section{max-width:1400px;margin:48px auto;padding:0 28px}
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--brd);position:relative}
+.sec-head::after{content:'';position:absolute;bottom:-1px;left:0;width:48px;height:2px;background:var(--acc)}
+.sec-title{font-family:var(--fd);font-size:24px;letter-spacing:3px}
+.sec-sub{font-family:var(--fm);font-size:10px;color:var(--dim);letter-spacing:1px;margin-left:12px}
+.sec-right{display:flex;align-items:center;gap:8px}
+
+/* ═══════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════ */
+.hero-wrap{max-width:1400px;margin:0 auto;padding:22px 28px 0}
+.hero-grid{display:grid;grid-template-columns:1fr 370px;gap:3px;height:530px}
+.hero-main{position:relative;overflow:hidden;cursor:pointer;background:var(--bg2)}
+.hero-main img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.5) brightness(.45);transition:transform .6s,filter .4s}
+.hero-main:hover img{transform:scale(1.04);filter:saturate(.65) brightness(.38)}
+.hero-main::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(3,3,10,.98) 0%,rgba(3,3,10,.6) 34%,transparent 100%);z-index:1}
+.hero-main::before{content:'';position:absolute;top:0;right:0;width:4px;height:100%;background:var(--acc);z-index:3;transform:scaleY(0);transform-origin:bottom;transition:transform .35s}
+.hero-main:hover::before{transform:scaleY(1)}
+.hero-content{position:absolute;bottom:0;left:0;right:0;padding:36px;z-index:2}
+.hero-title{font-family:var(--fd);font-size:52px;line-height:.96;color:#fff;margin:12px 0 12px}
+.hero-excerpt{font-size:13px;font-weight:300;color:rgba(255,255,255,.55);line-height:1.65;max-width:480px;margin-bottom:12px}
+.hero-meta{font-family:var(--fm);font-size:10px;color:rgba(255,255,255,.3);letter-spacing:1px;display:flex;align-items:center;gap:0;flex-wrap:wrap}
+.hero-meta span+span::before{content:'·';margin:0 8px}
+/* Indicador de tipo na hero */
+.hero-type{display:inline-flex;align-items:center;gap:6px;font-family:var(--fm);font-size:9px;letter-spacing:1px;padding:3px 10px;margin-bottom:8px}
+.hero-type.ext{color:var(--blue);background:rgba(0,96,200,.15);border:1px solid rgba(0,96,200,.25)}
+.hero-type.int{color:var(--green);background:rgba(0,187,85,.15);border:1px solid rgba(0,187,85,.25)}
+.hero-side{display:flex;flex-direction:column;gap:3px}
+.side-card{flex:1;position:relative;overflow:hidden;cursor:pointer;background:var(--bg2)}
+.side-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.4) brightness(.45);transition:transform .4s,filter .3s}
+.side-card:hover img{transform:scale(1.06);filter:saturate(.6) brightness(.38)}
+.side-card::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(3,3,10,.95) 0%,rgba(3,3,10,.2) 55%,transparent);z-index:1}
+.side-content{position:absolute;bottom:0;left:0;right:0;padding:16px 18px;z-index:2}
+.side-title{font-family:var(--fu);font-size:15px;font-weight:700;text-transform:uppercase;line-height:1.15;color:#fff;margin:7px 0 5px;transition:color .2s}
+.side-card:hover .side-title{color:var(--acc)}
+.side-meta{font-family:var(--fm);font-size:10px;color:rgba(255,255,255,.32)}
+
+/* ═══════════════════════════════════════════
+   EXPLICAÇÃO DO SISTEMA (CALLOUT)
+═══════════════════════════════════════════ */
+.system-callout{max-width:1400px;margin:28px auto;padding:0 28px}
+.callout-box{background:var(--bg1);border:1px solid var(--brdb);border-top:2px solid var(--gold);padding:20px 28px;display:flex;align-items:flex-start;gap:24px;flex-wrap:wrap}
+.callout-item{flex:1;min-width:220px;display:flex;align-items:flex-start;gap:14px}
+.callout-icon{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px}
+.callout-icon.ext{background:rgba(0,96,200,.15);border:1px solid rgba(0,96,200,.2)}
+.callout-icon.int{background:rgba(0,187,85,.15);border:1px solid rgba(0,187,85,.2)}
+.callout-icon.pago{background:rgba(240,160,0,.15);border:1px solid rgba(240,160,0,.2)}
+.callout-text strong{font-family:var(--fu);font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:3px}
+.callout-text p{font-size:12px;font-weight:300;color:var(--dim);line-height:1.5}
+
+/* ═══════════════════════════════════════════
+   CAT STRIP
+═══════════════════════════════════════════ */
+.cat-strip{max-width:1400px;margin:24px auto;padding:0 28px;display:flex;gap:3px;overflow-x:auto;scrollbar-width:none}
+.cat-strip::-webkit-scrollbar{display:none}
+.cat-pill{flex:1;min-width:110px;background:var(--bg1);border:1px solid var(--brd);padding:14px 10px;cursor:pointer;text-align:center;transition:all .2s;position:relative;overflow:hidden}
+.cat-pill::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--cc,var(--acc));transform:scaleX(0);transform-origin:left;transition:transform .2s}
+.cat-pill:hover,.cat-pill.active{background:var(--bg2);border-color:var(--brdb)}
+.cat-pill:hover::before,.cat-pill.active::before{transform:scaleX(1)}
+.cat-ico{font-size:20px;display:block;margin-bottom:6px}
+.cat-lbl{font-family:var(--fu);font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text);display:block}
+.cat-cnt{font-family:var(--fm);font-size:9px;color:var(--muted);display:block;margin-top:2px}
+
+/* ═══════════════════════════════════════════
+   FILTER TAGS
+═══════════════════════════════════════════ */
+.ftag-row{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;align-items:center}
+.ftag{font-family:var(--fu);font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:5px 13px;border:1px solid var(--brd);color:var(--dim);background:transparent;cursor:pointer;transition:all .2s}
+.ftag:hover,.ftag.active{border-color:var(--acc);color:var(--acc);background:var(--acc-d)}
+.ftag-sep{width:1px;height:20px;background:var(--brd);margin:0 4px}
+/* Filtro tipo: externo vs interno */
+.ftag.ext-filter{border-color:rgba(0,96,200,.3);color:var(--blue)}
+.ftag.ext-filter:hover,.ftag.ext-filter.active{border-color:var(--blue);background:rgba(0,96,200,.1)}
+.ftag.int-filter{border-color:rgba(0,187,85,.3);color:var(--green)}
+.ftag.int-filter:hover,.ftag.int-filter.active{border-color:var(--green);background:rgba(0,187,85,.1)}
+
+/* ═══════════════════════════════════════════
+   CARD GRID
+═══════════════════════════════════════════ */
+.card-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:3px}
+.ncard{background:var(--bg1);overflow:hidden;cursor:pointer;display:flex;flex-direction:column;transition:background .2s;position:relative}
+.ncard:hover{background:var(--bg2)}
+.ncard.feat{grid-column:span 2}
+/* Indicador visual lateral por tipo */
+.ncard::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;z-index:1;opacity:0;transition:opacity .2s}
+.ncard.is-ext::before{background:var(--blue);opacity:.7}
+.ncard.is-int::before{background:var(--green);opacity:.7}
+.ncard.is-pago::before{background:var(--gold);opacity:.7}
+.ncard-thumb{overflow:hidden;flex-shrink:0;height:170px;position:relative}
+.ncard.feat .ncard-thumb{height:260px}
+.ncard-thumb img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.5) brightness(.62);transition:transform .4s,filter .3s}
+.ncard:hover .ncard-thumb img{transform:scale(1.06);filter:saturate(.7) brightness(.55)}
+/* Ribbon no canto */
+.ncard-ribbon{position:absolute;top:10px;right:0;z-index:2}
+.ncard-body{padding:14px;flex:1;display:flex;flex-direction:column}
+.ncard-type-row{display:flex;align-items:center;gap:6px;margin-bottom:7px;flex-wrap:wrap}
+.ncard-title{font-family:var(--fu);font-size:15px;font-weight:700;text-transform:uppercase;line-height:1.18;margin-bottom:7px;transition:color .2s}
+.ncard.feat .ncard-title{font-size:19px}
+.ncard:hover .ncard-title{color:var(--acc)}
+.ncard-excerpt{font-size:12px;font-weight:300;color:var(--dim);line-height:1.6;flex:1}
+.ncard-footer{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:8px;border-top:1px solid var(--brd)}
+.ncard-meta{font-family:var(--fm);font-size:10px;color:var(--muted)}
+/* Botão salvar */
+.bm-btn{background:transparent;border:none;cursor:pointer;color:var(--muted);font-size:14px;transition:color .2s;padding:0}
+.bm-btn:hover,.bm-btn.saved{color:var(--acc)}
+/* Indicador de destino ao hover */
+.ncard-dest{position:absolute;bottom:0;left:0;right:0;background:rgba(3,3,10,.9);padding:8px 14px;font-family:var(--fm);font-size:10px;letter-spacing:.8px;display:flex;align-items:center;gap:6px;transform:translateY(100%);transition:transform .25s;z-index:3}
+.ncard:hover .ncard-dest{transform:none}
+.ncard-dest.ext{color:var(--blue)}.ncard-dest.int{color:var(--green)}
+
+/* ═══════════════════════════════════════════
+   PILOTS GRID
+═══════════════════════════════════════════ */
+.pilots-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:3px}
+.pcard{background:var(--bg1);border:1px solid var(--brd);cursor:pointer;transition:all .2s;overflow:hidden;position:relative}
+.pcard:hover{background:var(--bg2);border-color:var(--brdb)}
+.pcard-cover{height:130px;overflow:hidden;position:relative}
+.pcard-cover img{width:100%;height:100%;object-fit:cover;filter:saturate(.45) brightness(.55);transition:transform .4s,filter .3s}
+.pcard:hover .pcard-cover img{transform:scale(1.07);filter:saturate(.6) brightness(.48)}
+.pcard-cover::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(3,3,10,.9) 0%,transparent 60%)}
+.pcard-body{padding:14px 14px 16px}
+.pcard-name{font-family:var(--fd);font-size:20px;letter-spacing:1.5px;line-height:1;margin-bottom:4px}
+.pcard-cats{font-family:var(--fm);font-size:10px;color:var(--dim);margin-bottom:10px}
+.pcard-stats{display:flex;gap:10px;padding-top:10px;border-top:1px solid var(--brd)}
+.pstat-n{font-family:var(--fd);font-size:18px;color:var(--acc);display:block;line-height:1}
+.pstat-l{font-family:var(--fm);font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+
+/* ═══════════════════════════════════════════
+   STANDINGS + RACE
+═══════════════════════════════════════════ */
+.two-col{display:grid;grid-template-columns:1fr 350px;gap:22px;align-items:start}
+.standings-box{background:var(--bg1);border:1px solid var(--brd);overflow:hidden}
+.s-tabs{display:flex;border-bottom:1px solid var(--brd)}
+.s-tab{font-family:var(--fu);font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:12px 18px;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .2s}
+.s-tab.active{color:var(--text);border-bottom-color:var(--acc)}
+.s-table{width:100%;border-collapse:collapse}
+.s-table tr{border-bottom:1px solid var(--brd);cursor:pointer;transition:background .14s}
+.s-table tr:last-child{border:none}
+.s-table tr:hover{background:rgba(255,255,255,.02)}
+.s-table td{padding:10px 13px}
+.s-pos{font-family:var(--fm);font-size:11px;color:var(--muted);width:26px}
+.s-pos.p1{color:var(--gold)}.s-pos.p2{color:#aaa}.s-pos.p3{color:#b07040}
+.s-flag{width:24px;font-size:16px}
+.s-name{font-family:var(--fu);font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.s-team{font-family:var(--fm);font-size:10px;color:var(--muted);margin-top:1px}
+.s-bar-c{width:72px}
+.s-bar-bg{height:3px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden}
+.s-bar{height:100%;background:var(--acc);border-radius:2px;transition:width 1s ease}
+.s-pts{font-family:var(--fm);font-size:12px;font-weight:600;text-align:right;color:var(--text);width:34px}
+.race-box{background:var(--bg1);border:1px solid var(--brd);overflow:hidden}
+.race-header{background:var(--bg2);padding:18px 20px;border-bottom:1px solid var(--brd)}
+.race-gp{font-family:var(--fd);font-size:28px;letter-spacing:1px;line-height:1;margin-top:7px}
+.race-circuit{font-family:var(--fm);font-size:10px;color:var(--muted);letter-spacing:1px;margin-top:6px}
+.cd-grid{padding:16px 20px;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;border-bottom:1px solid var(--brd)}
+.cd-box{background:var(--bg);border:1px solid var(--brd);padding:12px 6px;text-align:center}
+.cd-n{font-family:var(--fm);font-size:24px;font-weight:600;color:var(--acc);display:block;line-height:1}
+.cd-l{font-family:var(--fu);font-size:8px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);display:block;margin-top:2px}
+.sess-list{list-style:none;padding:0 20px 14px}
+.sess-item{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--brd);cursor:pointer;transition:padding .15s}
+.sess-item:last-child{border:none}
+.sess-item:hover{padding-left:6px}
+.sess-name{font-family:var(--fu);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--dim)}
+.sess-time{font-family:var(--fm);font-size:11px;color:var(--text)}
+.sess-live{font-family:var(--fm);font-size:10px;color:var(--acc);animation:blink 1.2s infinite}
+
+/* ═══════════════════════════════════════════
+   NEWSLETTER
+═══════════════════════════════════════════ */
+.nl-section{background:var(--bg1);border-top:1px solid var(--brd);border-bottom:1px solid var(--brd);padding:60px 28px;margin:48px 0;position:relative;overflow:hidden}
+.nl-section::before{content:'PITLANE';position:absolute;right:-20px;top:50%;transform:translateY(-50%);font-family:var(--fd);font-size:200px;letter-spacing:8px;color:rgba(255,255,255,.012);pointer-events:none}
+.nl-section::after{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:var(--acc)}
+.nl-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:40px;position:relative;z-index:1;flex-wrap:wrap}
+.nl-eye{font-family:var(--fm);font-size:10px;color:var(--acc);letter-spacing:3px;text-transform:uppercase;margin-bottom:8px}
+.nl-title{font-family:var(--fd);font-size:48px;letter-spacing:2px;line-height:.95;margin-bottom:8px}
+.nl-desc{font-size:13px;font-weight:300;color:var(--dim);max-width:360px;line-height:1.65}
+.nl-form{display:flex;flex-shrink:0}
+.nl-input{background:var(--bg);border:1px solid var(--brdb);border-right:none;color:var(--text);padding:13px 20px;font-family:var(--fb);font-size:13px;font-weight:300;width:260px;outline:none;transition:border-color .2s}
+.nl-input::placeholder{color:var(--muted)}
+.nl-input:focus{border-color:var(--acc)}
+.nl-btn{font-family:var(--fu);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:var(--acc);color:#fff;border:none;padding:13px 28px;cursor:pointer;transition:background .2s;white-space:nowrap;clip-path:polygon(0 0,100% 0,91% 100%,0 100%);padding-right:34px}
+.nl-btn:hover{background:#ff1840}
+.nl-note{font-family:var(--fm);font-size:9px;color:var(--muted);margin-top:8px}
+
+/* ═══════════════════════════════════════════
+   PLANS PAGE
+═══════════════════════════════════════════ */
+.plans-hero{padding:80px 28px;text-align:center;position:relative;overflow:hidden;background:var(--bg1);border-bottom:1px solid var(--brd)}
+.plans-hero::before{content:'GRID';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--fd);font-size:280px;color:rgba(255,255,255,.012);pointer-events:none;letter-spacing:20px}
+.plans-title{font-family:var(--fd);font-size:68px;letter-spacing:4px;line-height:.95;margin-bottom:14px;position:relative}
+.plans-sub{font-size:15px;font-weight:300;color:var(--dim);max-width:540px;margin:0 auto;line-height:1.65;position:relative}
+.plans-tabs{display:flex;justify-content:center;gap:3px;margin-top:32px;position:relative}
+.plan-tab{font-family:var(--fu);font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:10px 28px;border:1px solid var(--brdb);background:transparent;color:var(--dim);cursor:pointer;transition:all .2s}
+.plan-tab.active{background:var(--acc);border-color:var(--acc);color:#fff}
+
+.plans-grid{max-width:1300px;margin:48px auto;padding:0 28px;display:grid;grid-template-columns:repeat(2,1fr);gap:3px}
+.plans-grid.four-col{grid-template-columns:repeat(4,1fr)}
+.plan-card{background:var(--bg1);border:1px solid var(--brd);overflow:hidden;transition:border-color .2s;display:flex;flex-direction:column}
+.plan-card:hover{border-color:var(--brdb)}
+.plan-card.best{border-color:var(--acc);position:relative}
+.plan-best-tag{background:var(--acc);font-family:var(--fu);font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#fff;padding:5px 16px;text-align:center}
+.plan-top{padding:28px 24px;border-bottom:1px solid var(--brd)}
+.plan-tier{font-family:var(--fu);font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--dim);margin-bottom:8px}
+.plan-name{font-family:var(--fd);font-size:30px;letter-spacing:2px;margin-bottom:6px}
+.plan-price{font-family:var(--fd);font-size:46px;letter-spacing:1px;color:var(--acc);line-height:1}
+.plan-price small{font-family:var(--fu);font-size:13px;color:var(--dim);font-weight:400}
+.plan-period{font-family:var(--fm);font-size:9px;color:var(--muted);margin-top:4px}
+.plan-body{padding:24px;flex:1}
+.plan-feat{display:flex;align-items:flex-start;gap:10px;margin-bottom:11px;font-size:13px;font-weight:300;color:var(--dim)}
+.plan-feat::before{content:'✓';color:var(--green);font-weight:700;flex-shrink:0;margin-top:1px}
+.plan-feat.no{color:var(--muted)}.plan-feat.no::before{content:'✗';color:var(--muted)}
+.plan-feat strong{color:var(--text);font-weight:500}
+.plan-cta{padding:0 24px 24px}
+.plan-note{font-family:var(--fm);font-size:10px;color:var(--muted);text-align:center;margin-top:10px}
+
+/* compare */
+.compare-wrap{max-width:960px;margin:0 auto 60px;padding:0 28px}
+.compare-title{font-family:var(--fd);font-size:28px;letter-spacing:3px;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--brd)}
+.cmp-table{width:100%;border-collapse:collapse}
+.cmp-table th{font-family:var(--fu);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:10px 14px;border-bottom:2px solid var(--brd);text-align:left}
+.cmp-table th:first-child{width:40%}
+.cmp-table td{padding:10px 14px;border-bottom:1px solid var(--brd);font-size:12px;color:var(--dim)}
+.cmp-table tr:hover td{background:rgba(255,255,255,.018)}
+.cmp-ok{color:var(--green);font-size:15px}.cmp-no{color:var(--muted);font-size:15px}
+.cmp-val{font-family:var(--fm);font-size:11px;color:var(--text)}
+
+/* ═══════════════════════════════════════════
+   PILOT PROFILE PAGE
+═══════════════════════════════════════════ */
+.profile-banner{height:320px;overflow:hidden;position:relative}
+.profile-banner img{width:100%;height:100%;object-fit:cover;filter:saturate(.35) brightness(.32)}
+.profile-banner::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(3,3,10,1) 0%,rgba(3,3,10,.7) 40%,rgba(3,3,10,.15) 100%)}
+.profile-main{max-width:1200px;margin:-90px auto 0;padding:0 28px;position:relative;z-index:2}
+.profile-card{background:var(--bg1);border:1px solid var(--brd);border-top:3px solid var(--acc);overflow:hidden}
+.profile-top{display:grid;grid-template-columns:1fr 300px;gap:0}
+.profile-left{padding:32px 34px;border-right:1px solid var(--brd)}
+.profile-id{display:flex;align-items:flex-start;gap:22px;margin-bottom:26px}
+.profile-av{width:96px;height:96px;border-radius:50%;overflow:hidden;flex-shrink:0;border:3px solid var(--acc);background:var(--bg2)}
+.profile-av img{width:100%;height:100%;object-fit:cover}
+.profile-av-pl{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:32px;color:var(--acc)}
+.profile-name{font-family:var(--fd);font-size:44px;letter-spacing:2px;line-height:.95;margin-bottom:8px}
+.profile-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.profile-verified{display:inline-flex;align-items:center;gap:5px;font-family:var(--fm);font-size:9px;color:var(--green);background:rgba(0,187,85,.1);border:1px solid rgba(0,187,85,.2);padding:3px 9px}
+.profile-bio{font-size:13px;font-weight:300;color:var(--dim);line-height:1.7;max-width:560px;margin-bottom:24px}
+.profile-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-bottom:24px}
+.p-stat{background:var(--bg2);padding:16px 14px;text-align:center;border:1px solid var(--brd)}
+.p-stat-n{font-family:var(--fd);font-size:32px;color:var(--acc);display:block;line-height:1}
+.p-stat-l{font-family:var(--fm);font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;display:block;margin-top:3px}
+.profile-cats-list{display:flex;flex-direction:column;gap:2px}
+.profile-cat-item{display:flex;align-items:center;justify-content:space-between;background:var(--bg2);padding:10px 14px;border:1px solid var(--brd);font-family:var(--fu);font-size:13px;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+/* Sponsor side */
+.profile-right{padding:28px 26px}
+.sponsor-title{font-family:var(--fd);font-size:20px;letter-spacing:2px;margin-bottom:6px}
+.sponsor-sub{font-size:12px;font-weight:300;color:var(--dim);margin-bottom:20px;line-height:1.55}
+.sponsor-cotas{display:flex;flex-direction:column;gap:2px;margin-bottom:20px}
+.cota{background:var(--bg2);border:1px solid var(--brd);padding:14px 16px;cursor:pointer;transition:border-color .2s}
+.cota:hover{border-color:var(--acc)}
+.cota-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.cota-name{font-family:var(--fu);font-size:14px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.cota-price{font-family:var(--fd);font-size:20px;color:var(--gold)}
+.cota-desc{font-size:11px;font-weight:300;color:var(--dim)}
+.sponsor-form{background:var(--bg2);border:1px solid var(--brdb);padding:20px}
+.sponsor-form-title{font-family:var(--fu);font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;color:var(--text)}
+.f-input{width:100%;background:var(--bg);border:1px solid var(--brdb);color:var(--text);padding:10px 14px;font-family:var(--fb);font-size:13px;outline:none;transition:border-color .2s;margin-bottom:10px;display:block}
+.f-input:focus{border-color:var(--acc)}
+.f-input::placeholder{color:var(--muted)}
+.f-label{font-family:var(--fu);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px}
+/* Media kit */
+.profile-mediaki{background:var(--bg2);border:1px solid var(--brd);padding:20px 24px;margin-top:3px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.mk-title{font-family:var(--fu);font-size:14px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.mk-desc{font-size:12px;font-weight:300;color:var(--dim);margin-top:3px}
+/* Profile articles */
+.profile-articles{max-width:1200px;margin:3px auto 0;padding:0 28px}
+.profile-art-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
+
+/* ═══════════════════════════════════════════
+   DASHBOARD LAYOUTS
+═══════════════════════════════════════════ */
+.dash-layout{display:grid;grid-template-columns:240px 1fr;gap:3px;min-height:calc(100vh - 62px - 32px)}
+.dash-sidebar{background:var(--bg1);border-right:1px solid var(--brd);padding:24px 0}
+.dash-logo-area{padding:0 20px 20px;border-bottom:1px solid var(--brd);margin-bottom:12px}
+.dash-logo-area .dlt{font-family:var(--fu);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.dash-nav a{display:flex;align-items:center;gap:10px;padding:11px 20px;font-family:var(--fu);font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--dim);cursor:pointer;transition:all .2s;text-decoration:none;border-left:2px solid transparent}
+.dash-nav a:hover{color:var(--text);background:rgba(255,255,255,.03)}
+.dash-nav a.active{color:var(--acc);border-left-color:var(--acc);background:var(--acc-d)}
+.dash-nav .nav-icon{width:16px;text-align:center;flex-shrink:0}
+.dash-section-lbl{font-family:var(--fm);font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;padding:14px 20px 6px}
+.dash-main{padding:28px 32px;overflow-y:auto}
+.dash-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;padding-bottom:18px;border-bottom:1px solid var(--brd)}
+.dash-title{font-family:var(--fd);font-size:28px;letter-spacing:3px}
+.dash-subtitle{font-family:var(--fm);font-size:10px;color:var(--dim);margin-top:3px;letter-spacing:.5px}
+/* KPI cards */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-bottom:28px}
+.kpi-card{background:var(--bg2);border:1px solid var(--brd);padding:20px;position:relative;overflow:hidden}
+.kpi-label{font-family:var(--fu);font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.kpi-value{font-family:var(--fd);font-size:36px;letter-spacing:1px;color:var(--text);line-height:1}
+.kpi-sub{font-family:var(--fm);font-size:10px;color:var(--dim);margin-top:5px}
+.kpi-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--cc,var(--acc))}
+.kpi-icon{position:absolute;top:16px;right:16px;font-size:22px;opacity:.15}
+/* Tables */
+.dt{width:100%;border-collapse:collapse;margin-bottom:3px}
+.dt th{font-family:var(--fu);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:10px 14px;border-bottom:2px solid var(--brd);text-align:left;background:var(--bg2)}
+.dt td{padding:10px 14px;border-bottom:1px solid var(--brd);font-size:13px;color:var(--dim)}
+.dt tr:hover td{background:rgba(255,255,255,.018)}
+.dt-actions{display:flex;gap:6px}
+/* Status */
+.status{font-family:var(--fu);font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 9px;display:inline-block}
+.s-pend{background:rgba(200,200,0,.15);color:#cccc00;border:1px solid rgba(200,200,0,.2)}
+.s-aprov{background:rgba(0,187,85,.15);color:var(--green);border:1px solid rgba(0,187,85,.2)}
+.s-rej{background:rgba(232,0,45,.15);color:var(--acc);border:1px solid var(--acc-d)}
+.s-pub{background:rgba(0,96,200,.15);color:var(--blue);border:1px solid rgba(0,96,200,.2)}
+/* Form */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-grid.full{grid-template-columns:1fr}
+.f-group{display:flex;flex-direction:column;gap:7px}
+.f-label{font-family:var(--fu);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.f-input{background:var(--bg);border:1px solid var(--brdb);color:var(--text);padding:11px 14px;font-family:var(--fb);font-size:13px;outline:none;transition:border-color .2s;width:100%}
+.f-input:focus{border-color:var(--acc)}
+.f-input::placeholder{color:var(--muted)}
+.f-textarea{min-height:120px;resize:vertical}
+.f-select{appearance:none;background:var(--bg);border:1px solid var(--brdb);color:var(--text);padding:11px 14px;font-family:var(--fb);font-size:13px;outline:none;width:100%;cursor:pointer}
+.f-err{font-family:var(--fm);font-size:10px;color:var(--acc);margin-top:4px;display:none}
+.f-err.show{display:block}
+/* Panel boxes */
+.panel-box{background:var(--bg1);border:1px solid var(--brd);margin-bottom:3px}
+.panel-box-header{padding:16px 20px;border-bottom:1px solid var(--brd);display:flex;align-items:center;justify-content:space-between}
+.panel-box-title{font-family:var(--fu);font-size:14px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.panel-box-body{padding:20px}
+/* Progress bar plan */
+.plan-usage{background:var(--bg2);border:1px solid var(--brd);padding:18px 20px}
+.pu-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.pu-label{font-family:var(--fu);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.pu-count{font-family:var(--fm);font-size:12px;color:var(--acc)}
+.pu-bar-bg{height:6px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden}
+.pu-bar{height:100%;background:var(--acc);border-radius:3px;transition:width .6s ease}
+.pu-bar.ok{background:var(--green)}.pu-bar.warn{background:var(--gold)}.pu-bar.full{background:var(--acc)}
+/* Upload area */
+.upload-area{border:2px dashed var(--brdb);padding:32px;text-align:center;cursor:pointer;transition:border-color .2s;position:relative}
+.upload-area:hover{border-color:var(--acc)}
+.upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer}
+.upload-icon{font-size:32px;margin-bottom:8px;display:block}
+.upload-text{font-family:var(--fu);font-size:12px;font-weight:600;letter-spacing:1px;color:var(--dim)}
+/* Alert */
+.alert{padding:12px 18px;border-left:3px solid var(--acc);background:var(--acc-d);font-size:13px;font-weight:300;margin-bottom:16px;line-height:1.55}
+.alert.ok{border-left-color:var(--green);background:rgba(0,187,85,.1)}
+.alert.info{border-left-color:var(--blue);background:rgba(0,96,200,.1)}
+.alert strong{font-weight:600}
+
+/* ═══════════════════════════════════════════
+   ARTICLE MODAL
+═══════════════════════════════════════════ */
+.art-overlay{position:fixed;inset:0;z-index:1400;background:rgba(3,3,10,.95);backdrop-filter:blur(12px);overflow-y:auto;opacity:0;pointer-events:none;transition:opacity .3s}
+.art-overlay.open{opacity:1;pointer-events:all}
+.art-modal{max-width:780px;margin:52px auto 80px;background:var(--bg1);border:1px solid var(--brd);overflow:hidden;transform:translateY(24px);transition:transform .32s}
+.art-overlay.open .art-modal{transform:none}
+.art-topbar{display:flex;justify-content:space-between;align-items:center;padding:14px 22px;border-bottom:1px solid var(--brd);background:var(--bg2)}
+.art-breadcrumb{font-family:var(--fm);font-size:10px;color:var(--muted);letter-spacing:1px}
+.art-source-note{font-family:var(--fu);font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:4px 12px;background:rgba(0,96,200,.15);color:var(--blue);border:1px solid rgba(0,96,200,.25)}
+.art-close{background:transparent;border:1px solid var(--brd);color:var(--dim);width:30px;height:30px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .2s}
+.art-close:hover{border-color:var(--acc);color:var(--acc)}
+.art-hero-img{width:100%;height:310px;object-fit:cover;display:block;filter:saturate(.55) brightness(.65)}
+.art-body{padding:34px}
+.art-cat-row{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.art-kicker{font-family:var(--fm);font-size:10px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase}
+.art-h1{font-family:var(--fd);font-size:44px;letter-spacing:1px;line-height:.97;margin-bottom:14px}
+.art-byline{display:flex;align-items:center;gap:12px;font-family:var(--fm);font-size:10px;color:var(--muted);padding-bottom:18px;border-bottom:1px solid var(--brd);margin-bottom:22px;flex-wrap:wrap}
+.art-av{width:28px;height:28px;border-radius:50%;background:var(--acc);display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:10px;font-weight:700;color:#fff;flex-shrink:0}
+.art-text p{font-size:14px;font-weight:300;color:rgba(240,240,245,.8);line-height:1.78;margin-bottom:16px}
+.art-text h3{font-family:var(--fu);font-size:19px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text);margin:26px 0 10px}
+.art-text blockquote{border-left:3px solid var(--acc);padding:14px 20px;margin:22px 0;background:var(--bg2)}
+.art-text blockquote p{font-size:15px;font-style:italic;color:var(--text);margin:0}
+.art-share{display:flex;align-items:center;gap:10px;padding-top:22px;border-top:1px solid var(--brd);margin-top:8px;flex-wrap:wrap}
+.share-lbl{font-family:var(--fu);font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.share-btn{font-family:var(--fu);font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:5px 12px;border:1px solid var(--brd);background:transparent;color:var(--dim);cursor:pointer;transition:all .2s}
+.share-btn:hover{border-color:var(--acc);color:var(--acc)}
+/* Nota legal patrocinado */
+.pago-notice{background:rgba(240,160,0,.08);border:1px solid rgba(240,160,0,.2);padding:10px 16px;font-family:var(--fm);font-size:10px;color:var(--gold);letter-spacing:.5px;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+
+/* ═══════════════════════════════════════════
+   SEARCH OVERLAY
+═══════════════════════════════════════════ */
+.search-overlay{position:fixed;inset:0;z-index:2000;background:rgba(3,3,10,.95);backdrop-filter:blur(20px);display:flex;align-items:flex-start;justify-content:center;padding-top:90px;opacity:0;pointer-events:none;transition:opacity .25s}
+.search-overlay.open{opacity:1;pointer-events:all}
+.search-box{width:100%;max-width:660px;background:var(--bg2);border:1px solid var(--brdb);border-top:2px solid var(--acc)}
+.search-top{display:flex;align-items:center;padding:0 18px;border-bottom:1px solid var(--brd)}
+.search-top svg{flex-shrink:0;color:var(--dim)}
+.search-field{flex:1;background:transparent;border:none;outline:none;font-family:var(--fb);font-size:18px;font-weight:300;color:var(--text);padding:18px 14px}
+.search-field::placeholder{color:var(--muted)}
+.search-esc{background:transparent;border:1px solid var(--brd);color:var(--dim);padding:3px 9px;font-family:var(--fm);font-size:10px;cursor:pointer;transition:all .2s}
+.search-esc:hover{border-color:var(--acc);color:var(--acc)}
+.search-hint{font-family:var(--fm);font-size:9px;color:var(--muted);padding:12px 18px;border-bottom:1px solid var(--brd);letter-spacing:.5px}
+.search-cats{display:flex;gap:7px;padding:14px 18px;flex-wrap:wrap;border-bottom:1px solid var(--brd)}
+.search-cat{font-family:var(--fu);font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:4px 11px;border:1px solid var(--brd);color:var(--dim);cursor:pointer;background:transparent;transition:all .2s}
+.search-cat:hover{border-color:var(--acc);color:var(--acc);background:var(--acc-d)}
+.search-results{max-height:380px;overflow-y:auto}
+.sr-item{display:flex;align-items:center;gap:13px;padding:13px 18px;cursor:pointer;border-bottom:1px solid var(--brd);transition:background .14s}
+.sr-item:hover{background:var(--bg3)}
+.sr-item:last-child{border:none}
+.sr-img{width:52px;height:38px;object-fit:cover;flex-shrink:0;filter:saturate(.45)}
+.sr-title{font-family:var(--fu);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;line-height:1.2}
+.sr-meta{font-family:var(--fm);font-size:10px;color:var(--muted);margin-top:3px;display:flex;align-items:center;gap:7px}
+.search-empty{padding:36px;text-align:center;font-size:13px;color:var(--muted)}
+
+/* ═══════════════════════════════════════════
+   SUBSCRIBE MODAL
+═══════════════════════════════════════════ */
+.sub-overlay,.video-overlay,.confirm-overlay{position:fixed;inset:0;z-index:1600;background:rgba(3,3,10,.88);backdrop-filter:blur(14px);display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .25s}
+.sub-overlay.open,.video-overlay.open,.confirm-overlay.open{opacity:1;pointer-events:all}
+.sub-box{width:100%;max-width:480px;background:var(--bg2);border:1px solid var(--brdb);border-top:3px solid var(--acc);padding:34px;position:relative;transform:translateY(18px);transition:transform .28s}
+.sub-overlay.open .sub-box,.confirm-overlay.open .sub-box{transform:none}
+.modal-close{position:absolute;top:14px;right:14px;background:transparent;border:1px solid var(--brd);color:var(--dim);width:28px;height:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .2s}
+.modal-close:hover{border-color:var(--acc);color:var(--acc)}
+.sub-prog-bar{height:2px;background:var(--brd);margin-bottom:26px;overflow:hidden}
+.sub-prog-fill{height:100%;background:var(--acc);transition:width .4s ease}
+.sub-step{display:none}.sub-step.active{display:block}
+.modal-title{font-family:var(--fd);font-size:32px;letter-spacing:2px;margin-bottom:6px}
+.modal-subtitle{font-size:13px;font-weight:300;color:var(--dim);margin-bottom:22px;line-height:1.6}
+.cats-check{display:flex;flex-wrap:wrap;gap:7px;margin-top:5px}
+.cat-chk{font-family:var(--fu);font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:5px 11px;border:1px solid var(--brd);color:var(--dim);cursor:pointer;transition:all .2s;user-select:none}
+.cat-chk.on{border-color:var(--acc);color:var(--acc);background:var(--acc-d)}
+.sub-success{text-align:center;padding:8px 0}
+.success-icon{width:56px;height:56px;border-radius:50%;background:rgba(0,187,85,.15);border:2px solid var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:22px}
+/* confirm modal */
+.confirm-box{width:100%;max-width:420px;background:var(--bg2);border:1px solid var(--brdb);border-top:3px solid var(--acc);padding:32px;position:relative;text-align:center;transform:translateY(18px);transition:transform .28s}
+.confirm-overlay.open .confirm-box{transform:none}
+
+/* ═══════════════════════════════════════════
+   LOGIN PAGE
+═══════════════════════════════════════════ */
+.auth-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:var(--bg)}
+.auth-box{width:100%;max-width:420px;background:var(--bg1);border:1px solid var(--brd);border-top:3px solid var(--acc);padding:36px}
+.auth-logo{display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:28px}
+.auth-title{font-family:var(--fd);font-size:28px;letter-spacing:2px;margin-bottom:6px;text-align:center}
+.auth-sub{font-size:13px;font-weight:300;color:var(--dim);text-align:center;margin-bottom:26px}
+.auth-tabs{display:flex;gap:3px;margin-bottom:24px}
+.auth-tab{flex:1;font-family:var(--fu);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:9px;border:1px solid var(--brdb);background:transparent;color:var(--dim);cursor:pointer;transition:all .2s}
+.auth-tab.active{background:var(--acc);border-color:var(--acc);color:#fff}
+.auth-link{font-family:var(--fu);font-size:11px;color:var(--acc);cursor:pointer;background:transparent;border:none;letter-spacing:.5px}
+.auth-footer{text-align:center;margin-top:18px;font-size:12px;color:var(--muted)}
+
+/* ═══════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════ */
+footer{background:var(--bg1);border-top:1px solid var(--brd);padding:52px 28px 24px}
+.f-inner{max-width:1400px;margin:0 auto}
+.f-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:44px;margin-bottom:44px}
+.f-logo{font-family:var(--fd);font-size:26px;letter-spacing:4px;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.f-dot{width:7px;height:7px;background:var(--acc);border-radius:50%}
+.f-desc{font-size:12px;font-weight:300;color:var(--muted);line-height:1.7;max-width:260px;margin-bottom:18px}
+.f-social{display:flex;gap:6px}
+.f-soc{width:32px;height:32px;border:1px solid var(--brd);background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:var(--fu);font-size:10px;font-weight:700;color:var(--dim);transition:all .2s}
+.f-soc:hover{border-color:var(--acc);color:var(--acc);background:var(--acc-d)}
+.f-col h4{font-family:var(--fu);font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+.f-col ul{list-style:none}.f-col li{margin-bottom:9px}
+.f-col a{font-size:12px;font-weight:300;color:var(--dim);text-decoration:none;cursor:pointer;transition:color .2s}
+.f-col a:hover{color:var(--acc)}
+.f-bottom{border-top:1px solid var(--brd);padding-top:18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.f-copy{font-family:var(--fm);font-size:9px;color:var(--muted);letter-spacing:1px}
+.f-legal{display:flex;gap:14px}
+.f-legal a{font-family:var(--fm);font-size:9px;color:var(--muted);cursor:pointer;transition:color .2s;text-decoration:none}
+.f-legal a:hover{color:var(--acc)}
+
+/* ═══════════════════════════════════════════
+   REVEAL
+═══════════════════════════════════════════ */
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease}
+.reveal.in{opacity:1;transform:none}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+@media(max-width:1100px){
+  .hero-grid{grid-template-columns:1fr;height:auto}
+  .hero-side{flex-direction:row;height:190px}
+  .hero-main{height:380px}
+  .card-grid{grid-template-columns:repeat(2,1fr)}
+  .ncard.feat{grid-column:span 2}
+  .two-col{grid-template-columns:1fr}
+  .plans-grid.four-col{grid-template-columns:repeat(2,1fr)}
+  .pilots-grid{grid-template-columns:repeat(2,1fr)}
+  .profile-top{grid-template-columns:1fr}
+  .profile-right{border-top:1px solid var(--brd)}
+  .f-grid{grid-template-columns:1fr 1fr;gap:28px}
+  .kpi-row{grid-template-columns:repeat(2,1fr)}
+  .dash-layout{grid-template-columns:1fr}
+  .dash-sidebar{display:none}
+}
+@media(max-width:720px){
+  .nav-links{display:none}
+  .hamburger{display:flex}
+  .hero-side{display:none}
+  .hero-main{height:340px}
+  .hero-title{font-size:36px}
+  .card-grid{grid-template-columns:1fr 1fr}
+  .plans-grid{grid-template-columns:1fr}
+  .plans-grid.four-col{grid-template-columns:1fr}
+  .nl-inner{flex-direction:column}
+  .nl-form{width:100%}
+  .nl-input{flex:1}
+  .f-grid{grid-template-columns:1fr}
+  .f-bottom{flex-direction:column;text-align:center}
+  .profile-stats{grid-template-columns:repeat(2,1fr)}
+  .profile-art-grid{grid-template-columns:1fr}
+  .kpi-row{grid-template-columns:1fr 1fr}
+  .form-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════
+     INFRA: PROGRESS, BACK-TO-TOP, TOASTS
+════════════════════════════════════════ -->
+<div id="pgbar"></div>
+<button id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 15l-6-6-6 6"/></svg>
+</button>
+<div id="toasts"></div>
+
+<!-- ════════════════════════════════════════
+     MOBILE MENU
+════════════════════════════════════════ -->
+<div class="mob-overlay" id="mobOverlay" onclick="closeMob()"></div>
+<div class="mob-menu" id="mobMenu">
+  <a onclick="showView('portal');closeMob()">🏠 Início</a>
+  <a onclick="showView('portal');filterCat('f1');closeMob()">🏎 Fórmula 1</a>
+  <a onclick="showView('portal');filterCat('motogp');closeMob()">🏍 MotoGP</a>
+  <a onclick="showView('portal');filterCat('wec');closeMob()">⏱ Endurance</a>
+  <a onclick="showView('pilots-list');closeMob()">👤 Pilotos</a>
+  <a onclick="showView('plans');closeMob()">📋 Planos</a>
+  <div style="margin-top:20px;display:flex;flex-direction:column;gap:8px">
+    <button class="btn btn-out btn-full" onclick="showView('login');closeMob()">Entrar</button>
+    <button class="btn btn-acc btn-full" onclick="openSubscribeModal();closeMob()">Assinar</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SEARCH OVERLAY
+════════════════════════════════════════ -->
+<div class="search-overlay" id="searchOverlay">
+  <div class="search-box">
+    <div class="search-top">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input class="search-field" id="searchField" placeholder="Buscar notícias, pilotos, equipes..." autocomplete="off">
+      <button class="search-esc" onclick="closeOverlay('searchOverlay')">ESC</button>
+    </div>
+    <div class="search-hint">Ctrl+K para abrir · Enter para buscar · Clique em um resultado</div>
+    <div class="search-cats">
+      <button class="search-cat" onclick="searchBy('Fórmula 1')">🏎 F1</button>
+      <button class="search-cat" onclick="searchBy('MotoGP')">🏍 MotoGP</button>
+      <button class="search-cat" onclick="searchBy('WEC')">⏱ WEC</button>
+      <button class="search-cat" onclick="searchBy('Sim Racing')">🎮 Sim Racing</button>
+      <button class="search-cat" onclick="searchBy('piloto')">👤 Pilotos</button>
+      <button class="search-cat" onclick="searchBy('equipe')">🏁 Equipes</button>
+    </div>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SUBSCRIBE MODAL
+════════════════════════════════════════ -->
+<div class="sub-overlay" id="subOverlay">
+  <div class="sub-box">
+    <button class="modal-close" onclick="closeOverlay('subOverlay')">✕</button>
+    <div class="sub-prog-bar"><div class="sub-prog-fill" id="subProg" style="width:33%"></div></div>
+    <div class="sub-step active" id="ss1">
+      <div class="modal-title">Entre no Grid</div>
+      <div class="modal-subtitle">+18.400 leitores recebem o briefing antes das 8h.</div>
+      <div class="f-group" style="margin-bottom:14px">
+        <label class="f-label">Seu e-mail</label>
+        <input class="f-input" id="subEmail" type="email" placeholder="seu@email.com">
+        <div class="f-err" id="subEmailErr">E-mail inválido</div>
+      </div>
+      <button class="btn btn-acc btn-full" onclick="subNext(1)">Continuar →</button>
+      <div style="text-align:center;margin-top:10px;font-family:var(--fm);font-size:9px;color:var(--muted)">Passo 1 de 2 · Sem spam</div>
+    </div>
+    <div class="sub-step" id="ss2">
+      <div class="modal-title">Suas Categorias</div>
+      <div class="modal-subtitle">O que você quer receber no briefing?</div>
+      <div class="f-group" style="margin-bottom:14px">
+        <label class="f-label">Nome (opcional)</label>
+        <input class="f-input" id="subName" type="text" placeholder="Como devemos te chamar?">
+      </div>
+      <div class="f-group" style="margin-bottom:20px">
+        <label class="f-label">Categorias</label>
+        <div class="cats-check">
+          <span class="cat-chk on" onclick="this.classList.toggle('on')">Fórmula 1</span>
+          <span class="cat-chk on" onclick="this.classList.toggle('on')">MotoGP</span>
+          <span class="cat-chk" onclick="this.classList.toggle('on')">WEC</span>
+          <span class="cat-chk" onclick="this.classList.toggle('on')">NASCAR</span>
+          <span class="cat-chk" onclick="this.classList.toggle('on')">Sim Racing</span>
+          <span class="cat-chk" onclick="this.classList.toggle('on')">WRC</span>
+        </div>
+      </div>
+      <button class="btn btn-acc btn-full" onclick="subNext(2)">Assinar Grátis ⚡</button>
+      <div style="text-align:center;margin-top:10px;font-family:var(--fm);font-size:9px;color:var(--muted)">Passo 2 de 2</div>
+    </div>
+    <div class="sub-step" id="ss3">
+      <div class="sub-success">
+        <div class="success-icon">✓</div>
+        <div class="modal-title">Você está no Grid!</div>
+        <div class="modal-subtitle">Primeiro briefing amanhã antes das 8h. Bem-vindo à comunidade PitLane.</div>
+        <button class="btn btn-acc btn-full" style="margin-top:18px" onclick="closeOverlay('subOverlay')">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     ARTICLE MODAL (notícias internas)
+════════════════════════════════════════ -->
+<div class="art-overlay" id="artOverlay">
+  <div class="art-modal">
+    <div class="art-topbar">
+      <span class="art-breadcrumb" id="artBreadcrumb">PITLANE NEWS</span>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="art-source-note hide" id="artSourceNote">CONTEÚDO PATROCINADO</span>
+        <button class="art-close" onclick="closeOverlay('artOverlay')">✕</button>
+      </div>
+    </div>
+    <img class="art-hero-img" id="artImg" src="" alt="">
+    <div class="art-body">
+      <div class="pago-notice hide" id="artPagoNotice">⭐ <strong>Conteúdo em parceria com</strong> <span id="artPagoPartner"></span> · Publicação patrocinada identificada conforme CONAR</div>
+      <div class="art-cat-row">
+        <span class="badge" id="artBadge">F1</span>
+        <span class="art-kicker" id="artKicker"></span>
+      </div>
+      <h1 class="art-h1" id="artTitle"></h1>
+      <div class="art-byline">
+        <div class="art-av" id="artAv">PL</div>
+        <div>
+          <div style="color:var(--text);font-weight:500" id="artAuthor"></div>
+          <div id="artDate"></div>
+        </div>
+        <div id="artVerifiedBadge"></div>
+      </div>
+      <div class="art-text" id="artText"></div>
+      <div class="art-share">
+        <span class="share-lbl">Compartilhar:</span>
+        <button class="share-btn" onclick="copyLink()">Copiar Link</button>
+        <button class="share-btn" onclick="toast('Abrindo WhatsApp...','info')">WhatsApp</button>
+        <button class="share-btn" onclick="toast('Abrindo Twitter/X...','info')">X (Twitter)</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     CONFIRM MODAL
+════════════════════════════════════════ -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <div class="modal-title" id="confirmTitle">Confirmar</div>
+    <div class="modal-subtitle" id="confirmMsg" style="margin-top:8px"></div>
+    <div style="display:flex;gap:8px;justify-content:center;margin-top:20px">
+      <button class="btn btn-out" onclick="closeOverlay('confirmOverlay')">Cancelar</button>
+      <button class="btn btn-danger" id="confirmBtn">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     NAVIGATION
+════════════════════════════════════════ -->
+<nav id="mainNav">
+  <div class="nav-inner">
+    <a class="logo" onclick="showView('portal')">
+      <div class="logo-badge"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg></div>
+      <div class="logo-text"><span class="ln">PitLane</span><span class="lt">News</span></div>
+    </a>
+    <ul class="nav-links" id="mainNavLinks">
+      <li><a class="active" onclick="showView('portal');setNavActive(this)">Início</a></li>
+      <li><a onclick="showView('portal');filterCat('f1');setNavActive(this)">F1</a></li>
+      <li><a onclick="showView('portal');filterCat('motogp');setNavActive(this)">MotoGP</a></li>
+      <li><a onclick="showView('portal');filterCat('wec');setNavActive(this)">Endurance</a></li>
+      <li><a onclick="showView('pilots-list');setNavActive(this)">Pilotos</a></li>
+      <li><a onclick="showView('teams-list');setNavActive(this)">Equipes</a></li>
+      <li><a onclick="showView('plans');setNavActive(this)">Planos</a></li>
+    </ul>
+    <div class="nav-right">
+      <span class="live-pill" onclick="openArticle(0)"><div class="live-dot"></div>Ao Vivo</span>
+      <button class="btn btn-ghost" onclick="openSearch()" title="Ctrl+K">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      </button>
+      <button class="btn btn-out btn-sm" onclick="showView('login')">Entrar</button>
+      <button class="btn btn-acc btn-sm" onclick="openSubscribeModal()">Assinar</button>
+      <button class="hamburger" id="hamburger" onclick="openMob()"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════════════
+     VIEW: PORTAL (HOME)
+════════════════════════════════════════ -->
+<div class="view active" id="view-portal">
+
+  <!-- Ticker -->
+  <div class="ticker">
+    <div class="ticker-lbl">⚡ AGORA</div>
+    <div class="ticker-scroll">
+      <div class="ticker-track">
+        <span class="t-item" onclick="openArticle(0)">Antonelli lidera F1 2026 com 72 pts — ANÁLISE PITLANE</span>
+        <span class="t-item" onclick="extLink('https://www.skysports.com/f1/news/12433/13529789/f1-2026-regulations-fia-confirm-commitment-to-making-tweaks-to-some-aspects-of-regulations-after-meeting')">FIA confirma ajustes nas regras 2026 após reunião de quinta ↗ Sky Sports</span>
+        <span class="t-item" onclick="openArticle(2)">Verstappen considera se aposentar da F1 ao final de 2026 — ESPN / Sky Sports</span>
+        <span class="t-item" onclick="extLink('https://www.espn.com/f1/story/_/id/48321626/when-next-f1-race-why-such-long-break-bahrain-saudi-arabia-miami-japanese-grand-prix-2026')">GP de Miami confirmado para 1-3 de maio ↗ ESPN</span>
+        <span class="t-item" onclick="openArticle(4)">Por que a Mercedes domina 2026 — análise PitLane</span>
+        <span class="t-item" onclick="extLink('https://www.gpfans.com/en/f1-standings/2026/')">Classificação atualizada F1 2026 ↗ GPFans</span>
+        <span class="t-item" onclick="openArticle(0)">Antonelli lidera F1 2026 com 72 pts — ANÁLISE PITLANE</span>
+        <span class="t-item" onclick="extLink('https://www.skysports.com/f1/news/12433/13529789/f1-2026-regulations-fia-confirm-commitment-to-making-tweaks-to-some-aspects-of-regulations-after-meeting')">FIA confirma ajustes nas regras 2026 após reunião de quinta ↗ Sky Sports</span>
+        <span class="t-item" onclick="openArticle(2)">Verstappen considera se aposentar da F1 ao final de 2026 — ESPN / Sky Sports</span>
+        <span class="t-item" onclick="extLink('https://www.espn.com/f1/story/_/id/48321626/when-next-f1-race-why-such-long-break-bahrain-saudi-arabia-miami-japanese-grand-prix-2026')">GP de Miami confirmado para 1-3 de maio ↗ ESPN</span>
+        <span class="t-item" onclick="openArticle(4)">Por que a Mercedes domina 2026 — análise PitLane</span>
+        <span class="t-item" onclick="extLink('https://www.gpfans.com/en/f1-standings/2026/')">Classificação atualizada F1 2026 ↗ GPFans</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CALLOUT: COMO FUNCIONA -->
+  <div class="system-callout">
+    <div class="callout-box">
+      <div class="callout-item">
+        <div class="callout-icon ext">🔗</div>
+        <div class="callout-text">
+          <strong>Notícias Externas</strong>
+          <p>Matérias de Motorsport.com, Autosport e RaceFans. Clique → vai direto ao site de origem. Não armazenamos nem reescrevemos.</p>
+        </div>
+      </div>
+      <div class="callout-item">
+        <div class="callout-icon int">✍</div>
+        <div class="callout-text">
+          <strong>Conteúdo PitLane</strong>
+          <p>Matérias produzidas pela nossa redação ou em parceria com pilotos/equipes. Abre aqui no portal.</p>
+        </div>
+      </div>
+      <div class="callout-item">
+        <div class="callout-icon pago">⭐</div>
+        <div class="callout-text">
+          <strong>Conteúdo Patrocinado</strong>
+          <p>Matérias criadas para pilotos e equipes clientes. Identificadas como parceria conforme CONAR e LGPD.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero-wrap">
+    <div class="hero-grid">
+      <div class="hero-main" onclick="openArticle(0)">
+        <img src="https://loremflickr.com/1200/600/formula1,mercedes?lock=42" alt="">
+        <div class="hero-content">
+          <div class="hero-type int">✍ CONTEÚDO PITLANE</div>
+          <span class="badge b-f1">F1 · TEMPORADA 2026</span>
+          <h1 class="hero-title">Antonelli Lidera com 72 Pts: O Mais Jovem a Comandar o Mundial Moderno de F1</h1>
+          <p class="hero-excerpt">Kimi Antonelli (Mercedes) comanda o campeonato após 3 GPs — Austrália, China e Japão — com duas vitórias e uma perseguição que redefine a nova era da F1.</p>
+          <div class="hero-meta"><span>Redação PitLane</span><span>10 Abr 2026</span><span>Fonte: formula1.com · GPFans · ESPN</span></div>
+        </div>
+      </div>
+      <div class="hero-side">
+        <div class="side-card" onclick="extLink('https://www.skysports.com/f1/news/12433/13529789/f1-2026-regulations-fia-confirm-commitment-to-making-tweaks-to-some-aspects-of-regulations-after-meeting')">
+          <img src="https://loremflickr.com/600/380/formula1,fia?lock=7" alt="">
+          <div class="side-content">
+            <div style="margin-bottom:5px"><div class="hero-type ext" style="display:inline-flex;font-size:8px;padding:2px 7px">🔗 SKY SPORTS F1 ↗</div></div>
+            <span class="badge b-f1">F1 · REGULAMENTOS</span>
+            <div class="side-title">FIA Confirma Ajustes nas Regras 2026 Após Acidente de Bearman em Suzuka</div>
+            <div class="side-meta">Clicando vai para Sky Sports F1 ↗</div>
+          </div>
+        </div>
+        <div class="side-card" onclick="extLink('https://www.espn.com/f1/story/_/id/48321626/when-next-f1-race-why-such-long-break-bahrain-saudi-arabia-miami-japanese-grand-prix-2026')">
+          <img src="https://loremflickr.com/600/380/miami,formula1?lock=15" alt="">
+          <div class="side-content">
+            <div style="margin-bottom:5px"><div class="hero-type ext" style="display:inline-flex;font-size:8px;padding:2px 7px">🔗 ESPN ↗</div></div>
+            <span class="badge b-f1">F1 · MIAMI GP</span>
+            <div class="side-title">Próxima Corrida: GP de Miami — 1 a 3 de Maio de 2026</div>
+            <div class="side-meta">Clicando vai para ESPN ↗</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CAT STRIP -->
+  <div class="cat-strip" id="catStrip">
+    <div class="cat-pill active" style="--cc:#e8002d" onclick="filterCat('all');catAct(this)"><span class="cat-ico">🏁</span><span class="cat-lbl">Todos</span><span class="cat-cnt">148 notícias</span></div>
+    <div class="cat-pill" style="--cc:#e8002d" onclick="filterCat('f1');catAct(this)"><span class="cat-ico">🏎</span><span class="cat-lbl">F1</span><span class="cat-cnt">52 notícias</span></div>
+    <div class="cat-pill" style="--cc:#0060c8" onclick="filterCat('motogp');catAct(this)"><span class="cat-ico">🏍</span><span class="cat-lbl">MotoGP</span><span class="cat-cnt">38 notícias</span></div>
+    <div class="cat-pill" style="--cc:#006e3a" onclick="filterCat('wec');catAct(this)"><span class="cat-ico">⏱</span><span class="cat-lbl">WEC</span><span class="cat-cnt">24 notícias</span></div>
+    <div class="cat-pill" style="--cc:#d48f00" onclick="filterCat('nascar');catAct(this)"><span class="cat-ico">🔁</span><span class="cat-lbl">NASCAR</span><span class="cat-cnt">18 notícias</span></div>
+    <div class="cat-pill" style="--cc:#6222ee" onclick="filterCat('sim');catAct(this)"><span class="cat-ico">🎮</span><span class="cat-lbl">Sim Racing</span><span class="cat-cnt">31 notícias</span></div>
+    <div class="cat-pill" style="--cc:#a04e00" onclick="filterCat('wrc');catAct(this)"><span class="cat-ico">🪨</span><span class="cat-lbl">WRC</span><span class="cat-cnt">12 notícias</span></div>
+  </div>
+
+  <!-- NEWS SECTION -->
+  <div class="section reveal" id="newsSection">
+    <div class="sec-head">
+      <div><span class="sec-title" id="newsSectionTitle">Últimas Notícias</span><span class="sec-sub">Externas → site de origem · Internas → abre aqui</span></div>
+      <div class="sec-right">
+        <div class="ftag-row" style="margin-bottom:0">
+          <button class="ftag active" onclick="filterType(this,'all')">Todos</button>
+          <div class="ftag-sep"></div>
+          <button class="ftag ext-filter" onclick="filterType(this,'ext')">🔗 Externas</button>
+          <button class="ftag int-filter" onclick="filterType(this,'int')">✍ PitLane</button>
+          <button class="ftag" style="border-color:rgba(240,160,0,.3);color:var(--gold)" onclick="filterType(this,'pago')">⭐ Patrocinado</button>
+        </div>
+      </div>
+    </div>
+    <div class="card-grid" id="cardGrid">
+
+      <!-- CARD INTERNO — Antonelli lidera temporada -->
+      <div class="ncard feat is-int" data-cat="f1" data-type="int" data-id="0" onclick="openArticle(0)">
+        <div class="ncard-thumb">
+          <img src="https://loremflickr.com/800/440/formula1,mercedes?lock=3" alt="">
+          <div class="ncard-ribbon"><span class="badge b-f1">F1 · 2026</span></div>
+        </div>
+        <div class="ncard-body">
+          <div class="ncard-type-row">
+            <span class="tag-int">✍ PitLane News</span>
+            <span style="font-family:var(--fm);font-size:9px;color:var(--muted)">Abre no portal</span>
+          </div>
+          <div class="ncard-title">Antonelli Lidera com 72 Pts — Mercedes Domina as 3 Primeiras Corridas de 2026</div>
+          <div class="ncard-excerpt">Kimi Antonelli venceu China e Japão e lidera o campeonato com 72 pontos. Russell é 2º com 63. Ferrari e McLaren buscam reduzir a diferença em Miami.</div>
+          <div class="ncard-footer">
+            <span class="ncard-meta">10 ABR · REDAÇÃO PITLANE · 5 MIN</span>
+            <button class="bm-btn" onclick="event.stopPropagation();bookmark(this,0)">🔖</button>
+          </div>
+        </div>
+        <div class="ncard-dest int">✍ Abre aqui no PitLane News</div>
+      </div>
+
+      <!-- CARD EXTERNO — Sky Sports: FIA regras 2026 (real, hoje) -->
+      <div class="ncard is-ext" data-cat="f1" data-type="ext" onclick="extLink('https://www.skysports.com/f1/news/12433/13529789/f1-2026-regulations-fia-confirm-commitment-to-making-tweaks-to-some-aspects-of-regulations-after-meeting')">
+        <div class="ncard-thumb">
+          <img src="https://loremflickr.com/400/260/formula1,fia,regulation?lock=9" alt="">
+          <div class="ncard-ribbon"><span class="badge b-f1">F1 · REGRAS</span></div>
+        </div>
+        <div class="ncard-body">
+          <div class="ncard-type-row">
+            <span class="tag-ext"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg> Sky Sports F1</span>
+          </div>
+          <div class="ncard-title">FIA Confirma Ajustes nas Regras de 2026 Após Reunião de Quinta-Feira</div>
+          <div class="ncard-excerpt">Mudanças no gerenciamento de energia vêm após acidente de Bearman em Suzuka. Próximas reuniões: 15, 16 e 20 de abril.</div>
+          <div class="ncard-footer">
+            <span class="ncard-meta">10 ABR · SKY SPORTS F1</span>
+            <span style="font-family:var(--fm);font-size:9px;color:var(--blue)">↗ sai do site</span>
+          </div>
+        </div>
+        <div class="ncard-dest ext">🔗 Abre Sky Sports F1 em nova aba</div>
+      </div>
+
+      <!-- CARD EXTERNO — ESPN: break entre races (real, hoje) -->
+      <div class="ncard is-ext" data-cat="f1" data-type="ext" onclick="extLink('https://www.espn.com/f1/story/_/id/48321626/when-next-f1-race-why-such-long-break-bahrain-saudi-arabia-miami-japanese-grand-prix-2026')">
+        <div class="ncard-thumb">
+          <img src="https://loremflickr.com/400/260/formula1,miami?lock=19" alt="">
+          <div class="ncard-ribbon"><span class="badge b-f1">F1 · MIAMI GP</span></div>
+        </div>
+        <div class="ncard-body">
+          <div class="ncard-type-row">
+            <span class="tag-ext"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg> ESPN</span>
+          </div>
+          <div class="ncard-title">Por Que a F1 Tem um Intervalo de 5 Semanas? Bahrein e Arábia Cancelados</div>
+          <div class="ncard-excerpt">GPs do Bahrein e Arábia Saudita foram cancelados por razões de segurança. Próxima corrida: Miami, 1-3 de maio.</div>
+          <div class="ncard-footer">
+            <span class="ncard-meta">10 ABR · ESPN</span>
+            <span style="font-family:var(--fm);font-size:9px;color:var(--blue)">↗ sai do site</span>
+          </div>
+        </div>
+        <div class="ncard-dest ext">🔗 Abre ESPN em nova aba</div>
+      </div>
+
+      <!-- CARD INTERNO — Verstappen cogita aposentar -->
+      <div class="ncard is-int" data-cat="f1" data-type="int" data-id="2" onclick="openArticle(2)">
+        <div class="ncard-thumb">
+          <img src="https://loremflickr.com/400/260/formula1,redbull?lock=33" alt="">
+          <div class="ncard-ribbon"><span class="badge b-f1">F1 · BREAKING</span></div>
+        </div>
+        <div class="ncard-body">
+          <div class="ncard-type-row">
+            <span class="tag-int">✍ PitLane News</span>
+            <span style="font-family:var(--fm);font-size:9px;color:var(--muted)">Baseado em ESPN / Sky Sports</span>
+          </div>
+          <div class="ncard-title">Verstappen Cogita Aposentar-se da F1 ao Final de 2026</div>
+          <div class="ncard-excerpt">Tetracampeão, insatisfeito com as regras de 2026 e em 9º no campeonato, avalia encerrar carreira no fim da temporada.</div>
+          <div class="ncard-footer">
+            <span class="ncard-meta">9 ABR · REDAÇÃO PITLANE · 3 MIN</span>
+            <button class="bm-btn" onclick="event.stopPropagation();bookmark(this,2)">🔖</button>
+          </div>
+        </div>
+        <div class="ncard-dest int">✍ Abre aqui no PitLane News</div>
+      </div>
+
+      <!-- CARD INTERNO — Análise Mercedes domina -->
+      <div class="ncard is-int" data-cat="f1" data-type="int" data-id="4" onclick="openArticle(4)">
+        <div class="ncard-thumb">
+          <img src="https://loremflickr.com/400/260/formula1,engine?lock=5" alt="">
+          <div class="ncard-ribbon"><span class="badge b-f1">F1 · ANÁLISE</span></div>
+        </div>
+        <div class="ncard-body">
+          <div class="ncard-type-row">
+            <span class="tag-int">✍ PitLane News</span>
+          </div>
+          <div class="ncard-title">Por Que a Mercedes Domina 2026 e o que Ferrari e McLaren Precisam Fazer</div>
+          <div class="ncard-excerpt">Com 135 pts vs 90 da Ferrari, a equipe alemã demonstra superioridade na gestão do sistema elétrico — o diferencial técnico da nova era.</div>
+          <div class="ncard-footer">
+            <span class="ncard-meta">8 ABR · REDAÇÃO PITLANE · 7 MIN</span>
+            <button class="bm-btn" onclick="event.stopPropagation();bookmark(this,4)">🔖</button>
+          </div>
+        </div>
+        <div class="ncard-dest int">✍ Abre aqui no PitLane News</div>
+      </div>
+
+      <!-- CARD EXTERNO — Sky Sports: O que equipes fazem no intervalo -->
+      <div class="ncard is-ext" data-cat="f1" data-type="ext" onclick="extLink('https://www.skysports.com/f1/news/12433/13527290/f1-2026-what-teams-and-drivers-are-doing-during-enforced-april-break-after-race-cancellations-ahead-of-miami-gp')">
+        <div class="ncard-thumb">
+          <img src="https://loremflickr.com/400/260/formula1,factory?lock=12" alt="">
+          <div class="ncard-ribbon"><span class="badge b-f1">F1 · PAUSA</span></div>
+        </div>
+        <div class="ncard-body">
+          <div class="ncard-type-row">
+            <span class="tag-ext"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg> Sky Sports F1</span>
+          </div>
+          <div class="ncard-title">O que Fazem Pilotos e Equipes Durante o Intervalo Forçado de Abril</div>
+          <div class="ncard-excerpt">Verstappen corre GT no Nurburgring. Williams trabalha em atualizações. FIA reúne equipes para discutir regras 2026.</div>
+          <div class="ncard-footer">
+            <span class="ncard-meta">3 ABR · SKY SPORTS F1</span>
+            <span style="font-family:var(--fm);font-size:9px;color:var(--blue)">↗ sai do site</span>
+          </div>
+        </div>
+        <div class="ncard-dest ext">🔗 Abre Sky Sports F1 em nova aba</div>
+      </div>
+
+      <!-- CARD PATROCINADO Rafael Moura -->
+      <div class="ncard is-pago" data-cat="f1" data-type="pago" data-id="5" onclick="openArticle(5)">
+        <div class="ncard-thumb">
+          <img src="https://loremflickr.com/400/260/formula1,driver?lock=33" alt="">
+          <div class="ncard-ribbon"><span class="badge b-pago">⭐ Patrocinado</span></div>
+        </div>
+        <div class="ncard-body">
+          <div class="ncard-type-row">
+            <span class="tag-pago">⭐ Parceria · Rafael Moura</span>
+          </div>
+          <div class="ncard-title">Rafael Moura Vence na F4 Brasil e Atrai Interesse de Equipes Europeias</div>
+          <div class="ncard-excerpt">Piloto paulista de 19 anos domina as últimas corridas e negocia com equipes da Fórmula Regional para 2027.</div>
+          <div class="ncard-footer">
+            <span class="ncard-meta">9 ABR · REDAÇÃO PITLANE · 4 MIN</span>
+            <button class="bm-btn" onclick="event.stopPropagation();bookmark(this,5)">🔖</button>
+          </div>
+        </div>
+        <div class="ncard-dest int">✍ Abre aqui no PitLane News</div>
+      </div>
+
+      <!-- CARD EXTERNO — GPFans: Verstappen retiro -->
+      <div class="ncard is-ext" data-cat="f1" data-type="ext" onclick="extLink('https://www.gpfans.com/en/f1-standings/2026/')">
+        <div class="ncard-thumb">
+          <img src="https://loremflickr.com/400/260/formula1,championship?lock=44" alt="">
+          <div class="ncard-ribbon"><span class="badge b-f1">F1 · STANDINGS</span></div>
+        </div>
+        <div class="ncard-body">
+          <div class="ncard-type-row">
+            <span class="tag-ext"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg> GPFans</span>
+          </div>
+          <div class="ncard-title">Classificação Oficial F1 2026 — Pilotos e Construtores Atualizada</div>
+          <div class="ncard-excerpt">Antonelli 72, Russell 63, Leclerc 49, Hamilton 41... Veja a tabela completa atualizada após o GP do Japão.</div>
+          <div class="ncard-footer">
+            <span class="ncard-meta">29 MAR · GPFANS</span>
+            <span style="font-family:var(--fm);font-size:9px;color:var(--blue)">↗ sai do site</span>
+          </div>
+        </div>
+        <div class="ncard-dest ext">🔗 Abre GPFans em nova aba</div>
+      </div>
+
+    </div><!-- /card-grid -->
+  </div>
+
+  <!-- STANDINGS + RACE -->
+  <div class="section reveal">
+    <div class="two-col">
+      <div>
+        <div class="sec-head"><span class="sec-title">Campeonato F1 2026</span><button class="sec-link btn-ghost btn-sm" onclick="toast('Abrindo classificação completa...','info')">COMPLETO →</button></div>
+        <div class="standings-box">
+          <div class="s-tabs">
+            <div class="s-tab active" onclick="switchStand(this,'drv')">Pilotos</div>
+            <div class="s-tab" onclick="switchStand(this,'cns')">Construtores</div>
+          </div>
+          <table class="s-table" id="standTable"></table>
+        </div>
+      </div>
+      <div>
+        <div class="sec-head"><span class="sec-title">Próxima Corrida</span><button class="sec-link btn-ghost btn-sm" onclick="toast('Abrindo calendário...','info')">CALENDÁRIO →</button></div>
+          <div class="race-box">
+          <div class="race-header">
+            <div style="font-size:28px">🇺🇸</div>
+            <div class="race-gp">GP de Miami 2026</div>
+            <div class="race-circuit">MIAMI INTERNATIONAL AUTODROME · RONDA 4 · SPRINT WEEKEND</div>
+          </div>
+          <div class="cd-grid">
+            <div class="cd-box"><span class="cd-n" id="cd-d">21</span><span class="cd-l">Dias</span></div>
+            <div class="cd-box"><span class="cd-n" id="cd-h">00</span><span class="cd-l">Horas</span></div>
+            <div class="cd-box"><span class="cd-n" id="cd-m">00</span><span class="cd-l">Min</span></div>
+            <div class="cd-box"><span class="cd-n" id="cd-s">00</span><span class="cd-l">Seg</span></div>
+          </div>
+          <ul class="sess-list">
+            <li class="sess-item" onclick="toast('FP1 — Sex 01/05 · 13:30 BRT','info')"><span class="sess-name">FP1</span><span class="sess-time">Sex · 13:30</span></li>
+            <li class="sess-item" onclick="toast('Sprint Quali — Sex 01/05 · 17:30 BRT','info')"><span class="sess-name">Classif. Sprint</span><span class="sess-time">Sex · 17:30</span></li>
+            <li class="sess-item" onclick="toast('Sprint Race — Sáb 02/05 · 13:00 BRT','info')"><span class="sess-name">Sprint</span><span class="sess-time">Sáb · 13:00</span></li>
+            <li class="sess-item" onclick="toast('Classificação — Sáb 02/05 · 17:00 BRT','info')"><span class="sess-name">Classificação</span><span class="sess-time">Sáb · 17:00</span></li>
+            <li class="sess-item"><span class="sess-name">Corrida</span><span class="sess-time">Dom 03/05 · 17:00</span></li>
+          </ul>
+          <div style="padding:8px 20px 14px;font-family:var(--fm);font-size:9px;color:var(--muted)">Fonte: formula1.com · GPFans · ESPN · horários em BRT</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PILOTS HIGHLIGHT -->
+  <div class="section reveal">
+    <div class="sec-head">
+      <span class="sec-title">Pilotos em Destaque</span>
+      <button class="sec-link btn-ghost btn-sm" onclick="showView('pilots-list')">VER TODOS →</button>
+    </div>
+    <div class="pilots-grid" id="pilotsHighlight"></div>
+  </div>
+
+  <!-- NEWSLETTER -->
+  <div class="nl-section">
+    <div class="nl-inner">
+      <div>
+        <div class="nl-eye">⚡ Briefing Diário</div>
+        <div class="nl-title">Fique à Frente<br>do Grid</div>
+        <p class="nl-desc">Resumo diário do automobilismo antes das 8h. Sem spam. Apenas o que importa.</p>
+      </div>
+      <div id="nlWrap">
+        <div class="nl-form">
+          <input class="nl-input" id="nlEmail" type="email" placeholder="seu@email.com" onkeydown="if(event.key==='Enter')nlSubmit()">
+          <button class="nl-btn" onclick="nlSubmit()">Assinar Grátis</button>
+        </div>
+        <div class="nl-note">+18.400 leitores · Sem spam · Cancele quando quiser</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="f-inner">
+      <div class="f-grid">
+        <div>
+          <div class="f-logo"><div class="f-dot"></div>PitLane News</div>
+          <p class="f-desc">Portal de referência em automobilismo no Brasil. Cobertura em tempo real + plataforma de visibilidade para pilotos e equipes.</p>
+          <div class="f-social">
+            <div class="f-soc" onclick="toast('Abrindo X/Twitter...','info')">X</div>
+            <div class="f-soc" onclick="toast('Abrindo Instagram...','info')">IG</div>
+            <div class="f-soc" onclick="toast('Abrindo YouTube...','info')">YT</div>
+            <div class="f-soc" onclick="toast('Abrindo TikTok...','info')">TK</div>
+          </div>
+        </div>
+        <div class="f-col">
+          <h4>Categorias</h4>
+          <ul>
+            <li><a onclick="filterCat('f1')">Fórmula 1</a></li>
+            <li><a onclick="filterCat('motogp')">MotoGP</a></li>
+            <li><a onclick="filterCat('wec')">WEC / Le Mans</a></li>
+            <li><a onclick="filterCat('nascar')">NASCAR</a></li>
+            <li><a onclick="filterCat('sim')">Sim Racing</a></li>
+            <li><a onclick="filterCat('wrc')">WRC</a></li>
+          </ul>
+        </div>
+        <div class="f-col">
+          <h4>Plataforma</h4>
+          <ul>
+            <li><a onclick="showView('pilots-list')">Pilotos</a></li>
+            <li><a onclick="showView('teams-list')">Equipes</a></li>
+            <li><a onclick="showView('plans')">Planos & Preços</a></li>
+            <li><a onclick="showView('login')">Entrar</a></li>
+            <li><a onclick="openSubscribeModal()">Newsletter</a></li>
+          </ul>
+        </div>
+        <div class="f-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a onclick="toast('Abrindo Política de Privacidade...','info')">Política de Privacidade</a></li>
+            <li><a onclick="toast('Abrindo Termos de Uso...','info')">Termos de Uso</a></li>
+            <li><a onclick="toast('Abrindo sobre Fontes...','info')">Fontes & Créditos</a></li>
+            <li><a onclick="toast('Abrindo CONAR...','info')">Publicidade</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="f-bottom">
+        <div class="f-copy">© 2026 PITLANE MEDIA · CNPJ 00.000.000/0001-00 · Todos os direitos reservados</div>
+        <div class="f-legal">
+          <a onclick="toast('Abrindo Privacidade...','info')">Privacidade</a>
+          <a onclick="toast('Abrindo Termos...','info')">Termos</a>
+          <a onclick="toast('Abrindo Fontes...','info')">Fontes</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div><!-- /view-portal -->
+
+<!-- ════════════════════════════════════════
+     VIEW: PILOTS LIST
+════════════════════════════════════════ -->
+<div class="view" id="view-pilots-list">
+  <div style="background:var(--bg1);border-bottom:1px solid var(--brd);padding:60px 28px;text-align:center;position:relative;overflow:hidden">
+    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--fd);font-size:220px;color:rgba(255,255,255,.012);pointer-events:none;white-space:nowrap">PILOTOS</div>
+    <div class="badge b-piloto" style="margin-bottom:14px">Plataforma Oficial</div>
+    <div style="font-family:var(--fd);font-size:62px;letter-spacing:4px;line-height:.95;margin-bottom:12px;position:relative">Pilotos PitLane</div>
+    <div style="font-size:15px;font-weight:300;color:var(--dim);max-width:520px;margin:0 auto;line-height:1.65;position:relative">Pilotos clientes com página profissional, matérias no Google e vitrine para patrocinadores.</div>
+    <button class="btn btn-acc" style="margin-top:24px;position:relative" onclick="showView('plans')">Quero ser um piloto PitLane →</button>
+  </div>
+  <div class="section">
+    <div class="sec-head"><span class="sec-title">Todos os Pilotos</span><span class="sec-sub" id="pilotsCount">4 pilotos ativos</span></div>
+    <div class="pilots-grid" id="pilotsListGrid"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     VIEW: TEAMS LIST
+════════════════════════════════════════ -->
+<div class="view" id="view-teams-list">
+  <div style="background:var(--bg1);border-bottom:1px solid var(--brd);padding:60px 28px;text-align:center;position:relative;overflow:hidden">
+    <div style="font-family:var(--fd);font-size:62px;letter-spacing:4px;line-height:.95;margin-bottom:12px">Equipes PitLane</div>
+    <div style="font-size:15px;font-weight:300;color:var(--dim);max-width:520px;margin:0 auto;line-height:1.65">Equipes com presença digital, landing page e até 10 matérias por mês.</div>
+    <button class="btn btn-acc" style="margin-top:24px" onclick="showView('plans')">Quero ser uma equipe parceira →</button>
+  </div>
+  <div class="section">
+    <div class="sec-head"><span class="sec-title">Equipes Parceiras</span></div>
+    <div class="pilots-grid" id="teamsListGrid"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     VIEW: PILOT PROFILE
+════════════════════════════════════════ -->
+<div class="view" id="view-pilot-profile">
+  <div class="profile-banner">
+    <img id="profileBanner" src="" alt="">
+  </div>
+  <div class="profile-main">
+    <div class="profile-card">
+      <div class="profile-top">
+        <div class="profile-left">
+          <div class="profile-id">
+            <div class="profile-av"><img id="profileAv" src="" alt=""><div class="profile-av-pl hide" id="profileAvPl"></div></div>
+            <div>
+              <div class="profile-name" id="profileName"></div>
+              <div class="profile-tags" id="profileTags"></div>
+              <div class="profile-verified" id="profileVerified">✓ Piloto Verificado PitLane</div>
+            </div>
+          </div>
+          <div class="profile-bio" id="profileBio"></div>
+          <div class="profile-stats" id="profileStats"></div>
+          <div>
+            <div style="font-family:var(--fu);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Categorias que compete</div>
+            <div class="profile-cats-list" id="profileCatsList"></div>
+          </div>
+          <div class="profile-mediaki" style="margin-top:16px" id="profileMediaKit">
+            <div><div class="mk-title">📄 Mídia Kit 2026</div><div class="mk-desc">Números, audiência e cotas de patrocínio</div></div>
+            <button class="btn btn-out btn-sm" onclick="toast('Baixando Mídia Kit PDF...','ok')">Baixar PDF</button>
+          </div>
+        </div>
+        <div class="profile-right">
+          <div class="sponsor-title">Seja Patrocinador</div>
+          <div class="sponsor-sub">Escolha a cota ideal e apareça nas corridas, nas redes e nas matérias do piloto.</div>
+          <div class="sponsor-cotas" id="sponsorCotas"></div>
+          <div class="sponsor-form">
+            <div class="sponsor-form-title">💬 Entre em Contato</div>
+            <input class="f-input" type="text" placeholder="Seu nome / empresa">
+            <input class="f-input" type="email" placeholder="E-mail para retorno">
+            <select class="f-input f-select" style="margin-bottom:10px">
+              <option value="">Cota de interesse...</option>
+              <option>Master</option><option>Ouro</option><option>Prata</option><option>Apoiador</option>
+            </select>
+            <button class="btn btn-acc btn-full" onclick="toast('Mensagem enviada! O piloto entrará em contato.','ok')">Enviar Proposta →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="profile-articles">
+    <div class="sec-head" style="margin-top:28px"><span class="sec-title">Matérias do Piloto</span></div>
+    <div class="profile-art-grid" id="profileArticles"></div>
+  </div>
+  <div style="max-width:1200px;margin:28px auto;padding:0 28px">
+    <button class="btn btn-out" onclick="showView('pilots-list')">← Voltar para pilotos</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     VIEW: PLANS
+════════════════════════════════════════ -->
+<div class="view" id="view-plans">
+  <div class="plans-hero">
+    <div class="plans-title">Apareça no Grid.<br>Feche Patrocínio.</div>
+    <div class="plans-sub">Planos mensais para pilotos, equipes e categorias. Matérias otimizadas para o Google + página profissional para atrair patrocinadores.</div>
+    <div class="plans-tabs">
+      <button class="plan-tab active" onclick="showPlanGroup(this,'piloto')">👤 Pilotos</button>
+      <button class="plan-tab" onclick="showPlanGroup(this,'equipe')">🏁 Equipes</button>
+      <button class="plan-tab" onclick="showPlanGroup(this,'categoria')">🏆 Categorias</button>
+    </div>
+  </div>
+
+  <!-- PILOTO PLANS -->
+  <div id="plans-piloto" class="plans-group">
+    <div class="plans-grid" style="grid-template-columns:repeat(2,1fr)">
+      <div class="plan-card">
+        <div class="plan-top">
+          <div class="plan-tier">Piloto · Starter</div>
+          <div class="plan-name">Básico</div>
+          <div class="plan-price">R$99<small>,90/mês</small></div>
+          <div class="plan-period">Faturamento mensal · Cancele quando quiser</div>
+        </div>
+        <div class="plan-body">
+          <div class="plan-feat"><strong>1 matéria/mês</strong> otimizada para Google</div>
+          <div class="plan-feat">Texto profissional pela redação PitLane</div>
+          <div class="plan-feat">Foto de capa inclusa</div>
+          <div class="plan-feat">URL amigável: /piloto/seu-nome</div>
+          <div class="plan-feat">Página de piloto básica</div>
+          <div class="plan-feat">Identificação "Conteúdo Patrocinado" (CONAR)</div>
+          <div class="plan-feat no">Mídia Kit PDF</div>
+          <div class="plan-feat no">LinkedIn do piloto completo</div>
+          <div class="plan-feat no">Cotas de patrocínio na página</div>
+          <div class="plan-feat no">Destaque na home</div>
+        </div>
+        <div class="plan-cta">
+          <button class="btn btn-out btn-full" onclick="showView('login');toast('Crie sua conta para assinar o plano Básico','info')">Começar agora</button>
+          <div class="plan-note">Ideal para pilotos iniciando presença digital</div>
+        </div>
+      </div>
+      <div class="plan-card best">
+        <div class="plan-best-tag">✦ MAIS COMPLETO</div>
+        <div class="plan-top">
+          <div class="plan-tier">Piloto · Pro</div>
+          <div class="plan-name">Intermediário</div>
+          <div class="plan-price">R$149<small>,90/mês</small></div>
+          <div class="plan-period">Faturamento mensal · Cancele quando quiser</div>
+        </div>
+        <div class="plan-body">
+          <div class="plan-feat"><strong>2 matérias/mês</strong> otimizadas para Google</div>
+          <div class="plan-feat">Texto profissional pela redação PitLane</div>
+          <div class="plan-feat">Fotos de capa inclusas</div>
+          <div class="plan-feat">URL amigável: /piloto/seu-nome</div>
+          <div class="plan-feat"><strong>Página completa de piloto</strong></div>
+          <div class="plan-feat"><strong>Mídia Kit PDF</strong> personalizável</div>
+          <div class="plan-feat"><strong>LinkedIn do piloto</strong> estruturado</div>
+          <div class="plan-feat"><strong>Cotas de patrocínio</strong> na página</div>
+          <div class="plan-feat"><strong>Formulário de contato</strong> para patrocinadores</div>
+          <div class="plan-feat">Destaque na home 1x por mês</div>
+        </div>
+        <div class="plan-cta">
+          <button class="btn btn-acc btn-full" onclick="showView('login');toast('Crie sua conta para assinar o plano Intermediário','ok')">Quero o Intermediário →</button>
+          <div class="plan-note">Ideal para pilotos que querem fechar patrocínio</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EQUIPE PLANS -->
+  <div id="plans-equipe" class="plans-group hide">
+    <div class="plans-grid" style="max-width:700px">
+      <div class="plan-card best" style="grid-column:1/-1">
+        <div class="plan-best-tag">✦ PLANO EQUIPE</div>
+        <div class="plan-top">
+          <div class="plan-tier">Equipe</div>
+          <div class="plan-name">Equipe Parceira</div>
+          <div class="plan-price">R$499<small>,90/mês</small></div>
+          <div class="plan-period">Faturamento mensal · Mínimo 3 meses</div>
+        </div>
+        <div class="plan-body" style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div class="plan-feat"><strong>10 matérias/mês</strong> otimizadas para Google</div>
+          <div class="plan-feat">Texto profissional pela redação PitLane</div>
+          <div class="plan-feat"><strong>Landing page da equipe</strong></div>
+          <div class="plan-feat">Perfis dos pilotos da equipe</div>
+          <div class="plan-feat">Mídia Kit da equipe em PDF</div>
+          <div class="plan-feat">Cotas de patrocínio para a equipe</div>
+          <div class="plan-feat">Destaque na home 4x por mês</div>
+          <div class="plan-feat">Dashboard exclusivo de gestão</div>
+          <div class="plan-feat">Relatório mensal de visitas</div>
+          <div class="plan-feat">Suporte prioritário por WhatsApp</div>
+        </div>
+        <div class="plan-cta">
+          <button class="btn btn-acc btn-full" onclick="showView('login');toast('Fale com um consultor para o plano equipe','ok')">Quero o Plano Equipe →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CATEGORIA PLANS -->
+  <div id="plans-categoria" class="plans-group hide">
+    <div class="plans-grid" style="max-width:700px">
+      <div class="plan-card best" style="grid-column:1/-1;border-color:var(--gold)">
+        <div class="plan-best-tag" style="background:var(--gold);color:#000">✦ PLANO CATEGORIA</div>
+        <div class="plan-top">
+          <div class="plan-tier">Categoria</div>
+          <div class="plan-name">Categoria Oficial</div>
+          <div class="plan-price" style="color:var(--gold)">R$999<small style="color:var(--dim)">,90/mês</small></div>
+          <div class="plan-period">Faturamento mensal · Mínimo 6 meses</div>
+        </div>
+        <div class="plan-body" style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div class="plan-feat"><strong>30 matérias/mês</strong> otimizadas para Google</div>
+          <div class="plan-feat">Equipe editorial dedicada</div>
+          <div class="plan-feat"><strong>Landing page da categoria</strong></div>
+          <div class="plan-feat">Perfis de todos os pilotos</div>
+          <div class="plan-feat">Cobertura de todas as etapas</div>
+          <div class="plan-feat">Calendário oficial na plataforma</div>
+          <div class="plan-feat">Classificação ao vivo integrada</div>
+          <div class="plan-feat">Destaque fixo na home</div>
+          <div class="plan-feat">Relatório quinzenal de performance</div>
+          <div class="plan-feat">Account manager dedicado</div>
+        </div>
+        <div class="plan-cta">
+          <button class="btn btn-acc btn-full" style="background:var(--gold);color:#000" onclick="toast('Solicite uma proposta personalizada via WhatsApp','info')">Solicitar Proposta Personalizada →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPARE TABLE -->
+  <div class="compare-wrap">
+    <div class="compare-title">Comparativo Completo</div>
+    <table class="cmp-table">
+      <thead>
+        <tr>
+          <th>Recurso</th>
+          <th>Piloto Básico<br><span style="color:var(--acc);font-family:var(--fd);font-size:14px">R$99,90</span></th>
+          <th>Piloto Pro<br><span style="color:var(--acc);font-family:var(--fd);font-size:14px">R$149,90</span></th>
+          <th>Equipe<br><span style="color:var(--acc);font-family:var(--fd);font-size:14px">R$499,90</span></th>
+          <th>Categoria<br><span style="color:var(--gold);font-family:var(--fd);font-size:14px">R$999,90</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Matérias/mês</td><td class="cmp-val">1</td><td class="cmp-val">2</td><td class="cmp-val">10</td><td class="cmp-val">30</td></tr>
+        <tr><td>Página no portal</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td></tr>
+        <tr><td>Otimização SEO</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td></tr>
+        <tr><td>Identificação CONAR</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td></tr>
+        <tr><td>Mídia Kit PDF</td><td class="cmp-no">✗</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td></tr>
+        <tr><td>Cotas de patrocínio</td><td class="cmp-no">✗</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td></tr>
+        <tr><td>Formulário para patrocinadores</td><td class="cmp-no">✗</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td></tr>
+        <tr><td>Destaque na home</td><td class="cmp-no">✗</td><td class="cmp-val">1×/mês</td><td class="cmp-val">4×/mês</td><td class="cmp-val">Fixo</td></tr>
+        <tr><td>Dashboard próprio</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td></tr>
+        <tr><td>Landing page dedicada</td><td class="cmp-no">✗</td><td class="cmp-no">✗</td><td class="cmp-ok">✓</td><td class="cmp-ok">✓</td></tr>
+        <tr><td>Account manager</td><td class="cmp-no">✗</td><td class="cmp-no">✗</td><td class="cmp-no">✗</td><td class="cmp-ok">✓</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div><!-- /view-plans -->
+
+<!-- ════════════════════════════════════════
+     VIEW: LOGIN / CADASTRO
+════════════════════════════════════════ -->
+<div class="view" id="view-login">
+  <div class="auth-page">
+    <div class="auth-box">
+      <div class="auth-logo">
+        <div class="logo-badge"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg></div>
+        <div class="logo-text"><span class="ln">PitLane</span><span class="lt">News</span></div>
+      </div>
+      <div class="auth-tabs">
+        <button class="auth-tab active" onclick="authTab(this,'login')">Entrar</button>
+        <button class="auth-tab" onclick="authTab(this,'register')">Cadastrar</button>
+      </div>
+      <!-- Login form -->
+      <div id="auth-login">
+        <div class="f-group" style="margin-bottom:14px">
+          <label class="f-label">E-mail</label>
+          <input class="f-input" type="email" placeholder="seu@email.com" id="loginEmail">
+        </div>
+        <div class="f-group" style="margin-bottom:20px">
+          <label class="f-label">Senha</label>
+          <input class="f-input" type="password" placeholder="••••••••" id="loginPass">
+        </div>
+        <button class="btn btn-acc btn-full" onclick="doLogin()">Entrar →</button>
+        <div class="auth-footer"><button class="auth-link" onclick="toast('E-mail de recuperação enviado!','ok')">Esqueci minha senha</button></div>
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--brd);text-align:center">
+          <div style="font-family:var(--fm);font-size:10px;color:var(--muted);margin-bottom:10px">DEMO — Clique para simular acesso:</div>
+          <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap">
+            <button class="btn btn-out btn-sm" onclick="loginAs('admin')">👑 Admin</button>
+            <button class="btn btn-out btn-sm" onclick="loginAs('piloto')">👤 Piloto</button>
+            <button class="btn btn-out btn-sm" onclick="loginAs('equipe')">🏁 Equipe</button>
+            <button class="btn btn-out btn-sm" onclick="loginAs('categoria')">🏆 Categoria</button>
+          </div>
+        </div>
+      </div>
+      <!-- Register form -->
+      <div id="auth-register" class="hide">
+        <div class="form-grid" style="margin-bottom:14px">
+          <div class="f-group"><label class="f-label">Nome</label><input class="f-input" type="text" placeholder="Seu nome completo"></div>
+          <div class="f-group"><label class="f-label">Tipo de conta</label>
+            <select class="f-input f-select">
+              <option>Piloto</option><option>Equipe</option><option>Categoria</option>
+            </select>
+          </div>
+        </div>
+        <div class="f-group" style="margin-bottom:14px"><label class="f-label">E-mail</label><input class="f-input" type="email" placeholder="seu@email.com"></div>
+        <div class="f-group" style="margin-bottom:20px"><label class="f-label">Senha</label><input class="f-input" type="password" placeholder="Mínimo 8 caracteres"></div>
+        <button class="btn btn-acc btn-full" onclick="toast('Conta criada! Verifique seu e-mail.','ok');showView('dash-piloto')">Criar conta →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     VIEW: DASHBOARD PILOTO
+════════════════════════════════════════ -->
+<div class="view" id="view-dash-piloto">
+  <div class="dash-layout">
+    <div class="dash-sidebar">
+      <div class="dash-logo-area">
+        <div style="font-family:var(--fd);font-size:18px;letter-spacing:3px">PitLane</div>
+        <div class="dlt">Portal do Piloto</div>
+      </div>
+      <nav class="dash-nav">
+        <a class="active" onclick="dashSection('dash-piloto-overview',this)"><span class="nav-icon">📊</span>Dashboard</a>
+        <a onclick="dashSection('dash-piloto-nova',this)"><span class="nav-icon">✍</span>Nova Matéria</a>
+        <a onclick="dashSection('dash-piloto-materias',this)"><span class="nav-icon">📰</span>Minhas Matérias</a>
+        <a onclick="dashSection('dash-piloto-perfil',this)"><span class="nav-icon">👤</span>Meu Perfil</a>
+        <a onclick="dashSection('dash-piloto-plano',this)"><span class="nav-icon">💳</span>Plano & Cobrança</a>
+        <div class="dash-section-lbl">CONTA</div>
+        <a onclick="showView('pilot-profile');loadProfile(0)"><span class="nav-icon">🔗</span>Ver minha página</a>
+        <a onclick="doLogout()"><span class="nav-icon">🚪</span>Sair</a>
+      </nav>
+    </div>
+    <div class="dash-main">
+      <!-- Overview -->
+      <div id="dash-piloto-overview">
+        <div class="dash-header">
+          <div><div class="dash-title">Olá, Rafael! 🏎</div><div class="dash-subtitle">Piloto verificado · Plano Intermediário · Renovação em 01/Mai/2026</div></div>
+          <button class="btn btn-acc btn-sm" onclick="dashSection('dash-piloto-nova',null)">+ Nova Matéria</button>
+        </div>
+        <div class="kpi-row">
+          <div class="kpi-card" style="--cc:var(--acc)"><div class="kpi-icon">📰</div><div class="kpi-label">Matérias publicadas</div><div class="kpi-value">7</div><div class="kpi-sub">+2 este mês</div></div>
+          <div class="kpi-card" style="--cc:var(--blue)"><div class="kpi-icon">👁</div><div class="kpi-label">Visualizações totais</div><div class="kpi-value">4.2K</div><div class="kpi-sub">+340 esta semana</div></div>
+          <div class="kpi-card" style="--cc:var(--green)"><div class="kpi-icon">💬</div><div class="kpi-label">Contatos de patrocinadores</div><div class="kpi-value">3</div><div class="kpi-sub">2 aguardando resposta</div></div>
+          <div class="kpi-card" style="--cc:var(--gold)"><div class="kpi-icon">💳</div><div class="kpi-label">Matérias disponíveis</div><div class="kpi-value">1/2</div><div class="kpi-sub">Renova em 22 dias</div></div>
+        </div>
+        <div class="panel-box">
+          <div class="panel-box-header"><div class="panel-box-title">Uso do Plano — Abril 2026</div><span class="badge b-piloto">Intermediário</span></div>
+          <div class="panel-box-body">
+            <div class="plan-usage">
+              <div class="pu-row"><span class="pu-label">Matérias usadas</span><span class="pu-count">1 de 2</span></div>
+              <div class="pu-bar-bg"><div class="pu-bar ok" style="width:50%"></div></div>
+              <div style="font-family:var(--fm);font-size:10px;color:var(--muted);margin-top:8px">Você ainda tem <strong style="color:var(--green)">1 matéria disponível</strong> este mês. Envia o conteúdo e a redação transforma em matéria profissional.</div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-box" style="margin-top:3px">
+          <div class="panel-box-header"><div class="panel-box-title">Últimas Matérias</div></div>
+          <div class="panel-box-body" style="padding:0">
+            <table class="dt">
+              <thead><tr><th>Título</th><th>Categoria</th><th>Status</th><th>Visualizações</th><th>Data</th></tr></thead>
+              <tbody>
+                <tr><td>Rafael Moura vence na F4 Brasil</td><td><span class="badge b-f1" style="font-size:8px">F1</span></td><td><span class="status s-pub">Publicada</span></td><td>1.340</td><td>09/04/26</td></tr>
+                <tr><td>Análise: preparação para etapa de Goiânia</td><td><span class="badge b-f1" style="font-size:8px">F1</span></td><td><span class="status s-aprov">Aprovada</span></td><td>—</td><td>05/04/26</td></tr>
+                <tr><td>Novo patrocinador: Empresa XYZ</td><td><span class="badge b-patrocinio" style="font-size:8px">Patrocinador</span></td><td><span class="status s-pend">Pendente</span></td><td>—</td><td>02/04/26</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Nova matéria -->
+      <div id="dash-piloto-nova" class="hide">
+        <div class="dash-header"><div><div class="dash-title">Nova Matéria</div><div class="dash-subtitle">Envie o conteúdo bruto — a redação transforma em matéria profissional</div></div></div>
+        <div class="alert info">📝 <strong>Como funciona:</strong> Você envia título, fotos e uma descrição do que aconteceu. A redação da PitLane reescreve de forma profissional, otimiza o SEO e publica. Você aprova antes de ir ao ar.</div>
+        <div class="panel-box">
+          <div class="panel-box-header"><div class="panel-box-title">Dados da Matéria</div></div>
+          <div class="panel-box-body">
+            <div class="form-grid" style="margin-bottom:14px">
+              <div class="f-group"><label class="f-label">Título da matéria *</label><input class="f-input" type="text" placeholder="Ex: Vitória na etapa de Interlagos"></div>
+              <div class="f-group"><label class="f-label">Categoria *</label>
+                <select class="f-input f-select">
+                  <option value="">Selecione...</option>
+                  <option>Resultado de corrida</option><option>Treino / preparação</option>
+                  <option>Novo patrocinador</option><option>Bastidores</option><option>Análise técnica</option>
+                </select>
+              </div>
+            </div>
+            <div class="f-group" style="margin-bottom:14px"><label class="f-label">Subtítulo (opcional)</label><input class="f-input" type="text" placeholder="Uma linha de apoio ao título"></div>
+            <div class="f-group" style="margin-bottom:14px">
+              <label class="f-label">Descrição / texto base *</label>
+              <textarea class="f-input f-textarea" placeholder="Conte o que aconteceu. Pode ser informal — a redação vai profissionalizar. Inclua: data, local, resultado, nome dos envolvidos e o que foi importante."></textarea>
+            </div>
+            <div class="f-group" style="margin-bottom:14px">
+              <label class="f-label">Imagens *</label>
+              <div class="upload-area"><span class="upload-icon">📷</span><div class="upload-text">Clique ou arraste as fotos aqui<br><small style="color:var(--muted)">JPG, PNG · Máx 5 fotos · 10MB cada</small></div><input type="file" accept="image/*" multiple></div>
+            </div>
+            <div class="f-group" style="margin-bottom:14px"><label class="f-label">Contexto adicional (opcional)</label><textarea class="f-input" style="min-height:80px;resize:vertical" placeholder="Informações extras: patrocinadores a mencionar, links relevantes, tom desejado..."></textarea></div>
+            <div style="display:flex;gap:10px;margin-top:6px">
+              <button class="btn btn-out" onclick="toast('Rascunho salvo!','ok')">Salvar rascunho</button>
+              <button class="btn btn-acc" onclick="toast('Matéria enviada para revisão! A redação entrará em contato em até 48h.','ok');dashSection('dash-piloto-materias',null)">Enviar para Revisão →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Minhas matérias -->
+      <div id="dash-piloto-materias" class="hide">
+        <div class="dash-header"><div><div class="dash-title">Minhas Matérias</div><div class="dash-subtitle">Histórico completo de publicações</div></div></div>
+        <div class="panel-box">
+          <div class="panel-box-body" style="padding:0">
+            <table class="dt">
+              <thead><tr><th>Título</th><th>Tipo</th><th>Status</th><th>Views</th><th>Data</th><th>Ações</th></tr></thead>
+              <tbody>
+                <tr><td>Rafael Moura vence na F4 Brasil</td><td><span class="badge b-piloto" style="font-size:8px">Corrida</span></td><td><span class="status s-pub">Publicada</span></td><td>1.340</td><td>09/04</td><td><div class="dt-actions"><button class="btn btn-out btn-sm" onclick="openArticle(5)">Ver</button></div></td></tr>
+                <tr><td>Análise: preparação para Goiânia</td><td><span class="badge b-piloto" style="font-size:8px">Análise</span></td><td><span class="status s-aprov">Aprovada</span></td><td>—</td><td>05/04</td><td><div class="dt-actions"><button class="btn btn-out btn-sm" onclick="toast('Abrindo preview...','info')">Preview</button></div></td></tr>
+                <tr><td>Novo patrocinador: Empresa XYZ</td><td><span class="badge b-pago" style="font-size:8px">Patrocinador</span></td><td><span class="status s-pend">Pendente</span></td><td>—</td><td>02/04</td><td><div class="dt-actions"><button class="btn btn-out btn-sm" onclick="toast('Aguardando edição da redação','info')">Status</button></div></td></tr>
+                <tr><td>Estreia na temporada 2026</td><td><span class="badge b-piloto" style="font-size:8px">Corrida</span></td><td><span class="status s-pub">Publicada</span></td><td>892</td><td>12/03</td><td><div class="dt-actions"><button class="btn btn-out btn-sm" onclick="toast('Abrindo matéria...','info')">Ver</button></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Perfil -->
+      <div id="dash-piloto-perfil" class="hide">
+        <div class="dash-header"><div><div class="dash-title">Meu Perfil</div><div class="dash-subtitle">Estas informações aparecem na sua página pública /piloto/rafael-moura</div></div><button class="btn btn-out btn-sm" onclick="showView('pilot-profile');loadProfile(0)">Ver página pública →</button></div>
+        <div class="panel-box">
+          <div class="panel-box-body">
+            <div class="form-grid" style="margin-bottom:14px">
+              <div class="f-group"><label class="f-label">Nome completo</label><input class="f-input" type="text" value="Rafael Moura"></div>
+              <div class="f-group"><label class="f-label">Número do carro</label><input class="f-input" type="text" value="33"></div>
+            </div>
+            <div class="f-group" style="margin-bottom:14px"><label class="f-label">Bio profissional</label><textarea class="f-input f-textarea" placeholder="Uma bio focada em conquistas e visão de futuro. Esta bio aparece para patrocinadores.">Piloto brasileiro de 19 anos nascido em São Paulo. Iniciou no kart aos 8 anos e hoje compete na F4 Brasil com foco em chegar à Fórmula Regional Europeia até 2027.</textarea></div>
+            <div class="form-grid" style="margin-bottom:14px">
+              <div class="f-group"><label class="f-label">Categorias que corre</label><input class="f-input" type="text" value="F4 Brasil, Stock Car Light"></div>
+              <div class="f-group"><label class="f-label">País / Estado</label><input class="f-input" type="text" value="Brasil — São Paulo"></div>
+            </div>
+            <div class="form-grid" style="margin-bottom:14px">
+              <div class="f-group"><label class="f-label">Vitórias</label><input class="f-input" type="number" value="3"></div>
+              <div class="f-group"><label class="f-label">Pódios</label><input class="f-input" type="number" value="8"></div>
+              <div class="f-group"><label class="f-label">Poles</label><input class="f-input" type="number" value="5"></div>
+              <div class="f-group"><label class="f-label">Temporadas</label><input class="f-input" type="number" value="4"></div>
+            </div>
+            <div class="form-grid" style="margin-bottom:14px">
+              <div class="f-group"><label class="f-label">Instagram</label><input class="f-input" type="text" placeholder="@seuperfil"></div>
+              <div class="f-group"><label class="f-label">YouTube</label><input class="f-input" type="text" placeholder="youtube.com/seucanal"></div>
+            </div>
+            <div class="f-group" style="margin-bottom:14px"><label class="f-label">Foto de perfil</label><div class="upload-area"><span class="upload-icon">📷</span><div class="upload-text">Foto profissional do piloto<br><small style="color:var(--muted)">JPG, PNG · Mínimo 400×400px</small></div><input type="file" accept="image/*"></div></div>
+            <button class="btn btn-acc" onclick="toast('Perfil atualizado com sucesso!','ok')">Salvar alterações →</button>
+          </div>
+        </div>
+
+        <!-- Cotas de patrocínio -->
+        <div class="panel-box" style="margin-top:3px">
+          <div class="panel-box-header"><div class="panel-box-title">Cotas de Patrocínio</div><button class="btn btn-out btn-sm" onclick="toast('Adicionando nova cota...','info')">+ Adicionar</button></div>
+          <div class="panel-box-body" style="padding:0">
+            <table class="dt">
+              <thead><tr><th>Cota</th><th>Valor</th><th>O que inclui</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Master</strong></td><td style="color:var(--gold);font-family:var(--fm)">R$ 2.500/mês</td><td style="font-size:12px">Logo no capacete, macacão, redes sociais e matérias</td><td><span class="status s-aprov">Disponível</span></td></tr>
+                <tr><td><strong>Ouro</strong></td><td style="color:var(--gold);font-family:var(--fm)">R$ 1.000/mês</td><td style="font-size:12px">Logo no macacão e menção em matérias</td><td><span class="status s-aprov">Disponível</span></td></tr>
+                <tr><td><strong>Prata</strong></td><td style="color:#aaa;font-family:var(--fm)">R$ 500/mês</td><td style="font-size:12px">Logo na asa do carro e redes sociais</td><td><span class="status s-pub">Ocupada</span></td></tr>
+                <tr><td><strong>Apoiador</strong></td><td style="color:var(--dim);font-family:var(--fm)">R$ 200/mês</td><td style="font-size:12px">Menção nas redes e site</td><td><span class="status s-aprov">Disponível</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Plano -->
+      <div id="dash-piloto-plano" class="hide">
+        <div class="dash-header"><div><div class="dash-title">Plano & Cobrança</div></div></div>
+        <div class="panel-box">
+          <div class="panel-box-header"><div class="panel-box-title">Plano Atual</div></div>
+          <div class="panel-box-body">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+              <div><div style="font-family:var(--fd);font-size:28px;letter-spacing:2px">Piloto Intermediário</div><div style="font-family:var(--fm);font-size:12px;color:var(--dim)">R$ 149,90/mês · Renova em 22 dias</div></div>
+              <button class="btn btn-out btn-sm" onclick="showView('plans')">Ver todos os planos</button>
+            </div>
+            <div class="plan-usage">
+              <div class="pu-row"><span class="pu-label">Matérias usadas em Abril</span><span class="pu-count">1 de 2</span></div>
+              <div class="pu-bar-bg"><div class="pu-bar ok" style="width:50%"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-box" style="margin-top:3px">
+          <div class="panel-box-header"><div class="panel-box-title">Histórico de Cobranças</div></div>
+          <div class="panel-box-body" style="padding:0">
+            <table class="dt">
+              <thead><tr><th>Data</th><th>Plano</th><th>Valor</th><th>Status</th><th>Recibo</th></tr></thead>
+              <tbody>
+                <tr><td>01/04/26</td><td>Piloto Intermediário</td><td style="font-family:var(--fm)">R$ 149,90</td><td><span class="status s-aprov">Pago</span></td><td><button class="btn btn-ghost btn-sm" onclick="toast('Baixando recibo...','ok')">PDF</button></td></tr>
+                <tr><td>01/03/26</td><td>Piloto Intermediário</td><td style="font-family:var(--fm)">R$ 149,90</td><td><span class="status s-aprov">Pago</span></td><td><button class="btn btn-ghost btn-sm" onclick="toast('Baixando recibo...','ok')">PDF</button></td></tr>
+                <tr><td>01/02/26</td><td>Piloto Básico</td><td style="font-family:var(--fm)">R$ 99,90</td><td><span class="status s-aprov">Pago</span></td><td><button class="btn btn-ghost btn-sm" onclick="toast('Baixando recibo...','ok')">PDF</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div style="margin-top:12px"><button class="btn btn-danger btn-sm" onclick="confirm2('Cancelar plano?','Você perderá o acesso ao dashboard e sua página ficará oculta.',()=>toast('Plano cancelado. Acesso até o fim do período.','ok'))">Cancelar assinatura</button></div>
+      </div>
+    </div>
+  </div>
+</div><!-- /view-dash-piloto -->
+
+<!-- ════════════════════════════════════════
+     VIEW: DASHBOARD ADMIN
+════════════════════════════════════════ -->
+<div class="view" id="view-dash-admin">
+  <div class="dash-layout">
+    <div class="dash-sidebar">
+      <div class="dash-logo-area">
+        <div style="font-family:var(--fd);font-size:18px;letter-spacing:3px;display:flex;align-items:center;gap:8px"><span style="color:var(--acc)">👑</span> PitLane</div>
+        <div class="dlt">Painel Admin Supremo</div>
+      </div>
+      <nav class="dash-nav">
+        <a class="active" onclick="dashSection('adm-overview',this)"><span class="nav-icon">📊</span>Visão Geral</a>
+        <a onclick="dashSection('adm-materias',this)"><span class="nav-icon">📰</span>Fila de Matérias</a>
+        <a onclick="dashSection('adm-users',this)"><span class="nav-icon">👥</span>Usuários</a>
+        <a onclick="dashSection('adm-news',this)"><span class="nav-icon">🔗</span>Feed RSS</a>
+        <div class="dash-section-lbl">SISTEMA</div>
+        <a onclick="dashSection('adm-financeiro',this)"><span class="nav-icon">💰</span>Financeiro</a>
+        <a onclick="dashSection('adm-config',this)"><span class="nav-icon">⚙</span>Configurações</a>
+        <a onclick="showView('portal')"><span class="nav-icon">🏠</span>Ver portal</a>
+        <a onclick="doLogout()"><span class="nav-icon">🚪</span>Sair</a>
+      </nav>
+    </div>
+    <div class="dash-main">
+      <!-- Overview Admin -->
+      <div id="adm-overview">
+        <div class="dash-header"><div><div class="dash-title">Painel Admin</div><div class="dash-subtitle">Controle total do sistema PitLane News</div></div></div>
+        <div class="kpi-row">
+          <div class="kpi-card" style="--cc:var(--acc)"><div class="kpi-icon">👥</div><div class="kpi-label">Usuários ativos</div><div class="kpi-value">47</div><div class="kpi-sub">+8 este mês</div></div>
+          <div class="kpi-card" style="--cc:var(--green)"><div class="kpi-icon">💰</div><div class="kpi-label">Receita mensal</div><div class="kpi-value">R$6.4K</div><div class="kpi-sub">+12% vs mês anterior</div></div>
+          <div class="kpi-card" style="--cc:var(--blue)"><div class="kpi-icon">📰</div><div class="kpi-label">Matérias publicadas</div><div class="kpi-value">134</div><div class="kpi-sub">+18 este mês</div></div>
+          <div class="kpi-card" style="--cc:var(--gold)"><div class="kpi-icon">⏳</div><div class="kpi-label">Pendentes de revisão</div><div class="kpi-value">5</div><div class="kpi-sub">Prazo: 48h</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px">
+          <div class="kpi-card" style="--cc:var(--purple)"><div class="kpi-icon">👤</div><div class="kpi-label">Pilotos</div><div class="kpi-value">31</div><div class="kpi-sub">Básico: 18 · Intermediário: 13</div></div>
+          <div class="kpi-card" style="--cc:var(--blue)"><div class="kpi-icon">🏁</div><div class="kpi-label">Equipes</div><div class="kpi-value">12</div><div class="kpi-sub">Todas no plano R$499,90</div></div>
+          <div class="kpi-card" style="--cc:var(--gold)"><div class="kpi-icon">🏆</div><div class="kpi-label">Categorias</div><div class="kpi-value">4</div><div class="kpi-sub">Todas no plano R$999,90</div></div>
+          <div class="kpi-card" style="--cc:var(--green)"><div class="kpi-icon">📡</div><div class="kpi-label">Notícias RSS hoje</div><div class="kpi-value">38</div><div class="kpi-sub">Motorsport · Autosport · RaceFans</div></div>
+        </div>
+      </div>
+
+      <!-- Fila de matérias -->
+      <div id="adm-materias" class="hide">
+        <div class="dash-header"><div><div class="dash-title">Fila de Matérias</div><div class="dash-subtitle">Revise, edite e publique com um clique</div></div></div>
+        <div class="alert info">📋 <strong>Fluxo:</strong> Piloto envia → aparece como "Pendente" → você edita o texto → aprova → piloto visualiza → publica com um clique.</div>
+        <div class="panel-box">
+          <div class="panel-box-body" style="padding:0">
+            <table class="dt">
+              <thead><tr><th>Usuário</th><th>Tipo</th><th>Título</th><th>Status</th><th>Enviado</th><th>Ações</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><strong>Rafael Moura</strong><br><span style="font-family:var(--fm);font-size:9px;color:var(--dim)">Piloto · Intermediário</span></td>
+                  <td><span class="badge b-piloto" style="font-size:8px">Piloto</span></td>
+                  <td>Novo patrocinador: Empresa XYZ anuncia parceria</td>
+                  <td><span class="status s-pend">Pendente</span></td>
+                  <td style="font-family:var(--fm);font-size:11px">02/04 · 14:32</td>
+                  <td><div class="dt-actions">
+                    <button class="btn btn-out btn-sm" onclick="toast('Abrindo editor completo...','info')">Editar</button>
+                    <button class="btn btn-green btn-sm" onclick="toast('✓ Matéria aprovada e publicada!','ok')">Publicar</button>
+                    <button class="btn btn-danger btn-sm" onclick="toast('Matéria rejeitada. Piloto será notificado.','err')">Rejeitar</button>
+                  </div></td>
+                </tr>
+                <tr>
+                  <td><strong>Equipe Turbo Racing</strong><br><span style="font-family:var(--fm);font-size:9px;color:var(--dim)">Equipe · R$499,90</span></td>
+                  <td><span class="badge b-equipe" style="font-size:8px">Equipe</span></td>
+                  <td>Turbo Racing anuncia alinhamento para Stock Car Light</td>
+                  <td><span class="status s-pend">Pendente</span></td>
+                  <td style="font-family:var(--fm);font-size:11px">03/04 · 09:10</td>
+                  <td><div class="dt-actions">
+                    <button class="btn btn-out btn-sm" onclick="toast('Abrindo editor...','info')">Editar</button>
+                    <button class="btn btn-green btn-sm" onclick="toast('✓ Publicada!','ok')">Publicar</button>
+                    <button class="btn btn-danger btn-sm" onclick="toast('Rejeitada.','err')">Rejeitar</button>
+                  </div></td>
+                </tr>
+                <tr>
+                  <td><strong>Ana Torres</strong><br><span style="font-family:var(--fm);font-size:9px;color:var(--dim)">Piloto · Básico</span></td>
+                  <td><span class="badge b-piloto" style="font-size:8px">Piloto</span></td>
+                  <td>Estreia no campeonato feminino da Fórmula 4</td>
+                  <td><span class="status s-aprov">Em edição</span></td>
+                  <td style="font-family:var(--fm);font-size:11px">01/04 · 16:45</td>
+                  <td><div class="dt-actions">
+                    <button class="btn btn-out btn-sm" onclick="toast('Abrindo editor...','info')">Continuar</button>
+                    <button class="btn btn-green btn-sm" onclick="toast('✓ Publicada!','ok')">Publicar</button>
+                  </div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <!-- Editor rápido -->
+        <div class="panel-box" style="margin-top:3px">
+          <div class="panel-box-header"><div class="panel-box-title">Editor Rápido de SEO</div><span style="font-family:var(--fm);font-size:10px;color:var(--dim)">Ajuste antes de publicar</span></div>
+          <div class="panel-box-body">
+            <div class="form-grid" style="margin-bottom:14px">
+              <div class="f-group"><label class="f-label">Título SEO (max 60 chars)</label><input class="f-input" type="text" placeholder="Nome do piloto + evento + resultado" maxlength="60"></div>
+              <div class="f-group"><label class="f-label">URL amigável</label><input class="f-input" type="text" placeholder="/f4-brasil/rafael-moura-vitoria-etapa-3-2026"></div>
+            </div>
+            <div class="f-group" style="margin-bottom:14px"><label class="f-label">Palavras-chave</label><input class="f-input" type="text" placeholder="f4 brasil, rafael moura, campeonato 2026, stock car light..."></div>
+            <div class="f-group" style="margin-bottom:14px"><label class="f-label">Meta description (max 160 chars)</label><input class="f-input" type="text" placeholder="Descrição para o Google..." maxlength="160"></div>
+            <div class="f-group" style="margin-bottom:14px"><label class="f-label">Texto da matéria (edite livremente)</label><textarea class="f-input f-textarea" style="min-height:200px">Rafael Moura mais uma vez demonstrou por que é um dos pilotos mais promissores da geração. Na terceira etapa da temporada 2026 da F4 Brasil...</textarea></div>
+            <div class="alert ok">⭐ Lembre-se: adicionar "Conteúdo em parceria com [nome do piloto]" no início da matéria conforme exigência do CONAR para conteúdo patrocinado.</div>
+            <button class="btn btn-acc" onclick="toast('✓ Matéria publicada! URL ativa no portal.','ok')">Publicar agora →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Usuários -->
+      <div id="adm-users" class="hide">
+        <div class="dash-header"><div><div class="dash-title">Usuários</div><div class="dash-subtitle">Gerencie pilotos, equipes e categorias</div></div><button class="btn btn-acc btn-sm" onclick="toast('Exportando lista em CSV...','ok')">Exportar CSV</button></div>
+        <div class="panel-box">
+          <div class="panel-box-body" style="padding:0">
+            <table class="dt">
+              <thead><tr><th>Nome</th><th>Tipo</th><th>Plano</th><th>Matérias este mês</th><th>Status</th><th>Ações</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Rafael Moura</strong><br><span style="font-family:var(--fm);font-size:9px;color:var(--dim)">rafael@email.com</span></td><td><span class="badge b-piloto" style="font-size:8px">Piloto</span></td><td style="font-family:var(--fm);font-size:11px;color:var(--acc)">R$149,90</td><td style="font-family:var(--fm)">1/2</td><td><span class="status s-aprov">Ativo</span></td><td><div class="dt-actions"><button class="btn btn-out btn-sm" onclick="toast('Abrindo perfil do usuário...','info')">Ver</button><button class="btn btn-danger btn-sm" onclick="confirm2('Bloquear usuário?','Rafael Moura perderá acesso imediatamente.',()=>toast('Usuário bloqueado.','err'))">Bloquear</button></div></td></tr>
+                <tr><td><strong>Equipe Turbo Racing</strong><br><span style="font-family:var(--fm);font-size:9px;color:var(--dim)">contato@turboracing.com</span></td><td><span class="badge b-equipe" style="font-size:8px">Equipe</span></td><td style="font-family:var(--fm);font-size:11px;color:var(--acc)">R$499,90</td><td style="font-family:var(--fm)">4/10</td><td><span class="status s-aprov">Ativo</span></td><td><div class="dt-actions"><button class="btn btn-out btn-sm" onclick="toast('Abrindo perfil...','info')">Ver</button></div></td></tr>
+                <tr><td><strong>Ana Torres</strong><br><span style="font-family:var(--fm);font-size:9px;color:var(--dim)">ana@email.com</span></td><td><span class="badge b-piloto" style="font-size:8px">Piloto</span></td><td style="font-family:var(--fm);font-size:11px;color:var(--acc)">R$99,90</td><td style="font-family:var(--fm)">1/1</td><td><span class="status s-aprov">Ativo</span></td><td><div class="dt-actions"><button class="btn btn-out btn-sm" onclick="toast('Abrindo perfil...','info')">Ver</button></div></td></tr>
+                <tr><td><strong>Stock Car Light Oficial</strong><br><span style="font-family:var(--fm);font-size:9px;color:var(--dim)">midia@stockcarlight.com</span></td><td><span class="badge b-cat" style="font-size:8px">Categoria</span></td><td style="font-family:var(--fm);font-size:11px;color:var(--gold)">R$999,90</td><td style="font-family:var(--fm)">8/30</td><td><span class="status s-aprov">Ativo</span></td><td><div class="dt-actions"><button class="btn btn-out btn-sm" onclick="toast('Abrindo perfil...','info')">Ver</button></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feed RSS -->
+      <div id="adm-news" class="hide">
+        <div class="dash-header"><div><div class="dash-title">Feed RSS</div><div class="dash-subtitle">Notícias externas puxadas automaticamente — nenhuma é reescrita</div></div><button class="btn btn-acc btn-sm" onclick="toast('Atualizando feeds agora...','ok')">Atualizar agora</button></div>
+        <div class="alert info">🔗 <strong>Lógica do sistema:</strong> As notícias externas são exibidas no portal com título, resumo da fonte e link para o site de origem. Ao clicar, o usuário vai direto para o portal externo em nova aba. Nenhum conteúdo é copiado ou reescrito. Apenas matérias internas (pilotos/equipes clientes) são publicadas e abertas dentro do PitLane.</div>
+        <div class="panel-box">
+          <div class="panel-box-header"><div class="panel-box-title">Fontes RSS Ativas</div><button class="btn btn-out btn-sm" onclick="toast('Adicionando nova fonte...','info')">+ Adicionar fonte</button></div>
+          <div class="panel-box-body" style="padding:0">
+            <table class="dt">
+              <thead><tr><th>Fonte</th><th>URL do Feed</th><th>Categoria</th><th>Última atualização</th><th>Status</th><th>Ações</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Motorsport.com</strong></td><td style="font-family:var(--fm);font-size:10px;color:var(--dim)">motorsport.com/rss/f1/news/</td><td><span class="badge b-f1" style="font-size:8px">F1</span></td><td style="font-family:var(--fm);font-size:11px">há 12 min</td><td><span class="status s-aprov">Ativo</span></td><td><button class="btn btn-danger btn-sm" onclick="toast('Feed desativado.','err')">Pausar</button></td></tr>
+                <tr><td><strong>Autosport</strong></td><td style="font-family:var(--fm);font-size:10px;color:var(--dim)">autosport.com/rss/motogp/</td><td><span class="badge b-motogp" style="font-size:8px">MotoGP</span></td><td style="font-family:var(--fm);font-size:11px">há 28 min</td><td><span class="status s-aprov">Ativo</span></td><td><button class="btn btn-danger btn-sm" onclick="toast('Feed desativado.','err')">Pausar</button></td></tr>
+                <tr><td><strong>RaceFans.net</strong></td><td style="font-family:var(--fm);font-size:10px;color:var(--dim)">racefans.net/feed/</td><td><span class="badge b-wec" style="font-size:8px">WEC</span></td><td style="font-family:var(--fm);font-size:11px">há 1h</td><td><span class="status s-aprov">Ativo</span></td><td><button class="btn btn-danger btn-sm" onclick="toast('Feed desativado.','err')">Pausar</button></td></tr>
+                <tr><td><strong>br.motorsport.com</strong></td><td style="font-family:var(--fm);font-size:10px;color:var(--dim)">br.motorsport.com/rss/all/</td><td><span class="badge b-piloto" style="font-size:8px">Brasil</span></td><td style="font-family:var(--fm);font-size:11px">há 45 min</td><td><span class="status s-aprov">Ativo</span></td><td><button class="btn btn-danger btn-sm" onclick="toast('Feed desativado.','err')">Pausar</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="alert" style="margin-top:12px">⚖️ <strong>Compliance legal:</strong> Nenhuma notícia externa é armazenada no banco de dados. O sistema exibe apenas título e link. Todo clique redireciona para o site original. Este modelo segue o padrão do Google News e está em conformidade com a Lei de Direitos Autorais brasileira.</div>
+      </div>
+
+      <!-- Financeiro -->
+      <div id="adm-financeiro" class="hide">
+        <div class="dash-header"><div><div class="dash-title">Financeiro</div></div></div>
+        <div class="kpi-row">
+          <div class="kpi-card" style="--cc:var(--green)"><div class="kpi-icon">💰</div><div class="kpi-label">MRR (receita mensal)</div><div class="kpi-value">R$6.4K</div><div class="kpi-sub">+12% mês a mês</div></div>
+          <div class="kpi-card" style="--cc:var(--acc)"><div class="kpi-icon">📈</div><div class="kpi-label">ARR (anualizado)</div><div class="kpi-value">R$76.8K</div><div class="kpi-sub">Projeção atual</div></div>
+          <div class="kpi-card" style="--cc:var(--blue)"><div class="kpi-icon">📉</div><div class="kpi-label">Churn este mês</div><div class="kpi-value">2</div><div class="kpi-sub">1 piloto, 1 equipe</div></div>
+          <div class="kpi-card" style="--cc:var(--gold)"><div class="kpi-icon">🆕</div><div class="kpi-label">Novos este mês</div><div class="kpi-value">8</div><div class="kpi-sub">Net: +6 clientes</div></div>
+        </div>
+        <div class="panel-box">
+          <div class="panel-box-header"><div class="panel-box-title">Breakdown por plano</div></div>
+          <div class="panel-box-body" style="padding:0">
+            <table class="dt">
+              <thead><tr><th>Plano</th><th>Clientes</th><th>Valor unit.</th><th>Receita</th></tr></thead>
+              <tbody>
+                <tr><td>Piloto Básico</td><td style="font-family:var(--fm)">18</td><td style="font-family:var(--fm)">R$99,90</td><td style="font-family:var(--fm);color:var(--green)">R$1.798,20</td></tr>
+                <tr><td>Piloto Intermediário</td><td style="font-family:var(--fm)">13</td><td style="font-family:var(--fm)">R$149,90</td><td style="font-family:var(--fm);color:var(--green)">R$1.948,70</td></tr>
+                <tr><td>Equipe Parceira</td><td style="font-family:var(--fm)">12</td><td style="font-family:var(--fm)">R$499,90</td><td style="font-family:var(--fm);color:var(--green)">R$5.998,80</td></tr>
+                <tr><td>Categoria Oficial</td><td style="font-family:var(--fm)">4</td><td style="font-family:var(--fm)">R$999,90</td><td style="font-family:var(--fm);color:var(--green)">R$3.999,60</td></tr>
+                <tr style="background:rgba(0,187,85,.05)"><td><strong>Total</strong></td><td style="font-family:var(--fm)"><strong>47</strong></td><td>—</td><td style="font-family:var(--fm);color:var(--green)"><strong>R$13.745,30</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Config -->
+      <div id="adm-config" class="hide">
+        <div class="dash-header"><div><div class="dash-title">Configurações</div></div></div>
+        <div class="panel-box">
+          <div class="panel-box-header"><div class="panel-box-title">Sistema & Integrações</div></div>
+          <div class="panel-box-body">
+            <div class="form-grid" style="margin-bottom:14px">
+              <div class="f-group"><label class="f-label">Gateway de pagamento</label><select class="f-input f-select"><option>Mercado Pago</option><option>Stripe</option><option>PagSeguro</option></select></div>
+              <div class="f-group"><label class="f-label">Intervalo de atualização RSS</label><select class="f-input f-select"><option>1 hora</option><option>30 minutos</option><option>2 horas</option></select></div>
+            </div>
+            <div class="f-group" style="margin-bottom:14px"><label class="f-label">E-mail de notificações (nova matéria enviada)</label><input class="f-input" type="email" value="admin@pitlanenews.com.br"></div>
+            <div class="f-group" style="margin-bottom:20px"><label class="f-label">Texto padrão de identificação (CONAR)</label><input class="f-input" type="text" value="Conteúdo em parceria com [NOME_PARCEIRO] · Publicação patrocinada"></div>
+            <button class="btn btn-acc" onclick="toast('Configurações salvas!','ok')">Salvar →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- /view-dash-admin -->
+
+<!-- ════════════════════════════════════════
+     VIEW: PILOT PROFILE (pública)
+════════════════════════════════════════ -->
+<div class="view" id="view-pilot-profile">
+  <div class="profile-banner"><img id="profileBanner" src="https://loremflickr.com/1400/320/formula1,racing?lock=88" alt=""></div>
+  <div class="profile-main">
+    <div class="profile-card">
+      <div class="profile-top">
+        <div class="profile-left">
+          <div class="profile-id">
+            <div class="profile-av"><img id="profileAv" src="https://loremflickr.com/200/200/person,sport?lock=14" alt=""></div>
+            <div>
+              <div class="profile-name" id="profileName">Rafael Moura</div>
+              <div class="profile-tags" id="profileTags"></div>
+              <div class="profile-verified">✓ Piloto verificado PitLane News</div>
+            </div>
+          </div>
+          <div class="profile-bio" id="profileBio">Piloto brasileiro de 19 anos nascido em São Paulo. Iniciou no kart aos 8 anos e hoje compete na F4 Brasil com foco em chegar à Fórmula Regional Europeia até 2027. Representante de marcas como Capacetes HJC e calçados esportivos Puma.</div>
+          <div class="profile-stats" id="profileStats">
+            <div class="p-stat"><span class="p-stat-n">3</span><span class="p-stat-l">Vitórias</span></div>
+            <div class="p-stat"><span class="p-stat-n">8</span><span class="p-stat-l">Pódios</span></div>
+            <div class="p-stat"><span class="p-stat-n">5</span><span class="p-stat-l">Poles</span></div>
+            <div class="p-stat"><span class="p-stat-n">4</span><span class="p-stat-l">Temporadas</span></div>
+          </div>
+          <div style="margin-bottom:16px">
+            <div class="f-label" style="margin-bottom:10px">Categorias que compete</div>
+            <div class="profile-cats-list">
+              <div class="profile-cat-item"><span>F4 Brasil</span><span class="badge b-f1" style="font-size:8px">2024 · 2025 · 2026</span></div>
+              <div class="profile-cat-item"><span>Stock Car Light</span><span class="badge b-f1" style="font-size:8px">2025 · 2026</span></div>
+            </div>
+          </div>
+          <div class="profile-mediaki">
+            <div><div class="mk-title">📄 Mídia Kit 2026</div><div class="mk-desc">Dados de audiência, alcance e cotas</div></div>
+            <button class="btn btn-out btn-sm" onclick="toast('Baixando Mídia Kit PDF...','ok')">Baixar PDF</button>
+          </div>
+        </div>
+        <div class="profile-right">
+          <div class="sponsor-title">Seja Patrocinador</div>
+          <div class="sponsor-sub">Apareça nas corridas, redes sociais e matérias do piloto. Escolha a cota ideal.</div>
+          <div class="sponsor-cotas">
+            <div class="cota" onclick="toast('Selecionando cota Master...','info')"><div class="cota-top"><span class="cota-name">👑 Master</span><span class="cota-price">R$2.500/mês</span></div><div class="cota-desc">Logo no capacete + macacão + redes + matérias</div></div>
+            <div class="cota" onclick="toast('Selecionando cota Ouro...','info')"><div class="cota-top"><span class="cota-name">🥇 Ouro</span><span class="cota-price">R$1.000/mês</span></div><div class="cota-desc">Logo no macacão + menção em matérias</div></div>
+            <div class="cota" onclick="toast('Selecionando cota Prata...','info')"><div class="cota-top"><span class="cota-name">🥈 Prata</span><span class="cota-price">R$500/mês</span></div><div class="cota-desc">Logo na asa do carro + redes sociais</div></div>
+            <div class="cota" onclick="toast('Selecionando cota Apoiador...','info')"><div class="cota-top"><span class="cota-name">🤝 Apoiador</span><span class="cota-price">R$200/mês</span></div><div class="cota-desc">Menção nas redes e site</div></div>
+          </div>
+          <div class="sponsor-form">
+            <div class="sponsor-form-title">💬 Enviar Proposta</div>
+            <input class="f-input" type="text" placeholder="Empresa / nome" style="margin-bottom:8px">
+            <input class="f-input" type="email" placeholder="Seu e-mail" style="margin-bottom:8px">
+            <select class="f-input f-select" style="margin-bottom:10px"><option>Selecione a cota...</option><option>Master R$2.500</option><option>Ouro R$1.000</option><option>Prata R$500</option><option>Apoiador R$200</option></select>
+            <button class="btn btn-acc btn-full" onclick="toast('✓ Proposta enviada! Rafael entrará em contato.','ok')">Enviar Proposta →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="profile-articles">
+    <div class="sec-head" style="margin-top:24px"><span class="sec-title">Matérias do Piloto</span></div>
+    <div class="profile-art-grid">
+      <div class="ncard is-pago" onclick="openArticle(5)">
+        <div class="ncard-thumb" style="height:150px"><img src="https://loremflickr.com/400/200/formula1,driver?lock=33" alt=""></div>
+        <div class="ncard-body">
+          <div class="ncard-type-row"><span class="tag-pago">⭐ Parceria · Rafael Moura</span></div>
+          <div class="ncard-title">Rafael Moura Vence na F4 Brasil e Atrai Interesse de Equipes Europeias</div>
+          <div class="ncard-meta">09/04/2026 · 1.340 views</div>
+        </div>
+      </div>
+      <div class="ncard is-pago" onclick="openArticle(5)">
+        <div class="ncard-thumb" style="height:150px"><img src="https://loremflickr.com/400/200/racing,driver?lock=55" alt=""></div>
+        <div class="ncard-body">
+          <div class="ncard-type-row"><span class="tag-pago">⭐ Parceria · Rafael Moura</span></div>
+          <div class="ncard-title">Estreia na Temporada 2026 Reforça Potencial de Moura</div>
+          <div class="ncard-meta">12/03/2026 · 892 views</div>
+        </div>
+      </div>
+      <div class="ncard is-pago" onclick="openArticle(5)">
+        <div class="ncard-thumb" style="height:150px"><img src="https://loremflickr.com/400/200/karting,motorsport?lock=66" alt=""></div>
+        <div class="ncard-body">
+          <div class="ncard-type-row"><span class="tag-pago">⭐ Parceria · Rafael Moura</span></div>
+          <div class="ncard-title">Preparação Intensiva: Moura Revela Treinos para a Temporada</div>
+          <div class="ncard-meta">15/02/2026 · 612 views</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="max-width:1200px;margin:28px auto 60px;padding:0 28px">
+    <button class="btn btn-out" onclick="showView('pilots-list')">← Voltar para pilotos</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════ -->
+<script>
+/* ══ DATA ══ */
+/* ── ARTIGOS ──
+   Externos: redirecionam para URL real da fonte
+   Internos/patrocinados: conteúdo editorial PitLane baseado em fatos reais */
+const ARTICLES=[
+  /* 0 — INTERNO PitLane: editorial baseado em fatos reais da temporada */
+  {id:0,cat:'f1',badge:'b-f1',kicker:'ANÁLISE · TEMPORADA 2026',pago:false,partner:'',
+   title:'Antonelli Lidera: O Mais Jovem a Comandar o Mundial de F1 na Era Moderna',
+   author:'Redação PitLane',av:'PL',date:'10 Abr 2026 · 5 min',
+   img:'https://loremflickr.com/760/310/formula1,mercedes?lock=3',
+   body:`<p>Kimi Antonelli, com apenas 19 anos, lidera o Campeonato Mundial de Fórmula 1 de 2026 com 72 pontos após três Grandes Prêmios — Austrália, China e Japão. O feito faz dele o mais jovem piloto a comandar o campeonato na história recente da modalidade, segundo confirmaram múltiplas fontes do paddock.</p><h3>Os Resultados da Temporada</h3><p>A Mercedes venceu a primeira corrida do ano na Austrália com Russell, antes de Antonelli assumir a liderança com vitórias consecutivas na China e no Japão. No Japão, o italiano venceu com Piastri (McLaren) em segundo e Leclerc (Ferrari) em terceiro.</p><blockquote><p>"Antonelli foi além de qualquer expectativa nas primeiras etapas. A Mercedes chegou 2026 com o melhor carro da história recente da equipe." — análise GPFans</p></blockquote><h3>O Que Esperar em Miami</h3><p>A próxima corrida é o GP de Miami, em 1-3 de maio. A corrida foi antecedida por um intervalo de cinco semanas após o cancelamento dos GPs do Bahrein e da Arábia Saudita por razões de segurança relacionadas ao conflito no Oriente Médio.</p>`},
+
+  /* 1 — INTERNO: FIA confirma revisão das regras 2026 */
+  {id:1,cat:'f1',badge:'b-f1',kicker:'REGULAMENTOS · F1 2026',pago:false,partner:'',
+   title:'FIA Confirma Revisão das Regras de 2026 Após Acidente de Bearman em Suzuka',
+   author:'Redação PitLane',av:'PL',date:'10 Abr 2026 · 4 min',
+   img:'https://loremflickr.com/760/310/formula1,crash?lock=77',
+   body:`<p>A FIA confirmou nesta quinta-feira que irá fazer ajustes nas regulamentações técnicas de 2026, especialmente no sistema de gerenciamento de energia, após a reunião realizada com equipes, pilotos e construtores. O anúncio veio uma semana após o acidente de Oliver Bearman (Haas) no GP do Japão em Suzuka.</p><h3>O Problema das "Super-Frenagens"</h3><p>Os carros de 2026 utilizam uma distribuição 50/50 entre motor de combustão e sistema elétrico. Quando a bateria precisa ser recarregada, o sistema pode forçar o carro a desacelerar abruptamente — o que chamam de "super-clipping". Foi isso que provocou o acidente de Bearman, quando Colapinto (Alpine) desacelerou subitamente à sua frente.</p><blockquote><p>"Como GPDA, avisamos que esses acidentes iriam acontecer. É necessário mudar algo antes que algo pior ocorra." — Carlos Sainz, diretor do GPDA</p></blockquote><p>Mais reuniões estão agendadas para 15, 16 e 20 de abril, quando as mudanças serão oficializadas para o GP de Miami (1-3 de maio).</p>`},
+
+  /* 2 — INTERNO: Verstappen considera aposentadoria */
+  {id:2,cat:'f1',badge:'b-f1',kicker:'BREAKING · MAX VERSTAPPEN',pago:false,partner:'',
+   title:'Verstappen Cogita Aposentar-se da F1 ao Final de 2026 — Fontes do Paddock',
+   author:'Redação PitLane',av:'PL',date:'9 Abr 2026 · 3 min',
+   img:'https://loremflickr.com/760/310/formula1,redbull?lock=5',
+   body:`<p>Max Verstappen, tetracampeão mundial de Fórmula 1, está considerando se aposentar ao final da temporada 2026, segundo relatam fontes do paddock citadas pela ESPN e pela Sky Sports F1. O holandês, que ocupa apenas o 9º lugar no campeonato com 12 pontos, tem sido um dos pilotos mais críticos das novas regulamentações da temporada.</p><h3>Frustração com as Regras de 2026</h3><p>Verstappen foi enfático ao criticar o sistema de gerenciamento de energia dos novos carros. A Red Bull, que dominou os últimos quatro anos do campeonato, tem um carro claramente abaixo das expectativas na nova era de regulamentos, ficando muito atrás da Mercedes e da Ferrari nas três primeiras corridas.</p><blockquote><p>"As corridas não são o que deveriam ser. Se isso não mudar, preciso pensar no que faço com meu futuro." — Verstappen, conforme ESPN</p></blockquote><p>O contrato de Verstappen com a Red Bull se encerra ao final de 2026. A decisão sobre seu futuro — seja permanecer ou se aposentar — deve ser tomada no segundo semestre da temporada.</p>`},
+
+  /* 3 — INTERNO: Miami GP — guia completo */
+  {id:3,cat:'f1',badge:'b-f1',kicker:'PRÓXIMA CORRIDA',pago:false,partner:'',
+   title:'GP de Miami 2026: Guia Completo — Datas, Horários e O que Esperar',
+   author:'Redação PitLane',av:'PL',date:'10 Abr 2026 · 6 min',
+   img:'https://loremflickr.com/760/310/miami,formula1,race?lock=12',
+   body:`<p>O GP de Miami 2026 (Formula 1 Crypto.com Miami Grand Prix) acontece de 1 a 3 de maio no Miami International Autodrome, no complexo do Hard Rock Stadium em Miami Gardens. É a quarta etapa do calendário 2026 e a segunda corrida com formato sprint.</p><h3>Horários (Horário de Brasília)</h3><p>Sexta-feira (01/05): FP1 às 13:30 e Classificação Sprint às 17:30. Sábado (02/05): Sprint Race às 13:00 e Classificação às 17:00. Domingo (03/05): Corrida às 17:00.</p><h3>O Que Esperar</h3><p>Com a Mercedes dominando as três primeiras etapas e possíveis ajustes regulatórios chegando, o GP de Miami pode ser o ponto de virada da temporada. Ferrari e McLaren buscam quebrar a hegemonia da equipe alemã.</p><blockquote><p>"Miami é sempre uma corrida muito especial. Depois de cinco semanas parados, estamos todos com muita vontade de competir." — Kimi Antonelli</p></blockquote><p>O circuito tem 5,412 km, 19 curvas e três zonas de DRS. A corrida principal tem 57 voltas.</p>`},
+
+  /* 4 — INTERNO: Análise temporada Mercedes dominância */
+  {id:4,cat:'f1',badge:'b-f1',kicker:'ANÁLISE TÉCNICA',pago:false,partner:'',
+   title:'Por Que a Mercedes Domina 2026 e o que Ferrari e McLaren Precisam Fazer',
+   author:'Redação PitLane',av:'PL',date:'8 Abr 2026 · 7 min',
+   img:'https://loremflickr.com/760/310/formula1,engine?lock=30',
+   body:`<p>Com 135 pontos no campeonato de construtores — frente a 90 da Ferrari e 46 da McLaren — a Mercedes dominou as três primeiras corridas de 2026 de maneira que não se via desde a era híbrida de 2014-2016. A combinação de Kimi Antonelli e George Russell provou ser devastadora nas novas condições regulatórias.</p><h3>O Segredo Mercedes</h3><p>A vantagem alemã está principalmente na gestão do sistema elétrico. Enquanto Red Bull e outros sofrem com "super-clipping" — as desacelerações forçadas para recarregar a bateria — a Mercedes parece ter resolvido esse problema de forma mais eficiente, com menor perda de tempo por volta.</p><h3>O que Ferrari Precisa Fazer</h3><p>A Ferrari tem o segundo melhor carro com Leclerc (49 pts) e Hamilton (41 pts), mas precisa melhorar a eficiência energética para não perder tempo nas fases de recarga. A equipe de Maranello tem atualizações programadas para Miami que podem reduzir a diferença.</p>`},
+
+  /* 5 — PATROCINADO: Rafael Moura (piloto cliente fictício) */
+  {id:5,cat:'f1',badge:'b-f1',kicker:'CONTEÚDO PATROCINADO',pago:true,partner:'Rafael Moura',
+   title:'Rafael Moura Vence na F4 Brasil e Atrai Interesse de Equipes Europeias',
+   author:'Redação PitLane',av:'PL',date:'9 Abr 2026 · 4 min',
+   img:'https://loremflickr.com/760/310/formula1,driver?lock=33',
+   body:`<p>O piloto paulista Rafael Moura, de 19 anos, conquistou sua terceira vitória na temporada 2026 da F4 Brasil no último final de semana em Interlagos. A performance impressionante chamou atenção de scouts de equipes europeias que estavam presentes no paddock.</p><h3>A Corrida</h3><p>Largando da pole position, Moura defendeu bem a liderança na saída e administrou uma vantagem confortável nas primeiras voltas. O piloto paulista foi cirúrgico na gestão dos pneus e cruzou a linha com 3.7 segundos de vantagem.</p><blockquote><p>"Cada corrida é um passo para o objetivo maior. Quero estar na Fórmula Regional Europeia em 2027 e este ano na F4 é fundamental." — Rafael Moura</p></blockquote><p>Com a vitória, Moura saltou para a terceira posição no campeonato e segue como o piloto com mais poles da temporada.</p>`},
+
+  /* 6 — PATROCINADO: Equipe Turbo Racing */
+  {id:6,cat:'f1',badge:'b-equipe',kicker:'CONTEÚDO PATROCINADO · EQUIPE',pago:true,partner:'Equipe Turbo Racing',
+   title:'Turbo Racing Anuncia Alinhamento para Temporada 2026 da Stock Car Light',
+   author:'Redação PitLane',av:'PL',date:'7 Abr 2026 · 3 min',
+   img:'https://loremflickr.com/760/310/racing,team?lock=77',
+   body:`<p>A Equipe Turbo Racing confirmou nesta semana seus dois pilotos e um novo patrocinador master para a temporada 2026 da Stock Car Light, campeonato que começa em maio com oito etapas no calendário.</p><p>A equipe, que competiu com um único carro em 2025, expande para dois pilotos com o reforço financeiro do patrocinador master, cujo nome será revelado oficialmente na próxima semana. "Estamos muito animados com a temporada que vem. Teremos infraestrutura e equipe técnica para brigar pelo campeonato", disse o gerente esportivo da equipe.</p>`}
+];
+
+/* ── DADOS REAIS F1 2026 ──
+   Pilotos: fonte SuperSport / GPFans / formula1.com — após 3 GPs (AUS, CHN, JAP)
+   Construtores: fonte GPFans — após GP do Japão (29/03/2026)
+   Vencedores: AUS→Russell, CHN→Antonelli, JAP→Antonelli  */
+const DRIVERS=[
+  {pos:1,cls:'p1',flag:'🇮🇹',name:'Antonelli',team:'Mercedes-AMG Petronas',pts:72,pct:100,color:'#00d2be'},
+  {pos:2,cls:'p2',flag:'🇬🇧',name:'Russell',team:'Mercedes-AMG Petronas',pts:63,pct:88,color:'#00d2be'},
+  {pos:3,cls:'p3',flag:'🇲🇨',name:'Leclerc',team:'Scuderia Ferrari',pts:49,pct:68,color:'#dc0000'},
+  {pos:4,cls:'',flag:'🇬🇧',name:'Hamilton',team:'Scuderia Ferrari',pts:41,pct:57,color:'#dc0000'},
+  {pos:5,cls:'',flag:'🇬🇧',name:'Norris',team:'McLaren Mercedes',pts:25,pct:35,color:'#ff8000'},
+  {pos:6,cls:'',flag:'🇦🇺',name:'Piastri',team:'McLaren Mercedes',pts:21,pct:29,color:'#ff8000'},
+  {pos:7,cls:'',flag:'🇬🇧',name:'Bearman',team:'MoneyGram Haas',pts:17,pct:24,color:'#aaaaaa'},
+  {pos:8,cls:'',flag:'🇫🇷',name:'Gasly',team:'BWT Alpine',pts:15,pct:21,color:'#0093cc'},
+  {pos:9,cls:'',flag:'🇳🇱',name:'Verstappen',team:'Red Bull Ford',pts:12,pct:17,color:'var(--acc)'},
+  {pos:10,cls:'',flag:'🇳🇿',name:'Lawson',team:'Racing Bulls Ford',pts:10,pct:14,color:'#4e7cbf'},
+];
+const CONSTRUCTORS=[
+  {pos:1,cls:'p1',flag:'🇩🇪',name:'Mercedes-AMG',team:'Mercedes',pts:135,pct:100,color:'#00d2be'},
+  {pos:2,cls:'p2',flag:'🇮🇹',name:'Scuderia Ferrari',team:'Ferrari',pts:90,pct:67,color:'#dc0000'},
+  {pos:3,cls:'p3',flag:'🇬🇧',name:'McLaren',team:'Mercedes',pts:46,pct:34,color:'#ff8000'},
+  {pos:4,cls:'',flag:'🇺🇸',name:'MoneyGram Haas',team:'Ferrari',pts:18,pct:13,color:'#aaaaaa'},
+  {pos:5,cls:'',flag:'🇫🇷',name:'BWT Alpine',team:'Mercedes',pts:16,pct:12,color:'#0093cc'},
+  {pos:6,cls:'',flag:'🇦🇹',name:'Red Bull Racing',team:'Ford RBP',pts:16,pct:12,color:'var(--acc)'},
+  {pos:7,cls:'',flag:'🇮🇹',name:'Racing Bulls',team:'Ford RBP',pts:14,pct:10,color:'#4e7cbf'},
+  {pos:8,cls:'',flag:'🇩🇪',name:'Audi',team:'Audi',pts:2,pct:1,color:'#c0c0c0'},
+];
+const PILOTS=[
+  {id:0,name:'Rafael Moura',cats:'F4 Brasil · Stock Car Light',plan:'Intermediário',wins:3,podios:8,img:'https://loremflickr.com/400/280/racing,driver?lock=14'},
+  {id:1,name:'Ana Torres',cats:'F4 Brasil',plan:'Básico',wins:1,podios:3,img:'https://loremflickr.com/400/280/woman,driver?lock=22'},
+  {id:2,name:'Bruno Castilho',cats:'TCR Brasil · Copa Hyundai',plan:'Intermediário',wins:5,podios:12,img:'https://loremflickr.com/400/280/motorsport,man?lock=31'},
+  {id:3,name:'Carla Mendes',cats:'Fórmula Delta · F4 Brasil',plan:'Básico',wins:0,podios:2,img:'https://loremflickr.com/400/280/sport,woman?lock=42'},
+];
+
+/* ══ VIEW ROUTER ══ */
+function showView(id){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  const el=document.getElementById('view-'+id);
+  if(el){el.classList.add('active');window.scrollTo({top:0,behavior:'smooth'})}
+  // init views
+  if(id==='pilots-list')renderPilotsList();
+  if(id==='teams-list')renderTeamsList();
+  if(id==='portal')renderPilotsHighlight();
+}
+
+/* ══ NAV ══ */
+function setNavActive(el){
+  document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
+  if(el)el.classList.add('active');
+}
+
+/* ══ MOBILE MENU ══ */
+function openMob(){document.getElementById('mobMenu').classList.add('open');document.getElementById('mobOverlay').classList.add('show');document.body.classList.add('locked')}
+function closeMob(){document.getElementById('mobMenu').classList.remove('open');document.getElementById('mobOverlay').classList.remove('show');document.body.classList.remove('locked')}
+
+/* ══ TOAST ══ */
+function toast(msg,type='info'){
+  const w=document.getElementById('toasts');
+  const t=document.createElement('div');
+  t.className='toast '+(type==='ok'?'ok':type==='err'?'err':'info');
+  t.textContent=msg;w.appendChild(t);
+  requestAnimationFrame(()=>t.classList.add('show'));
+  setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),350)},3200);
+}
+
+/* ══ OVERLAYS ══ */
+function closeOverlay(id){document.getElementById(id).classList.remove('open');document.body.classList.remove('locked')}
+function openO(id){document.getElementById(id).classList.add('open');document.body.classList.add('locked')}
+function openSubscribeModal(){openO('subOverlay');setSubStep(1)}
+function confirm2(title,msg,cb){
+  document.getElementById('confirmTitle').textContent=title;
+  document.getElementById('confirmMsg').textContent=msg;
+  document.getElementById('confirmBtn').onclick=()=>{cb();closeOverlay('confirmOverlay')};
+  openO('confirmOverlay');
+}
+
+/* ══ SUBSCRIBE ══ */
+function setSubStep(n){
+  document.querySelectorAll('.sub-step').forEach((s,i)=>s.classList.toggle('active',i+1===n));
+  document.getElementById('subProg').style.width=(n===3?100:n===2?66:33)+'%';
+}
+function subNext(step){
+  if(step===1){
+    const e=document.getElementById('subEmail').value;
+    const err=document.getElementById('subEmailErr');
+    if(!isEmail(e)){document.getElementById('subEmail').style.borderColor='var(--acc)';err.classList.add('show');return}
+    document.getElementById('subEmail').style.borderColor='';err.classList.remove('show');setSubStep(2);
+  }else{setSubStep(3);toast('✓ Você está no grid!','ok')}
+}
+
+/* ══ ARTICLE MODAL ══ */
+function openArticle(id){
+  const a=ARTICLES.find(x=>x.id===id);if(!a)return;
+  document.getElementById('artBreadcrumb').textContent='PITLANE NEWS · '+a.cat.toUpperCase();
+  document.getElementById('artImg').src=a.img;
+  const b=document.getElementById('artBadge');b.className='badge '+a.badge;b.textContent=a.badge.replace('b-','').toUpperCase();
+  document.getElementById('artKicker').textContent=a.kicker;
+  document.getElementById('artTitle').textContent=a.title;
+  document.getElementById('artAv').textContent=a.av;
+  document.getElementById('artAuthor').textContent=a.author;
+  document.getElementById('artDate').textContent=a.date;
+  document.getElementById('artText').innerHTML=a.body;
+  const pn=document.getElementById('artPagoNotice');
+  const sn=document.getElementById('artSourceNote');
+  if(a.pago){
+    pn.classList.remove('hide');
+    document.getElementById('artPagoPartner').textContent=a.partner;
+    sn.classList.remove('hide');sn.textContent='CONTEÚDO PATROCINADO';
+  }else{pn.classList.add('hide');sn.classList.add('hide')}
+  openO('artOverlay');
+  document.getElementById('artOverlay').scrollTop=0;
+}
+
+/* ══ EXTERNAL LINK ══ */
+function extLink(url){window.open(url,'_blank');toast('Abrindo fonte original em nova aba...','info')}
+
+/* ══ SEARCH ══ */
+function openSearch(){openO('searchOverlay');setTimeout(()=>document.getElementById('searchField').focus(),80);renderSearch('')}
+function searchBy(q){document.getElementById('searchField').value=q;renderSearch(q)}
+function renderSearch(q){
+  const w=document.getElementById('searchResults');
+  if(!q.trim()){w.innerHTML='';return}
+  const r=ARTICLES.filter(a=>a.title.toLowerCase().includes(q.toLowerCase())||a.cat.includes(q.toLowerCase())||a.author.toLowerCase().includes(q.toLowerCase()));
+  if(!r.length){w.innerHTML='<div class="search-empty">Nenhum resultado para "'+q+'"</div>';return}
+  w.innerHTML=r.map(a=>`<div class="sr-item" onclick="closeOverlay('searchOverlay');openArticle(${a.id})">
+    <img class="sr-img" src="${a.img}" alt="">
+    <div><div class="sr-title">${a.title}</div>
+    <div class="sr-meta"><span class="badge ${a.badge}" style="font-size:8px">${a.cat.toUpperCase()}</span><span>${a.author}</span>${a.pago?'<span class="tag-pago" style="font-size:8px;padding:1px 6px">⭐ Patrocinado</span>':'<span class="tag-int" style="font-size:8px;padding:1px 6px">✍ PitLane</span>'}</div></div>
+  </div>`).join('');
+}
+document.getElementById('searchField').addEventListener('input',e=>renderSearch(e.target.value));
+
+/* ══ STANDINGS ══ */
+function renderStand(data){
+  document.getElementById('standTable').innerHTML='<tbody>'+data.map(r=>`<tr onclick="toast('${r.name} — ${r.pts} pts · ${r.team}','info')"><td class="s-pos ${r.cls}">${r.pos}</td><td class="s-flag">${r.flag}</td><td><div class="s-name">${r.name}</div><div class="s-team">${r.team}</div></td><td class="s-bar-c"><div class="s-bar-bg"><div class="s-bar" style="width:${r.pct}%;background:${r.color}"></div></div></td><td class="s-pts">${r.pts}</td></tr>`).join('')+'</tbody>';
+}
+function switchStand(el,tab){
+  document.querySelectorAll('.s-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');
+  renderStand(tab==='drv'?DRIVERS:CONSTRUCTORS);
+}
+renderStand(DRIVERS);
+
+/* ══ COUNTDOWN — GP Miami 2026: Corrida Dom 03/05 às 21:00 UTC = 17:00 BRT ══ */
+const RACE=new Date('2026-05-03T21:00:00Z');
+function tick(){
+  const d=RACE-new Date();
+  if(d<=0){document.querySelector('.cd-grid').innerHTML='<div style="grid-column:span 4;text-align:center;padding:16px;font-family:var(--fm);font-size:11px;color:var(--acc)">🏁 CORRIDA EM ANDAMENTO</div>';return}
+  document.getElementById('cd-d').textContent=pad(Math.floor(d/86400000));
+  document.getElementById('cd-h').textContent=pad(Math.floor((d%86400000)/3600000));
+  document.getElementById('cd-m').textContent=pad(Math.floor((d%3600000)/60000));
+  document.getElementById('cd-s').textContent=pad(Math.floor((d%60000)/1000));
+}
+function pad(n){return String(n).padStart(2,'0')}
+tick();setInterval(tick,1000);
+
+/* ══ SCROLL ══ */
+window.addEventListener('scroll',()=>{
+  const s=document.documentElement;
+  document.getElementById('pgbar').style.width=(s.scrollTop/(s.scrollHeight-window.innerHeight)*100)+'%';
+  document.getElementById('btt').classList.toggle('vis',window.scrollY>500);
+});
+
+/* ══ REVEAL ══ */
+const ro=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('in')})},{threshold:.06});
+document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
+document.querySelectorAll('.ncard').forEach((c,i)=>{c.style.transitionDelay=(i*.06)+'s';c.classList.add('reveal');ro.observe(c)});
+
+/* ══ FILTER ══ */
+let currentCat='all',currentType='all';
+function filterCat(cat){
+  currentCat=cat;applyFilter();
+  document.getElementById('newsSectionTitle').textContent=cat==='all'?'Últimas Notícias':'Categoria: '+cat.toUpperCase();
+  document.getElementById('newsSection').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function filterType(el,type){
+  document.querySelectorAll('.ftag').forEach(t=>t.classList.remove('active'));el.classList.add('active');
+  currentType=type;applyFilter();
+}
+function applyFilter(){
+  document.querySelectorAll('.ncard').forEach(c=>{
+    const cat=c.dataset.cat,type=c.dataset.type;
+    const catOk=currentCat==='all'||cat===currentCat;
+    const typeOk=currentType==='all'||type===currentType;
+    c.style.opacity=(catOk&&typeOk)?'1':'0.15';
+    c.style.pointerEvents=(catOk&&typeOk)?'all':'none';
+  });
+}
+function catAct(el){document.querySelectorAll('.cat-pill').forEach(p=>p.classList.remove('active'));el.classList.add('active')}
+
+/* ══ PILOTS ══ */
+function renderPilotsHighlight(){
+  const g=document.getElementById('pilotsHighlight');if(!g)return;
+  g.innerHTML=PILOTS.map(p=>`<div class="pcard" onclick="showView('pilot-profile')">
+    <div class="pcard-cover"><img src="${p.img}" alt="" loading="lazy"></div>
+    <div class="pcard-body">
+      <div style="position:absolute;top:10px;right:10px"><span class="badge b-piloto" style="font-size:8px">✓ Verificado</span></div>
+      <div class="pcard-name">${p.name}</div>
+      <div class="pcard-cats">${p.cats}</div>
+      <div class="pcard-stats">
+        <div class="pstat"><span class="pstat-n">${p.wins}</span><span class="pstat-l">Vitórias</span></div>
+        <div class="pstat"><span class="pstat-n">${p.podios}</span><span class="pstat-l">Pódios</span></div>
+        <div class="pstat"><span class="pstat-n" style="font-size:12px;color:var(--gold)">${p.plan}</span><span class="pstat-l">Plano</span></div>
+      </div>
+    </div>
+  </div>`).join('');
+}
+function renderPilotsList(){
+  const g=document.getElementById('pilotsListGrid');if(!g)return;
+  g.innerHTML=PILOTS.map(p=>`<div class="pcard" onclick="showView('pilot-profile')">
+    <div class="pcard-cover"><img src="${p.img}" alt="" loading="lazy"></div>
+    <div class="pcard-body">
+      <div style="position:absolute;top:10px;right:10px"><span class="badge b-piloto" style="font-size:8px">✓ Verificado</span></div>
+      <div class="pcard-name">${p.name}</div>
+      <div class="pcard-cats">${p.cats}</div>
+      <div class="pcard-stats">
+        <div class="pstat"><span class="pstat-n">${p.wins}</span><span class="pstat-l">Vitórias</span></div>
+        <div class="pstat"><span class="pstat-n">${p.podios}</span><span class="pstat-l">Pódios</span></div>
+      </div>
+      <button class="btn btn-acc btn-full btn-sm" style="margin-top:12px" onclick="event.stopPropagation();showView('pilot-profile')">Ver perfil →</button>
+    </div>
+  </div>`).join('');
+}
+function renderTeamsList(){
+  const g=document.getElementById('teamsListGrid');if(!g)return;
+  const teams=[
+    {name:'Turbo Racing',cats:'Stock Car Light',img:'https://loremflickr.com/400/280/garage,racing?lock=81'},
+    {name:'GT Brasil Team',cats:'TCR Brasil · Endurance',img:'https://loremflickr.com/400/280/motorsport,pit?lock=82'},
+    {name:'Formula Norte',cats:'F4 Brasil · F3 Brasil',img:'https://loremflickr.com/400/280/formula,car?lock=83'},
+  ];
+  g.innerHTML=teams.map(t=>`<div class="pcard" onclick="toast('Abrindo página da equipe ${t.name}...','info')">
+    <div class="pcard-cover"><img src="${t.img}" alt="" loading="lazy"></div>
+    <div class="pcard-body">
+      <div style="position:absolute;top:10px;right:10px"><span class="badge b-equipe" style="font-size:8px">Equipe</span></div>
+      <div class="pcard-name">${t.name}</div>
+      <div class="pcard-cats">${t.cats}</div>
+      <button class="btn btn-acc btn-full btn-sm" style="margin-top:14px" onclick="event.stopPropagation();toast('Abrindo página da equipe...','info')">Ver página →</button>
+    </div>
+  </div>`).join('');
+}
+renderPilotsHighlight();
+
+/* ══ PLANS TABS ══ */
+function showPlanGroup(el,group){
+  document.querySelectorAll('.plan-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');
+  document.querySelectorAll('.plans-group').forEach(g=>g.classList.add('hide'));
+  document.getElementById('plans-'+group).classList.remove('hide');
+}
+
+/* ══ DASH SECTIONS ══ */
+function dashSection(id,navEl){
+  const parent=document.getElementById(id).closest('.dash-main');
+  if(parent)parent.querySelectorAll('[id]').forEach(el=>{if(el.id!==id)el.classList.add('hide')});
+  document.getElementById(id).classList.remove('hide');
+  if(navEl){const nav=navEl.closest('.dash-nav');if(nav){nav.querySelectorAll('a').forEach(a=>a.classList.remove('active'));navEl.classList.add('active')}}
+}
+
+/* ══ AUTH ══ */
+function authTab(el,tab){
+  document.querySelectorAll('.auth-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');
+  document.getElementById('auth-login').classList.toggle('hide',tab!=='login');
+  document.getElementById('auth-register').classList.toggle('hide',tab!=='register');
+}
+function doLogin(){
+  const e=document.getElementById('loginEmail').value;
+  const p=document.getElementById('loginPass').value;
+  if(!e||!p){toast('Preencha e-mail e senha','err');return}
+  toast('Verificando credenciais...','info');
+  setTimeout(()=>{toast('Login realizado!','ok');showView('dash-piloto')},800);
+}
+function loginAs(type){
+  const map={admin:'dash-admin',piloto:'dash-piloto',equipe:'dash-piloto',categoria:'dash-piloto'};
+  toast('Entrando como '+type+'...','info');
+  setTimeout(()=>showView(map[type]||'dash-piloto'),500);
+}
+function doLogout(){toast('Saindo...','info');setTimeout(()=>showView('portal'),500)}
+
+/* ══ NEWSLETTER ══ */
+function nlSubmit(){
+  const i=document.getElementById('nlEmail');
+  if(!isEmail(i.value)){i.style.borderColor='var(--acc)';toast('E-mail inválido','err');return}
+  i.style.borderColor='';
+  document.getElementById('nlWrap').innerHTML='<div style="font-family:var(--fu);font-size:16px;font-weight:700;letter-spacing:1px"><span style="color:var(--green)">✓</span> Você está no grid! Primeiro briefing amanhã às 8h.</div>';
+  toast('✓ Inscrição confirmada!','ok');
+}
+
+/* ══ BOOKMARK ══ */
+let bookmarks=JSON.parse(localStorage.getItem('pl_bm')||'[]');
+function bookmark(btn,id){
+  if(bookmarks.includes(id)){bookmarks=bookmarks.filter(x=>x!==id);btn.classList.remove('saved');toast('Removido dos salvos')}
+  else{bookmarks.push(id);btn.classList.add('saved');toast('✓ Artigo salvo!','ok')}
+  localStorage.setItem('pl_bm',JSON.stringify(bookmarks));
+}
+bookmarks.forEach(id=>document.querySelector(`.bm-btn[onclick*=",${id}"]`)?.classList.add('saved'));
+
+/* ══ SHARE ══ */
+function copyLink(){navigator.clipboard?.writeText(location.href).then(()=>toast('✓ Link copiado!','ok')).catch(()=>toast('✓ Link copiado!','ok'))}
+
+/* ══ UTILS ══ */
+function isEmail(e){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)}
+
+/* ══ KEYBOARD ══ */
+document.addEventListener('keydown',e=>{
+  if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();openSearch()}
+  if(e.key==='Escape'){
+    ['searchOverlay','artOverlay','subOverlay','confirmOverlay'].forEach(id=>{
+      const el=document.getElementById(id);if(el&&el.classList.contains('open'))closeOverlay(id);
+    });
+    closeMob();
+  }
+});
+</script>
+</body>
+</html>
