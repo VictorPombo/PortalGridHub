@@ -34,12 +34,12 @@
 .lp-title .hl-gold { color: var(--gold); } /* Destaque Ouro */
 
 .lp-subtitle {
-  font-family: var(--fm);
+  font-family: var(--fb);
   font-size: 20px;
-  color: var(--muted);
-  line-height: 1.5;
+  color: #c0c0c0;
+  line-height: 1.6;
   margin-bottom: 40px;
-  font-weight: 300;
+  font-weight: 400;
 }
 .lp-subtitle.center { text-align: center; max-width: 800px; margin-left: auto; margin-right: auto; }
 
@@ -140,7 +140,8 @@
 }
 .lp-step-num {
   width: 60px; height: 60px;
-  background: var(--acc);
+  background: linear-gradient(135deg, #ff2a2a, #b30000);
+  box-shadow: 0 4px 14px rgba(232, 0, 45, 0.4);
   color: #FFF;
   font-family: var(--fd);
   font-size: 28px;
@@ -149,7 +150,7 @@
   margin: 0 auto 20px;
 }
 .lp-step h3 { font-family: var(--fd); font-size: 22px; margin-bottom: 10px; color:#FFF;}
-.lp-step p { color: var(--muted); font-size: 15px; line-height: 1.5;}
+.lp-step p { color: #a0a0a0; font-family: var(--fb); font-size: 16px; line-height: 1.6; font-weight: 300; }
 
 /* SEÇÃO 5: PROVA SOCIAL */
 .lp-stats {
