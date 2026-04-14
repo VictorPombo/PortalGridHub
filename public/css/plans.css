@@ -69,10 +69,11 @@
   text-shadow: 0 4px 20px rgba(0,0,0,0.5);
 }
 .lp-title .hl { 
-  background: linear-gradient(90deg, #ff2a2a, #ffd700);
+  background: linear-gradient(90deg, #ff4a4a, #ffe600);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   display: inline-block;
+  text-shadow: none !important;
 }
 .lp-btns { display: flex; gap: 16px; justify-content: center; margin-top: 40px; }
 
