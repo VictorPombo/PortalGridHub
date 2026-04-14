@@ -303,3 +303,40 @@
 /* Scroll reveal */
 .reveal-section{opacity:0;transform:translateY(25px);transition:opacity .6s ease,transform .6s ease}
 .reveal-section.revealed{opacity:1;transform:translateY(0)}
+
+/* ════════════════════════════════════════
+   REFINAMENTO V3 — SaaS Ultra (Sem WhatsApp)
+════════════════════════════════════════ */
+.glass-card {
+  background: rgba(255,255,255,0.02);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  transition: all 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.hover-glow:hover {
+  border-color: rgba(232,0,45,0.5);
+  box-shadow: 0 12px 40px rgba(232,0,45,0.18);
+  transform: translateY(-4px);
+}
+.glass-case {
+  background: rgba(20,20,25,0.7);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.glow-red {
+  background: linear-gradient(135deg, #ff2a2a, #d40000) !important;
+  box-shadow: 0 4px 18px rgba(232,0,45,0.5) !important;
+  color: #FFF !important;
+  border-color: transparent !important;
+}
+.glow-txt {
+  text-shadow: 0 4px 16px rgba(232,0,45,0.4);
+}
+.hp-cta-block {
+  background: linear-gradient(180deg, #000 0%, rgba(30,0,5,0.9) 100%);
+  padding: 120px 20px;
+  border-top: 1px solid rgba(232,0,45,0.15);
+}
