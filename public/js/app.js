@@ -783,33 +783,31 @@ async function loadLiveNews() {
   });
 
 
-  let rssArticles = [];
+let rssArticles = [];
   try {
     const res = await fetch('/api/news');
     if (res.ok) {
       const { data } = await res.json();
-      const pipelineFeed = [...(data.brasil || []), ...(data.global || [])];
-      rssArticles = pipelineFeed.map((n, i) => {
-        let cat = 'f1';
-        let badge = 'f1';
-        const cLower = (n.categories || []).join(' ').toLowerCase();
-        if (cLower.includes('motogp')) { cat = 'motogp'; badge = 'motogp'; }
-        else if (cLower.includes('wec') || cLower.includes('endurance')) { cat = 'wec'; badge = 'wec'; }
-        else if (cLower.includes('nascar')) { cat = 'nascar'; badge = 'nascar'; }
+      const pipelineFeed = [...(data.br || []), ...(data.mundial || [])];
+      
+      // Ordenação (garantia client-side mesclada decrescente)
+      pipelineFeed.sort((a,b) => new Date(b.published_at).getTime() - new Date(a.published_at).getTime());
 
+      rssArticles = pipelineFeed.map((n, i) => {
+        let slugCat = (n.category || 'f1').toLowerCase().replace(' ', '');
         return {
           id: 'rss' + i,
-          cat: cat,
-          badge: badge,
+          cat: slugCat,
+          badge: 'b-' + slugCat,
           kicker: 'MERCADO / NOTÍCIAS',
           title: n.title,
-          link: n.link,
-          author: n.author || 'RSS Tracker',
+          link: n.url,
+          author: n.source || 'RSS Tracker',
           av: '<i class="fi fi-rr-newspaper"></i>',
-          date: new Date(n.pubDate).toLocaleDateString('pt-BR'),
-          img: n.thumbnail || 'https://loremflickr.com/400/260/racing,formula1?lock='+i,
-          body: "<p><b>Resumo Estratégico: </b>" + ((n.contentSnippet || n.description || '').substring(0, 200)) + "...</p>",
-          originalLink: n.link,
+          date: new Date(n.published_at).toLocaleDateString('pt-BR'),
+          img: n.image_url || ('https://loremflickr.com/400/260/racing,formula1?lock='+i),
+          body: "<p><b>Resumo Estratégico: </b> Matéria extraída do hub principal. Verifique o link e a curadoria PitLane abaixo.</p>",
+          originalLink: n.url,
           aiAnalysis: "A narrativa acima foi monitorada por nossos sistemas pois reverbera no budget corporativo das montadoras neste trimestre. Atletas cadastrados no PitLane devem usar esse momento e citar este link para chancelar relatórios diários com diretores de mídia B2B.",
           isReal: false
         };
@@ -817,7 +815,7 @@ async function loadLiveNews() {
     } else {
       throw new Error('Local API failed');
     }
-  } catch(e) {
+  } catch(e) { {
     console.warn('Local API offline. Fetching fallback RSS feeds...', e);
     const fallbackFeeds = [
       'https://br.motorsport.com/rss/f1/news/',
@@ -885,35 +883,30 @@ function renderNewsGrid(articles) {
   grid.innerHTML = articles.map((a, i) => {
     const isExt = a.isReal;
     const clickAction = isExt ? `extLink('${a.link}')` : `openArticle('${a.id}')`;
-    const tag = isExt ? `<span class="tag-ext"><i class="fi fi-rr-link"></i> ${a.author}</span>` : `<span class="tag-int"><i class="fi fi-rr-pencil"></i> PitLane News</span>`;
-    const dst = isExt ? `<div class="ncard-dest ext"><i class="fi fi-rr-link"></i> Abre ${a.author} em nova aba</div>` : `<div class="ncard-dest int"><i class="fi fi-rr-pencil"></i> Abre aqui no PitLane News</div>`;
-    const timeToRead = isExt ? 'AGORA' : '5 MIN';
     const isFeat = i < 2 ? 'feat' : '';
     
     return `
-      <div class="ncard ${isFeat} ${isExt?'is-ext':'is-int'} reveal in" data-cat="${a.cat}" data-type="${isExt?'ext':'int'}" data-id="${a.id}" onclick="${clickAction}" style="transition-delay: ${i*0.06}s">
-        <div class="ncard-thumb">
+      <div class="ncard-v2 reveal in ${isFeat}" data-cat="${a.cat}" data-type="${isExt?'ext':'int'}" data-id="${a.id}" onclick="${clickAction}" style="transition-delay: ${i*0.06}s; animation-fill-mode: forwards;">
+        <div class="ncard-v2-thumb">
+          <div class="ncard-v2-pill">${a.badge.replace('b-', '').toUpperCase()}</div>
           <img src="${a.img}" alt="" loading="lazy">
-          <div class="ncard-ribbon"><span class="badge b-${a.cat}">${a.badge.toUpperCase()}</span></div>
         </div>
-        <div class="ncard-body">
-          <div class="ncard-type-row">
-            ${tag}
-            <span style="font-family:var(--fm);font-size:9px;color:var(--muted)">${isExt?'sai do site':'abre no portal'}</span>
+        <div class="ncard-v2-body">
+          <div class="ncard-v2-meta">
+            <span>${a.author}</span>
+            <span>&bull;</span>
+            <span><i class="fi fi-rr-calendar-lines" style="font-size:10px"></i> ${a.date}</span>
           </div>
-          <div class="ncard-title">${a.title}</div>
-          <div class="ncard-excerpt">${a.body ? a.body.replace(/<[^>]*>?/gm, '').substring(0, 110) + '...' : ''}</div>
-          <div class="ncard-footer">
-            <span class="ncard-meta">${a.date} · ${a.author.toUpperCase()} · ${timeToRead}</span>
-            ${!isExt ? `<button class="bm-btn" onclick="event.stopPropagation();bookmark(this,'${a.id}')"><i class="fi fi-rr-bookmark"></i></button>` : ''}
+          <div class="ncard-v2-title">${a.title}</div>
+          <div class="ncard-v2-footer">
+            <span class="ncard-v2-footer-txt">${isExt ? 'Ler Matéria' : 'Abrir Modal PitLane'}</span>
+            <i class="fi fi-rr-arrow-up-right ncard-v2-footer-icon"></i>
           </div>
         </div>
-        ${dst}
       </div>
     `;
   }).join('');
 }
-
 /* ══════════════════════════════════════════
    CALENDAR
 ══════════════════════════════════════════ */
