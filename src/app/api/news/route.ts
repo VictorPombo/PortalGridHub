@@ -18,9 +18,14 @@ export interface NewsItem {
 const parser = new Parser();
 
 const FEEDS_MUNDIAL = [
-  { url: "https://www.motorsport.com/rss/f1/news/", name: "Motorsport F1 Global", cat: "F1" },
-  { url: "https://www.motorsport.com/rss/motogp/news/", name: "Motorsport MotoGP Global", cat: "MotoGP" },
-  { url: "https://www.motorsport.com/rss/wec/news/", name: "WEC Global", cat: "Endurance" }
+  { url: "https://br.motorsport.com/rss/f1/news/", name: "Motorsport Brasil (F1)", cat: "F1" },
+  { url: "https://br.motorsport.com/rss/motogp/news/", name: "Motorsport Brasil (MotoGP)", cat: "MotoGP" },
+  { url: "https://br.motorsport.com/rss/wec/news/", name: "Motorsport Brasil (WEC)", cat: "Endurance" }
+];
+
+const FEEDS_BRASIL = [
+  { url: "https://br.motorsport.com/rss/stockcar-br/news/", name: "Motorsport Brasil (Stock Car)", cat: "Stock Car" },
+  { url: "https://br.motorsport.com/rss/all/news/", name: "Motorsport Brasil (Geral)", cat: "Geral" }
 ];
 
 const FEEDS_BRASIL = [
@@ -64,14 +69,25 @@ async function fetchAndProcessFeeds(feedsConfig: typeof FEEDS_MUNDIAL, tipo: 'mu
 
   const results = await Promise.all(promises);
   let allNews: NewsItem[] = results.flat();
-
-  // Deduplicação (especialmente pedida para BR e útil em todos)
+  // Deduplicação (Anti-Clonagem)
+  const seenImgs = new Set();
   const seenTitles = new Set();
+  
   allNews = allNews.filter(n => {
-    if (seenTitles.has(n.title)) return false;
-    seenTitles.add(n.title);
+    // 1. Checa a imagem (veiculos de uma mesma rede usam a mesma foto pra mesma noticia)
+    if (n.image_url && n.image_url.length > 30) {
+      if (seenImgs.has(n.image_url)) return false;
+      seenImgs.add(n.image_url);
+    }
+    
+    // 2. Checa o titulo (baseado apenas nos 30 primeiros caracteres para burlar caracteres especiais)
+    const shortTitle = n.title.substring(0, 30).toLowerCase();
+    if (seenTitles.has(shortTitle)) return false;
+    seenTitles.add(shortTitle);
+    
     return true;
   });
+
 
   // Ordenação descendente
   allNews.sort((a, b) => new Date(b.published_at).getTime() - new Date(a.published_at).getTime());
