@@ -46,10 +46,34 @@
 /* SEÇÃO 1: HERO */
 .lp-hero {
   text-align: center;
-  padding: 120px 20px 80px;
-  background: radial-gradient(circle at center top, rgba(225, 6, 0, 0.1) 0%, transparent 50%);
+  padding: 140px 20px 100px;
+  position: relative;
+  overflow: hidden;
+  background: #000;
 }
-.lp-hero .lp-title { font-size: 64px; }
+.lp-hero::before {
+  content: '';
+  position: absolute;
+  top: -20%; left: 50%;
+  transform: translateX(-50%);
+  width: 800px; height: 600px;
+  background: radial-gradient(circle, rgba(232, 0, 45, 0.15) 0%, rgba(255, 0, 0, 0.05) 40%, transparent 70%);
+  filter: blur(80px);
+  z-index: 0;
+  pointer-events: none;
+}
+.lp-hero .lp-inner { position: relative; z-index: 1; }
+.lp-hero .lp-title { 
+  font-size: 68px; 
+  letter-spacing: -2px;
+  text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+.lp-title .hl { 
+  background: linear-gradient(90deg, #ff2a2a, #b30000);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
 .lp-btns { display: flex; gap: 16px; justify-content: center; margin-top: 40px; }
 
 /* SEÇÃO 2: DOR / PROBLEMA */
