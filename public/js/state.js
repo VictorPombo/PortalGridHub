@@ -343,7 +343,28 @@ const PitLane = (() => {
       } catch(e) { return []; }
     }
 
-    return { getDriverStandings, getConstructorStandings, getNextRace, getNews };
+    async function getNewsByCategory(catName) {
+      const urls = {
+        'f1': 'https://www.grandepremio.com.br/f1/feed/',
+        'motogp': 'https://www.grandepremio.com.br/motogp/feed/',
+        'stock-car': 'https://www.grandepremio.com.br/stock-car/feed/'
+      };
+      const fetchUrl = 'https://api.rss2json.com/v1/api.json?rss_url=' + (urls[catName] || urls['f1']);
+      const data = await fetchWithCache(fetchUrl, 'pl_live_news_' + catName);
+      if (!data) return [];
+      try {
+        return data.items.map(item => ({
+          title: item.title,
+          link: item.link,
+          thumbnail: item.thumbnail || (item.enclosure ? item.enclosure.url : '') || 'https://images.unsplash.com/photo-1538356396417-6d601dff87f7?q=80&w=2070&auto=format&fit=crop',
+          pubDate: item.pubDate,
+          author: item.author || 'Grande Prêmio',
+          categories: item.categories || [catName.toUpperCase()]
+        }));
+      } catch(e) { return []; }
+    }
+
+    return { getDriverStandings, getConstructorStandings, getNextRace, getNews, getNewsByCategory };
   })();
 
   // ============================

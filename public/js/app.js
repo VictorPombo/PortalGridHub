@@ -484,6 +484,16 @@ function updateHero(cat){
     if(heroExcerpt) heroExcerpt.textContent=h.excerpt;
     const heroMeta=wrap.querySelector('.hero-meta');
     if(heroMeta) heroMeta.innerHTML='<span>'+h.meta.split(' · ').join('</span><span>')+'</span>';
+    
+    // Main Hero Click Handler
+    const heroMainDiv=wrap.querySelector('.hero-main');
+    if(heroMainDiv) {
+      if(h.isExt) {
+        heroMainDiv.onclick=()=>extLink(h.extLink);
+      } else {
+        heroMainDiv.onclick=()=>openArticle(h.articleId);
+      }
+    }
     // Side cards
     const sides=wrap.querySelectorAll('.side-card');
     h.sides.forEach((s,i)=>{
@@ -675,6 +685,40 @@ document.addEventListener('keydown',e=>{
   }
 });
 
+/* ══ DYNAMIC HERO PIPELINE ══ */
+async function loadDynamicHeroAll() {
+  if(!window.PitLane || !window.PitLane.Live) return;
+  try {
+    const f1News = await PitLane.Live.getNewsByCategory('f1');
+    const motogpNews = await PitLane.Live.getNewsByCategory('motogp');
+    const stockNews = await PitLane.Live.getNewsByCategory('stock-car');
+
+    if(f1News.length && motogpNews.length && stockNews.length) {
+      const m = f1News[0];
+      const s1 = motogpNews[0];
+      const s2 = stockNews[0];
+
+      HERO_DATA['all'] = {
+        img: m.thumbnail,
+        typeCls: 'ext', typeIcon: 'fi fi-rr-link', typeLabel: 'GRANDE PRÊMIO ↗',
+        badge: 'F1 · ÚLTIMAS', badgeCls: 'b-f1',
+        title: m.title,
+        excerpt: m.title, 
+        meta: 'Redação Externa · Fonte: grandepremio.com.br',
+        isExt: true,
+        extLink: m.link,
+        sides: [
+          {img: s1.thumbnail, typeCls: 'ext', typeLabel: 'GRANDE PRÊMIO ↗', badge: 'MOTOGP', badgeCls: 'b-motogp', title: s1.title, link: s1.link},
+          {img: s2.thumbnail, typeCls: 'ext', typeLabel: 'GRANDE PRÊMIO ↗', badge: 'STOCK CAR', badgeCls: 'b-wec', title: s2.title, link: s2.link}
+        ]
+      };
+      if (currentCat === 'all') { updateHero('all'); }
+    }
+  } catch (e) {
+    console.error('Failed to load dynamic hero', e);
+  }
+}
+
 /* ══ DYNAMIC LIVE NEWS PIPELINE ══ */
 document.addEventListener('DOMContentLoaded', async () => {
   if (window.PitLane && typeof window.PitLane.bootSupabase === 'function') {
@@ -683,6 +727,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     } catch(e) { console.error('Supabase boot fail', e); }
   }
   await loadLiveNews();
+  await loadDynamicHeroAll();
+  
+  // Timer de Atualização para o Hero e News a cada 5 Minutos (300000ms)
+  setInterval(async () => {
+    console.log('[Timer] Atualizando notícias dinâmicas...');
+    await loadLiveNews();
+    await loadDynamicHeroAll();
+  }, 300000);
 });
 
 async function loadLiveNews() {
