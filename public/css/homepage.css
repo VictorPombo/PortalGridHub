@@ -5,7 +5,7 @@
 /* ============================
    TICKER
    ============================ */
-.ticker{background:var(--acc);height:34px;display:flex;align-items:center;overflow:hidden;max-width:100vw}
+.ticker{background:var(--acc);height:34px;display:flex;align-items:center;overflow:hidden;width:100%}
 .ticker-label{font-family:var(--fu);font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;background:rgba(0,0,0,.32);height:100%;padding:0 22px 0 18px;display:flex;align-items:center;white-space:nowrap;flex-shrink:0;clip-path:polygon(0 0,100% 0,84% 100%,0 100%)}
 .ticker-scroll{overflow:hidden;flex:1}
 .ticker-track{display:flex;white-space:nowrap;animation:ticker-move 42s linear infinite}
