@@ -340,3 +340,44 @@
   padding: 120px 20px;
   border-top: 1px solid rgba(232,0,45,0.15);
 }
+
+/* ══ AI ENGINE UX (B2B) ══ */
+.art-ai-box {
+  margin-top: 30px;
+  padding: 24px;
+  background: rgba(255,215,0,0.06);
+  border-left: 4px solid var(--gold);
+  border-radius: 0 12px 12px 0;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #fff;
+}
+.art-ai-box .ai-label {
+  font-family: var(--fd);
+  font-size: 16px;
+  color: var(--gold);
+  margin-bottom: 12px;
+  display: flex; align-items: center; gap:8px;
+}
+.art-ai-box .ai-label i { font-size: 18px; }
+.art-ai-box .ai-content {
+  font-family: var(--fb);
+  font-size: 16px;
+  line-height: 1.6;
+  color: #E2E8F0;
+  font-weight: 300;
+}
+
+.art-funnel-box {
+  margin-top: 20px;
+  padding: 24px;
+  background: rgba(20,20,25,0.7);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+}
+.art-funnel-box .funnel-msg {
+  font-family: var(--fb);
+  font-size: 15px;
+  color: #CBD5E1;
+  line-height: 1.5;
+}
