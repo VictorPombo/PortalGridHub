@@ -356,7 +356,7 @@ const PitLane = (() => {
         return data.items.map(item => ({
           title: item.title,
           link: item.link,
-          thumbnail: item.thumbnail || (item.enclosure ? item.enclosure.url : '') || 'https://images.unsplash.com/photo-1538356396417-6d601dff87f7?q=80&w=2070&auto=format&fit=crop',
+          thumbnail: item.thumbnail || (item.enclosure ? item.enclosure.url : '') || 'https://upload.wikimedia.org/wikipedia/commons/3/3f/FIA_F1_Austria_2023_Nr._44_%282%29.jpg',
           pubDate: item.pubDate,
           author: item.author || 'Grande Prêmio',
           categories: item.categories || [catName.toUpperCase()]

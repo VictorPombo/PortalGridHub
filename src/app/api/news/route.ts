@@ -44,7 +44,7 @@ function extractImage(item: any): string {
     const m = item.content.match(/src="([^"]+)"/);
     if (m) img = m[1];
   }
-  return img || 'https://images.unsplash.com/photo-1538356396417-6d601dff87f7?q=80&w=2070&auto=format&fit=crop';
+  return img || 'https://upload.wikimedia.org/wikipedia/commons/3/3f/FIA_F1_Austria_2023_Nr._44_%282%29.jpg';
 }
 
 async function fetchAndProcessFeeds(feedsConfig: typeof FEEDS_MUNDIAL, tipo: 'mundial'|'br'): Promise<NewsItem[]> {

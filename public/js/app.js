@@ -458,38 +458,7 @@ const HERO_DATA={
     meta:'Redação PitLane · 13 Abr 2026 · Fonte: nascar.com · Jayski',
     articleId:0,
     sides:[
-      {img:'https://images.unsplash.com/photo-1541348263662-e068662d82af?w=640',typeCls:'ext',typeLabel:'NASCAR.COM ↗',badge:'NASCAR · ESTRATÉGIA',badgeCls:'b-nascar',title:'Equipes Adotam Abordagem Conservadora para Preservar Pneus Long-Run',link:'https://www.nascar.com'},
-      {img:'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=640',typeCls:'ext',typeLabel:'JAYSKI ↗',badge:'NASCAR · TÉCNICA',badgeCls:'b-nascar',title:'NASCAR Avalia Pequenas Alterações Aerodinâmicas Visando Mais Ultrapassagens',link:'https://www.jayski.com'}
-    ]
-  },
-  wrc:{
-    img:'https://upload.wikimedia.org/wikipedia/commons/a/a2/Kalle_Rovanper%C3%A4_Rally_Finland_2025_Ouninpohja_%28cropped%29.jpg',
-    typeCls:'int', typeIcon:'fi fi-rr-pencil', typeLabel:'CONTEÚDO PITLANE',
-    badge:'WRC · TEMPORADA 2026', badgeCls:'b-wrc',
-    title:'Kalle Rovanperä Domina Início do WRC 2026 com Desempenho Impecável',
-    excerpt:'Kalle Rovanperä (Toyota) lidera após Monte-Carlo, Suécia e Safari, mostrando um domínio absoluto nas mais diversas superfícies do campeonato mundial.',
-    meta:'Redação PitLane · 13 Abr 2026 · Fonte: wrc.com · DirtFish',
-    articleId:0,
-    sides:[
-      {img:'https://upload.wikimedia.org/wikipedia/commons/6/6f/Hyundai_i20N_Rally1_No.11_in_2022_FIA_World_Rally_Championship_%282%29.jpg',typeCls:'ext',typeLabel:'WRC.COM ↗',badge:'WRC · HYUNDAI',badgeCls:'b-wrc',title:'Thierry Neuville Confia no Potencial da Hyundai para Barrar a Toyota',link:'https://www.wrc.com'},
-      {img:'https://upload.wikimedia.org/wikipedia/commons/8/82/WRC_Central_European_Rallye_2023_Nr._8_%284%29.jpg',typeCls:'ext',typeLabel:'DIRTFISH ↗',badge:'WRC · M-SPORT',badgeCls:'b-wrc',title:'M-Sport Ford Prepara Evoluções Agressivas no Puma Rally1',link:'https://dirtfish.com'}
-    ]
-  }
-};
-
-function updateHero(cat){
-  const h=HERO_DATA[cat];
-  if(!h)return;
-  const wrap=document.querySelector('.hero-wrap');
-  if(!wrap)return;
-  // Fade out
-  wrap.classList.add('switching');
-  setTimeout(()=>{
-    // Main hero
-    const mainImg=wrap.querySelector('.hero-main img');
-    if(mainImg) mainImg.src=h.img;
-    const heroType=wrap.querySelector('.hero-main .hero-type');
-    if(heroType){heroType.className='hero-type '+h.typeCls;heroType.innerHTML='<i class="'+h.typeIcon+'"></i> '+h.typeLabel}
+      {img:'https://upload.wikimedia.org/wikipedia/commons/7/79/FIA_F1_Austria_2023_Nr._1_%281%29.jpg"'+h.typeIcon+'"></i> '+h.typeLabel}
     const heroBadge=wrap.querySelector('.hero-main .badge');
     if(heroBadge){heroBadge.className='badge '+h.badgeCls;heroBadge.textContent=h.badge}
     const heroTitle=wrap.querySelector('.hero-title');
@@ -756,7 +725,7 @@ async function loadLiveNews() {
   if (PitLane && PitLane.getArticlesByStatus) {
     saasArticles = PitLane.getArticlesByStatus('published').map(a => {
       let b = a.cat==='f1'?'b-f1':a.cat==='motogp'?'b-motogp':'b-endurance';
-      let thumb = a.coverImg || 'https://images.unsplash.com/photo-1541348263662-e06836264b28?q=80&w=600&auto=format&fit=crop';
+      let thumb = a.coverImg || 'https://upload.wikimedia.org/wikipedia/commons/7/79/FIA_F1_Austria_2023_Nr._1_%281%29.jpg';
       return {
         id: a.id, title: a.title, cat: a.cat, badge: b, img: thumb, 
         author: a.pilotName, date: new Date(a.createdAt).toLocaleDateString('pt-BR'), kicker: a.excerpt, body: a.content, av: 'AO VIVO', partner: a.sponsorTeam, pago: a.sponsored, isReal: false 
@@ -769,7 +738,7 @@ async function loadLiveNews() {
     id: 'ai-mock-motorsport',
     title: "Ferrari traz mega-atualização aerodinâmica para o Canadá e projeta salto na classificação",
     cat: 'f1', badge: 'b-f1',
-    img: 'https://images.unsplash.com/photo-1538356396417-6d601dff87f7?q=80&w=2070&auto=format&fit=crop',
+    img: 'https://upload.wikimedia.org/wikipedia/commons/3/3f/FIA_F1_Austria_2023_Nr._44_%282%29.jpg',
     author: 'PitLane AI Bot', date: 'HOJE',
     kicker: 'Curadoria Automática PitLane News',
     body: "<p><b>Resumo:</b> A escuderia italiana Ferrari anunciou que chegará ao GP de Montreal com um novo assoalho e bicos redesenhados. Após sofrer com saltos aerodinâmicos, os engenheiros prometem mais estabilidade e ameaçam quebrar o domínio de curvas de alta velocidade da rival atual.</p>",
@@ -848,44 +817,7 @@ let rssArticles = [];
               author: 'Motorsport Brasil',
               av: '<i class="fi fi-rr-rss"></i>',
               date: new Date((n.pubDate||'').replace(/-/g, '/')).toLocaleDateString('pt-BR'),
-              img: (n.enclosure && n.enclosure.link) ? n.enclosure.link : (n.thumbnail || 'https://images.unsplash.com/photo-1541348263662-e068662d82af?w=400'),
-              body: n.content || n.description || '',
-              originalLink: n.link,
-              isReal: true
-            });
-          });
-        }
-      }
-    } catch(err) {
-      console.error('Fallback RSS also failed', err);
-    }
-  }
-
-  const mixed = [];
-  let rIdx = 0, sIdx = 0;
-  while (rIdx < rssArticles.length || sIdx < saasArticles.length) {
-    if (rIdx < rssArticles.length) mixed.push(rssArticles[rIdx++]);
-    if (rIdx < rssArticles.length) mixed.push(rssArticles[rIdx++]);
-    if (rIdx < rssArticles.length) mixed.push(rssArticles[rIdx++]);
-    if (sIdx < saasArticles.length) mixed.push(saasArticles[sIdx++]);
-  }
-
-  ARTICLES = mixed;
-  if(mixed.length > 0) renderNewsGrid(mixed);
-  renderHero(rssArticles, saasArticles);
-  updateCatCounts();
-}
-
-function renderNewsGrid(articles) {
-  const grid = document.getElementById('cardGrid');
-  if (!grid || articles.length === 0) return;
-  grid.innerHTML = articles.map((a, i) => {
-    const isExt = a.isReal;
-    const clickAction = isExt ? `extLink('${a.link}')` : `openArticle('${a.id}')`;
-    const isFeat = i < 2 ? 'feat' : '';
-    
-    return `
-      <div class="ncard-v2 reveal in ${isFeat}" data-cat="${a.cat}" data-type="${isExt?'ext':'int'}" data-id="${a.id}" onclick="${clickAction}" style="transition-delay: ${i*0.06}s; animation-fill-mode: forwards;">
+              img: (n.enclosure && n.enclosure.link) ? n.enclosure.link : (n.thumbnail || 'https://upload.wikimedia.org/wikipedia/commons/7/79/FIA_F1_Austria_2023_Nr._1_%281%29.jpg"ncard-v2 reveal in ${isFeat}" data-cat="${a.cat}" data-type="${isExt?'ext':'int'}" data-id="${a.id}" onclick="${clickAction}" style="transition-delay: ${i*0.06}s; animation-fill-mode: forwards;">
         <div class="ncard-v2-thumb">
           <div class="ncard-v2-pill">${a.badge.replace('b-', '').toUpperCase()}</div>
           <img src="${a.img}" alt="" loading="lazy">
