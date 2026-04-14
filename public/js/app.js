@@ -806,16 +806,15 @@ let rssArticles = [];
           av: '<i class="fi fi-rr-newspaper"></i>',
           date: new Date(n.published_at).toLocaleDateString('pt-BR'),
           img: n.image_url || ('https://loremflickr.com/400/260/racing,formula1?lock='+i),
-          body: "<p><b>Resumo Estratégico: </b> Matéria extraída do hub principal. Verifique o link e a curadoria PitLane abaixo.</p>",
+          body: n.contentSnippet || n.description || '',
           originalLink: n.url,
-          aiAnalysis: "A narrativa acima foi monitorada por nossos sistemas pois reverbera no budget corporativo das montadoras neste trimestre. Atletas cadastrados no PitLane devem usar esse momento e citar este link para chancelar relatórios diários com diretores de mídia B2B.",
-          isReal: false
+          isReal: true
         };
       });
     } else {
       throw new Error('Local API failed');
     }
-  } catch(e) { {
+  } catch(e) {
     console.warn('Local API offline. Fetching fallback RSS feeds...', e);
     const fallbackFeeds = [
       'https://br.motorsport.com/rss/f1/news/',
@@ -850,10 +849,9 @@ let rssArticles = [];
               av: '<i class="fi fi-rr-rss"></i>',
               date: new Date((n.pubDate||'').replace(/-/g, '/')).toLocaleDateString('pt-BR'),
               img: (n.enclosure && n.enclosure.link) ? n.enclosure.link : (n.thumbnail || 'https://images.unsplash.com/photo-1541348263662-e068662d82af?w=400'),
-              body: "<p><b>Resumo Estratégico: </b>" + ((n.description || n.content || '').substring(0, 200).replace(/<[^>]*>?/gm, '')) + "...</p>",
+              body: n.content || n.description || '',
               originalLink: n.link,
-              aiAnalysis: "A narrativa acima foi monitorada por nossos sistemas pois reverbera no budget corporativo das montadoras neste trimestre. Atletas cadastrados no PitLane devem usar esse momento e citar este link para chancelar relatórios diários com diretores de mídia B2B.",
-              isReal: false
+              isReal: true
             });
           });
         }
