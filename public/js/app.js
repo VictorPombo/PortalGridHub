@@ -874,6 +874,7 @@ let rssArticles = [];
 
   ARTICLES = mixed;
   if(mixed.length > 0) renderNewsGrid(mixed);
+  renderHero(rssArticles, saasArticles);
   updateCatCounts();
 }
 
@@ -1148,4 +1149,69 @@ function renderFullStandings(tab,btnEl){
       <div class="fs-pts">${d.pts}</div>
     </div>`;
   }).join('');
+}
+
+
+function renderHero(rssFeed, saasFeed) {
+  const f1 = rssFeed.find(x => x.cat === 'f1' || x.cat === 'F1');
+  const moto = rssFeed.find(x => x.cat === 'motogp' || x.cat === 'MotoGP');
+  const saas = saasFeed && saasFeed.length > 0 ? saasFeed[0] : null;
+
+  // Se nao houver SaaS, pegamos a proxima noticia de endurance/stockcar ou qualquer
+  const thirdSlot = saas || rssFeed.find(x => x.id !== (f1?f1.id:null) && x.id !== (moto?moto.id:null));
+
+  const buildMain = (a) => {
+    if(!a) return '';
+    const click = a.isReal ? `extLink('${a.link}')` : `openArticle('${a.id}')`;
+    const typLabel = a.isReal ? `<div class="hero-type ext"><i class="fi fi-rr-link"></i> HUB ORIGINAL</div>` : `<div class="hero-type int"><i class="fi fi-rr-pencil"></i> PITLANE NEWS</div>`;
+    const exc = a.body ? a.body.replace(/<[^>]*>?/gm, '').substring(0, 110) + '...' : '';
+    return `
+      <img src="${a.img}" alt="" loading="lazy" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0;">
+      <div class="hero-content" style="z-index:2; position:relative; pointer-events:none;">
+        ${typLabel}
+        <span class="badge ${a.badge}">${a.cat.toUpperCase()}</span>
+        <h1 class="hero-title">${a.title}</h1>
+        <p class="hero-excerpt">${exc}</p>
+        <div class="hero-meta"><span>${a.author}</span><span>${a.date}</span></div>
+      </div>
+      <div style="position:absolute; inset:0; z-index:5; cursor:pointer;" onclick="${click}"></div>
+    `;
+  };
+
+  const buildSide = (a, isVip) => {
+    if(!a) return '';
+    const click = a.isReal ? `extLink('${a.link}')` : `openArticle('${a.id}')`;
+    const typLabel = isVip ? `<div class="hero-type int" style="color:#d9a05b;border-color:#d9a05b"><i class="fi fi-rr-member-vip"></i> PILOTO VERIFICADO</div>` : (a.isReal ? `<div class="hero-type ext"><i class="fi fi-rr-link"></i> CURADORIA</div>` : `<div class="hero-type int"><i class="fi fi-rr-pencil"></i> PITLANE NEWS</div>`);
+    
+    return `
+      <img src="${a.img}" alt="" loading="lazy" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0;">
+      <div class="side-content" style="z-index:2; position:relative; pointer-events:none;">
+        <div style="margin-bottom:5px">${typLabel}</div>
+        <span class="badge ${a.badge}">${a.cat.toUpperCase()}</span>
+        <div class="side-title">${a.title}</div>
+        <div class="side-meta">${isVip ? 'ACESSE O PERFIL ↗' : 'LER MATÉRIA ↗'}</div>
+      </div>
+      <div style="position:absolute; inset:0; z-index:5; cursor:pointer;" onclick="${click}"></div>
+    `;
+  };
+
+  const hMain = document.getElementById('hero-main');
+  const hSide1 = document.getElementById('hero-side1');
+  const hSide2 = document.getElementById('hero-side2');
+
+  if(hMain && f1) {
+    hMain.innerHTML = buildMain(f1);
+    hMain.style.position = 'relative'; // garante q o cursor onclick area funcione
+    hMain.style.overflow = 'hidden';
+  }
+  if(hSide1 && moto) {
+    hSide1.innerHTML = buildSide(moto, false);
+    hSide1.style.position = 'relative';
+    hSide1.style.overflow = 'hidden';
+  }
+  if(hSide2 && thirdSlot) {
+    hSide2.innerHTML = buildSide(thirdSlot, !!saas); // isVip=true se for o SaaS
+    hSide2.style.position = 'relative';
+    hSide2.style.overflow = 'hidden';
+  }
 }
