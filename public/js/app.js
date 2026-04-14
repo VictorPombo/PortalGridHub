@@ -207,6 +207,20 @@ function openArticle(id){
   document.getElementById('artAuthor').textContent=a.author;
   document.getElementById('artDate').textContent=a.date;
   document.getElementById('artText').innerHTML=a.body;
+  
+  const aiBox = document.getElementById('artAiBox');
+  const funnelBox = document.getElementById('artAiFunnel');
+  if(a.aiAnalysis) {
+    aiBox.classList.remove('hide');
+    document.getElementById('artAiContent').innerHTML=a.aiAnalysis;
+    
+    funnelBox.classList.remove('hide');
+    document.getElementById('artAiFunnelMsg').innerHTML="<b>" + a.author + " / PitLane AI Engine</b><br>Deseja converter a sua própria visibilidade esportiva em caixa real? Atraia B2B e patrocínios de peso rodando nossa ferramenta em suas mídias.";
+    document.getElementById('artAiSourceLink').href = a.originalLink || '#';
+  } else {
+    aiBox.classList.add('hide');
+    funnelBox.classList.add('hide');
+  }
   const pn=document.getElementById('artPagoNotice');
   const sn=document.getElementById('artSourceNote');
   if(a.pago){
@@ -739,24 +753,35 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function loadLiveNews() {
   let saasArticles = [];
-  if (window.PitLane) {
+  if (PitLane && PitLane.getArticlesByStatus) {
     saasArticles = PitLane.getArticlesByStatus('published').map(a => {
-      const u = PitLane.getUserById(a.authorId) || {};
+      let b = a.cat==='f1'?'b-f1':a.cat==='motogp'?'b-motogp':'b-endurance';
+      let thumb = a.coverImg || 'https://images.unsplash.com/photo-1541348263662-e06836264b28?q=80&w=600&auto=format&fit=crop';
       return {
-        id: a.id,
-        cat: a.category ? a.category.toLowerCase().replace(' ', '') : 'news',
-        badge: a.category ? a.category : 'SAAS',
-        kicker: u.type === 'equipe' ? 'EQUIPE OFICIAL' : 'PILOTO OFICIAL',
-        title: a.title,
-        author: u.name || 'Redação PitLane',
-        av: 'PL',
-        date: PitLane.formatDate(a.publishedAt || new Date()),
-        img: a.image_url || ('https://loremflickr.com/760/320/racing?lock='+a.id),
-        body: a.content || a.description || '',
-        isReal: false
-      };
+        id: a.id, title: a.title, cat: a.cat, badge: b, img: thumb, 
+        author: a.pilotName, date: new Date(a.createdAt).toLocaleDateString('pt-BR'), kicker: a.excerpt, body: a.content, av: 'AO VIVO', partner: a.sponsorTeam, pago: a.sponsored, isReal: false 
+      }
     });
   }
+
+  // MOCK N8N AI
+  saasArticles.unshift({
+    id: 'ai-mock-motorsport',
+    title: "Ferrari traz mega-atualização aerodinâmica para o Canadá e projeta salto na classificação",
+    cat: 'f1', badge: 'b-f1',
+    img: 'https://images.unsplash.com/photo-1538356396417-6d601dff87f7?q=80&w=2070&auto=format&fit=crop',
+    author: 'PitLane AI Bot', date: 'HOJE',
+    kicker: 'Curadoria Automática PitLane News',
+    body: "<p><b>Resumo:</b> A escuderia italiana Ferrari anunciou que chegará ao GP de Montreal com um novo assoalho e bicos redesenhados. Após sofrer com saltos aerodinâmicos, os engenheiros prometem mais estabilidade e ameaçam quebrar o domínio de curvas de alta velocidade da rival atual.</p>",
+    av: 'NOVA ANÁLISE B2B',
+    isReal: false,
+    
+    // CAMPOS DE AI N8N (OS NOVOS)
+    aiAnalysis: "A introdução deste pacote expõe a agressividade orçamentária do final deste semestre e revela oportunidades gigantescas para fornecedores logísticos automotivos ao redor da Ferrari. Para os <b>pilotos de Fórmula Base Brasileiros</b>, essa mudança na curva de aprendizado técnica do pitlane serve como vitrine para negociações com equipes parceiras do programa de jovens onde a estabilidade do chassi vira moeda de troca em simuladores.",
+    originalLink: "https://br.motorsport.com/f1/news/ferrari-canada/",
+    aiB2bContext: "Acelerar Funil"
+  });
+
 
   let rssArticles = [];
   try {
@@ -783,8 +808,10 @@ async function loadLiveNews() {
           av: '<i class="fi fi-rr-newspaper"></i>',
           date: new Date(n.pubDate).toLocaleDateString('pt-BR'),
           img: n.thumbnail || 'https://loremflickr.com/400/260/racing,formula1?lock='+i,
-          body: n.contentSnippet || '',
-          isReal: true
+          body: "<p><b>Resumo Estratégico: </b>" + ((n.contentSnippet || n.description || '').substring(0, 200)) + "...</p>",
+          originalLink: n.link,
+          aiAnalysis: "A narrativa acima foi monitorada por nossos sistemas pois reverbera no budget corporativo das montadoras neste trimestre. Atletas cadastrados no PitLane devem usar esse momento e citar este link para chancelar relatórios diários com diretores de mídia B2B.",
+          isReal: false
         };
       });
     } else {
@@ -825,8 +852,10 @@ async function loadLiveNews() {
               av: '<i class="fi fi-rr-rss"></i>',
               date: new Date((n.pubDate||'').replace(/-/g, '/')).toLocaleDateString('pt-BR'),
               img: (n.enclosure && n.enclosure.link) ? n.enclosure.link : (n.thumbnail || 'https://images.unsplash.com/photo-1541348263662-e068662d82af?w=400'),
-              body: n.content || n.description || '',
-              isReal: true
+              body: "<p><b>Resumo Estratégico: </b>" + ((n.description || n.content || '').substring(0, 200).replace(/<[^>]*>?/gm, '')) + "...</p>",
+              originalLink: n.link,
+              aiAnalysis: "A narrativa acima foi monitorada por nossos sistemas pois reverbera no budget corporativo das montadoras neste trimestre. Atletas cadastrados no PitLane devem usar esse momento e citar este link para chancelar relatórios diários com diretores de mídia B2B.",
+              isReal: false
             });
           });
         }
