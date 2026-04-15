@@ -281,10 +281,29 @@ async function loadLiveNews() {
 
   } catch (err) {
     console.error("News Pipeline Falhou, caindo pro mock...", err);
+    ARTICLES = saasArticles.length >= 15 ? saasArticles : [
+      ...saasArticles,
+      { id:'1', cat:'f1', badge:'f1', kicker:'LATEST NEWS', title:'Antonelli lidera F1 2026 com 72 pts — ANÁLISE PITLANE', link:'#', author:'PitLane', av:'PL', date: new Date().toLocaleDateString('pt-BR'), img:'https://loremflickr.com/800/400/formula1?lock=31', body:'', isReal:true },
+      { id:'2', cat:'motogp', badge:'motogp', kicker:'LATEST NEWS', title:'Bagnaia e Márquez disputam as décimas de segundo em final eletrizante', link:'#', author:'PitLane', av:'PL', date: new Date().toLocaleDateString('pt-BR'), img:'https://loremflickr.com/400/280/motorcycle?lock=32', body:'', isReal:true },
+      { id:'3', cat:'wec', badge:'wec', kicker:'LATEST NEWS', title:'Ferrari Hypercar mostra bom rendimento e desafia a Toyota em Le Mans', link:'#', author:'PitLane', av:'PL', date: new Date().toLocaleDateString('pt-BR'), img:'https://loremflickr.com/400/280/hypercar?lock=33', body:'', isReal:true },
+      { id:'4', cat:'nascar', badge:'nascar', kicker:'LATEST NEWS', title:'Drafting e Bump and Run: as estratégias decisivas de Talladega', link:'#', author:'PitLane', av:'PL', date: new Date().toLocaleDateString('pt-BR'), img:'https://loremflickr.com/400/280/nascar?lock=34', body:'', isReal:true },
+      { id:'5', cat:'f1', badge:'f1', kicker:'LATEST NEWS', title:'O mercado de pilotos agitado para a próxima janela de transferências', link:'#', author:'PitLane', av:'PL', date:'06/04/2026', img:'https://loremflickr.com/400/280/racecar?lock=35', body:'', isReal:true },
+      { id:'6', cat:'sim', badge:'sim', kicker:'LATEST NEWS', title:'iRacing anuncia novo update revolucionário com clima totalmente dinâmico', link:'#', author:'PitLane', av:'PL', date:'05/04/2026', img:'https://loremflickr.com/400/280/simracing?lock=36', body:'', isReal:true },
+      { id:'7', cat:'f1', badge:'f1', kicker:'LATEST NEWS', title:'Revolução aerodinâmica: o segredo da asa flexível na F1 2026', link:'#', author:'PitLane', av:'PL', date:'04/04/2026', img:'https://loremflickr.com/400/280/f1?lock=37', body:'', isReal:true },
+      { id:'8', cat:'wrc', badge:'wrc', kicker:'LATEST NEWS', title:'Rally Rovanperä domina com folga as neves remotas do Norte', link:'#', author:'PitLane', av:'PL', date:'03/04/2026', img:'https://loremflickr.com/400/280/rally?lock=38', body:'', isReal:true },
+      { id:'9', cat:'f1', badge:'f1', kicker:'LATEST NEWS', title:'Pit stops impressionantes na casa do 1.5s viram o novo padrão', link:'#', author:'PitLane', av:'PL', date:'02/04/2026', img:'https://loremflickr.com/400/280/pitstop?lock=39', body:'', isReal:true },
+      { id:'10', cat:'motogp', badge:'motogp', kicker:'LATEST NEWS', title:'Aerodinâmica excessiva: pilotos reclamam abertamente das turbulências', link:'#', author:'PitLane', av:'PL', date:'01/04/2026', img:'https://loremflickr.com/400/280/bike?lock=40', body:'', isReal:true },
+      { id:'11', cat:'wec', badge:'wec', kicker:'LATEST NEWS', title:'Porsche anuncia pacote de expansão ambicioso na classe LMDh', link:'#', author:'PitLane', av:'PL', date:'31/03/2026', img:'https://loremflickr.com/400/280/lemans?lock=41', body:'', isReal:true },
+      { id:'12', cat:'sim', badge:'sim', kicker:'LATEST NEWS', title:'Assetto Corsa Evo vs iRacing: Qual a melhor engine baseada na atualidade?', link:'#', author:'PitLane', av:'PL', date:'30/03/2026', img:'https://loremflickr.com/400/280/sim?lock=42', body:'', isReal:true },
+      { id:'13', cat:'f1', badge:'f1', kicker:'LATEST NEWS', title:'Rumores do Paddock: Audi prepara aquisição surpresa no grid?', link:'#', author:'PitLane', av:'PL', date:'29/03/2026', img:'https://loremflickr.com/400/280/audi?lock=43', body:'', isReal:true },
+      { id:'14', cat:'motogp', badge:'motogp', kicker:'LATEST NEWS', title:'Recordes caindo: Bagnaia crava volta espetacular em testes na Ásia', link:'#', author:'PitLane', av:'PL', date:'28/03/2026', img:'https://loremflickr.com/400/280/bagnaia?lock=44', body:'', isReal:true },
+      { id:'15', cat:'wec', badge:'wec', kicker:'LATEST NEWS', title:'A revolução verde: detalhes do novo bio-combustível no endurance', link:'#', author:'PitLane', av:'PL', date:'27/03/2026', img:'https://loremflickr.com/400/280/fuel?lock=45', body:'', isReal:true }
+    ];
     renderHeroGrid();
     renderNewsGrid();
     renderVidGrid();
     renderSplitGrids();
+    renderTicker();
   }
 }
 
