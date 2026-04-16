@@ -821,6 +821,28 @@
     #planos .plan-cta-outline:hover { border-color: var(--acc); color: var(--acc); background: rgba(232,0,45,0.05); }
     #planos .plan-cta-red { background: var(--acc); color: #fff; box-shadow: 0 4px 20px rgba(232,0,45,0.3); }
     #planos .plan-cta-red:hover { background: var(--acc2); box-shadow: 0 8px 30px rgba(232,0,45,0.4); transform: translateY(-2px); }
+    #planos .plan-cta-gold { background: linear-gradient(135deg, var(--gold), #d48f00); color: #000; font-weight: 800; box-shadow: 0 4px 20px rgba(240,165,0,0.2); }
+    #planos .plan-cta-gold:hover { box-shadow: 0 8px 30px rgba(240,165,0,0.35); transform: translateY(-2px); }
+
+    /* ── FOOTER NOTES ── */
+    #planos .plan-notes-section { max-width: 900px; margin: 0 auto; padding: 40px 40px 40px; text-align: center; }
+    #planos .plan-all-include { background: var(--bg2); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 28px 32px; margin-bottom: 24px; }
+    #planos .plan-all-include h4 { font-family: var(--fu); font-size: 13px; font-weight: 700; color: #fff; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
+    #planos .plan-all-include p { font-family: var(--fm); font-size: 13px; color: var(--txt2); line-height: 1.8; }
+    #planos .plan-all-include .tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 16px; }
+    #planos .plan-all-include .tag { display: inline-flex; align-items: center; gap: 6px; font-family: var(--fm); font-size: 12px; color: var(--success); background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.1); padding: 6px 14px; border-radius: 8px; }
+
+    /* ── CATEGORY BANNER ── */
+    #planos .plan-cat-banner { background: linear-gradient(135deg, rgba(240,165,0,0.06), var(--bg2)); border: 1px solid rgba(240,165,0,0.15); border-radius: 14px; padding: 36px 40px; text-align: center; max-width: 900px; margin: 0 auto 60px; }
+    #planos .plan-cat-banner h3 { font-family: var(--fd); font-size: 32px; color: var(--gold); margin-bottom: 12px; }
+    #planos .plan-cat-banner p { font-family: var(--fm); font-size: 14px; color: var(--txt2); line-height: 1.7; max-width: 600px; margin: 0 auto 20px; }
+    #planos .plan-cat-banner .price-tag { font-family: var(--fd); font-size: 20px; color: #fff; margin-bottom: 20px; }
+
+    /* ── GUARANTEE ── */
+    #planos .plan-guarantee { max-width: 600px; margin: 0 auto 60px; display: flex; align-items: center; gap: 16px; background: rgba(16,185,129,0.04); border: 1px solid rgba(16,185,129,0.1); border-radius: 12px; padding: 24px 28px; }
+    #planos .plan-guarantee i { font-size: 28px; color: var(--success); flex-shrink: 0; }
+    #planos .plan-guarantee strong { color: #fff; font-family: var(--fu); font-size: 14px; display: block; margin-bottom: 4px; }
+    #planos .plan-guarantee p { font-family: var(--fm); font-size: 12px; color: var(--txt2); line-height: 1.6; text-align: left; margin: 0; }
   </style>
   <div class="container">
     <h2>ESCOLHA SEU PLANO</h2>
@@ -869,24 +891,35 @@
       </div>
     </div>
 
-    <!-- Avulsa -->
-    <div class="plan-avulsa">
-      Precisa de mais matérias? Compre avulsas por R$59,90 cada, sem mudar de plano.
+    <!-- ALL PLANS INCLUDE -->
+    <div class="plan-notes-section">
+      <div class="plan-all-include">
+        <h4>Todos os planos incluem</h4>
+        <div class="tags">
+          <span class="tag"><i class="fi fi-rr-check"></i> Cancelamento a qualquer momento</span>
+          <span class="tag"><i class="fi fi-rr-check"></i> Sem taxa de adesão</span>
+          <span class="tag"><i class="fi fi-rr-check"></i> Suporte por WhatsApp</span>
+          <span class="tag"><i class="fi fi-rr-check"></i> Publicação em até 48h</span>
+        </div>
+      </div>
     </div>
 
-    <!-- Equipes -->
-    <div class="plan-equipes">
-      <h3>EQUIPE OU CATEGORIA?</h3>
-      <p>Planos com volume de matérias, landing page dedicada e cobertura completa.<br>Equipe a partir de R$499/mês · Categoria a partir de R$999/mês</p>
-      <button class="btn-lp btn-outline" style="border-color:var(--gold);color:var(--gold);" onclick="window.location.href='planos.html#plan-equipe'">Solicitar Proposta &rarr;</button>
+    <!-- CATEGORY BANNER -->
+    <div class="plan-cat-banner">
+      <h3>REPRESENTA UMA CATEGORIA INTEIRA?</h3>
+      <p>Temos um plano com cobertura completa de todas as etapas, classificação ao vivo e equipe editorial dedicada.</p>
+      <div class="price-tag">A PARTIR DE R$999,90/MÊS</div>
+      <a href="https://wa.me/5511976377682?text=Quero%20saber%20sobre%20o%20plano%20de%20Categoria" target="_blank">
+        <button class="plan-cta plan-cta-gold" style="max-width:360px;margin:0 auto;">Solicitar uma proposta →</button>
+      </a>
     </div>
 
-    <!-- Garantia -->
-    <div class="garantia font-fm">
-      <i class="fi fi-rr-shield-check" style="font-size:32px;color:var(--success);"></i>
-      <div style="text-align:left;">
-        <strong style="color:#fff;display:block;margin-bottom:4px;font-family:var(--fb);">RISCO ZERO — Sem contrato. Sem taxa de adesão. Sem multa.</strong>
-        Cancele pelo painel quando quiser.
+    <!-- GUARANTEE -->
+    <div class="plan-guarantee">
+      <i class="fi fi-rr-shield-check"></i>
+      <div>
+        <strong>Risco Zero — Sem contrato. Sem taxa de adesão. Sem multa.</strong>
+        <p>Cancele pelo painel a qualquer momento. Suas matérias publicadas continuam no portal mesmo após o cancelamento.</p>
       </div>
     </div>
   </div>
