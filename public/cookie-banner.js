@@ -1,6 +1,7 @@
 (function () {
   var KEY = 'dn_cookie_v3';
   if (localStorage.getItem(KEY)) return;
+  if (document.getElementById('dn-cookie-banner')) return;
 
   var el = document.createElement('div');
   el.id = 'dn-cookie-banner';
