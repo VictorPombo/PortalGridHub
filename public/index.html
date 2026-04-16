@@ -841,6 +841,15 @@
     #planos .plan-guarantee i { font-size: 28px; color: var(--success); flex-shrink: 0; }
     #planos .plan-guarantee strong { color: #fff; font-family: var(--fu); font-size: 14px; display: block; margin-bottom: 4px; }
     #planos .plan-guarantee p { font-family: var(--fm); font-size: 12px; color: var(--txt2); line-height: 1.6; text-align: left; margin: 0; }
+
+    /* ── MOBILE FIXES ── */
+    @media (max-width: 768px) {
+      .virada-closing { font-size: 24px !important; }
+      #planos .plan-cat-banner { padding: 24px 16px; width: 100%; box-sizing: border-box; }
+      #planos .plan-cat-banner h3 { font-size: 24px; }
+      #planos .plan-guarantee { padding: 16px; flex-direction: column; text-align: center; }
+      #planos .plan-guarantee p { text-align: center; }
+    }
   </style>
   <div class="container">
     <h2>ESCOLHA SEU PLANO</h2>
@@ -1062,7 +1071,7 @@
       <div id="auth-register" class="hide" style="text-align:center;padding:24px 12px">
         <div style="font-family:var(--fd);font-size:24px;margin-bottom:8px">COMECE SUA JORNADA</div>
         <p style="color:var(--dim);font-size:14px;margin-bottom:24px;line-height:1.5">Escolha seu plano e junte-se aos pilotos e equipes do maior portal agregador de automobilismo.</p>
-        <button class="btn btn-acc btn-full" onclick="window.location.href='planos.html'">Conhecer os Planos →</button>
+        <button class="btn btn-acc btn-full" onclick="showView('plans')">Conhecer os Planos →</button>
         <button class="btn btn-out btn-full" style="margin-top:12px" onclick="window.location.href='cadastro.html?plan=starter'">Criar Conta Gratuita</button>
       </div>
     </div>

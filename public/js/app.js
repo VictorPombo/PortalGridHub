@@ -904,7 +904,7 @@ function renderHeroGrid(catFilter = 'all') {
         </div>
       </div>
     </div>
-    <div class="hero-side" style="display:flex;flex-direction:column;gap:3px">
+    <div class="hero-side">
       <div class="side-card" onclick="${getClk(a1)}" style="flex:1;position:relative;overflow:hidden;cursor:pointer;background:var(--bg2)">
         <img src="${a1.img}" alt="" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.4) brightness(.4);transition:transform .4s">
         <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(3,3,10,.95) 0%,rgba(3,3,10,.2) 55%,transparent);z-index:1"></div>
