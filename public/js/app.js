@@ -986,7 +986,7 @@ function renderNewsGrid() {
           <div class="news-card-title">${a.title}</div>
           <div class="news-card-footer">
             <span class="news-card-cta">
-              Via ${a.author}
+              Ler no portal proprietário: ${a.author}
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:4px; margin-bottom:2px"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
             </span>
           </div>
