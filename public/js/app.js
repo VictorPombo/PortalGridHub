@@ -481,38 +481,7 @@ const HERO_DATA={
   }
 };
 
-    const heroBadge=wrap.querySelector('.hero-main .badge');
-    if(heroBadge){heroBadge.className='badge '+h.badgeCls;heroBadge.textContent=h.badge}
-    const heroTitle=wrap.querySelector('.hero-title');
-    if(heroTitle) heroTitle.textContent=h.title;
-    const heroExcerpt=wrap.querySelector('.hero-excerpt');
-    if(heroExcerpt) heroExcerpt.textContent=h.excerpt;
-    const heroMeta=wrap.querySelector('.hero-meta');
-    if(heroMeta) heroMeta.innerHTML='<span>'+h.meta.split(' · ').join('</span><span>')+'</span>';
-    
-    // Main Hero Click Handler
-    const heroMainDiv=wrap.querySelector('.hero-main');
-    if(heroMainDiv) {
-      if(h.isExt) {
-        heroMainDiv.onclick=()=>extLink(h.extLink);
-      } else {
-        heroMainDiv.onclick=()=>openArticle(h.articleId);
-      }
-    }
-    // Side cards
-    const sides=wrap.querySelectorAll('.side-card');
-    h.sides.forEach((s,i)=>{
-      if(!sides[i])return;
-      sides[i].onclick=()=>extLink(s.link);
-      const sImg=sides[i].querySelector('img');if(sImg) sImg.src=s.img;
-      const sType=sides[i].querySelector('.hero-type');if(sType){sType.className='hero-type '+s.typeCls;sType.style.cssText='display:inline-flex;font-size:8px;padding:2px 7px';sType.innerHTML='<i class="fi fi-rr-link"></i> '+s.typeLabel}
-      const sBadge=sides[i].querySelector('.badge');if(sBadge){sBadge.className='badge '+s.badgeCls;sBadge.textContent=s.badge}
-      const sTitle=sides[i].querySelector('.side-title');if(sTitle) sTitle.textContent=s.title;
-    });
-    // Fade in
-    wrap.classList.remove('switching');
-  },300);
-}
+
 
 function filterCat(cat){
   currentCat=cat;applyFilter();
