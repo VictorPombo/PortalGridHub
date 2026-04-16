@@ -843,16 +843,33 @@ function renderHeroGrid() {
   const grid = document.getElementById('heroGrid');
   if (!grid || ARTICLES.length < 3) return;
 
-  const a0 = ARTICLES[0], a1 = ARTICLES[1], a2 = ARTICLES[2];
+  const carNews = ARTICLES.find(a => ['f1', 'stock-car', 'wec', 'indycar', 'nascar'].includes(a.cat)) || ARTICLES[0];
+  const motoNews = ARTICLES.find(a => a.cat === 'motogp' && a.id !== carNews.id) || ARTICLES.find(a => a.id !== carNews.id) || ARTICLES[1];
+  
+  const pilotNews = {
+    id: 9999,
+    cat: 'f4-brasil',
+    badge: 'b-f4-brasil',
+    title: 'Rafael Moura Vence na F4 Brasil e Atrai Interesse de Equipes Europeias',
+    link: '#',
+    author: 'PitLane',
+    date: 'há 2h',
+    img: 'img/demo-news-img.png',
+    isReal: false
+  };
+
+  const a0 = carNews, a1 = pilotNews, a2 = motoNews;
+  const getClk = (a) => a.isReal === false ? `toast('Demonstração: Matéria exclusiva do piloto assinante!','info')` : `window.open('${a.link}','_blank')`;
 
   grid.innerHTML = `
-    <div class="hero-main" onclick="window.open('${a0.link}','_blank')" style="position:relative;overflow:hidden">
+    <div class="hero-main" onclick="${getClk(a0)}" style="position:relative;overflow:hidden;cursor:pointer">
       <img src="${a0.img}" alt="${a0.title}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.5) brightness(.4);transition:transform .6s">
       <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(3,3,10,.98) 0%,rgba(3,3,10,.5) 40%,transparent 100%);z-index:1"></div>
       <div class="hero-content" style="position:absolute;bottom:0;left:0;right:0;padding:36px;z-index:2">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
           <span class="news-card-cat ${getCatClass(a0.cat)}" style="position:static">${a0.cat.toUpperCase()}</span>
           <span style="font-family:var(--fm);font-size:10px;color:rgba(255,255,255,.4)">${a0.author}</span>
+          ${a0.isReal === false ? '<span class="tag-pago" style="font-size:10px;padding:2px 8px;margin-left:8px"><i class="fi fi-rr-star"></i> Patrocinado</span>' : ''}
         </div>
         <h1 style="font-family:'Bebas Neue',sans-serif;font-size:52px;line-height:.96;color:#fff;margin:0 0 12px">${a0.title}</h1>
         <div style="font-family:var(--fm);font-size:11px;color:rgba(255,255,255,.35);display:flex;align-items:center;gap:8px">
@@ -863,19 +880,20 @@ function renderHeroGrid() {
       </div>
     </div>
     <div class="hero-side" style="display:flex;flex-direction:column;gap:3px">
-      <div class="side-card" onclick="window.open('${a1.link}','_blank')" style="flex:1;position:relative;overflow:hidden;cursor:pointer;background:var(--bg2)">
+      <div class="side-card" onclick="${getClk(a1)}" style="flex:1;position:relative;overflow:hidden;cursor:pointer;background:var(--bg2)">
         <img src="${a1.img}" alt="" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.4) brightness(.4);transition:transform .4s">
         <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(3,3,10,.95) 0%,rgba(3,3,10,.2) 55%,transparent);z-index:1"></div>
         <div class="side-content" style="position:absolute;bottom:0;left:0;right:0;padding:16px 18px;z-index:2">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
             <span class="news-card-cat ${getCatClass(a1.cat)}" style="position:static;font-size:8px;padding:3px 8px">${a1.cat.toUpperCase()}</span>
             <span style="font-family:var(--fm);font-size:9px;color:rgba(255,255,255,.4)">${a1.author}</span>
+            ${a1.isReal === false ? '<span class="tag-pago" style="font-size:8px;padding:1px 6px;margin-left:4px"><i class="fi fi-rr-star"></i> Patrocinado</span>' : ''}
           </div>
           <div style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;text-transform:uppercase;line-height:1.15;color:#fff;margin-bottom:5px">${a1.title}</div>
           <div style="font-family:var(--fm);font-size:9px;color:rgba(255,255,255,.3)">${a1.date} · Acessar ↗</div>
         </div>
       </div>
-      <div class="side-card" onclick="window.open('${a2.link}','_blank')" style="flex:1;position:relative;overflow:hidden;cursor:pointer;background:var(--bg2)">
+      <div class="side-card" onclick="${getClk(a2)}" style="flex:1;position:relative;overflow:hidden;cursor:pointer;background:var(--bg2)">
         <img src="${a2.img}" alt="" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.4) brightness(.4);transition:transform .4s">
         <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(3,3,10,.95) 0%,rgba(3,3,10,.2) 55%,transparent);z-index:1"></div>
         <div class="side-content" style="position:absolute;bottom:0;left:0;right:0;padding:16px 18px;z-index:2">
