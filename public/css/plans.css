@@ -582,22 +582,32 @@
 .virada-closing { font-size: 24px; color: var(--acc); margin-top: 10px; }
 
 /* Sec5 Passos */
-.sec-passos { padding: 80px 0; }
-.sec-passos h2 { font-size: 42px; text-align: center; margin-bottom: 60px; }
-.passos-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; position: relative; }
+.sec-passos { padding: 100px 0; background-color: var(--bg); position: relative;}
+.sec-passos h2 { font-family: var(--fd); font-size: 56px; text-transform: uppercase; letter-spacing: 1px; text-align: center; margin-bottom: 80px; line-height: 1; text-wrap: balance;}
+.passos-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; position: relative; max-width: 1100px; margin: 0 auto; }
 .passos-bg-line {
   position: absolute;
-  top: 30px; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(232,0,45,0.25), rgba(240,160,0,0.25), transparent);
+  top: 40px; left: 5%; right: 5%; height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(232,0,45,0.5), transparent);
   z-index: 0;
 }
-.passo-item { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; text-align: center;}
+.passo-item { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; text-align: center; cursor: default; }
 .passo-num {
-  width: 60px; height: 60px; background: var(--acc); color: #fff; font-family: var(--fd); font-size: 32px;
-  display: flex; align-items: center; justify-content: center; margin-bottom: 24px;
+  width: 80px; height: 80px; background: var(--bg1); color: var(--acc); font-family: var(--fd); font-size: 40px; line-height:1;
+  border: 2px solid rgba(232,0,45,0.3); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; margin-bottom: 32px;
+  box-shadow: 0 0 20px rgba(232,0,45,0.1);
+  transition: all 0.3s;
 }
-.passo-item h3 { font-family: var(--fd); font-size: 24px; margin-bottom: 12px; letter-spacing: 1px; }
-.passo-item p { font-size: 15px; color: var(--text); line-height: 1.6; margin: 0; }
+.passo-item:hover .passo-num {
+  border-color: var(--acc);
+  box-shadow: 0 0 40px rgba(232,0,45,0.4);
+  transform: scale(1.05);
+  color: #fff;
+  background: var(--acc);
+}
+.passo-item h3 { font-family: var(--fb); font-weight: 700; font-size: 18px; margin-bottom: 12px; letter-spacing: 0.5px; color:#fff;}
+.passo-item p { font-family: var(--fb); font-size: 15px; color: var(--dim); line-height: 1.6; margin: 0; }
 
 /* Sec6 O Verdadeiro Valor */
 .sec-valor { background: #000; padding: 80px 0; text-align: center; }
