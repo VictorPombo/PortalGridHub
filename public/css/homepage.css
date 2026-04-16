@@ -404,3 +404,68 @@
   footer{padding:32px 16px 20px}
   .f-desc{max-width:100%}
 }
+
+/* ════════════════════════════
+PRESS RELEASE — Visual forte
+════════════════════════════ */
+.badge-pr {
+font-family: var(--fm);
+font-size: 8px;
+font-weight: 700;
+letter-spacing: 2px;
+text-transform: uppercase;
+background: rgba(232,0,45,0.12);
+color: var(--acc);
+border: 1px solid rgba(232,0,45,0.3);
+padding: 2px 8px;
+border-radius: 3px;
+flex-shrink: 0;
+white-space: nowrap;
+}
+.pr-header {
+display: flex;
+align-items: center;
+gap: 8px;
+flex-wrap: wrap;
+margin-bottom: 4px;
+}
+.pr-source {
+font-family: var(--fm);
+font-size: 10px;
+color: var(--dim);
+}
+.pr-source strong {
+color: var(--text);
+font-weight: 600;
+}
+.pr-translated {
+font-family: var(--fm);
+font-size: 9px;
+color: var(--muted);
+}
+.pr-footer {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 8px;
+}
+.pr-date {
+font-family: var(--fm);
+font-size: 10px;
+color: var(--muted);
+}
+.pr-ver-original {
+font-family: var(--fm);
+font-size: 10px;
+color: var(--acc);
+text-decoration: none;
+opacity: 0.7;
+transition: opacity 0.2s;
+white-space: nowrap;
+}
+.pr-ver-original:hover { opacity: 1; }
+@media (max-width: 720px) {
+.pr-header { gap: 6px; }
+.badge-pr { font-size: 7px; padding: 2px 6px; }
+.pr-source { font-size: 9px; }
+}

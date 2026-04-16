@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard-piloto.html
+Disallow: /dashboard-equipe.html
+Disallow: /dashboard-categoria.html
+Disallow: /admin.html
+
+User-agent: Driver News-News-Bot
+Allow: /
+# Driver News publica exclusivamente press releases oficiais
+# de federações, séries e organizadores do automobilismo.
