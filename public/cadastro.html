@@ -87,8 +87,6 @@
         <select class="form-select" id="regPlanSelector" onchange="selectedPlan=this.value; updatePlanUI()">
           <option value="starter">Piloto Starter — R$99,90/mês</option>
           <option value="pro">Piloto Pro — R$149,90/mês</option>
-          <option value="equipe">Equipe Parceira — R$499,90/mês</option>
-          <option value="categoria">Categoria Oficial — R$999,90/mês</option>
         </select>
       </div>
 
@@ -299,8 +297,27 @@ if (typeof Driver !== 'undefined' && Driver.isLoggedIn()) {
 function showMode(mode) {
   document.getElementById('loginMode').style.display = mode === 'login' ? 'block' : 'none';
   document.getElementById('registerMode').style.display = mode === 'register' ? 'block' : 'none';
-  document.querySelectorAll('.tabs .tab').forEach((t, i) => t.classList.toggle('active', (mode === 'register' && i === 0) || (mode === 'login' && i === 1)));
-  document.getElementById('pageTitle').textContent = mode === 'login' ? 'Acessar Conta' : ('Assinar ' + PLAN_CONFIG[selectedPlan].name);
+  
+  const tabs = document.querySelectorAll('.tabs .tab');
+  if (tabs.length >= 2) {
+    if (mode === 'register') {
+      tabs[0].classList.add('active');
+      tabs[1].classList.remove('active');
+    } else {
+      tabs[0].classList.remove('active');
+      tabs[1].classList.add('active');
+    }
+  }
+
+  const title = document.getElementById('pageTitle');
+  if (title) {
+    if (mode === 'login') {
+      title.textContent = 'Acessar Conta';
+    } else {
+      const config = PLAN_CONFIG[selectedPlan] || PLAN_CONFIG['starter'];
+      title.textContent = 'Assinar ' + config.name;
+    }
+  }
 }
 
 async function doLogin() {
