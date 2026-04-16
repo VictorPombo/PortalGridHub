@@ -3,18 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PitLane News - Project Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <title>PitLane News — Project Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #0A0A0A;
-      --surface: #1A1A1A;
-      --border: rgba(255, 255, 255, 0.1);
+      --surface: #141418;
+      --surface2: #1c1c22;
+      --border: rgba(255, 255, 255, 0.08);
       --text: #FFF;
-      --muted: #888;
-      --acc: #E10600; /* Red */
+      --muted: #666;
+      --dim: #999;
+      --acc: #E10600;
       --gold: #FFD700;
       --green: #00e676;
+      --blue: #4a9eff;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -25,10 +28,10 @@
       padding: 40px 20px;
     }
     header {
-      max-width: 900px;
+      max-width: 960px;
       margin: 0 auto 40px;
       border-bottom: 2px solid var(--border);
-      padding-bottom: 20px;
+      padding-bottom: 24px;
     }
     h1 {
       font-family: 'Bebas Neue', sans-serif;
@@ -36,35 +39,60 @@
       color: var(--acc);
       letter-spacing: 1px;
     }
-    .subtitle { color: var(--muted); font-size: 16px; margin-top: 5px; }
+    .subtitle { color: var(--muted); font-size: 14px; margin-top: 5px; }
+    .last-update { color: var(--dim); font-size: 11px; margin-top: 8px; opacity: 0.6; }
+
+    /* Stats bar */
+    .stats-bar {
+      max-width: 960px; margin: 0 auto 32px;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+    }
+    .stat-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+    }
+    .stat-box .num { font-family: 'Bebas Neue'; font-size: 36px; }
+    .stat-box .lbl { font-size: 11px; color: var(--dim); text-transform: uppercase; letter-spacing: 1px; }
+    .stat-box.green .num { color: var(--green); }
+    .stat-box.gold .num { color: var(--gold); }
+    .stat-box.red .num { color: var(--acc); }
+    .stat-box.blue .num { color: var(--blue); }
 
     .container {
-      max-width: 900px;
+      max-width: 960px;
       margin: 0 auto;
       display: grid;
-      gap: 30px;
+      gap: 24px;
     }
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 30px;
+      border-radius: 10px;
+      padding: 28px;
     }
     .card h2 {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 28px;
-      margin-bottom: 15px;
-      color: var(--gold);
+      font-size: 26px;
+      margin-bottom: 16px;
       display: flex;
       align-items: center;
       gap: 10px;
     }
+    .card h2.green { color: var(--green); }
+    .card h2.gold { color: var(--gold); }
+    .card h2.red { color: var(--acc); }
+    .card h2.blue { color: var(--blue); }
+    .card h2.muted { color: var(--dim); }
+
     .task-list { list-style: none; }
     .task-list li {
-      padding: 12px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
       display: flex;
-      gap: 15px;
+      gap: 14px;
       align-items: flex-start;
     }
     .task-list li:last-child { border-bottom: none; }
@@ -72,100 +100,229 @@
     .status {
       padding: 4px 10px;
       border-radius: 4px;
-      font-size: 12px;
+      font-size: 10px;
       font-weight: bold;
       text-transform: uppercase;
+      letter-spacing: 0.5px;
       flex-shrink: 0;
-      margin-top: 2px;
+      margin-top: 3px;
+      min-width: 80px;
+      text-align: center;
     }
-    .status.done { background: rgba(0, 230, 118, 0.1); color: var(--green); border: 1px solid var(--green); }
-    .status.todo { background: rgba(255, 255, 255, 0.05); color: var(--muted); border: 1px solid var(--border); }
-    .status.doing { background: rgba(255, 215, 0, 0.1); color: var(--gold); border: 1px solid var(--gold); }
-    .status.blocked { background: rgba(225, 6, 0, 0.1); color: var(--acc); border: 1px solid var(--acc); }
+    .status.done { background: rgba(0, 230, 118, 0.08); color: var(--green); border: 1px solid rgba(0,230,118,0.2); }
+    .status.todo { background: rgba(255, 255, 255, 0.03); color: var(--muted); border: 1px solid var(--border); }
+    .status.doing { background: rgba(255, 215, 0, 0.08); color: var(--gold); border: 1px solid rgba(255,215,0,0.2); }
+    .status.blocked { background: rgba(225, 6, 0, 0.08); color: var(--acc); border: 1px solid rgba(225,6,0,0.2); }
+    .status.next { background: rgba(74, 158, 255, 0.08); color: var(--blue); border: 1px solid rgba(74,158,255,0.2); }
 
-    .detail {
-      flex: 1;
+    .detail { flex: 1; }
+    .detail strong { color: #FFF; font-size: 14px; display: block; margin-bottom: 3px; }
+    .detail p { color: var(--dim); font-size: 13px; line-height: 1.5; }
+    .detail .files { font-size: 11px; color: var(--muted); margin-top: 4px; font-family: monospace; }
+
+    @media (max-width: 768px) {
+      .stats-bar { grid-template-columns: repeat(2, 1fr); }
+      h1 { font-size: 36px; }
     }
-    .detail strong { color: #FFF; font-size: 16px; display: block; margin-bottom: 4px;}
-    .detail p { color: var(--muted); font-size: 14px; }
   </style>
 </head>
 <body>
 
   <header>
     <h1>Project Roadmap & Dashboard</h1>
-    <div class="subtitle">PitLane News - Rastreamento de Roadmaps, Funcionalidades e Integrações Estratégicas</div>
+    <div class="subtitle">PitLane News — Portal de Automobilismo + Sistema de Assinaturas para Pilotos</div>
+    <div class="last-update">Última atualização: 16/04/2026 · Commit: dcfadce</div>
   </header>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stat-box green"><div class="num">14</div><div class="lbl">Concluídos</div></div>
+    <div class="stat-box gold"><div class="num">4</div><div class="lbl">Próximas</div></div>
+    <div class="stat-box blue"><div class="num">3</div><div class="lbl">Planejados</div></div>
+    <div class="stat-box red"><div class="num">1</div><div class="lbl">Bloqueado</div></div>
+  </div>
 
   <div class="container">
     
-    <!-- CONCLUÍDAS -->
+    <!-- ═══════════ FASE 1: CONCLUÍDA ═══════════ -->
     <div class="card" style="border-left: 4px solid var(--green)">
-      <h2>✅ FASE 1: Apresentação e Landing Pages</h2>
+      <h2 class="green">✅ FASE 1 — Portal de Notícias Dinâmico</h2>
       <ul class="task-list">
         <li>
           <div class="status done">Concluído</div>
           <div class="detail">
-            <strong>Limpeza de UI e Dados Iniciais</strong>
-            <p>Remoção de referências estáticas incorretas (Kimi Antonelli), polimento da grade principal, versão mobile-first ajustada.</p>
+            <strong>Agregador de Notícias Multi-Source (RSS)</strong>
+            <p>Pipeline com Motorsport Brasil, F1Mania, Grande Prêmio e Band. Classificação automática por categoria (F1, MotoGP, Stock Car, NASCAR, IndyCar, WRC). Cache de 10min + refresh de 5min no client.</p>
+            <div class="files">src/app/api/news/route.ts · public/js/app.js</div>
           </div>
         </li>
         <li>
           <div class="status done">Concluído</div>
           <div class="detail">
-            <strong>Landing Page de Planos (Funil de Conversão)</strong>
-            <p>Substituição de tabela simples por um pipeline de 9 etapas de copywriting B2B (Dor do Paddock, SEO, Prova Social Rafael Moura F4, Planos Start/Pro e FAQ).</p>
+            <strong>UI Premium de Notícias com Filtros por Categoria</strong>
+            <p>Grid responsivo com cards dark-theme, badges de fonte, overlays de categoria, pills de filtro com contadores dinâmicos e auto-refresh sem reload.</p>
+            <div class="files">public/index.html · public/css/style.css</div>
+          </div>
+        </li>
+        <li>
+          <div class="status done">Concluído</div>
+          <div class="detail">
+            <strong>Limpeza de UI e Dados</strong>
+            <p>Remoção de referências estáticas incorretas, polimento da grade principal, versão mobile-first ajustada.</p>
           </div>
         </li>
       </ul>
     </div>
 
-    <!-- EM CURSO / PRÓXIMO -->
+    <!-- ═══════════ FASE 2: CONCLUÍDA ═══════════ -->
+    <div class="card" style="border-left: 4px solid var(--green)">
+      <h2 class="green">✅ FASE 2 — Sistema de Assinaturas & Cadastro</h2>
+      <ul class="task-list">
+        <li>
+          <div class="status done">Concluído</div>
+          <div class="detail">
+            <strong>Landing Page de Planos (planos.html)</strong>
+            <p>3 tiers profissionais: Piloto Starter (R$99,90), Piloto Pro (R$149,90) e Equipe Parceira (R$499,90). Design premium dark com badges, CTA e seção de garantia.</p>
+            <div class="files">public/planos.html</div>
+          </div>
+        </li>
+        <li>
+          <div class="status done">Concluído</div>
+          <div class="detail">
+            <strong>Cadastro Plan-Aware (4 Steps)</strong>
+            <p>Fluxo inteligente: Conta → Perfil → Detalhes (Pro) ou Revisão (Starter) → Pagamento. Detecta plano via URL (?plan=starter/pro). Campos Pro extras: bio, carreira, corridas, patrocinadores, mídia kit.</p>
+            <div class="files">public/cadastro.html</div>
+          </div>
+        </li>
+        <li>
+          <div class="status done">Concluído</div>
+          <div class="detail">
+            <strong>Integração Asaas (Links de Pagamento)</strong>
+            <p>Starter: asaas.com/c/pcd93o8dzjozlmje · Pro: asaas.com/c/vz16usxyvho09ell. Após cadastro, redireciona para pagamento seguro.</p>
+          </div>
+        </li>
+        <li>
+          <div class="status done">Concluído</div>
+          <div class="detail">
+            <strong>Upload de foto do dispositivo + Categoria texto livre</strong>
+            <p>Foto de perfil com preview circular via FileReader. Categoria digitada livremente ao invés de dropdown fixo.</p>
+          </div>
+        </li>
+        <li>
+          <div class="status done">Concluído</div>
+          <div class="detail">
+            <strong>Remoção de referências a "IA" em todo o site</strong>
+            <p>Substituído por "nosso time" / "nossa redação" em cadastro, admin, dashboard-piloto e termos de uso.</p>
+            <div class="files">cadastro.html · admin.html · dashboard-piloto.html · termos.html</div>
+          </div>
+        </li>
+        <li>
+          <div class="status done">Concluído</div>
+          <div class="detail">
+            <strong>Programa de Embaixadores (Cupom de Indicação)</strong>
+            <p>Captura ?ref=ID via URL → salva no LocalStorage → preenche automaticamente no cadastro → enviado na payload de registro.</p>
+          </div>
+        </li>
+        <li>
+          <div class="status done">Concluído</div>
+          <div class="detail">
+            <strong>Conexão Supabase (Estrutura)</strong>
+            <p>Client Supabase configurado. API /api/db/sync faz SELECT em users e articles. Tabelas prontas para produção.</p>
+            <div class="files">src/lib/supabase.ts · src/app/api/db/sync/route.ts</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ═══════════ FASE 3: PRÓXIMAS TAREFAS ═══════════ -->
     <div class="card" style="border-left: 4px solid var(--gold)">
-      <h2>⏳ FASE 2: Checkout e Programa de Embaixadores</h2>
+      <h2 class="gold">⏳ FASE 3 — Próximas Tarefas (Prioridade Alta)</h2>
       <ul class="task-list">
         <li>
-          <div class="status todo">A Fazer</div>
+          <div class="status next">Próxima</div>
           <div class="detail">
-            <strong>Integração Mercado Pago (Assinaturas e Checkout)</strong>
-            <p>Criar rota no servidor (Next.js `/api/checkout`) para gerar Pagamentos e Assinaturas (Preapproval) linkados com o ID interno do piloto.</p>
+            <strong>Open Graph Meta Tags (Preview no WhatsApp)</strong>
+            <p>Ao compartilhar link de notícia no WhatsApp, deve mostrar: imagem principal, título e resumo da matéria. Implementar og:title, og:description, og:image nas páginas de notícia.</p>
           </div>
         </li>
         <li>
-          <div class="status done">Concluído</div>
+          <div class="status next">Próxima</div>
           <div class="detail">
-            <strong>Sistema de Rastreamento de Embaixadores via Link / Cupom</strong>
-            <p>1. Capturar `?ref=ID` invisível no LocalStorage ao carregar a URL.<br>
-               2. Exibir campo "Cupom de Indicação" opcional no cadastro.<br>
-               3. Enviar na payload do registro.</p>
+            <strong>Banco de Dados em Produção (Supabase)</strong>
+            <p>Migrar cadastro de localStorage (PitLane.addUser) para INSERT direto no Supabase. Criar tabela pilot_profiles com campos Pro (bio, carreira, sponsors). Validar fluxo completo de persistência.</p>
           </div>
         </li>
         <li>
-          <div class="status done">Concluído</div>
+          <div class="status next">Próxima</div>
           <div class="detail">
-            <strong>Painel e Banco de Dados (Supabase)</strong>
-            <p>Registro do Piloto com atrelamento à coluna `referred_by`. Dados prontos para o webhook de pagamento ler futuramente.</p>
+            <strong>Webhook Asaas → Supabase</strong>
+            <p>Endpoint /api/webhook/asaas que recebe confirmação de pagamento e ativa o plano do piloto no banco (coluna plan_active = true, plan_type = 'starter'|'pro').</p>
+          </div>
+        </li>
+        <li>
+          <div class="status blocked">Pendente</div>
+          <div class="detail">
+            <strong>Número de WhatsApp de Suporte</strong>
+            <p>Placeholder (5511999999999) precisa ser substituído pelo número real nos botões de contato da Equipe Parceira e Categoria.</p>
           </div>
         </li>
       </ul>
     </div>
 
-    <!-- BACKLOG (FUTURO) -->
+    <!-- ═══════════ FASE 4: BACKLOG ═══════════ -->
     <div class="card" style="border-left: 4px solid var(--muted)">
-      <h2>💡 FASE 3: Automação Operacional (Backlog)</h2>
+      <h2 class="muted">💡 FASE 4 — Backlog (Planejado)</h2>
       <ul class="task-list">
         <li>
-          <div class="status todo">A Fazer</div>
+          <div class="status todo">Futuro</div>
           <div class="detail">
-            <strong>CMS e Automação de Matérias (SEO)</strong>
-            <p>Sistema onde jornalistas cadastram a matéria e automaticamente a página dedicada do Piloto e a Indexação Técnica (Metatags) são geradas.</p>
+            <strong>CMS Editorial & Automação de Matérias</strong>
+            <p>Sistema onde a redação cadastra matérias e automaticamente a página do Piloto, indexação SEO (metatags) e publicação são geradas. Integração com dados do perfil Pro.</p>
           </div>
         </li>
         <li>
-          <div class="status todo">A Fazer</div>
+          <div class="status todo">Futuro</div>
           <div class="detail">
-            <strong>Geração Automática de Mídia Kit Completo</strong>
-            <p>Motor de exportação para PDF das métricas e dados de pista (Antes/Depois) a partir do JSON no painel do piloto para captar patrocinadores offline.</p>
+            <strong>Geração Automática de Mídia Kit PDF</strong>
+            <p>Motor de exportação para PDF com métricas, dados de pista e conquistas a partir do perfil do piloto. Para captação de patrocinadores offline.</p>
+          </div>
+        </li>
+        <li>
+          <div class="status todo">Futuro</div>
+          <div class="detail">
+            <strong>Dashboard do Piloto com Métricas</strong>
+            <p>Painel exclusivo onde o assinante Pro visualiza views das matérias, cliques no formulário de patrocínio, e pode atualizar seus dados para novas matérias.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ═══════════ ARQUITETURA ═══════════ -->
+    <div class="card" style="border-left: 4px solid var(--blue)">
+      <h2 class="blue">🏗️ Arquitetura Atual</h2>
+      <ul class="task-list">
+        <li>
+          <div class="status done" style="min-width:100px">Stack</div>
+          <div class="detail">
+            <strong>Next.js + Supabase + HTML Estático</strong>
+            <p>Frontend: HTML/CSS/JS estáticos em /public. Backend: Next.js API Routes para news RSS e DB sync.<br>
+            Banco: Supabase (PostgreSQL) — tabelas users, articles.<br>
+            Pagamento: Asaas (links diretos, webhook planejado).<br>
+            Deploy: Vercel (porta 8080 local).</p>
+          </div>
+        </li>
+        <li>
+          <div class="status done" style="min-width:100px">Arquivos</div>
+          <div class="detail">
+            <strong>Estrutura Principal</strong>
+            <p>
+              <span style="color:var(--green)">●</span> public/index.html — Homepage + News Grid<br>
+              <span style="color:var(--green)">●</span> public/planos.html — Landing page Planos<br>
+              <span style="color:var(--green)">●</span> public/cadastro.html — Cadastro 4-steps plan-aware<br>
+              <span style="color:var(--green)">●</span> src/app/api/news/route.ts — Agregador RSS<br>
+              <span style="color:var(--green)">●</span> src/app/api/db/sync/route.ts — Sync Supabase<br>
+              <span style="color:var(--green)">●</span> src/lib/supabase.ts — Client Supabase
+            </p>
           </div>
         </li>
       </ul>
