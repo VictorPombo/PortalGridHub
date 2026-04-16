@@ -20,6 +20,9 @@ export interface FormInput {
   autor: {
     nome: string;
     categoria: string;
+    bio?: string;
+    historico?: string;
+    mensagemPatrocinadores?: string;
   };
 }
 
@@ -59,9 +62,16 @@ export async function gerarMateriaMultiAgente(materiaId: string, input: FormInpu
       throw new Error("Serviço de IA Indisponível (Sem Chave).");
   }
 
-  // 1. DADOS ESTÁTICOS DO PILOTO (O Fato Cru e Indispensável)
+  // 1. DADOS ESTÁTICOS DO PILOTO E CONDIÇÕES DE PERSONALIDADE ÚNICA
   const fatosDoPiloto = `
 DADOS DO AUTOR: Nome: ${input.autor.nome} | Categoria: ${input.autor.categoria}
+
+=== PERFIL ÚNICO DO PILOTO (IDENTIDADE JORNALÍSTICA) ===
+Os detalhes abaixo representam a história e modelo de negócio exclusivos do piloto na plataforma. 
+É TOTALMENTE PROIBIDO gerar matérias genéricas. Você DEVE usar detalhes da sua Bio/Histórico para adicionar cor, tom e exclusividade ao texto, tornando a narrativa inconfundível. NINGUÉM deve ter uma matéria similar a esta.
+${input.autor.bio ? `- BIO / TRAJETÓRIA: ${input.autor.bio}\n` : ''}${input.autor.historico ? `- TÍTULOS / CARREIRA: ${input.autor.historico}\n` : ''}${input.autor.mensagemPatrocinadores ? `- OBJETIVO P/ PATROCINADORES: ${input.autor.mensagemPatrocinadores}\n` : ''}
+
+=== DADOS DO EVENTO/TEMA DA MATÉRIA ===
 DADOS TÉCNICOS: Título sugerido: ${input.titulo} | Categoria da matéria: ${input.categoria}
 FATOS NO PONTO DE VISTA DO PILOTO: ${input.fatos}
 ASPAS E CITAÇÕES FORNECIDAS: ${input.citacoes || "nenhuma"}

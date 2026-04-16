@@ -153,11 +153,17 @@
         </div>
 
         <div class="form-field">
-          <label class="form-label">Bio / Sua história no automobilismo</label>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <label class="form-label" style="margin-bottom:0">Bio / Sua história no automobilismo</label>
+            <button type="button" class="btn-secondary" style="padding:6px 12px;font-size:10px;border-radius:6px" onclick="enhanceWithAI('regBio', 'bio')">✨ Aprimorar com IA</button>
+          </div>
           <textarea class="form-textarea" id="regBio" placeholder="Conte sua trajetória... quando começou, conquistas, motivação, equipes que passou..." style="min-height:100px"></textarea>
         </div>
         <div class="form-field">
-          <label class="form-label">Histórico de carreira (títulos, vitórias, pódios)</label>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <label class="form-label" style="margin-bottom:0">Histórico de carreira (títulos, vitórias, pódios)</label>
+            <button type="button" class="btn-secondary" style="padding:6px 12px;font-size:10px;border-radius:6px" onclick="enhanceWithAI('regCareer', 'career')">✨ Aprimorar com IA</button>
+          </div>
           <textarea class="form-textarea" id="regCareer" placeholder="Ex: Campeão F4 Brasil 2024, 5 vitórias em 2025, 12 pódios no total..." style="min-height:80px"></textarea>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
@@ -166,7 +172,13 @@
         </div>
         <div class="form-field"><label class="form-label">Objetivos da temporada 2026</label><input class="form-input" id="regGoals" type="text" placeholder="Ex: Top 5 no campeonato, fechar patrocínio master"></div>
         <div class="form-field"><label class="form-label">Patrocinadores atuais <span style="font-size:11px;color:var(--dim)">(para mencionar nas matérias)</span></label><input class="form-input" id="regSponsors" type="text" placeholder="Ex: Red Bull, Shell, Banco PAN"></div>
-        <div class="form-field"><label class="form-label">Mensagem para patrocinadores <span style="font-size:11px;color:var(--dim)">(aparece na sua página)</span></label><textarea class="form-textarea" id="regSponsorMsg" placeholder="O que você oferece em troca de apoio? Visibilidade no carro, redes sociais, eventos..."></textarea></div>
+        <div class="form-field">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <label class="form-label" style="margin-bottom:0">Mensagem para patrocinadores <span style="font-size:11px;color:var(--dim)">(aparece na sua página)</span></label>
+            <button type="button" class="btn-secondary" style="padding:6px 12px;font-size:10px;border-radius:6px" onclick="enhanceWithAI('regSponsorMsg', 'sponsormsg')">✨ Aprimorar com IA</button>
+          </div>
+          <textarea class="form-textarea" id="regSponsorMsg" placeholder="O que você oferece em troca de apoio? Visibilidade no carro, redes sociais, eventos..."></textarea>
+        </div>
         <div class="form-field"><label class="form-label">Fotos profissionais <span style="font-size:11px;color:var(--dim)">(URLs separadas por vírgula)</span></label><input class="form-input" id="regPhotos" type="text" placeholder="https://foto1.jpg, https://foto2.jpg"></div>
       </div>
 
@@ -453,6 +465,69 @@ function previewPhoto(input) {
     document.getElementById('photoFileName').textContent = file.name;
   }
 }
+
+async function enhanceWithAI(fieldId, contextType) {
+  const inputEl = document.getElementById(fieldId);
+  if (!inputEl) return;
+  const rawText = inputEl.value.trim();
+  
+  if (!rawText || rawText.length < 5) {
+    showToast('Digite pelo menos uma frase curta para a IA trabalhar!', 'info');
+    return;
+  }
+
+  // Capturar dados contextuais já preenchidos para alimentar a IA (se houver)
+  const pilotName = document.getElementById('regPilotName')?.value || 'Piloto';
+  const category = document.getElementById('regCategory')?.value || 'Categoria desconhecida';
+  
+  showToast('Processando aprimoramento via IA...', 'info');
+  const btn = event.currentTarget;
+  const oldText = btn.innerHTML;
+  btn.innerHTML = '<i class="fi fi-rr-spinner" style="animation:spin 1s linear infinite"></i> Processando...';
+  btn.style.pointerEvents = 'none';
+
+  try {
+    const response = await fetch('/api/ai-enhance', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        textoOriginal: rawText, 
+        tipoCampo: contextType,
+        contexto: \`Nome: \${pilotName} | Categoria: \${category}\` 
+      })
+    });
+
+    if (!response.ok) throw new Error('Erro na resposta do servidor IA');
+    const data = await response.json();
+    
+    if (data && data.enhancedText) {
+      inputEl.value = data.enhancedText;
+      showToast('Texto aprimorado com sucesso!', 'ok');
+      
+      // Flash animation on the textarea to grab attention
+      inputEl.style.boxShadow = '0 0 24px rgba(232,0,45,0.7)';
+      inputEl.style.borderColor = 'var(--acc)';
+      setTimeout(() => {
+        inputEl.style.boxShadow = '';
+        inputEl.style.borderColor = '';
+      }, 1500);
+      
+    } else {
+      throw new Error('Formato inválido retornado pela IA');
+    }
+  } catch (error) {
+    console.error('Enhance Error:', error);
+    showToast('Falha ao aprimorar texto. Tente novamente.', 'err');
+  } finally {
+    btn.innerHTML = oldText;
+    btn.style.pointerEvents = 'all';
+  }
+}
+
+// Add rotate animation for spinner just in case
+const styleSheet = document.createElement("style");
+styleSheet.textContent = "@keyframes spin { 100% { transform:rotate(360deg); } }";
+document.head.appendChild(styleSheet);
 </script>
 </body>
 </html>
