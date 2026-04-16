@@ -25,7 +25,7 @@
     <ul class="nav-links">
       <li><a href="index.html">Início</a></li>
       <li><a href="piloto.html">Pilotos</a></li>
-      <li><a href="index.html?view=plans">Planos</a></li>
+      <li><a href="planos.html">Planos</a></li>
     </ul>
     <div class="nav-right" id="navRight">
       <a href="cadastro.html" class="btn-nav-action">Entrar</a>
@@ -38,7 +38,7 @@
   <div class="container">
     <div class="breadcrumb"><a href="index.html">PITLANE</a> / CADASTRO</div>
     <h1 id="pageTitle">Crie sua Conta</h1>
-    <p class="subtitle">Escolha seu perfil, configure seus dados e comece a publicar matérias profissionais na maior mídia de automobilismo do Brasil.</p>
+    <p class="subtitle" id="pageSubtitle">Escolha seu perfil, configure seus dados e comece a publicar matérias profissionais na maior mídia de automobilismo do Brasil.</p>
   </div>
 </div>
 
@@ -64,9 +64,6 @@
         <input class="form-input" id="loginPass" type="password" placeholder="Sua senha">
       </div>
       <button class="btn-full" onclick="doLogin()">Entrar →</button>
-      <div style="font-family:var(--fm);font-size:10px;color:var(--muted);text-align:center;margin-top:12px">
-        Demo: use qualquer email cadastrado (ex: rafael@mendes.com)
-      </div>
     </div>
   </div>
 
@@ -74,48 +71,45 @@
   <div id="registerMode">
     <!-- Progress -->
     <div class="signup-progress">
-      <div class="signup-step-dot done" id="dot1"><span class="signup-step-label">Tipo</span></div>
-      <div class="signup-step-dot" id="dot2"><span class="signup-step-label">Dados</span></div>
-      <div class="signup-step-dot" id="dot3"><span class="signup-step-label">Perfil</span></div>
-      <div class="signup-step-dot" id="dot4"><span class="signup-step-label">Plano</span></div>
-      <div class="signup-step-dot" id="dot5"><span class="signup-step-label">Confirmar</span></div>
+      <div class="signup-step-dot done" id="dot1"><span class="signup-step-label">Conta</span></div>
+      <div class="signup-step-dot" id="dot2"><span class="signup-step-label">Perfil</span></div>
+      <div class="signup-step-dot" id="dot3"><span class="signup-step-label" id="dot3Label">Detalhes</span></div>
+      <div class="signup-step-dot" id="dot4"><span class="signup-step-label">Pagamento</span></div>
     </div>
 
-    <!-- STEP 1: Type -->
+    <!-- STEP 1: Account (todos os planos) -->
     <div class="signup-panel active" id="panel1">
-      <div style="text-align:center;margin-bottom:32px">
-        <div style="font-family:var(--fd);font-size:34px;letter-spacing:2px">Escolha seu Perfil</div>
-        <p style="font-size:13px;color:var(--dim);margin-top:6px">Selecione o tipo de conta ideal para você</p>
-      </div>
-      <div class="type-cards">
-        <div class="type-card heat-hover" id="typePiloto" onclick="selectType('piloto')">
-          <div class="type-card-icon"><i data-lucide="user" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></div>
-          <div class="type-card-name">Piloto</div>
-          <div class="type-card-price">A partir de R$ 99,90/mês</div>
-          <ul class="type-card-features"><li>Landing page profissional</li><li>1–2 matérias/mês</li><li>Área de patrocínio</li><li>Perfil público</li></ul>
+      <div style="font-family:var(--fd);font-size:34px;letter-spacing:2px;margin-bottom:8px">Crie sua Conta</div>
+      <p style="font-size:13px;color:var(--dim);margin-bottom:24px" id="step1Desc">Preencha seus dados básicos para começar</p>
+      
+      <!-- Plan indicator -->
+      <div id="planIndicator" style="display:none;background:var(--acc-d);border:1px solid var(--acc);border-radius:8px;padding:14px 18px;margin-bottom:24px;display:flex;align-items:center;gap:12px">
+        <div style="width:40px;height:40px;border-radius:8px;background:var(--acc);display:flex;align-items:center;justify-content:center">
+          <i class="fi fi-rr-flag" style="color:#fff"></i>
         </div>
-        <div class="type-card heat-hover" id="typeEquipe" onclick="selectType('equipe')">
-          <div class="type-card-icon"><i data-lucide="car" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></div>
-          <div class="type-card-name">Equipe</div>
-          <div class="type-card-price">R$ 499,90/mês</div>
-          <ul class="type-card-features"><li>Landing page da equipe</li><li>Até 10 matérias/mês</li><li>Gestão de pilotos</li><li>Mídia kit</li></ul>
-        </div>
-        <div class="type-card heat-hover" id="typeCategoria" onclick="selectType('categoria')">
-          <div class="type-card-icon"><i data-lucide="flag" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></div>
-          <div class="type-card-name">Categoria</div>
-          <div class="type-card-price">R$ 999,90/mês</div>
-          <ul class="type-card-features"><li>Landing page exclusiva</li><li>Até 30 matérias/mês</li><li>Calendário integrado</li><li>Destaque na homepage</li></ul>
+        <div>
+          <div style="font-family:var(--fu);font-size:13px;font-weight:700;color:#fff" id="planIndicatorName">Plano Starter</div>
+          <div style="font-family:var(--fm);font-size:11px;color:var(--dim)" id="planIndicatorPrice">R$99,90/mês</div>
         </div>
       </div>
-      <button class="btn-full" id="btnStep1" onclick="goStep(2)" disabled style="opacity:.4">Selecione um perfil acima</button>
-    </div>
 
-    <!-- STEP 2: Data -->
-    <div class="signup-panel" id="panel2">
-      <div style="font-family:var(--fd);font-size:34px;letter-spacing:2px;margin-bottom:24px">Seus Dados</div>
       <div class="form-field"><label class="form-label">Nome completo</label><input class="form-input" id="regName" type="text" placeholder="Seu nome completo"></div>
       <div class="form-field"><label class="form-label">E-mail</label><input class="form-input" id="regEmail" type="email" placeholder="seu@email.com"></div>
+      <div class="form-field"><label class="form-label">WhatsApp</label><input class="form-input" id="regWhatsapp" type="tel" placeholder="(11) 99999-9999"></div>
       <div class="form-field"><label class="form-label">Senha</label><input class="form-input" id="regPass" type="password" placeholder="Mínimo 8 caracteres"></div>
+      <div class="form-field">
+        <label class="form-label">Cupom de Indicação <span style="font-size:11px;color:var(--dim)">(Opcional)</span></label>
+        <input class="form-input" id="regRef" type="text" placeholder="Ex: LUCAS20" style="text-transform:uppercase">
+      </div>
+      <button class="btn-full" onclick="goStep(2)">Continuar →</button>
+    </div>
+
+    <!-- STEP 2: Perfil Básico (Starter + Pro) -->
+    <div class="signup-panel" id="panel2">
+      <div style="font-family:var(--fd);font-size:34px;letter-spacing:2px;margin-bottom:8px">Seu Perfil de Piloto</div>
+      <p style="font-size:13px;color:var(--dim);margin-bottom:24px">Esses dados serão usados para criar sua página e matérias</p>
+      
+      <div class="form-field"><label class="form-label">Nome de competição</label><input class="form-input" id="regPilotName" type="text" placeholder="Como aparece nos resultados"></div>
       <div class="form-field">
         <label class="form-label">Categoria de atuação</label>
         <select class="form-select" id="regCategory">
@@ -123,42 +117,96 @@
           <option>Fórmula 1</option><option>Stock Car</option><option>Porsche Cup</option>
           <option>F4 Brasil</option><option>Kart</option><option>MotoGP</option>
           <option>NASCAR</option><option>WEC</option><option>Sim Racing</option>
-          <option>Rally</option><option>Drag Race</option><option>Outra</option>
+          <option>Rally</option><option>Drag Race</option><option>Copa Truck</option>
+          <option>Fórmula E</option><option>Outra</option>
         </select>
       </div>
-      <div class="form-field">
-        <label class="form-label">Cupom de Indicação (Embaixador) <span style="font-size:11px;color:var(--dim)">(Opcional)</span></label>
-        <input class="form-input" id="regRef" type="text" placeholder="Ex: LUCAS20" style="text-transform:uppercase">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-field"><label class="form-label">Equipe atual</label><input class="form-input" id="regTeam" type="text" placeholder="Nome da equipe"></div>
+        <div class="form-field"><label class="form-label">Número</label><input class="form-input" id="regNumber" type="text" placeholder="Ex: 07"></div>
       </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-field"><label class="form-label">Cidade / Estado</label><input class="form-input" id="regCity" type="text" placeholder="São Paulo, SP"></div>
+        <div class="form-field"><label class="form-label">Data de nascimento</label><input class="form-input" id="regDob" type="date"></div>
+      </div>
+      <div class="form-field"><label class="form-label">Instagram</label><input class="form-input" id="regIG" type="text" placeholder="@seuinstagram"></div>
+      <div class="form-field"><label class="form-label">Foto de perfil <span style="font-size:11px;color:var(--dim)">(URL ou upload futuro)</span></label><input class="form-input" id="regPhoto" type="url" placeholder="https://suafoto.com/foto.jpg"></div>
+      
       <div style="display:flex;gap:10px"><button class="btn-secondary" onclick="goStep(1)" style="flex:1">← Voltar</button><button class="btn-full" onclick="goStep(3)" style="flex:2;margin-top:0">Continuar →</button></div>
     </div>
 
-    <!-- STEP 3: Profile -->
+    <!-- STEP 3: Detalhes Pro (SÓ PARA PRO) ou Revisão (para Starter/Free) -->
     <div class="signup-panel" id="panel3">
-      <div style="font-family:var(--fd);font-size:34px;letter-spacing:2px;margin-bottom:24px">Seu Perfil Público</div>
-      <div class="form-field"><label class="form-label">Bio / Sobre você</label><textarea class="form-textarea" id="regBio" placeholder="Conte sua história no automobilismo..."></textarea></div>
-      <div class="form-field"><label class="form-label">Número (piloto)</label><input class="form-input" id="regNumber" type="text" placeholder="Ex: 07"></div>
-      <div class="form-field"><label class="form-label">Instagram</label><input class="form-input" id="regIG" type="text" placeholder="@seuinstagram"></div>
-      <div style="display:flex;gap:10px"><button class="btn-secondary" onclick="goStep(2)" style="flex:1">← Voltar</button><button class="btn-full" onclick="goStep(4)" style="flex:2;margin-top:0">Continuar →</button></div>
+      
+      <!-- PRO: Dados completos para IA -->
+      <div id="proFields">
+        <div style="font-family:var(--fd);font-size:34px;letter-spacing:2px;margin-bottom:8px">Dados para Matérias Pro</div>
+        <p style="font-size:13px;color:var(--dim);margin-bottom:4px">Nossa IA usa esses dados para criar matérias únicas e profissionais sobre você</p>
+        <div style="background:rgba(232,0,45,.06);border:1px solid rgba(232,0,45,.15);border-radius:8px;padding:12px 16px;margin-bottom:24px;font-family:var(--fm);font-size:11px;color:var(--acc)">
+          <strong>✨ Exclusivo Pro</strong> — Quanto mais dados, melhor a IA escreve sobre você
+        </div>
+
+        <div class="form-field">
+          <label class="form-label">Bio / Sua história no automobilismo</label>
+          <textarea class="form-textarea" id="regBio" placeholder="Conte sua trajetória... quando começou, conquistas, motivação, equipes que passou..." style="min-height:100px"></textarea>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Histórico de carreira (títulos, vitórias, pódios)</label>
+          <textarea class="form-textarea" id="regCareer" placeholder="Ex: Campeão F4 Brasil 2024, 5 vitórias em 2025, 12 pódios no total..." style="min-height:80px"></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="form-field"><label class="form-label">Última corrida</label><input class="form-input" id="regLastRace" type="text" placeholder="Ex: 3º lugar GP de Goiânia"></div>
+          <div class="form-field"><label class="form-label">Próxima corrida</label><input class="form-input" id="regNextRace" type="text" placeholder="Ex: GP Interlagos - 25/Mai"></div>
+        </div>
+        <div class="form-field"><label class="form-label">Objetivos da temporada 2026</label><input class="form-input" id="regGoals" type="text" placeholder="Ex: Top 5 no campeonato, fechar patrocínio master"></div>
+        <div class="form-field"><label class="form-label">Patrocinadores atuais <span style="font-size:11px;color:var(--dim)">(para mencionar nas matérias)</span></label><input class="form-input" id="regSponsors" type="text" placeholder="Ex: Red Bull, Shell, Banco PAN"></div>
+        <div class="form-field"><label class="form-label">Mensagem para patrocinadores <span style="font-size:11px;color:var(--dim)">(aparece na sua página)</span></label><textarea class="form-textarea" id="regSponsorMsg" placeholder="O que você oferece em troca de apoio? Visibilidade no carro, redes sociais, eventos..."></textarea></div>
+        <div class="form-field"><label class="form-label">Fotos profissionais <span style="font-size:11px;color:var(--dim)">(URLs separadas por vírgula)</span></label><input class="form-input" id="regPhotos" type="text" placeholder="https://foto1.jpg, https://foto2.jpg"></div>
+      </div>
+
+      <!-- STARTER/FREE: Revisão simples -->
+      <div id="starterReview" style="display:none">
+        <div style="font-family:var(--fd);font-size:34px;letter-spacing:2px;margin-bottom:8px">Confirmar Dados</div>
+        <p style="font-size:13px;color:var(--dim);margin-bottom:24px">Revise seus dados antes de prosseguir</p>
+        <div id="reviewSummary" style="background:var(--bg1);border:1px solid var(--brd);border-radius:8px;padding:20px"></div>
+        <div style="margin-top:16px;background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.15);border-radius:8px;padding:14px 16px;font-family:var(--fm);font-size:12px;color:var(--success)">
+          <strong>💡 Dica:</strong> Após assinar o plano Pro, você poderá preencher dados completos para matérias personalizadas pela IA.
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-top:24px"><button class="btn-secondary" onclick="goStep(2)" style="flex:1">← Voltar</button><button class="btn-full" onclick="goStep(4)" style="flex:2;margin-top:0" id="btnStep3">Continuar →</button></div>
     </div>
 
-    <!-- STEP 4: Plan -->
+    <!-- STEP 4: Pagamento -->
     <div class="signup-panel" id="panel4">
-      <div style="font-family:var(--fd);font-size:34px;letter-spacing:2px;margin-bottom:8px">Escolha seu Plano</div>
-      <p style="font-size:13px;color:var(--dim);margin-bottom:24px">Plano para <strong id="planTypeLabel" style="color:var(--acc)">Piloto</strong></p>
-      <div id="planOptions"></div>
-      <div style="display:flex;gap:10px;margin-top:20px"><button class="btn-secondary" onclick="goStep(3)" style="flex:1">← Voltar</button><button class="btn-full" onclick="goStep(5)" style="flex:2;margin-top:0">Confirmar →</button></div>
-    </div>
-
-    <!-- STEP 5: Confirm -->
-    <div class="signup-panel" id="panel5">
       <div style="text-align:center;padding:20px 0">
         <div style="width:80px;height:80px;border-radius:50%;background:rgba(0,187,85,.12);border:2px solid var(--success);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:36px">✓</div>
-        <div style="font-family:var(--fd);font-size:38px;letter-spacing:2px;margin-bottom:8px">Bem-vindo ao Grid!</div>
-        <p style="font-size:14px;color:var(--dim);line-height:1.65;max-width:400px;margin:0 auto 24px">Sua conta foi criada com sucesso. Acesse seu painel para configurar sua landing page e publicar sua primeira matéria.</p>
-        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-          <a id="dashLink" href="dashboard-piloto.html" class="btn-primary skew">Acessar Painel</a>
-          <a href="piloto.html" class="btn-secondary">Ver minha Landing Page</a>
+        <div style="font-family:var(--fd);font-size:38px;letter-spacing:2px;margin-bottom:8px">Conta Criada!</div>
+        <p style="font-size:14px;color:var(--dim);line-height:1.65;max-width:440px;margin:0 auto 24px" id="step4Desc">
+          Sua conta foi criada com sucesso. Agora finalize sua assinatura para ativar todos os benefícios do seu plano.
+        </p>
+        
+        <!-- Payment CTA -->
+        <div id="paymentCTA" style="background:var(--bg1);border:1px solid var(--brd);border-radius:12px;padding:28px;max-width:400px;margin:0 auto 24px">
+          <div style="font-family:var(--fd);font-size:24px;letter-spacing:1px;margin-bottom:4px" id="payPlanName">PLANO STARTER</div>
+          <div style="font-family:var(--fd);font-size:48px;color:var(--acc);margin-bottom:4px" id="payPlanPrice">R$99,90<span style="font-size:16px;color:var(--dim)">/mês</span></div>
+          <div style="font-family:var(--fm);font-size:11px;color:var(--dim);margin-bottom:20px" id="payPlanDaily">Menos de R$3,50 por dia</div>
+          <a id="paymentLink" href="https://www.asaas.com/c/pcd93o8dzjozlmje" target="_blank" style="display:block">
+            <button class="btn-full" style="background:var(--acc);font-size:16px;padding:16px;margin-top:0">
+              <i class="fi fi-rr-lock" style="margin-right:8px"></i> ASSINAR AGORA →
+            </button>
+          </a>
+          <div style="font-family:var(--fm);font-size:10px;color:var(--muted);margin-top:10px">
+            Pagamento seguro via Asaas · Cartão ou PIX
+          </div>
+        </div>
+
+        <!-- Free option -->
+        <div id="freeOption" style="max-width:400px;margin:0 auto">
+          <div style="font-family:var(--fm);font-size:12px;color:var(--dim);margin-bottom:12px">ou</div>
+          <a href="index.html" style="font-family:var(--fm);font-size:13px;color:var(--muted);text-decoration:underline">
+            Continuar com conta gratuita (sem plano)
+          </a>
         </div>
       </div>
     </div>
@@ -170,31 +218,35 @@
 <script src="js/core.js"></script>
 <script src="js/state.js"></script>
 <script>
-let selectedType = '';
-let selectedPlan = '';
+// ══════════════════════════════════════
+//  PLAN-AWARE REGISTRATION FLOW
+// ══════════════════════════════════════
+
+let selectedPlan = 'free'; // free | starter | pro | equipe | categoria
 let currentStep = 1;
 
-// Check if already logged in
-if (PitLane.isLoggedIn()) {
-  const u = PitLane.getCurrentUser();
-  if (u) {
-    const dash = u.type === 'equipe' ? 'dashboard-equipe.html' : u.type === 'categoria' ? 'dashboard-categoria.html' : 'dashboard-piloto.html';
-    // Show logged-in state in nav
-    document.getElementById('navRight').innerHTML = `
-      <span style="font-family:var(--fm);font-size:10px;color:var(--dim)">${u.name}</span>
-      <a href="${dash}" class="btn-nav-action">Meu Painel</a>
-    `;
-  }
-}
+const PLAN_CONFIG = {
+  free:     { name: 'Conta Gratuita',    price: 'Grátis',     daily: 'Acesso básico ao portal',           link: null },
+  starter:  { name: 'Piloto Starter',    price: 'R$99,90',    daily: 'Menos de R$3,50 por dia',           link: 'https://www.asaas.com/c/pcd93o8dzjozlmje' },
+  pro:      { name: 'Piloto Pro',        price: 'R$149,90',   daily: 'Menos de R$5 por dia — o preço de um café', link: 'https://www.asaas.com/c/pcd93o8dzjozlmje' }, // TODO: trocar pro link correto
+  equipe:   { name: 'Equipe Parceira',   price: 'R$499,90',   daily: 'Cobertura completa da equipe',      link: null },
+  categoria:{ name: 'Categoria',         price: 'R$999,90',   daily: 'Plano completo de categoria',       link: null },
+};
 
-// Embaixador Logic: Catch '?ref=' from URL
+// Detect plan from URL
 document.addEventListener('DOMContentLoaded', () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const refCode = urlParams.get('ref');
-  if (refCode) {
-    localStorage.setItem('pl_affiliate_ref', refCode.toUpperCase());
+  const params = new URLSearchParams(window.location.search);
+  const plan = params.get('plan');
+  if (plan && PLAN_CONFIG[plan]) {
+    selectedPlan = plan;
   }
-  // Try to autofill if exists
+  
+  // Update UI based on plan
+  updatePlanUI();
+  
+  // Autofill referral
+  const refCode = params.get('ref');
+  if (refCode) localStorage.setItem('pl_affiliate_ref', refCode.toUpperCase());
   const storedRef = localStorage.getItem('pl_affiliate_ref');
   if (storedRef) {
     const refInput = document.getElementById('regRef');
@@ -202,11 +254,47 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+function updatePlanUI() {
+  const config = PLAN_CONFIG[selectedPlan];
+  const indicator = document.getElementById('planIndicator');
+  
+  if (selectedPlan !== 'free') {
+    indicator.style.display = 'flex';
+    document.getElementById('planIndicatorName').textContent = config.name;
+    document.getElementById('planIndicatorPrice').textContent = config.price + '/mês';
+    document.getElementById('pageTitle').textContent = 'Assinar ' + config.name;
+    document.getElementById('pageSubtitle').textContent = 'Crie sua conta e ative seu plano para começar a publicar matérias profissionais.';
+  } else {
+    indicator.style.display = 'none';
+    document.getElementById('pageTitle').textContent = 'Crie sua Conta';
+  }
+  
+  // Show/hide step 3 label
+  const dot3Label = document.getElementById('dot3Label');
+  if (selectedPlan === 'pro') {
+    dot3Label.textContent = 'Dados IA';
+  } else {
+    dot3Label.textContent = 'Revisar';
+  }
+}
+
+// Check if already logged in
+if (typeof PitLane !== 'undefined' && PitLane.isLoggedIn()) {
+  const u = PitLane.getCurrentUser();
+  if (u) {
+    const dash = u.type === 'equipe' ? 'dashboard-equipe.html' : u.type === 'categoria' ? 'dashboard-categoria.html' : 'dashboard-piloto.html';
+    document.getElementById('navRight').innerHTML = `
+      <span style="font-family:var(--fm);font-size:10px;color:var(--dim)">${u.name}</span>
+      <a href="${dash}" class="btn-nav-action">Meu Painel</a>
+    `;
+  }
+}
+
 function showMode(mode) {
   document.getElementById('loginMode').style.display = mode === 'login' ? 'block' : 'none';
   document.getElementById('registerMode').style.display = mode === 'register' ? 'block' : 'none';
   document.querySelectorAll('.tabs .tab').forEach((t, i) => t.classList.toggle('active', (mode === 'register' && i === 0) || (mode === 'login' && i === 1)));
-  document.getElementById('pageTitle').textContent = mode === 'login' ? 'Acessar Conta' : 'Crie sua Conta';
+  document.getElementById('pageTitle').textContent = mode === 'login' ? 'Acessar Conta' : (selectedPlan !== 'free' ? 'Assinar ' + PLAN_CONFIG[selectedPlan].name : 'Crie sua Conta');
 }
 
 function doLogin() {
@@ -215,60 +303,124 @@ function doLogin() {
   const user = PitLane.getUsers().find(u => u.email.toLowerCase() === email.toLowerCase());
   if (!user) { showToast('Usuário não encontrado. Crie uma conta!','err'); return; }
   PitLane.login(user.id);
-  showToast('✓ Login realizado! Redirecionando...','ok');
+  showToast('✓ Login realizado!','ok');
+  
+  // If login with a plan selected, redirect to upgrade
+  if (selectedPlan !== 'free') {
+    const config = PLAN_CONFIG[selectedPlan];
+    if (config.link) {
+      showToast('Redirecionando para pagamento...','ok');
+      setTimeout(() => window.open(config.link, '_blank'), 1000);
+    }
+    return;
+  }
+  
   const dash = user.type === 'equipe' ? 'dashboard-equipe.html' : user.type === 'categoria' ? 'dashboard-categoria.html' : 'dashboard-piloto.html';
   setTimeout(() => window.location.href = dash, 800);
 }
 
-function selectType(type) {
-  selectedType = type;
-  selectedPlan = type === 'piloto' ? 'pro' : type;
-  document.querySelectorAll('.type-card').forEach(c => c.classList.remove('selected'));
-  document.getElementById('type' + type.charAt(0).toUpperCase() + type.slice(1)).classList.add('selected');
-  const btn = document.getElementById('btnStep1');
-  btn.disabled = false; btn.style.opacity = '1';
-  btn.textContent = 'Continuar como ' + type.charAt(0).toUpperCase() + type.slice(1) + ' →';
-}
-
 function goStep(step) {
-  if (step === 2 && !selectedType) { showToast('Selecione um tipo de conta','err'); return; }
-  if (step === 3) {
+  // Validation Step 1 → 2
+  if (step === 2) {
     const name = document.getElementById('regName')?.value;
     const email = document.getElementById('regEmail')?.value;
     const pass = document.getElementById('regPass')?.value;
     if (!name || !email) { showToast('Preencha nome e e-mail','err'); return; }
     if (!isValidEmail(email)) { showToast('E-mail inválido','err'); return; }
     if (!pass || pass.length < 6) { showToast('Senha deve ter 6+ caracteres','err'); return; }
-    // Check duplicate email
-    if (PitLane.getUsers().find(u => u.email.toLowerCase() === email.toLowerCase())) {
+    if (typeof PitLane !== 'undefined' && PitLane.getUsers().find(u => u.email.toLowerCase() === email.toLowerCase())) {
       showToast('E-mail já cadastrado! Faça login.','err'); return;
     }
   }
-  if (step === 4) renderPlanOptions();
-  if (step === 5) {
-    // CREATE USER via PitLane state
-    const newUser = PitLane.addUser({
-      name: document.getElementById('regName').value,
-      email: document.getElementById('regEmail').value,
-      type: selectedType,
-      plan: selectedPlan,
-      category: document.getElementById('regCategory')?.value || '',
-      number: document.getElementById('regNumber')?.value || '',
-      bio: document.getElementById('regBio')?.value || '',
-      instagram: document.getElementById('regIG')?.value || '',
-      flag: '🇧🇷',
-      referredBy: document.getElementById('regRef')?.value?.toUpperCase() || null,
-      conquests: { titles: 0, wins: 0, podiums: 0, poles: 0, fastlaps: 0 },
-    });
-    // Auto-login
-    PitLane.login(newUser.id);
-    showToast('✓ Conta criada! Bem-vindo, ' + newUser.name + '!', 'ok');
-
-    // Set correct dashboard link
-    const dash = selectedType === 'equipe' ? 'dashboard-equipe.html' : selectedType === 'categoria' ? 'dashboard-categoria.html' : 'dashboard-piloto.html';
-    document.getElementById('dashLink').href = dash;
+  
+  // Step 3: Show pro fields or review
+  if (step === 3) {
+    const cat = document.getElementById('regCategory')?.value;
+    if (!cat) { showToast('Selecione uma categoria','err'); return; }
+    
+    if (selectedPlan === 'pro') {
+      document.getElementById('proFields').style.display = 'block';
+      document.getElementById('starterReview').style.display = 'none';
+      document.getElementById('btnStep3').textContent = 'Criar conta e prosseguir →';
+    } else {
+      document.getElementById('proFields').style.display = 'none';
+      document.getElementById('starterReview').style.display = 'block';
+      document.getElementById('btnStep3').textContent = 'Criar conta →';
+      
+      // Build review summary
+      const name = document.getElementById('regName').value;
+      const email = document.getElementById('regEmail').value;
+      const pilotName = document.getElementById('regPilotName').value;
+      const category = document.getElementById('regCategory').value;
+      const team = document.getElementById('regTeam').value;
+      
+      document.getElementById('reviewSummary').innerHTML = `
+        <div style="display:grid;gap:12px;font-family:var(--fm);font-size:13px">
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--dim)">Nome</span><strong>${name}</strong></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--dim)">Email</span><strong>${email}</strong></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--dim)">Piloto</span><strong>${pilotName || name}</strong></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--dim)">Categoria</span><strong>${category}</strong></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--dim)">Equipe</span><strong>${team || '—'}</strong></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--dim)">Plano</span><strong style="color:var(--acc)">${PLAN_CONFIG[selectedPlan].name}</strong></div>
+        </div>
+      `;
+    }
   }
-
+  
+  // Step 4: CREATE USER + show payment
+  if (step === 4) {
+    // Create user
+    if (typeof PitLane !== 'undefined') {
+      const newUser = PitLane.addUser({
+        name: document.getElementById('regName').value,
+        email: document.getElementById('regEmail').value,
+        type: 'piloto',
+        plan: selectedPlan,
+        category: document.getElementById('regCategory')?.value || '',
+        number: document.getElementById('regNumber')?.value || '',
+        bio: document.getElementById('regBio')?.value || '',
+        instagram: document.getElementById('regIG')?.value || '',
+        whatsapp: document.getElementById('regWhatsapp')?.value || '',
+        pilotName: document.getElementById('regPilotName')?.value || '',
+        team: document.getElementById('regTeam')?.value || '',
+        city: document.getElementById('regCity')?.value || '',
+        dob: document.getElementById('regDob')?.value || '',
+        career: document.getElementById('regCareer')?.value || '',
+        lastRace: document.getElementById('regLastRace')?.value || '',
+        nextRace: document.getElementById('regNextRace')?.value || '',
+        goals: document.getElementById('regGoals')?.value || '',
+        sponsors: document.getElementById('regSponsors')?.value || '',
+        sponsorMessage: document.getElementById('regSponsorMsg')?.value || '',
+        photos: document.getElementById('regPhotos')?.value || '',
+        flag: '🇧🇷',
+        referredBy: document.getElementById('regRef')?.value?.toUpperCase() || null,
+        conquests: { titles: 0, wins: 0, podiums: 0, poles: 0, fastlaps: 0 },
+      });
+      PitLane.login(newUser.id);
+      showToast('✓ Conta criada! Bem-vindo, ' + newUser.name + '!', 'ok');
+    }
+    
+    // Update payment UI
+    const config = PLAN_CONFIG[selectedPlan];
+    document.getElementById('payPlanName').textContent = config.name.toUpperCase();
+    document.getElementById('payPlanPrice').innerHTML = config.price + '<span style="font-size:16px;color:var(--dim)">/mês</span>';
+    document.getElementById('payPlanDaily').textContent = config.daily;
+    
+    if (config.link) {
+      document.getElementById('paymentLink').href = config.link;
+      document.getElementById('paymentCTA').style.display = 'block';
+    } else if (selectedPlan === 'free') {
+      document.getElementById('paymentCTA').style.display = 'none';
+      document.getElementById('step4Desc').textContent = 'Sua conta gratuita foi criada! Você pode navegar no portal e assinar um plano a qualquer momento.';
+      document.getElementById('freeOption').innerHTML = '<a href="index.html" class="btn-full" style="max-width:300px;margin:0 auto;display:block">Ir para o Portal →</a>';
+    } else {
+      // Equipe/Categoria: WhatsApp
+      document.getElementById('paymentLink').href = 'https://wa.me/5511999999999?text=Quero assinar o plano ' + config.name;
+      document.querySelector('#paymentCTA button').innerHTML = '<i class="fi fi-rr-comment-alt" style="margin-right:8px"></i> FALAR NO WHATSAPP →';
+    }
+  }
+  
+  // Navigate
   currentStep = step;
   document.querySelectorAll('.signup-panel').forEach((p, i) => p.classList.toggle('active', i + 1 === step));
   document.querySelectorAll('.signup-step-dot').forEach((d, i) => {
@@ -277,46 +429,6 @@ function goStep(step) {
     if (i + 1 === step) d.classList.add('current');
   });
   window.scrollTo({ top: 200, behavior: 'smooth' });
-}
-
-function renderPlanOptions() {
-  const label = document.getElementById('planTypeLabel');
-  const container = document.getElementById('planOptions');
-  label.textContent = selectedType.charAt(0).toUpperCase() + selectedType.slice(1);
-
-  const plans = {
-    piloto: [
-      { key: 'starter', name: 'Starter', price: '99,90', features: ['1 matéria/mês', 'Landing page básica', 'Perfil público', 'Área de patrocínio'], rec: false },
-      { key: 'pro', name: 'Pro', price: '149,90', features: ['2 matérias/mês', 'Landing page premium', 'Mídia kit download', 'Destaque na homepage', 'Suporte prioritário'], rec: true },
-    ],
-    equipe: [{ key: 'equipe', name: 'Equipe', price: '499,90', features: ['10 matérias/mês', 'Landing page da equipe', 'Gestão de pilotos', 'Mídia kit completo', 'Suporte premium'], rec: true }],
-    categoria: [{ key: 'categoria', name: 'Categoria', price: '999,90', features: ['30 matérias/mês', 'Landing page exclusiva', 'Calendário integrado', 'Destaque permanente', 'Suporte dedicado'], rec: true }],
-  };
-
-  const opts = plans[selectedType] || plans.piloto;
-  container.innerHTML = opts.map(p => `
-    <div class="card" style="padding:24px;margin-bottom:12px;cursor:pointer;${p.key === selectedPlan ? 'border-color:var(--acc);background:var(--acc-d)' : ''}" onclick="selectPlan('${p.key}',this)">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-        <div>
-          <span style="font-family:var(--fd);font-size:24px;letter-spacing:1px">${p.name}</span>
-          ${p.rec ? '<span class="badge status-approved" style="margin-left:8px">Recomendado</span>' : ''}
-        </div>
-        <div style="text-align:right">
-          <span style="font-family:var(--fu);font-size:12px;color:var(--dim)">R$</span>
-          <span style="font-family:var(--fd);font-size:32px">${p.price}</span>
-          <span style="font-family:var(--fm);font-size:10px;color:var(--muted)">/mês</span>
-        </div>
-      </div>
-      <ul style="list-style:none;display:flex;flex-wrap:wrap;gap:6px">
-        ${p.features.map(f => `<li style="font-size:12px;color:var(--dim);padding:3px 10px;border:1px solid var(--brd);display:inline-block">✓ ${f}</li>`).join('')}
-      </ul>
-    </div>`).join('');
-}
-
-function selectPlan(key, el) {
-  selectedPlan = key;
-  el.parentElement.querySelectorAll('.card').forEach(c => { c.style.borderColor = 'var(--brd)'; c.style.background = 'var(--bg1)'; });
-  el.style.borderColor = 'var(--acc)'; el.style.background = 'var(--acc-d)';
 }
 </script>
 </body>

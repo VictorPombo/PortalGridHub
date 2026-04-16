@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planos PitLane News — Escolha o seu</title>
+  <meta name="description" content="Planos para pilotos, equipes e categorias no PitLane News. Matérias profissionais, perfil otimizado e mídia kit. A partir de R$99,90/mês.">
+  <link rel="icon" href="img/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.1.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
+  <style>
+    :root {
+      --bg: #08080e;
+      --bg2: #111118;
+      --bg3: #1a1a24;
+      --acc: #e8002d;
+      --acc2: #ff1a3d;
+      --gold: #f0a500;
+      --success: #10b981;
+      --txt: #e2e8f0;
+      --txt2: #94a3b8;
+      --fd: 'Bebas Neue', sans-serif;
+      --fb: 'Barlow Condensed', sans-serif;
+      --fm: 'Inter', sans-serif;
+      --fu: 'DM Sans', sans-serif;
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--fm);
+      background: var(--bg);
+      color: var(--txt);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* ── NAV ── */
+    .lp-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 40px;
+      background: rgba(8,8,14,0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .lp-logo { display: flex; align-items: center; gap: 10px; font-family: var(--fd); font-size: 28px; color: #fff; letter-spacing: 1px; }
+    .lp-logo img { height: 28px; }
+    .lp-logo small { font-family: var(--fm); font-size: 9px; color: var(--acc); font-weight: 700; letter-spacing: 2px; display: block; margin-top: -6px; }
+    .lp-nav-back { font-family: var(--fm); font-size: 13px; color: var(--txt2); display: flex; align-items: center; gap: 6px; transition: color 0.2s; }
+    .lp-nav-back:hover { color: #fff; }
+
+    /* ── HERO ── */
+    .plan-hero {
+      padding: 140px 40px 60px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .plan-hero::before {
+      content: '';
+      position: absolute;
+      top: -100px; left: 50%; transform: translateX(-50%);
+      width: 800px; height: 800px;
+      background: radial-gradient(ellipse, rgba(232,0,45,0.08), transparent 70%);
+      pointer-events: none;
+    }
+    .plan-hero-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--fm); font-size: 11px; font-weight: 700;
+      color: var(--acc); letter-spacing: 2px; text-transform: uppercase;
+      background: rgba(232,0,45,0.08); border: 1px solid rgba(232,0,45,0.15);
+      padding: 8px 20px; border-radius: 999px; margin-bottom: 24px;
+    }
+    .plan-hero h1 {
+      font-family: var(--fd); font-size: clamp(42px, 6vw, 72px);
+      color: #fff; line-height: 0.95; margin-bottom: 16px;
+    }
+    .plan-hero p {
+      font-family: var(--fm); font-size: 16px; color: var(--txt2);
+      max-width: 520px; margin: 0 auto; line-height: 1.7;
+    }
+
+    /* ── PLAN GRID ── */
+    .plan-section { padding: 40px 40px 80px; }
+    .plan-container {
+      max-width: 1200px; margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      align-items: start;
+    }
+
+    /* ── PLAN CARD ── */
+    .lp-plan {
+      background: var(--bg2);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      padding: 40px 32px 36px;
+      position: relative;
+      transition: all 0.35s cubic-bezier(.4,0,.2,1);
+    }
+    .lp-plan:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+    }
+    .lp-plan.featured {
+      border-color: var(--acc);
+      background: linear-gradient(165deg, rgba(232,0,45,0.06) 0%, var(--bg2) 40%);
+      transform: scale(1.03);
+      box-shadow: 0 0 60px rgba(232,0,45,0.08);
+    }
+    .lp-plan.featured:hover {
+      transform: scale(1.03) translateY(-4px);
+    }
+    .lp-plan.gold-plan {
+      border-color: rgba(240,165,0,0.3);
+      background: linear-gradient(165deg, rgba(240,165,0,0.04) 0%, var(--bg2) 40%);
+    }
+
+    /* Badge */
+    .plan-badge {
+      position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+      background: var(--acc); color: #fff;
+      font-family: var(--fu); font-size: 10px; font-weight: 800;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      padding: 6px 20px; border-radius: 999px;
+      box-shadow: 0 4px 20px rgba(232,0,45,0.4);
+    }
+    .plan-badge.gold-badge {
+      background: linear-gradient(135deg, #f0a500, #d48f00);
+      box-shadow: 0 4px 20px rgba(240,165,0,0.3);
+    }
+
+    /* Head */
+    .plan-name {
+      font-family: var(--fd); font-size: 36px; color: #fff;
+      margin-bottom: 4px;
+    }
+    .featured .plan-name { color: var(--acc2); }
+    .gold-plan .plan-name { color: var(--gold); }
+    .plan-for {
+      font-family: var(--fm); font-size: 13px; color: var(--txt2);
+      margin-bottom: 24px;
+    }
+    .plan-price {
+      display: flex; align-items: baseline; gap: 4px;
+      margin-bottom: 8px;
+    }
+    .plan-price .curr {
+      font-family: var(--fm); font-size: 16px; font-weight: 600;
+      color: var(--txt2); align-self: flex-start; margin-top: 8px;
+    }
+    .plan-price .val {
+      font-family: var(--fd); font-size: 64px; color: #fff; line-height: 1;
+    }
+    .plan-price .period {
+      font-family: var(--fm); font-size: 14px; color: var(--txt2); font-weight: 500;
+    }
+    .plan-daily {
+      font-family: var(--fm); font-size: 12px; color: var(--txt2);
+      margin-bottom: 28px; opacity: 0.7;
+    }
+
+    /* Divider */
+    .plan-divider {
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(255,255,255,0.08), transparent);
+      margin: 24px 0;
+    }
+
+    /* Feature list */
+    .plan-features { list-style: none; margin-bottom: 32px; }
+    .plan-features li {
+      display: flex; align-items: flex-start; gap: 12px;
+      font-family: var(--fm); font-size: 14px; color: var(--txt);
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+    }
+    .plan-features li:last-child { border-bottom: none; }
+    .plan-features .ico {
+      width: 20px; height: 20px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; flex-shrink: 0; margin-top: 2px;
+    }
+    .ico-check { background: rgba(16,185,129,0.15); color: var(--success); }
+    .ico-x { background: rgba(255,255,255,0.04); color: #444; }
+    .plan-features li.disabled { opacity: 0.35; }
+    .plan-features li.disabled span:last-child { text-decoration: line-through; }
+
+    /* CTA */
+    .plan-cta {
+      display: block; width: 100%;
+      padding: 16px 24px;
+      border-radius: 10px;
+      font-family: var(--fu); font-size: 15px; font-weight: 700;
+      letter-spacing: 0.5px; text-transform: uppercase;
+      text-align: center;
+      cursor: pointer; border: none;
+      transition: all 0.3s;
+    }
+    .plan-cta-outline {
+      background: transparent;
+      border: 1.5px solid rgba(255,255,255,0.15);
+      color: #fff;
+    }
+    .plan-cta-outline:hover {
+      border-color: var(--acc);
+      color: var(--acc);
+      background: rgba(232,0,45,0.05);
+    }
+    .plan-cta-red {
+      background: var(--acc);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(232,0,45,0.3);
+    }
+    .plan-cta-red:hover {
+      background: var(--acc2);
+      box-shadow: 0 8px 30px rgba(232,0,45,0.4);
+      transform: translateY(-2px);
+    }
+    .plan-cta-gold {
+      background: linear-gradient(135deg, var(--gold), #d48f00);
+      color: #000;
+      font-weight: 800;
+      box-shadow: 0 4px 20px rgba(240,165,0,0.2);
+    }
+    .plan-cta-gold:hover {
+      box-shadow: 0 8px 30px rgba(240,165,0,0.35);
+      transform: translateY(-2px);
+    }
+
+    /* ── FOOTER NOTES ── */
+    .plan-notes-section {
+      max-width: 900px; margin: 0 auto;
+      padding: 0 40px 40px;
+      text-align: center;
+    }
+    .plan-all-include {
+      background: var(--bg2);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 28px 32px;
+      margin-bottom: 24px;
+    }
+    .plan-all-include h4 {
+      font-family: var(--fu); font-size: 13px; font-weight: 700;
+      color: #fff; letter-spacing: 1px; text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .plan-all-include p {
+      font-family: var(--fm); font-size: 13px; color: var(--txt2); line-height: 1.8;
+    }
+    .plan-all-include .tags {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 16px;
+    }
+    .plan-all-include .tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: var(--fm); font-size: 12px; color: var(--success);
+      background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.1);
+      padding: 6px 14px; border-radius: 8px;
+    }
+
+    /* ── CATEGORY BANNER ── */
+    .plan-cat-banner {
+      background: linear-gradient(135deg, rgba(240,165,0,0.06), var(--bg2));
+      border: 1px solid rgba(240,165,0,0.15);
+      border-radius: 14px;
+      padding: 36px 40px;
+      text-align: center;
+      max-width: 900px; margin: 0 auto 60px;
+    }
+    .plan-cat-banner h3 {
+      font-family: var(--fd); font-size: 32px; color: var(--gold); margin-bottom: 12px;
+    }
+    .plan-cat-banner p {
+      font-family: var(--fm); font-size: 14px; color: var(--txt2); line-height: 1.7;
+      max-width: 600px; margin: 0 auto 20px;
+    }
+    .plan-cat-banner .price-tag {
+      font-family: var(--fd); font-size: 20px; color: #fff; margin-bottom: 20px;
+    }
+
+    /* ── GUARANTEE ── */
+    .plan-guarantee {
+      max-width: 600px; margin: 0 auto 60px;
+      display: flex; align-items: center; gap: 16px;
+      background: rgba(16,185,129,0.04);
+      border: 1px solid rgba(16,185,129,0.1);
+      border-radius: 12px;
+      padding: 24px 28px;
+    }
+    .plan-guarantee i { font-size: 28px; color: var(--success); flex-shrink: 0; }
+    .plan-guarantee strong { color: #fff; font-family: var(--fu); font-size: 14px; display: block; margin-bottom: 4px; }
+    .plan-guarantee p { font-family: var(--fm); font-size: 12px; color: var(--txt2); line-height: 1.6; }
+
+    /* ── FOOTER ── */
+    .lp-footer {
+      text-align: center; padding: 40px;
+      border-top: 1px solid rgba(255,255,255,0.04);
+    }
+    .lp-footer p { font-family: var(--fm); font-size: 11px; color: #444; }
+    .lp-footer a { color: var(--acc); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 960px) {
+      .plan-container { grid-template-columns: 1fr; max-width: 480px; }
+      .lp-plan.featured { transform: none; }
+      .lp-plan.featured:hover { transform: translateY(-4px); }
+      .plan-hero { padding: 120px 20px 40px; }
+      .plan-section { padding: 20px 20px 60px; }
+      .plan-notes-section { padding: 0 20px 40px; }
+      .plan-cat-banner { margin: 0 20px 40px; padding: 28px 20px; }
+      .plan-guarantee { margin: 0 20px 40px; flex-direction: column; text-align: center; }
+      .lp-nav { padding: 14px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="lp-nav">
+  <a href="/" class="lp-logo">
+    <img src="img/logo1.png" alt="PitLane">
+    PITLANE
+    <small>NEWS</small>
+  </a>
+  <a href="/" class="lp-nav-back">
+    <i class="fi fi-rr-arrow-left"></i> Voltar ao portal
+  </a>
+</nav>
+
+<!-- HERO -->
+<section class="plan-hero">
+  <div class="plan-hero-tag">
+    <i class="fi fi-rr-flag"></i>
+    PLANOS PARA PILOTOS E EQUIPES
+  </div>
+  <h1>INVISTA NA SUA<br>IMAGEM PROFISSIONAL</h1>
+  <p>Matérias escritas pela nossa redação, otimizadas para Google, publicadas no portal com a sua identidade. Tudo o que um piloto sério precisa para fechar patrocínio.</p>
+</section>
+
+<!-- PLAN CARDS -->
+<section class="plan-section">
+  <div class="plan-container">
+
+    <!-- ═══ STARTER ═══ -->
+    <div class="lp-plan" id="plan-starter">
+      <div class="plan-name">Piloto Starter</div>
+      <div class="plan-for">Para pilotos que estão começando</div>
+      <div class="plan-price">
+        <span class="curr">R$</span>
+        <span class="val">99,90</span>
+        <span class="period">/mês</span>
+      </div>
+      <div class="plan-daily">Menos de R$3,50 por dia</div>
+
+      <div class="plan-divider"></div>
+
+      <ul class="plan-features">
+        <li><span class="ico ico-check">✓</span><span><strong>1 matéria por mês</strong> otimizada pro Google</span></li>
+        <li><span class="ico ico-check">✓</span><span>Texto profissional pela redação</span></li>
+        <li><span class="ico ico-check">✓</span><span>Página de piloto básica no portal</span></li>
+        <li><span class="ico ico-check">✓</span><span>URL personalizada</span></li>
+        <li><span class="ico ico-check">✓</span><span>Identificação CONAR (transparência)</span></li>
+        <li class="disabled"><span class="ico ico-x">✗</span><span>Mídia Kit PDF personalizado</span></li>
+        <li class="disabled"><span class="ico ico-x">✗</span><span>Cotas de patrocínio na página</span></li>
+        <li class="disabled"><span class="ico ico-x">✗</span><span>Destaque na home</span></li>
+      </ul>
+
+      <a href="cadastro.html?plan=starter">
+        <button class="plan-cta plan-cta-outline">Começar agora →</button>
+      </a>
+    </div>
+
+    <!-- ═══ PRO ═══ -->
+    <div class="lp-plan featured" id="plan-pro">
+      <div class="plan-badge">MAIS POPULAR</div>
+      <div class="plan-name">Piloto Pro</div>
+      <div class="plan-for">Para pilotos que querem fechar patrocínio</div>
+      <div class="plan-price">
+        <span class="curr">R$</span>
+        <span class="val">149,90</span>
+        <span class="period">/mês</span>
+      </div>
+      <div class="plan-daily">Menos de R$5 por dia — o preço de um café ☕</div>
+
+      <div class="plan-divider"></div>
+
+      <ul class="plan-features">
+        <li><span class="ico ico-check">✓</span><span>Tudo do Starter +</span></li>
+        <li><span class="ico ico-check">✓</span><span><strong>2 matérias por mês</strong> otimizadas</span></li>
+        <li><span class="ico ico-check">✓</span><span><strong>Mídia Kit PDF</strong> personalizado</span></li>
+        <li><span class="ico ico-check">✓</span><span><strong>Cotas de patrocínio</strong> na página</span></li>
+        <li><span class="ico ico-check">✓</span><span><strong>Formulário de contato</strong> para patrocinadores</span></li>
+        <li><span class="ico ico-check">✓</span><span><strong>Destaque na home</strong> 1x por mês</span></li>
+        <li><span class="ico ico-check">✓</span><span>Perfil estilo "LinkedIn do Piloto"</span></li>
+        <li><span class="ico ico-check">✓</span><span>Histórico completo de carreira</span></li>
+      </ul>
+
+      <a href="cadastro.html?plan=pro" id="proPlanLink">
+        <button class="plan-cta plan-cta-red">Quero o Pro →</button>
+      </a>
+    </div>
+
+    <!-- ═══ EQUIPE ═══ -->
+    <div class="lp-plan gold-plan" id="plan-equipe">
+      <div class="plan-badge gold-badge">EQUIPES</div>
+      <div class="plan-name">Equipe Parceira</div>
+      <div class="plan-for">Para equipes e organizações</div>
+      <div class="plan-price">
+        <span class="curr">R$</span>
+        <span class="val">499,90</span>
+        <span class="period">/mês</span>
+      </div>
+      <div class="plan-daily">Cobertura completa da equipe</div>
+
+      <div class="plan-divider"></div>
+
+      <ul class="plan-features">
+        <li><span class="ico ico-check">✓</span><span><strong>10 matérias por mês</strong></span></li>
+        <li><span class="ico ico-check">✓</span><span><strong>Landing page dedicada</strong> da equipe</span></li>
+        <li><span class="ico ico-check">✓</span><span>Perfis dos pilotos da equipe</span></li>
+        <li><span class="ico ico-check">✓</span><span><strong>Destaque na home</strong> 4x por mês</span></li>
+        <li><span class="ico ico-check">✓</span><span><strong>Dashboard exclusivo</strong></span></li>
+        <li><span class="ico ico-check">✓</span><span>Relatório mensal de visitas</span></li>
+        <li><span class="ico ico-check">✓</span><span>Suporte prioritário por WhatsApp</span></li>
+      </ul>
+
+      <a href="cadastro.html?plan=equipe">
+        <button class="plan-cta plan-cta-gold">Falar com a equipe PitLane →</button>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ALL PLANS INCLUDE -->
+<div class="plan-notes-section">
+  <div class="plan-all-include">
+    <h4>Todos os planos incluem</h4>
+    <div class="tags">
+      <span class="tag"><i class="fi fi-rr-check"></i> Cancelamento a qualquer momento</span>
+      <span class="tag"><i class="fi fi-rr-check"></i> Sem taxa de adesão</span>
+      <span class="tag"><i class="fi fi-rr-check"></i> Suporte por WhatsApp</span>
+      <span class="tag"><i class="fi fi-rr-check"></i> Publicação em até 48h</span>
+    </div>
+  </div>
+</div>
+
+<!-- CATEGORY BANNER -->
+<div class="plan-cat-banner">
+  <h3>REPRESENTA UMA CATEGORIA INTEIRA?</h3>
+  <p>Temos um plano com cobertura completa de todas as etapas, classificação ao vivo e equipe editorial dedicada.</p>
+  <div class="price-tag">A PARTIR DE R$999,90/MÊS</div>
+  <a href="https://wa.me/5511999999999?text=Quero%20saber%20sobre%20o%20plano%20de%20Categoria" target="_blank">
+    <button class="plan-cta plan-cta-gold" style="max-width:360px;margin:0 auto;">Solicitar uma proposta →</button>
+  </a>
+</div>
+
+<!-- GUARANTEE -->
+<div class="plan-guarantee">
+  <i class="fi fi-rr-shield-check"></i>
+  <div>
+    <strong>Risco Zero — Sem contrato. Sem taxa de adesão. Sem multa.</strong>
+    <p>Cancele pelo painel a qualquer momento. Suas matérias publicadas continuam no portal mesmo após o cancelamento.</p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="lp-footer">
+  <p>© 2026 PitLane News. Todos os direitos reservados. · <a href="/">Voltar ao portal</a></p>
+</footer>
+
+</body>
+</html>
