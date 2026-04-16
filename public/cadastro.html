@@ -434,7 +434,7 @@ async function goStep(step) {
         referredBy: document.getElementById('regRef')?.value?.toUpperCase() || null,
         conquests: { titles: 0, wins: 0, podiums: 0, poles: 0, fastlaps: 0 },
       });
-      Driver.login(newUser.id);
+      Driver.forceLoginById(newUser.id);
       showToast('✓ Conta criada! Bem-vindo, ' + newUser.name + '!', 'ok');
     }
     

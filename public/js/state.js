@@ -152,7 +152,7 @@ const Driver = (() => {
   async function addUser(user) {
     user.id = 'u' + (__dbUsers.length + 1) + '_' + Date.now(); // Fallback gen for cache
     user.createdAt = new Date().toISOString().split('T')[0];
-    user.status = 'pending_payment';
+    if (!user.status) user.status = 'pending_payment'; // Respeita status se já definido (ex: DEMO)
     user.avatar = user.name.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
     
     // Tentativa de gravar no Supabase via API
@@ -286,11 +286,31 @@ const Driver = (() => {
   // SESSION (current logged in user)
   // ============================
   async function login(email, pass) { 
-    // In memory match (future: POST /api/auth/login)
-    const user = __dbUsers.find(u => u.email === email);
-    if(user) {
-      save(KEYS.session, { userId: user.id, loggedAt: Date.now() });
-      return user;
+    // 1) Tenta autenticação real via API (valida hash de senha no servidor)
+    try {
+      const resp = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password: pass })
+      });
+      const data = await resp.json();
+      if (data.success && data.user) {
+        // Atualiza cache local com dados do banco
+        const idx = __dbUsers.findIndex(u => u.email === email);
+        if (idx >= 0) { __dbUsers[idx] = { ...__dbUsers[idx], ...data.user }; }
+        else { __dbUsers.push(data.user); }
+        save(KEYS.users, __dbUsers);
+        save(KEYS.session, { userId: data.user.id, loggedAt: Date.now() });
+        return data.user;
+      }
+    } catch(err) {
+      console.warn('API login inacessível, tentando fallback local', err);
+    }
+    // 2) Fallback: busca local (apenas para desenvolvimento/localhost)
+    const localUser = __dbUsers.find(u => u.email === email);
+    if (localUser) {
+      save(KEYS.session, { userId: localUser.id, loggedAt: Date.now() });
+      return localUser;
     }
     return null;
   }
