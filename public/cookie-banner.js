@@ -21,11 +21,24 @@
   document.body.appendChild(el);
 
   function save(v) {
-    localStorage.setItem(KEY, v);
-    localStorage.setItem(KEY + '_ts', new Date().toISOString());
-    el.remove();
+    try {
+      localStorage.setItem(KEY, v);
+      localStorage.setItem(KEY + '_ts', new Date().toISOString());
+    } catch(e) {}
+    if (el && el.parentNode) {
+      el.parentNode.removeChild(el);
+    }
   }
 
-  document.getElementById('dn-ck-ok').onclick = function() { save('all'); };
-  document.getElementById('dn-ck-ess').onclick = function() { save('essential'); };
+  var btnOk = document.getElementById('dn-ck-ok');
+  var btnEss = document.getElementById('dn-ck-ess');
+  
+  if (btnOk) {
+    btnOk.addEventListener('click', function(e) { e.preventDefault(); save('all'); }, {passive: false});
+    btnOk.addEventListener('touchstart', function(e) { e.preventDefault(); save('all'); }, {passive: false});
+  }
+  if (btnEss) {
+    btnEss.addEventListener('click', function(e) { e.preventDefault(); save('essential'); }, {passive: false});
+    btnEss.addEventListener('touchstart', function(e) { e.preventDefault(); save('essential'); }, {passive: false});
+  }
 })();
