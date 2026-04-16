@@ -102,12 +102,23 @@ const Driver = (() => {
     }
   }
 
+  function load(key, defaultVal) {
+    try {
+      const stored = localStorage.getItem(key);
+      if (stored) return JSON.parse(stored);
+    } catch(e) {}
+    return defaultVal;
+  }
+
   function save(key, data) {
-    // Legacy stub para componentes velhos não quebrarem (auth.html, painel)
-    // No futuro o save fará um POST /api/db/...
     if(key === KEYS.settings) __dbSettings = data;
     else if(key === KEYS.users) __dbUsers = data;
     else if(key === KEYS.articles) __dbArticles = data;
+    else {
+      try {
+        localStorage.setItem(key, JSON.stringify(data));
+      } catch(e) {}
+    }
   }
 
   // Substituímos o init() antigo por isso

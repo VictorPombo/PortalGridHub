@@ -631,14 +631,45 @@ function doLogin(){
   const p=document.getElementById('loginPass').value;
   if(!e||!p){toast('Preencha e-mail e senha','err');return}
   toast('Verificando credenciais...','info');
-  setTimeout(()=>{toast('Login realizado!','ok');showView('dash-piloto')},800);
+  
+  setTimeout(()=>{
+    if(typeof Driver !== 'undefined') {
+      const users = Driver.getUsers();
+      const u = users.find(user => user.email === e);
+      if(!u) {
+         toast('Login falhou. E-mail não encontrado.','err');
+         return;
+      }
+      Driver.login(u.id);
+      toast('Login realizado!','ok');
+      window.location.href = u.type === 'admin' ? 'admin.html' : 'dashboard-piloto.html';
+    }
+  },800);
 }
 function loginAs(type){
-  const map={admin:'dash-admin',piloto:'dash-piloto',equipe:'dash-piloto',categoria:'dash-piloto'};
-  toast('Entrando como '+type+'...','info');
-  setTimeout(()=>showView(map[type]||'dash-piloto'),500);
+  const map={admin:'admin.html',piloto:'dashboard-piloto.html',equipe:'dashboard-piloto.html',categoria:'dashboard-piloto.html'};
+  
+  if(typeof Driver !== 'undefined') {
+    const users = Driver.getUsers();
+    let u = users.find(x => x.type === type);
+    if(!u && type === 'admin') {
+      // Mock Admin se não existir
+      u = { id: 'admin-mock', name: 'Admin', type: 'admin' };
+    }
+    if(u) {
+      Driver.login(u.id);
+      toast('Entrando como '+u.name+'...','info');
+      setTimeout(()=> window.location.href = map[type] || 'dashboard-piloto.html', 500);
+    } else {
+       toast('Nenhum Demo encontrado para '+type,'err');
+    }
+  }
 }
-function doLogout(){toast('Saindo...','info');setTimeout(()=>showView('portal'),500)}
+function doLogout(){
+  if(typeof Driver !== 'undefined') Driver.logout();
+  toast('Saindo...','info');
+  setTimeout(()=>window.location.href='index.html',500);
+}
 
 /* ══ NEWSLETTER ══ */
 function nlSubmit(){

@@ -386,7 +386,12 @@ function adminNav(name, btn) {
 }
 
 // Initial render
-renderDashboard();
+async function bootstrapApp() {
+  await Driver.bootSupabase();
+  renderDashboard();
+}
+
+bootstrapApp();
 </script>
 </body>
 </html>
