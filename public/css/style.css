@@ -659,6 +659,18 @@ footer{background:var(--bg1);border-top:1px solid var(--brd);padding:52px 28px 2
 /* ═══════════════════════════════════════════
    RESPONSIVE
 ═══════════════════════════════════════════ */
+@media(max-width:1024px){
+  /* ── NAV TABLET/MOBILE ── */
+  .nav-links{display:none}
+  .hamburger{display:flex}
+  .nav-inner{padding:0 12px;gap:8px;overflow:hidden}
+  .nav-right .btn-out,.nav-right .btn-acc{display:none}
+  .nav-right .live-pill{font-size:9px}
+  
+  /* Universal overrides applied early for tablets */
+  div[style*="font-size:62px"], div[style*="font-size: 62px"] { font-size: 42px !important; }
+}
+
 @media(max-width:1100px){
   .hero-grid{grid-template-columns:1fr;height:auto}
   .hero-side{flex-direction:row;height:190px}
@@ -676,12 +688,7 @@ footer{background:var(--bg1);border-top:1px solid var(--brd);padding:52px 28px 2
   .dash-sidebar{display:none}
 }
 @media(max-width:720px){
-  /* ── NAV ── */
-  .nav-links{display:none}
-  .hamburger{display:flex}
-  .nav-inner{padding:0 12px;gap:8px;overflow:hidden}
-  .nav-right .btn-out,.nav-right .btn-acc{display:none}
-  .nav-right .live-pill{font-size:9px}
+  /* The navigation logic has been moved to 1024px breakpoint to protect tablet devices */
 
   /* ── TICKER ── */
   .ticker{position:relative}
