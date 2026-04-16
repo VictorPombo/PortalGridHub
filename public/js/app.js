@@ -939,30 +939,26 @@ function renderNewsGrid() {
     const safeUrl = (a.link || '').replace(/'/g, "\\'");
     
     return `
-      <div class="news-card" data-cat="${a.cat}" onclick="window.open('${safeUrl}','_blank')">
+      <a href="${safeUrl}" target="_blank" rel="noopener nofollow" class="news-card" data-cat="${a.cat}" style="text-decoration:none; color:inherit;">
         <div class="news-card-thumb">
-          <img src="${a.img}" alt="" loading="lazy">
+          <img src="/api/img-proxy?url=${encodeURIComponent(a.img)}" alt="" loading="lazy">
           <span class="news-card-cat ${catCls}">${a.cat.toUpperCase()}</span>
         </div>
         <div class="news-card-body">
           <div class="news-card-source">
             <span class="source-dot"></span>
-            <span class="source-name">${a.author}</span>
+            <span class="source-name">Portal de Origem</span>
             <span class="source-date">· ${a.date}</span>
           </div>
           <div class="news-card-title">${a.title}</div>
           <div class="news-card-footer">
             <span class="news-card-cta">
-              LER MATÉRIA
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </span>
-            <span class="news-card-extbadge">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
-              Abre no portal
+              Via ${a.author}
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:4px; margin-bottom:2px"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
             </span>
           </div>
         </div>
-      </div>
+      </a>
     `;
   }).join('');
 }
