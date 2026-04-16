@@ -1160,3 +1160,20 @@ footer{background:var(--bg1);border-top:1px solid var(--brd);padding:52px 28px 2
   .news-card-body{padding:16px}
 }
 
+/* Universal Mobile Overrides (Safety Net) */
+@media(max-width:720px){
+  /* Inline massive text overrides */
+  div[style*="font-size:62px"], div[style*="font-size: 62px"] { font-size: 32px !important; letter-spacing: 2px !important; }
+  div[style*="font-size:220px"], div[style*="font-size: 220px"] { font-size: 60px !important; }
+  h2[style*="font-size:56px"], h2[style*="font-size: 56px"] { font-size: 28px !important; line-height: 1.1 !important; margin-bottom: 30px !important; }
+  
+  /* Hero section JS injection title */
+  .hero-main h1 { font-size: 26px !important; line-height: 1.1 !important; margin-bottom: 8px !important; }
+  
+  /* Fix button groups */
+  .funnel-btns { flex-direction: column !important; align-items: stretch !important; width: 100%; }
+  
+  /* Generic element overflow prevention */
+  html, body { overflow-x: hidden !important; width: 100% !important; max-width: 100% !important; }
+}
+
