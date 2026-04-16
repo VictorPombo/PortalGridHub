@@ -144,7 +144,7 @@ function getNavHTML(activePage) {
         <li><a href="index.html" class="${activePage==='home'?'active':''}">Início</a></li>
         <li><a href="index.html#newsSection" class="${activePage==='news'?'active':''}">Notícias</a></li>
         <li><a href="piloto.html" class="${activePage==='pilotos'?'active':''}">Pilotos</a></li>
-        <li><a href="planos.html" class="${activePage==='planos'?'active':''}">Planos</a></li>
+        <li><a href="index.html?view=plans" class="${activePage==='planos'?'active':''}">Planos</a></li>
       </ul>
       <div class="nav-right">
         <span class="live-pill" title="Ao vivo">Ao Vivo</span>
@@ -179,7 +179,7 @@ function getFooterHTML() {
         <div class="f-col">
           <h4>Plataforma</h4>
           <ul>
-            <li><a href="planos.html">Planos e Preços</a></li>
+            <li><a href="index.html?view=plans">Planos e Preços</a></li>
             <li><a href="cadastro.html">Criar Conta</a></li>
             <li><a href="piloto.html">Ver Pilotos</a></li>
           </ul>

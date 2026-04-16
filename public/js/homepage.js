@@ -270,6 +270,9 @@ async function loadLiveNews() {
       if (sIdx < saasArticles.length) mixed.push(saasArticles[sIdx++]); // 1 SaaS
     }
     
+    if (mixed.length < 15) {
+      throw new Error('API respondeu mas com noticias insuficientes. Forçando fallback mock.');
+    }
     ARTICLES = mixed;
     
     // Agora renderizar dinamicamente na Página inteira!

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Painel do Piloto — PitLane News</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
 <link rel="stylesheet" href="css/core.css">
 <link rel="stylesheet" href="css/carbon.css">
@@ -164,7 +164,7 @@ function renderCompose() {
         <div style="font-size:32px;margin-bottom:12px"><i data-lucide="ban" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom;color:#e8002d"></i></div>
         <div style="font-family:var(--fd);font-size:24px;margin-bottom:8px">Limite Atingido</div>
         <p style="font-size:13px;color:var(--dim);margin-bottom:16px">Você já usou todas as ${stats.limit} matéria(s) deste mês (${PitLane.getPlanName(USER.plan)}). Faça upgrade para publicar mais!</p>
-        <a href="planos.html" class="btn-primary">Ver Planos →</a>
+        <a href="index.html?view=plans" class="btn-primary">Ver Planos →</a>
       </div>
     ` : `
     <div class="composer carbon-subtle">
@@ -319,7 +319,7 @@ function renderMediaKit() {
   document.getElementById('sec-mediakit').innerHTML = `
     <div class="dash-header"><h1>Mídia Kit</h1></div>
     <div class="media-kit-card carbon-subtle">
-      ${USER.plan === 'pro' ? '' : '<div style="font-family:var(--fu);font-size:11px;color:var(--warning);letter-spacing:1px;margin-bottom:16px"><i class="fi fi-rr-exclamation"></i> Recurso disponível no Plano Pro. <a href="planos.html" style="color:var(--acc)">Fazer upgrade</a></div>'}
+      ${USER.plan === 'pro' ? '' : '<div style="font-family:var(--fu);font-size:11px;color:var(--warning);letter-spacing:1px;margin-bottom:16px"><i class="fi fi-rr-exclamation"></i> Recurso disponível no Plano Pro. <a href="index.html?view=plans" style="color:var(--acc)">Fazer upgrade</a></div>'}
       <div class="media-kit-icon"><i data-lucide="paperclip" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></div>
       <div class="media-kit-title">Mídia Kit de ${USER.name}</div>
       <div class="media-kit-desc">Material profissional com seus dados, conquistas, ${stats.totalViewsFormatted} visualizações acumuladas e informações para patrocinadores.</div>

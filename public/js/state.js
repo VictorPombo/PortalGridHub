@@ -345,23 +345,48 @@ const PitLane = (() => {
 
     async function getNewsByCategory(catName) {
       const urls = {
-        'f1': 'https://www.grandepremio.com.br/f1/feed/',
-        'motogp': 'https://www.grandepremio.com.br/motogp/feed/',
-        'stock-car': 'https://www.grandepremio.com.br/stock-car/feed/'
+        'f1': [
+          'https://www.grandepremio.com.br/f1/feed/',
+          'https://br.motorsport.com/rss/f1/news/'
+        ],
+        'motogp': [
+          'https://www.grandepremio.com.br/motogp/feed/',
+          'https://br.motorsport.com/rss/motogp/news/'
+        ],
+        'wec': ['https://br.motorsport.com/rss/wec/news/'],
+        'nascar': ['https://br.motorsport.com/rss/nascar-cup/news/'],
+        'wrc': ['https://br.motorsport.com/rss/wrc/news/'],
+        'stock-car': ['https://www.grandepremio.com.br/stock-car/feed/']
       };
-      const fetchUrl = 'https://api.rss2json.com/v1/api.json?rss_url=' + (urls[catName] || urls['f1']);
-      const data = await fetchWithCache(fetchUrl, 'pl_live_news_' + catName);
-      if (!data) return [];
-      try {
-        return data.items.map(item => ({
-          title: item.title,
-          link: item.link,
-          thumbnail: item.thumbnail || (item.enclosure ? item.enclosure.url : '') || 'https://upload.wikimedia.org/wikipedia/commons/3/3f/FIA_F1_Austria_2023_Nr._44_%282%29.jpg',
-          pubDate: item.pubDate,
-          author: item.author || 'Grande Prêmio',
-          categories: item.categories || [catName.toUpperCase()]
-        }));
-      } catch(e) { return []; }
+      const feedUrls = urls[catName] || urls['f1'];
+      const today = new Date().toISOString().slice(0,10);
+      const seenTitles = new Set();
+      let allItems = [];
+      
+      for (const feedUrl of feedUrls) {
+        const fetchUrl = 'https://api.rss2json.com/v1/api.json?rss_url=' + feedUrl;
+        const data = await fetchWithCache(fetchUrl, 'pl_live_news_' + catName + '_' + feedUrl.split('/')[2]);
+        if (!data || !data.items) continue;
+        data.items.forEach(item => {
+          // Filtro: apenas noticias de hoje
+          const pubDate = (item.pubDate || '').slice(0,10);
+          if (pubDate !== today) return;
+          // Deduplicacao
+          const titleClean = item.title.trim().toLowerCase().slice(0,60);
+          if (seenTitles.has(titleClean)) return;
+          seenTitles.add(titleClean);
+          
+          allItems.push({
+            title: item.title,
+            link: item.link,
+            thumbnail: item.thumbnail || (item.enclosure ? item.enclosure.url : '') || 'https://upload.wikimedia.org/wikipedia/commons/3/3f/FIA_F1_Austria_2023_Nr._44_%282%29.jpg',
+            pubDate: item.pubDate,
+            author: feedUrl.includes('grandepremio') ? 'Grande Premio' : (feedUrl.includes('br.motorsport') ? 'Motorsport BR' : 'Motorsport.com'),
+            categories: item.categories || [catName.toUpperCase()]
+          });
+        });
+      }
+      return allItems;
     }
 
     return { getDriverStandings, getConstructorStandings, getNextRace, getNews, getNewsByCategory };

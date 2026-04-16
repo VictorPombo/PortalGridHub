@@ -410,6 +410,19 @@ let currentCat='all',currentType='all';
 
 /* ── HERO DATA POR CATEGORIA ── */
 const HERO_DATA={
+  all:{
+    img:'https://upload.wikimedia.org/wikipedia/commons/3/3f/FIA_F1_Austria_2023_Nr._44_%282%29.jpg',
+    typeCls:'int', typeIcon:'fi fi-rr-pencil', typeLabel:'CONTEÚDO PITLANE',
+    badge:'F1 · TEMPORADA 2026', badgeCls:'b-f1',
+    title:'Mercedes Surpreende em 2026 e Retoma o Controle do Mundial de F1',
+    excerpt:'A flecha de prata domina o campeonato de construtores após 3 GPs — Austrália, China e Japão — provando que decodificou perfeitamente o novo regulamento híbrido.',
+    meta:'Redação PitLane · 10 Abr 2026 · Fonte: formula1.com · GPFans · ESPN',
+    articleId:0,
+    sides:[
+      {img:'https://upload.wikimedia.org/wikipedia/commons/d/dc/MotoGP_2025_Malaysian_Grand_Prix_-_Ducati_Lenovo_-_Francesco_Bagnaia.jpg',typeCls:'int',typeLabel:'CONTEÚDO PITLANE',badge:'MOTOGP · 2026',badgeCls:'b-motogp',title:'Bagnaia Domina Início de Temporada com 81 Pontos e Duas Vitórias',link:'#'},
+      {img:'img/sponsored-pilot.png',typeCls:'pago',typeLabel:'⭐ PATROCINADO',badge:'PILOTO · PARCERIA',badgeCls:'b-pago',title:'Rafael Moura Vence na F4 Brasil e Atrai Interesse de Equipes Europeias',link:'#'}
+    ]
+  },
   f1:{
     img:'https://upload.wikimedia.org/wikipedia/commons/3/3f/FIA_F1_Austria_2023_Nr._44_%282%29.jpg',
     typeCls:'int', typeIcon:'fi fi-rr-pencil', typeLabel:'CONTEÚDO PITLANE',
@@ -458,7 +471,22 @@ const HERO_DATA={
     meta:'Redação PitLane · 13 Abr 2026 · Fonte: nascar.com · Jayski',
     articleId:0,
     sides:[
-      {img:'https://upload.wikimedia.org/wikipedia/commons/7/79/FIA_F1_Austria_2023_Nr._1_%281%29.jpg"'+h.typeIcon+'"></i> '+h.typeLabel}
+      {img:'https://upload.wikimedia.org/wikipedia/commons/7/79/FIA_F1_Austria_2023_Nr._1_%281%29.jpg', typeCls:'ext', typeLabel:'ESPN ↗', badge:'NASCAR', badgeCls:'b-nascar', title:'Verstappen e Chase Elliott anunciam teste conjunto', link:'https://nascar.com'},
+      {img:'https://loremflickr.com/400/280/nascar,racing?lock=8', typeCls:'int', typeLabel:'CONTEÚDO PITLANE', badge:'NASCAR', badgeCls:'b-nascar', title:'Drafting em Talladega: A arte que define grandes campeões', articleId:0}
+    ]
+  }
+};
+
+function updateHero(cat) {
+  const h = HERO_DATA[cat] || HERO_DATA['f1'];
+  const wrap = document.querySelector('.hero-wrap');
+  if(!wrap) return;
+  wrap.classList.add('switching');
+  setTimeout(()=>{
+    const mainImg=wrap.querySelector('.hero-main img');
+    if(mainImg) mainImg.src=h.img;
+    const mainType=wrap.querySelector('.hero-main .hero-type');
+    if(mainType){mainType.className='hero-type '+h.typeCls;mainType.innerHTML='<i class="'+h.typeIcon+'"></i> '+h.typeLabel;}
     const heroBadge=wrap.querySelector('.hero-main .badge');
     if(heroBadge){heroBadge.className='badge '+h.badgeCls;heroBadge.textContent=h.badge}
     const heroTitle=wrap.querySelector('.hero-title');
@@ -674,25 +702,26 @@ async function loadDynamicHeroAll() {
   try {
     const f1News = await PitLane.Live.getNewsByCategory('f1');
     const motogpNews = await PitLane.Live.getNewsByCategory('motogp');
-    const stockNews = await PitLane.Live.getNewsByCategory('stock-car');
 
-    if(f1News.length && motogpNews.length && stockNews.length) {
+    // Só atualiza se conseguir dados ao vivo de F1 E MotoGP
+    if(f1News.length && motogpNews.length) {
       const m = f1News[0];
       const s1 = motogpNews[0];
-      const s2 = stockNews[0];
 
+      // Preserva o lado do patrocinado, atualizando F1 e MotoGP dinamicamente
       HERO_DATA['all'] = {
         img: m.thumbnail,
-        typeCls: 'ext', typeIcon: 'fi fi-rr-link', typeLabel: 'GRANDE PRÊMIO ↗',
-        badge: 'F1 · ÚLTIMAS', badgeCls: 'b-f1',
+        typeCls: 'ext', typeIcon: 'fi fi-rr-link', typeLabel: m.author + ' ↗',
+        badge: 'F1 · AO VIVO', badgeCls: 'b-f1',
         title: m.title,
         excerpt: m.title, 
-        meta: 'Redação Externa · Fonte: grandepremio.com.br',
+        meta: 'Ao Vivo · Fonte: ' + (m.author || 'grandepremio.com.br'),
         isExt: true,
         extLink: m.link,
         sides: [
-          {img: s1.thumbnail, typeCls: 'ext', typeLabel: 'GRANDE PRÊMIO ↗', badge: 'MOTOGP', badgeCls: 'b-motogp', title: s1.title, link: s1.link},
-          {img: s2.thumbnail, typeCls: 'ext', typeLabel: 'GRANDE PRÊMIO ↗', badge: 'STOCK CAR', badgeCls: 'b-wec', title: s2.title, link: s2.link}
+          {img: s1.thumbnail, typeCls: 'ext', typeLabel: (s1.author || 'MOTOGP') + ' ↗', badge: 'MOTOGP · AO VIVO', badgeCls: 'b-motogp', title: s1.title, link: s1.link},
+          // Patrocinado sempre fixo (o piloto parceiro não vem de RSS)
+          {img:'img/sponsored-pilot.png',typeCls:'pago',typeLabel:'⭐ PATROCINADO',badge:'PILOTO · PARCERIA',badgeCls:'b-pago',title:'Rafael Moura Vence na F4 Brasil e Atrai Interesse de Equipes Europeias',link:'#'}
         ]
       };
       if (currentCat === 'all') { updateHero('all'); }
@@ -709,6 +738,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       await window.PitLane.bootSupabase();
     } catch(e) { console.error('Supabase boot fail', e); }
   }
+  
+  // Imprime o Hero imediatamente com os dados de curadoria locais (Fallback) para NUNCA ficar preto/vazio.
+  updateHero(currentCat);
+  
   await loadLiveNews();
   await loadDynamicHeroAll();
   
@@ -724,119 +757,165 @@ async function loadLiveNews() {
   let saasArticles = [];
   if (PitLane && PitLane.getArticlesByStatus) {
     saasArticles = PitLane.getArticlesByStatus('published').map(a => {
-      let b = a.cat==='f1'?'b-f1':a.cat==='motogp'?'b-motogp':'b-endurance';
-      let thumb = a.coverImg || 'https://upload.wikimedia.org/wikipedia/commons/7/79/FIA_F1_Austria_2023_Nr._1_%281%29.jpg';
+      let b = a.cat==='f1'?'f1':a.cat==='motogp'?'motogp':'wec';
+      let thumb = a.coverImg || 'https://upload.wikimedia.org/wikipedia/commons/3/3f/FIA_F1_Austria_2023_Nr._44_%282%29.jpg';
       return {
-        id: a.id, title: a.title, cat: a.cat, badge: b, img: thumb, 
-        author: a.pilotName, date: new Date(a.createdAt).toLocaleDateString('pt-BR'), kicker: a.excerpt, body: a.content, av: 'AO VIVO', partner: a.sponsorTeam, pago: a.sponsored, isReal: false 
+        id: a.id, title: a.title, cat: a.cat, badge: b, img: thumb,
+        author: a.pilotName, date: new Date(a.createdAt).toLocaleDateString('pt-BR'), kicker: a.excerpt, body: a.content, av: 'AO VIVO', partner: a.sponsorTeam, pago: a.sponsored, isReal: false
       }
     });
   }
 
-  // MOCK N8N AI
-  saasArticles.unshift({
-    id: 'ai-mock-motorsport',
-    title: "Ferrari traz mega-atualização aerodinâmica para o Canadá e projeta salto na classificação",
-    cat: 'f1', badge: 'b-f1',
-    img: 'https://upload.wikimedia.org/wikipedia/commons/3/3f/FIA_F1_Austria_2023_Nr._44_%282%29.jpg',
-    author: 'PitLane AI Bot', date: 'HOJE',
-    kicker: 'Curadoria Automática PitLane News',
-    body: "<p><b>Resumo:</b> A escuderia italiana Ferrari anunciou que chegará ao GP de Montreal com um novo assoalho e bicos redesenhados. Após sofrer com saltos aerodinâmicos, os engenheiros prometem mais estabilidade e ameaçam quebrar o domínio de curvas de alta velocidade da rival atual.</p>",
-    av: 'NOVA ANÁLISE B2B',
-    isReal: false,
-    
-    // CAMPOS DE AI N8N (OS NOVOS)
-    aiAnalysis: "A introdução deste pacote expõe a agressividade orçamentária do final deste semestre e revela oportunidades gigantescas para fornecedores logísticos automotivos ao redor da Ferrari. Para os <b>pilotos de Fórmula Base Brasileiros</b>, essa mudança na curva de aprendizado técnica do pitlane serve como vitrine para negociações com equipes parceiras do programa de jovens onde a estabilidade do chassi vira moeda de troca em simuladores.",
-    originalLink: "https://br.motorsport.com/f1/news/ferrari-canada/",
-    aiB2bContext: "Acelerar Funil"
-  });
+  // =====================================================
+  //  MULTI-SOURCE RSS - Fontes legais com RSS publico
+  //  Uso justo: exibe titulo + link e redireciona ao site de origem
+  // =====================================================
+  var RSS_PROXY = 'https://api.rss2json.com/v1/api.json?rss_url=';
+  var FEEDS = [
+    {url:'https://www.grandepremio.com.br/f1/feed/', cat:'f1', source:'Grande Premio'},
+    {url:'https://www.grandepremio.com.br/motogp/feed/', cat:'motogp', source:'Grande Premio'},
+    {url:'https://www.grandepremio.com.br/stock-car/feed/', cat:'nascar', source:'Grande Premio'},
+    {url:'https://br.motorsport.com/rss/f1/news/', cat:'f1', source:'Motorsport BR'},
+    {url:'https://br.motorsport.com/rss/motogp/news/', cat:'motogp', source:'Motorsport BR'},
+    {url:'https://br.motorsport.com/rss/wec/news/', cat:'wec', source:'Motorsport BR'},
+    {url:'https://br.motorsport.com/rss/nascar-cup/news/', cat:'nascar', source:'Motorsport BR'},
+    {url:'https://br.motorsport.com/rss/wrc/news/', cat:'wrc', source:'Motorsport BR'},
+    {url:'https://www.motorsport.com/rss/f1/news/', cat:'f1', source:'Motorsport.com'},
+    {url:'https://www.autosport.com/rss/feed/f1', cat:'f1', source:'Autosport'},
+  ];
 
+  var rssArticles = [];
+  var TODAY = new Date().toISOString().slice(0,10);
+  var seenTitles = new Set();
 
-let rssArticles = [];
   try {
-    const res = await fetch('/api/news');
+    var res = await fetch('/api/news');
     if (res.ok) {
-      const { data } = await res.json();
-      const pipelineFeed = [...(data.br || []), ...(data.mundial || [])];
-      
-      // Ordenação (garantia client-side mesclada decrescente)
-      pipelineFeed.sort((a,b) => new Date(b.published_at).getTime() - new Date(a.published_at).getTime());
-
-      rssArticles = pipelineFeed.map((n, i) => {
-        let slugCat = (n.category || 'f1').toLowerCase().replace(' ', '');
+      var apiData = await res.json();
+      var pipelineFeed = [...(apiData.data.br || []), ...(apiData.data.mundial || [])];
+      pipelineFeed.sort(function(a,b){return new Date(b.published_at).getTime() - new Date(a.published_at).getTime()});
+      rssArticles = pipelineFeed.filter(function(n){return (n.published_at||'').slice(0,10) === TODAY}).map(function(n, i) {
+        var slugCat = (n.category || 'f1').toLowerCase().replace(' ', '');
+        seenTitles.add(n.title.trim().toLowerCase().slice(0,60));
         return {
-          id: 'rss' + i,
-          cat: slugCat,
-          badge: 'b-' + slugCat,
-          kicker: 'MERCADO / NOTÍCIAS',
-          title: n.title,
-          link: n.url,
-          author: n.source || 'RSS Tracker',
-          av: '<i class="fi fi-rr-newspaper"></i>',
+          id: 'rss' + i, cat: slugCat, badge: slugCat,
+          kicker: 'NOTICIAS', title: n.title, link: n.url,
+          author: n.source || 'RSS', av: '<i class="fi fi-rr-newspaper"></i>',
           date: new Date(n.published_at).toLocaleDateString('pt-BR'),
-          img: n.image_url || ('https://loremflickr.com/400/260/racing,formula1?lock='+i),
-          body: n.contentSnippet || n.description || '',
-          originalLink: n.url,
-          isReal: true
+          img: n.image_url || 'https://upload.wikimedia.org/wikipedia/commons/3/3f/FIA_F1_Austria_2023_Nr._44_%282%29.jpg',
+          body: n.contentSnippet || '', originalLink: n.url, isReal: true
         };
       });
-    } else {
-      throw new Error('Local API failed');
-    }
+    } else { throw new Error('API offline'); }
   } catch(e) {
-    console.warn('Local API offline. Fetching fallback RSS feeds...', e);
-    const fallbackFeeds = [
-      'https://br.motorsport.com/rss/f1/news/',
-      'https://br.motorsport.com/rss/motogp/news/',
-      'https://br.motorsport.com/rss/wec/news/',
-      'https://br.motorsport.com/rss/nascar-cup/news/',
-      'https://br.motorsport.com/rss/wrc/news/'
-    ];
+    console.warn('[PitLane] API local offline. Buscando multi-source RSS...', e);
+
     try {
-      const responses = await Promise.allSettled(fallbackFeeds.map(f => fetch('https://api.rss2json.com/v1/api.json?rss_url='+f)));
-      for(let res of responses) {
-        if(res.status === 'fulfilled' && res.value.ok) {
-          const {items} = await res.value.json();
-          if(!items) continue;
-          items.forEach((n, idx) => {
-            let cat = 'f1';
-            let badge = 'f1';
-            const cLower = (n.categories || []).join(' ').toLowerCase();
-            if (cLower.includes('motogp')) { cat = 'motogp'; badge = 'motogp'; }
-            else if (cLower.includes('wec') || cLower.includes('endurance')) { cat = 'wec'; badge = 'wec'; }
-            else if (cLower.includes('nascar')) { cat = 'nascar'; badge = 'nascar'; }
-            else if (cLower.includes('wrc') || cLower.includes('rally')) { cat = 'wrc'; badge = 'wrc'; }
+      var responses = await Promise.allSettled(FEEDS.map(function(f){return fetch(RSS_PROXY + f.url)}));
+      var jsonPromises = responses.map(async function(r, fi) {
+        if(r.status !== 'fulfilled' || !r.value.ok) return;
+        try {
+          var data = await r.value.json();
+          if(!data.items) return;
+          data.items.forEach(function(n, idx) {
+            var pubDate = (n.pubDate || '').replace(/-/g, '/');
+            var articleDate = new Date(pubDate);
+            var articleDateStr = articleDate.toISOString().slice(0,10);
+            if (articleDateStr !== TODAY) return;
+
+            var titleClean = n.title.trim().toLowerCase().slice(0,60);
+            if (seenTitles.has(titleClean)) return;
+            seenTitles.add(titleClean);
 
             rssArticles.push({
-              id: 'rss_' + cat + '_' + idx + Math.random().toString(36).substr(2,4),
-              cat: cat,
-              badge: badge,
-              kicker: 'NOTÍCIAS · ' + cat.toUpperCase(),
-              title: n.title,
-              link: n.link,
-              author: 'Motorsport Brasil',
+              id: 'rss_' + FEEDS[fi].cat + '_' + idx + '_' + fi,
+              cat: FEEDS[fi].cat, badge: FEEDS[fi].cat,
+              kicker: 'NOTICIAS - ' + FEEDS[fi].cat.toUpperCase(),
+              title: n.title, link: n.link, author: FEEDS[fi].source,
               av: '<i class="fi fi-rr-rss"></i>',
-              date: new Date((n.pubDate||'').replace(/-/g, '/')).toLocaleDateString('pt-BR'),
-              img: (n.enclosure && n.enclosure.link) ? n.enclosure.link : (n.thumbnail || 'https://upload.wikimedia.org/wikipedia/commons/7/79/FIA_F1_Austria_2023_Nr._1_%281%29.jpg"ncard-v2 reveal in ${isFeat}" data-cat="${a.cat}" data-type="${isExt?'ext':'int'}" data-id="${a.id}" onclick="${clickAction}" style="transition-delay: ${i*0.06}s; animation-fill-mode: forwards;">
-        <div class="ncard-v2-thumb">
-          <div class="ncard-v2-pill">${a.badge.replace('b-', '').toUpperCase()}</div>
+              date: articleDate.toLocaleDateString('pt-BR'),
+              img: (n.enclosure && n.enclosure.link) ? n.enclosure.link : (n.thumbnail || 'https://upload.wikimedia.org/wikipedia/commons/3/3f/FIA_F1_Austria_2023_Nr._44_%282%29.jpg'),
+              originalLink: n.link, isReal: true
+            });
+          });
+        } catch(err) { /* feed falhou */ }
+      });
+      await Promise.all(jsonPromises);
+    } catch(err) { console.error('[PitLane] RSS falhou', err); }
+  }
+
+  // Ordenar mais recentes primeiro
+  rssArticles.sort(function(a,b) {
+    var dA = new Date(a.date.split('/').reverse().join('-'));
+    var dB = new Date(b.date.split('/').reverse().join('-'));
+    return dB - dA;
+  });
+
+  // Fallback curado com data dinamica
+  if (rssArticles.length < 6) {
+    console.log('[PitLane] RSS insuficiente (' + rssArticles.length + '). Ativando curado...');
+    var hojeBR = new Date().toLocaleDateString('pt-BR');
+    var CURATED = [
+      {id:'cur_f1_1',cat:'f1',badge:'f1',title:'Antonelli Lidera F1 2026 com 72 Pontos Apos Dominio na Australia e China',author:'Redacao PitLane',date:hojeBR,img:'https://upload.wikimedia.org/wikipedia/commons/3/3f/FIA_F1_Austria_2023_Nr._44_%282%29.jpg',isReal:false,kicker:'F1 - ANALISE'},
+      {id:'cur_f1_2',cat:'f1',badge:'f1',title:'Ferrari Prepara Mega-Atualizacao Aerodinamica para o GP de Miami',author:'Redacao PitLane',date:hojeBR,img:'https://upload.wikimedia.org/wikipedia/commons/9/9f/FIA_F1_Austria_2023_Nr._55_%281%29.jpg',isReal:false,kicker:'F1 - TECNICA'},
+      {id:'cur_f1_3',cat:'f1',badge:'f1',title:'Verstappen Exige Respostas da Red Bull Apos Queda no Campeonato',author:'Redacao PitLane',date:hojeBR,img:'https://upload.wikimedia.org/wikipedia/commons/7/79/FIA_F1_Austria_2023_Nr._1_%281%29.jpg',isReal:false,kicker:'F1 - MERCADO'},
+      {id:'cur_mg_1',cat:'motogp',badge:'motogp',title:'Bagnaia Domina Inicio de Temporada 2026 com 81 Pontos e Duas Vitorias',author:'Redacao PitLane',date:hojeBR,img:'https://upload.wikimedia.org/wikipedia/commons/d/dc/MotoGP_2025_Malaysian_Grand_Prix_-_Ducati_Lenovo_-_Francesco_Bagnaia.jpg',isReal:false,kicker:'MOTOGP - ANALISE'},
+      {id:'cur_mg_2',cat:'motogp',badge:'motogp',title:'Marc Marquez Ameaca Hegemonia Ducati com Gresini na Cola do Lider',author:'Redacao PitLane',date:hojeBR,img:'https://upload.wikimedia.org/wikipedia/commons/a/a1/MotoGP_2025_Malaysian_Grand_Prix_-_Honda_HRC_Castrol_-_Luca_Marini.jpg',isReal:false,kicker:'MOTOGP - MERCADO'},
+      {id:'cur_wec_1',cat:'wec',badge:'wec',title:'Toyota vs Porsche: A Batalha Mais Acirrada da Era Hypercar no WEC',author:'Redacao PitLane',date:hojeBR,img:'https://upload.wikimedia.org/wikipedia/commons/a/a5/2024_6_Hours_of_Spa-Francorchamps_Porsche_Penske_Motorsport_Porsche_963_No.5_%28DSC02380%29.jpg',isReal:false,kicker:'WEC - ANALISE'},
+      {id:'cur_wec_2',cat:'wec',badge:'wec',title:'24 Horas de Le Mans 2026: Grid Recorde com 62 Carros Confirmados',author:'Redacao PitLane',date:hojeBR,img:'https://upload.wikimedia.org/wikipedia/commons/9/98/2024_24_Hours_of_Le_Mans_%2854093434577%29.jpg',isReal:false,kicker:'WEC - PREVIEW'},
+      {id:'cur_nas_1',cat:'nascar',badge:'nascar',title:'Kyle Larson Lidera Cup Series 2026: Hendrick Avassalador',author:'Redacao PitLane',date:hojeBR,img:'https://upload.wikimedia.org/wikipedia/commons/0/07/Kyle_Larson_5_Las_Vegas_2025.jpg',isReal:false,kicker:'NASCAR - ANALISE'},
+      {id:'cur_wrc_1',cat:'wrc',badge:'wrc',title:'Ogier Lidera WRC 2026 com 67 Pontos pela Toyota Gazoo Racing',author:'Redacao PitLane',date:hojeBR,img:'https://upload.wikimedia.org/wikipedia/commons/a/a5/2024_6_Hours_of_Spa-Francorchamps_Porsche_Penske_Motorsport_Porsche_963_No.5_%28DSC02380%29.jpg',isReal:false,kicker:'WRC - ANALISE'},
+      {id:'cur_pago_1',cat:'f1',badge:'pago',title:'Rafael Moura Vence na F4 Brasil e Atrai Interesse de Equipes Europeias',author:'Parceria PitLane',date:hojeBR,img:'img/sponsored-pilot.png',isReal:false,pago:true,partner:'Rafael Moura',kicker:'PATROCINADO'},
+    ];
+    rssArticles = rssArticles.concat(CURATED);
+  }
+
+  ARTICLES = saasArticles.concat(rssArticles);
+  console.log('[PitLane] Total: ' + ARTICLES.length + ' noticias | Fontes: ' + Array.from(new Set(ARTICLES.map(function(a){return a.author}))).join(', '));
+  renderNewsGrid();
+  updateCatCounts();
+  applyFilter();
+}
+function renderNewsGrid() {
+  const grid = document.getElementById('cardGrid');
+  if(!grid) return;
+  if(ARTICLES.length === 0) return;
+
+  grid.innerHTML = ARTICLES.map((a, i) => {
+    const isExt = a.isReal;
+    const isPago = a.pago;
+    const isFeat = i === 0 ? 'feat' : '';
+    const clickAction = a.isReal ? `extLink('${a.link}')` : `openArticle('${a.id}')`;
+    const typeTag = isPago ? 'pago' : (isExt ? 'ext' : 'int');
+    const badgeLabel = a.badge.replace('b-', '').toUpperCase();
+    const sourceLabel = isPago ? '⭐ Parceria · ' + (a.partner||'PitLane') : (isExt ? '↗ ' + a.author : '✎ Redação PitLane');
+    
+    return `
+      <div class="ncard ${isFeat} is-${typeTag}" data-cat="${a.cat}" data-type="${typeTag}" data-id="${a.id}" onclick="${clickAction}">
+        <div class="ncard-thumb">
           <img src="${a.img}" alt="" loading="lazy">
+          <div class="ncard-ribbon"><span class="badge b-${a.badge}">${badgeLabel}</span></div>
         </div>
-        <div class="ncard-v2-body">
-          <div class="ncard-v2-meta">
-            <span>${a.author}</span>
-            <span>&bull;</span>
-            <span><i class="fi fi-rr-calendar-lines" style="font-size:10px"></i> ${a.date}</span>
+        <div class="ncard-body">
+          <div class="ncard-type-row">
+            <span class="tag-${typeTag}">${sourceLabel}</span>
           </div>
-          <div class="ncard-v2-title">${a.title}</div>
-          <div class="ncard-v2-footer">
-            <span class="ncard-v2-footer-txt">${isExt ? 'Ler Matéria' : 'Abrir Modal PitLane'}</span>
-            <i class="fi fi-rr-arrow-up-right ncard-v2-footer-icon"></i>
+          <div class="ncard-title">${a.title}</div>
+          <div class="ncard-footer">
+            <span class="ncard-meta">${a.date} · ${a.author}</span>
+            ${isExt ? '<span style="font-family:var(--fm);font-size:9px;color:var(--blue)">↗ sai do site</span>' : ''}
           </div>
         </div>
+        <div class="ncard-dest ${typeTag}"><i class="fi fi-rr-${isExt?'link':'pencil'}"></i> ${isExt ? 'Abre '+a.author+' em nova aba' : 'Abre aqui no PitLane News'}</div>
       </div>
     `;
   }).join('');
+  
+  // Re-observar reveals nos novos cards
+  document.querySelectorAll('#cardGrid .ncard').forEach((c,i) => {
+    c.style.transitionDelay = (i * .04) + 's';
+    c.classList.add('reveal','in');
+  });
 }
 /* ══════════════════════════════════════════
    CALENDAR
