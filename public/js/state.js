@@ -152,11 +152,25 @@ const Driver = (() => {
     __dbUsers.push(user);
     return user;
   }
-  function updateUser(id, updates) {
+  async function updateUser(id, updates) {
     const idx = __dbUsers.findIndex(u => u.id === id);
     if (idx === -1) return null;
     __dbUsers[idx] = { ...__dbUsers[idx], ...updates };
-    // TODO: PUT /api/db/users
+    
+    try {
+      const resp = await fetch('/api/db/users', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, updates })
+      });
+      const data = await resp.json();
+      if (data.success && data.user) {
+        __dbUsers[idx] = { ...__dbUsers[idx], ...data.user };
+      }
+    } catch(err) {
+      console.warn('API DB inacessível na atualização de usuário.', err);
+    }
+    
     return __dbUsers[idx];
   }
 

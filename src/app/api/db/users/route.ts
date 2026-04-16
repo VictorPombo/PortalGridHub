@@ -56,3 +56,25 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
+
+export async function PUT(request: Request) {
+  try {
+    const body = await request.json();
+    const { id, updates } = body;
+    if (!id) return NextResponse.json({ success: false, error: 'ID requerido.' }, { status: 400 });
+
+    const { data: updatedUser, error } = await supabase
+      .from('users')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    return NextResponse.json({ success: true, user: updatedUser });
+  } catch (error: any) {
+    console.error('Update user error:', error);
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  }
+}
