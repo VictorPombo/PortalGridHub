@@ -934,7 +934,6 @@ function renderNewsGrid() {
   grid.innerHTML = display.map(a => {
     const catCls = getCatClass(a.cat);
     const safeUrl = (a.link || '').replace(/'/g, "\\'");
-    const abstractHtml = a.abstract ? `<div class="news-card-abstract">${a.abstract}</div>` : '';
     
     return `
       <div class="news-card" data-cat="${a.cat}" onclick="window.open('${safeUrl}','_blank')">
@@ -949,7 +948,6 @@ function renderNewsGrid() {
             <span class="source-date">· ${a.date}</span>
           </div>
           <div class="news-card-title">${a.title}</div>
-          ${abstractHtml}
           <div class="news-card-footer">
             <span class="news-card-cta">
               LER MATÉRIA
