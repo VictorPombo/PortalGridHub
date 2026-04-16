@@ -257,8 +257,34 @@ async function loadLiveNews() {
       };
     });
     
+    // 3. Puxar as 3 matérias OBRIGATÓRIAS do Hero
+    const heroItems = [];
+    
+    // Matéria Principal (Hero) -> Sempre de um Assinante (SaaS)
+    if (saasArticles.length > 0) {
+      heroItems.push(saasArticles.shift());
+    } else if (rssArticles.length > 0) {
+      heroItems.push(rssArticles.shift());
+    }
+
+    // Side 1 -> Sempre F1
+    const f1Idx = rssArticles.findIndex(a => a.cat === 'f1');
+    if (f1Idx > -1) {
+      heroItems.push(rssArticles.splice(f1Idx, 1)[0]);
+    } else if (rssArticles.length > 0) {
+      heroItems.push(rssArticles.shift());
+    }
+
+    // Side 2 -> Sempre MotoGP
+    const motoIdx = rssArticles.findIndex(a => a.cat === 'motogp');
+    if (motoIdx > -1) {
+      heroItems.push(rssArticles.splice(motoIdx, 1)[0]);
+    } else if (rssArticles.length > 0) {
+      heroItems.push(rssArticles.shift());
+    }
+
     // Mix them: Dar prioridade total absoluta às Notícias Reais (2 Reais para 1 SaaS)
-    const mixed = [];
+    const mixed = [...heroItems];
     let rIdx = 0, sIdx = 0;
     while (rIdx < rssArticles.length || sIdx < saasArticles.length) {
       if (rIdx < rssArticles.length) mixed.push(rssArticles[rIdx++]);
