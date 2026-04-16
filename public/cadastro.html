@@ -112,14 +112,7 @@
       <div class="form-field"><label class="form-label">Nome de competição</label><input class="form-input" id="regPilotName" type="text" placeholder="Como aparece nos resultados"></div>
       <div class="form-field">
         <label class="form-label">Categoria de atuação</label>
-        <select class="form-select" id="regCategory">
-          <option value="">Selecione...</option>
-          <option>Fórmula 1</option><option>Stock Car</option><option>Porsche Cup</option>
-          <option>F4 Brasil</option><option>Kart</option><option>MotoGP</option>
-          <option>NASCAR</option><option>WEC</option><option>Sim Racing</option>
-          <option>Rally</option><option>Drag Race</option><option>Copa Truck</option>
-          <option>Fórmula E</option><option>Outra</option>
-        </select>
+        <input class="form-input" id="regCategory" type="text" placeholder="Ex: F4 Brasil, Stock Car, Kart, MotoGP...">
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
         <div class="form-field"><label class="form-label">Equipe atual</label><input class="form-input" id="regTeam" type="text" placeholder="Nome da equipe"></div>
@@ -130,7 +123,21 @@
         <div class="form-field"><label class="form-label">Data de nascimento</label><input class="form-input" id="regDob" type="date"></div>
       </div>
       <div class="form-field"><label class="form-label">Instagram</label><input class="form-input" id="regIG" type="text" placeholder="@seuinstagram"></div>
-      <div class="form-field"><label class="form-label">Foto de perfil <span style="font-size:11px;color:var(--dim)">(URL ou upload futuro)</span></label><input class="form-input" id="regPhoto" type="url" placeholder="https://suafoto.com/foto.jpg"></div>
+      <div class="form-field">
+        <label class="form-label">Foto de perfil</label>
+        <div style="display:flex;align-items:center;gap:16px">
+          <div id="photoPreview" style="width:64px;height:64px;border-radius:50%;background:var(--bg2);border:2px dashed var(--brd);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0">
+            <i class="fi fi-rr-user" style="font-size:24px;color:var(--dim)"></i>
+          </div>
+          <div style="flex:1">
+            <input type="file" id="regPhotoFile" accept="image/*" style="display:none" onchange="previewPhoto(this)">
+            <button type="button" class="btn-secondary" style="width:100%;margin:0;padding:10px" onclick="document.getElementById('regPhotoFile').click()">
+              <i class="fi fi-rr-cloud-upload" style="margin-right:6px"></i> Escolher foto
+            </button>
+            <div style="font-family:var(--fm);font-size:10px;color:var(--dim);margin-top:4px" id="photoFileName">Nenhuma foto selecionada</div>
+          </div>
+        </div>
+      </div>
       
       <div style="display:flex;gap:10px"><button class="btn-secondary" onclick="goStep(1)" style="flex:1">← Voltar</button><button class="btn-full" onclick="goStep(3)" style="flex:2;margin-top:0">Continuar →</button></div>
     </div>
@@ -335,8 +342,8 @@ function goStep(step) {
   
   // Step 3: Show pro fields or review
   if (step === 3) {
-    const cat = document.getElementById('regCategory')?.value;
-    if (!cat) { showToast('Selecione uma categoria','err'); return; }
+    const cat = document.getElementById('regCategory')?.value?.trim();
+    if (!cat) { showToast('Digite sua categoria de atuação','err'); return; }
     
     if (selectedPlan === 'pro') {
       document.getElementById('proFields').style.display = 'block';
@@ -429,6 +436,19 @@ function goStep(step) {
     if (i + 1 === step) d.classList.add('current');
   });
   window.scrollTo({ top: 200, behavior: 'smooth' });
+}
+
+function previewPhoto(input) {
+  if (input.files && input.files[0]) {
+    const file = input.files[0];
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const preview = document.getElementById('photoPreview');
+      preview.innerHTML = '<img src="' + e.target.result + '" style="width:100%;height:100%;object-fit:cover">';
+    };
+    reader.readAsDataURL(file);
+    document.getElementById('photoFileName').textContent = file.name;
+  }
 }
 </script>
 </body>
