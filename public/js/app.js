@@ -871,7 +871,6 @@ function renderHeroGrid() {
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
           <span class="news-card-cat ${getCatClass(a0.cat)}" style="position:static">${a0.cat.toUpperCase()}</span>
           <span style="font-family:var(--fm);font-size:10px;color:rgba(255,255,255,.4)">${a0.author}</span>
-          ${a0.isReal === false ? '<span class="tag-pago" style="font-size:10px;padding:2px 8px;margin-left:8px"><i class="fi fi-rr-star"></i> Patrocinado</span>' : ''}
         </div>
         <h1 style="font-family:'Bebas Neue',sans-serif;font-size:52px;line-height:.96;color:#fff;margin:0 0 12px">${a0.title}</h1>
         <div style="font-family:var(--fm);font-size:11px;color:rgba(255,255,255,.35);display:flex;align-items:center;gap:8px">
@@ -889,7 +888,6 @@ function renderHeroGrid() {
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
             <span class="news-card-cat ${getCatClass(a1.cat)}" style="position:static;font-size:8px;padding:3px 8px">${a1.cat.toUpperCase()}</span>
             <span style="font-family:var(--fm);font-size:9px;color:rgba(255,255,255,.4)">${a1.author}</span>
-            ${a1.isReal === false ? '<span class="tag-pago" style="font-size:8px;padding:1px 6px;margin-left:4px"><i class="fi fi-rr-star"></i> Patrocinado</span>' : ''}
           </div>
           <div style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;text-transform:uppercase;line-height:1.15;color:#fff;margin-bottom:5px">${a1.title}</div>
           <div style="font-family:var(--fm);font-size:9px;color:rgba(255,255,255,.3)">${a1.date} · Acessar ↗</div>
