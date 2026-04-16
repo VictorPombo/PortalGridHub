@@ -525,8 +525,8 @@
 }
 .hero-badge .hb-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 10px rgba(0,187,85,0.5); }
 .sec-hero h1 { font-family: var(--fd); font-size: 72px; text-transform: uppercase; line-height: 0.95; margin-bottom: 24px; color: #fff; letter-spacing: 2px; text-wrap: balance; }
-.sec-hero .hl-red { color: var(--acc); }
-.sec-hero .hl-grad {
+.hl-red { color: var(--acc); }
+.hl-grad {
   background: linear-gradient(90deg, var(--acc) 0%, var(--gold) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -613,20 +613,24 @@
 .sec-valor { background: var(--bg); padding: 100px 0; border-top: 1px solid var(--brd); position: relative; }
 .valor-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1000px; margin: 0 auto; text-align: left; }
 .valor-card { 
-  background: linear-gradient(145deg, rgba(20,20,30,0.6), rgba(12,12,18,0.9)); 
+  background: rgba(25, 25, 35, 0.4); 
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255,255,255,0.08); 
+  border-top: 1px solid rgba(255,255,255,0.15);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
   padding: 40px 32px; 
   border-radius: 16px; 
   transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s; 
 }
 .valor-card:hover { 
   transform: translateY(-4px); 
-  border-color: rgba(232,0,45,0.3); 
-  box-shadow: 0 8px 30px rgba(232,0,45,0.15); 
+  border-color: rgba(232,0,45,0.4); 
+  border-top-color: rgba(232,0,45,0.6);
+  box-shadow: 0 12px 40px rgba(232,0,45,0.2); 
 }
-.valor-icon { font-size: 32px; color: var(--gold); margin-bottom: 24px; display: inline-block; filter: drop-shadow(0 0 10px rgba(240,160,0,0.3)); }
-.valor-card h3 { font-family: var(--fb); font-weight: 800; font-size: 20px; color: #ffffff !important; margin-bottom: 12px; letter-spacing: 0.5px;}
-.valor-card p { font-family: var(--fb); font-size: 15px; color: #a0a0b0 !important; line-height: 1.6; margin: 0; }
+.valor-icon { font-size: 36px; color: var(--gold); margin-bottom: 24px; display: inline-block; filter: drop-shadow(0 0 12px rgba(240,160,0,0.4)); }
+.valor-card h3 { font-family: var(--fb); font-weight: 800; font-size: 22px; color: #ffffff !important; margin-bottom: 12px; letter-spacing: 0.5px;}
+.valor-card p { font-family: var(--fb); font-size: 16px; color: #c8c8d8 !important; line-height: 1.6; margin: 0; font-weight: 400;}
 
 /* Sec7 Status */
 .sec-status { padding: 40px 0 100px; text-align: center; background: var(--bg); }
