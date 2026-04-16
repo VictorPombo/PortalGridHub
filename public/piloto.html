@@ -134,7 +134,7 @@ function renderPilotPage(p) {
 
   document.getElementById('pilotContent').innerHTML = `
     <div class="pilot-hero">
-      <img class="pilot-hero-bg" src="https://loremflickr.com/1400/600/racing,car,motorsport?lock=${parseInt(p.id.replace(/\\D/g, '')) * 13}" alt="">
+      <img class="pilot-hero-bg" src="${p.cover_url || 'https://loremflickr.com/1400/600/racing,car,motorsport?lock=' + parseInt(p.id.replace(/\\D/g, '')) * 13}" alt="">
       <div class="pilot-hero-overlay"></div>
       <div class="pilot-hero-number">${p.number || '00'}</div>
       <div class="pilot-hero-content">
@@ -142,9 +142,9 @@ function renderPilotPage(p) {
         <h1 class="pilot-hero-name">${p.name}</h1>
         <div class="pilot-hero-category">${p.category || 'Automobilismo'} · Piloto ${Driver.getPlanName(p.plan)}</div>
         <div class="pilot-hero-social">
-          ${p.instagram ? '<div class="f-soc" title="Instagram">IG</div>' : ''}
-          <div class="f-soc" title="Twitter/X">X</div>
-          ${isOwner ? `<a href="dashboard-piloto.html" class="btn-secondary" style="padding:6px 12px;font-size:10px;margin-left:8px"><i data-lucide="pencil" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Editar Página</a>` : ''}
+          ${p.instagram ? `<a href="https://instagram.com/${p.instagram.replace('@','')}" target="_blank" class="f-soc" title="Instagram">IG</a>` : ''}
+          ${p.twitter ? `<a href="https://x.com/${p.twitter.replace('@','')}" target="_blank" class="f-soc" title="Twitter/X">X</a>` : ''}
+          ${isOwner ? `<a href="dashboard-piloto.html?sec=profile" class="btn-secondary" style="padding:6px 12px;font-size:10px;margin-left:8px"><i class="fi fi-rr-pencil"></i> Editar Página</a>` : ''}
         </div>
       </div>
     </div>
@@ -171,7 +171,9 @@ function renderPilotPage(p) {
     <div class="pilot-section">
       <div class="sec-head"><span class="sec-title">Galeria</span></div>
       <div class="pilot-gallery">
-        ${[90, 91, 92, 93, 94, 95].map(lock => `
+        ${(p.gallery && p.gallery.length > 0) ? p.gallery.map(url => `
+          <div class="pilot-gallery-item"><img src="${url}" alt=""></div>
+        `).join('') : [90, 91, 92, 93, 94, 95].map(lock => `
           <div class="pilot-gallery-item"><img src="https://loremflickr.com/500/300/racing,car?lock=${lock + parseInt(p.id.replace(/\\D/g, ''))}" alt=""></div>
         `).join('')}
       </div>

@@ -130,16 +130,23 @@ const CHAMP_DATA={
 // Keep backwards compatibility
 const DRIVERS=CHAMP_DATA.f1.drivers;
 const CONSTRUCTORS=CHAMP_DATA.f1.constructors;
-const PILOTS=[
-  {id:0,name:'Carla Mendes',cats:'F4 Brasil',plan:'Avançado',wins:3,podios:8,img:'img/pilot-carla.png'},
-  {id:1,name:'Bruno Castilho',cats:'Stock Car Pro Series',plan:'Intermediário',wins:5,podios:12,img:'img/pilot-bruno.png'},
-  {id:2,name:'Beto Silva',cats:'Copa HB20',plan:'Básico',wins:1,podios:3,img:'img/pilot-hb20.png'},
-  {id:3,name:'Diego Souza',cats:'SuperMoto · SBK',plan:'Básico',wins:0,podios:2,img:'img/pilot-moto.png'},
-  {id:4,name:'Lucas Martins',cats:'Kart Profissional',plan:'Avançado',wins:12,podios:30,img:'img/pilot-kart.png'},
-  {id:5,name:'Ana Torres',cats:'Fórmula 1600',plan:'Intermediário',wins:2,podios:5,img:'img/pilot-ana.png'},
-  {id:6,name:'Rafael Moura',cats:'Mercedes Cup AMG',plan:'Avançado',wins:4,podios:9,img:'img/pilot-rafael.png'},
-  {id:7,name:'Diana Costa',cats:'Kart Indoor',plan:'Básico',wins:0,podios:6,img:'img/pilot-kartindoor.png'}
-];
+// Dynamic pilots from database
+function _getRealPilots() {
+  if (typeof Driver === 'undefined') return [];
+  const pilots = Driver.getUsersByType('piloto');
+  return pilots.map(p => ({
+    id: p.id,
+    name: p.pilot_name || p.name,
+    cats: p.category || 'Automobilismo',
+    plan: Driver.getPlanName(p.plan),
+    wins: p.conquests?.wins || 0,
+    podios: p.conquests?.podiums || 0,
+    img: p.avatar_url || p.cover_url || 'img/pilot-placeholder.png',
+    cover: p.cover_url || '',
+    avatar: p.avatar || '🏁',
+  }));
+}
+const PILOTS = _getRealPilots();
 
 /* ══ VIEW ROUTER ══ */
 function showView(id){
@@ -567,8 +574,15 @@ function updateCatCounts(){
 /* ══ PILOTS ══ */
 function renderPilotsHighlight(){
   const g=document.getElementById('pilotsHighlight');if(!g)return;
-  g.innerHTML=PILOTS.map(p=>`<div class="pcard" onclick="showView('pilot-profile')">
-    <div class="pcard-cover"><img src="${p.img}" alt="" loading="lazy"></div>
+  const pilots = _getRealPilots();
+  if (pilots.length === 0) {
+    g.innerHTML='<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px;grid-column:1/-1">Nenhum piloto cadastrado ainda.</div>';
+    return;
+  }
+  g.innerHTML=pilots.map(p=>{
+    const articleCount = typeof Driver !== 'undefined' ? Driver.getPublishedByAuthor(p.id).length : 0;
+    return `<div class="pcard" onclick="window.location.href='piloto.html?id=${p.id}'">
+    <div class="pcard-cover"><img src="${p.img}" alt="" loading="lazy" onerror="this.style.display='none'"></div>
     <div class="pcard-body">
       <div style="position:absolute;top:10px;right:10px"><span class="badge b-piloto" style="font-size:8px">✓ Verificado</span></div>
       <div class="pcard-name">${p.name}</div>
@@ -576,15 +590,21 @@ function renderPilotsHighlight(){
       <div class="pcard-stats">
         <div class="pstat"><span class="pstat-n">${p.wins}</span><span class="pstat-l">Vitórias</span></div>
         <div class="pstat"><span class="pstat-n">${p.podios}</span><span class="pstat-l">Pódios</span></div>
-        <div class="pstat"><span class="pstat-n" style="font-size:12px;color:var(--gold)">${p.plan}</span><span class="pstat-l">Plano</span></div>
+        <div class="pstat"><span class="pstat-n">${articleCount}</span><span class="pstat-l">Matérias</span></div>
       </div>
     </div>
-  </div>`).join('');
+  </div>`;
+  }).join('');
 }
 function renderPilotsList(){
   const g=document.getElementById('pilotsListGrid');if(!g)return;
-  g.innerHTML=PILOTS.map(p=>`<div class="pcard" onclick="showView('pilot-profile')">
-    <div class="pcard-cover"><img src="${p.img}" alt="" loading="lazy"></div>
+  const pilots = _getRealPilots();
+  const countEl = document.getElementById('pilotsCount');
+  if (countEl) countEl.textContent = pilots.length + ' pilotos ativos';
+  g.innerHTML=pilots.map(p=>{
+    const articleCount = typeof Driver !== 'undefined' ? Driver.getPublishedByAuthor(p.id).length : 0;
+    return `<div class="pcard" onclick="window.location.href='piloto.html?id=${p.id}'">
+    <div class="pcard-cover"><img src="${p.img}" alt="" loading="lazy" onerror="this.style.display='none'"></div>
     <div class="pcard-body">
       <div style="position:absolute;top:10px;right:10px"><span class="badge b-piloto" style="font-size:8px">✓ Verificado</span></div>
       <div class="pcard-name">${p.name}</div>
@@ -592,10 +612,12 @@ function renderPilotsList(){
       <div class="pcard-stats">
         <div class="pstat"><span class="pstat-n">${p.wins}</span><span class="pstat-l">Vitórias</span></div>
         <div class="pstat"><span class="pstat-n">${p.podios}</span><span class="pstat-l">Pódios</span></div>
+        <div class="pstat"><span class="pstat-n">${articleCount}</span><span class="pstat-l">Matérias</span></div>
       </div>
-      <button class="btn btn-acc btn-full btn-sm" style="margin-top:12px" onclick="event.stopPropagation();showView('pilot-profile')">Ver perfil →</button>
+      <button class="btn btn-acc btn-full btn-sm" style="margin-top:12px" onclick="event.stopPropagation();window.location.href='piloto.html?id=${p.id}'">Ver perfil →</button>
     </div>
-  </div>`).join('');
+  </div>`;
+  }).join('');
 }
 function renderTeamsList(){
   const g=document.getElementById('teamsListGrid');if(!g)return;
