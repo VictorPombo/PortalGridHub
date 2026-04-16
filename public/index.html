@@ -329,182 +329,21 @@
   <!-- NEWS SECTION -->
   <div class="section reveal" id="newsSection">
     <div class="sec-head">
-      <div><span class="sec-title" id="newsSectionTitle">Últimas Notícias</span><span class="sec-sub">Externas → site de origem · Internas → abre aqui</span></div>
-      <div class="sec-right">
-        <div class="ftag-row" style="margin-bottom:0">
-          <button class="ftag active" onclick="filterType(this,'all')">Todos</button>
-          <div class="ftag-sep"></div>
-          <button class="ftag ext-filter" onclick="filterType(this,'ext')"><i class="fi fi-rr-link"></i> Externas</button>
-          <button class="ftag int-filter" onclick="filterType(this,'int')"><i class="fi fi-rr-pencil"></i> PitLane</button>
-          <button class="ftag" style="border-color:rgba(240,160,0,.3);color:var(--gold)" onclick="filterType(this,'pago')"><i class="fi fi-rr-star"></i> Patrocinado</button>
-        </div>
+      <div>
+        <span class="sec-title" id="newsSectionTitle">Últimas Notícias</span>
+        <span class="sec-sub" id="newsSourceCount">Carregando feeds...</span>
       </div>
     </div>
-    <div class="card-grid" id="cardGrid">
-
-      <!-- CARD INTERNO -->
-      <div class="ncard feat is-int" data-cat="f1" data-type="int" data-id="0" onclick="openArticle(0)">
-        <div class="ncard-thumb">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/3/3f/FIA_F1_Austria_2023_Nr._44_%282%29.jpg" alt="">
-          <div class="ncard-ribbon"><span class="badge b-f1">F1 · 2026</span></div>
-        </div>
-        <div class="ncard-body">
-          <div class="ncard-type-row">
-            <span class="tag-int"><i class="fi fi-rr-pencil"></i> PitLane News</span>
-            <span style="font-family:var(--fm);font-size:9px;color:var(--muted)">Abre no portal</span>
-          </div>
-          <div class="ncard-title">Mercedes Surpreende em 2026 e Retoma o Controle do Mundial de F1</div>
-          <div class="ncard-excerpt">A flecha de prata domina o campeonato de construtores após 3 GPs — Austrália, China e Japão — provando que decodificou perfeitamente o novo regulamento híbrido.</div>
-          <div class="ncard-footer">
-            <span class="ncard-meta">10 ABR · REDAÇÃO PITLANE · 5 MIN</span>
-            <button class="bm-btn" onclick="event.stopPropagation();bookmark(this,0)"><i class="fi fi-rr-bookmark"></i></button>
-          </div>
-        </div>
-        <div class="ncard-dest int"><i class="fi fi-rr-pencil"></i> Abre aqui no PitLane News</div>
+    <div class="news-card-grid" id="cardGrid">
+      <!-- Cards renderizados dinamicamente via JS -->
+      <div class="news-loading" id="newsLoading">
+        <div class="news-loading-spinner"></div>
+        <span>Buscando notícias de múltiplas fontes...</span>
       </div>
-
-      <!-- CARD EXTERNO -->
-      <div class="ncard is-ext" data-cat="f1" data-type="ext" onclick="extLink('https://www.skysports.com/f1')">
-        <div class="ncard-thumb">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/9/9f/FIA_F1_Austria_2023_Nr._55_%281%29.jpg" alt="">
-          <div class="ncard-ribbon"><span class="badge b-f1">F1 · FERRARI</span></div>
-        </div>
-        <div class="ncard-body">
-          <div class="ncard-type-row">
-            <span class="tag-ext"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg> Sky Sports F1</span>
-          </div>
-          <div class="ncard-title">Ferrari Prepara Pacote Agressivo de Atualizações para o GP de Miami</div>
-          <div class="ncard-excerpt">Com foco na gestão de energia, equipe italiana espera desafiar a Mercedes. Próximas reuniões: 15, 16 e 20 de abril.</div>
-          <div class="ncard-footer">
-            <span class="ncard-meta">10 ABR · SKY SPORTS F1</span>
-            <span style="font-family:var(--fm);font-size:9px;color:var(--blue)">↗ sai do site</span>
-          </div>
-        </div>
-        <div class="ncard-dest ext"><i class="fi fi-rr-link"></i> Abre Sky Sports F1 em nova aba</div>
-      </div>
-
-      <!-- CARD EXTERNO -->
-      <div class="ncard is-ext" data-cat="f1" data-type="ext" onclick="extLink('https://www.espn.com/f1')">
-        <div class="ncard-thumb">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/7/79/FIA_F1_Austria_2023_Nr._1_%281%29.jpg" alt="">
-          <div class="ncard-ribbon"><span class="badge b-f1">F1 · RED BULL</span></div>
-        </div>
-        <div class="ncard-body">
-          <div class="ncard-type-row">
-            <span class="tag-ext"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg> ESPN</span>
-          </div>
-          <div class="ncard-title">Verstappen Exige Respostas da Red Bull Após Desempenho Irregular</div>
-          <div class="ncard-excerpt">GPs do Bahrein e Arábia Saudita foram difíceis para a equipe austríaca. Próxima corrida: Miami, 1-3 de maio.</div>
-          <div class="ncard-footer">
-            <span class="ncard-meta">10 ABR · ESPN</span>
-            <span style="font-family:var(--fm);font-size:9px;color:var(--blue)">↗ sai do site</span>
-          </div>
-        </div>
-        <div class="ncard-dest ext"><i class="fi fi-rr-link"></i> Abre ESPN em nova aba</div>
-      </div>
-
-      <!-- CARD INTERNO -->
-      <div class="ncard is-int" data-cat="f1" data-type="int" data-id="2" onclick="openArticle(2)">
-        <div class="ncard-thumb">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/7/76/Sergio_P%C3%A9rez_1.jpg" alt="">
-          <div class="ncard-ribbon"><span class="badge b-f1">F1 · BREAKING</span></div>
-        </div>
-        <div class="ncard-body">
-          <div class="ncard-type-row">
-            <span class="tag-int"><i class="fi fi-rr-pencil"></i> PitLane News</span>
-            <span style="font-family:var(--fm);font-size:9px;color:var(--muted)">Baseado em ESPN / Sky Sports</span>
-          </div>
-          <div class="ncard-title">Sergio Pérez Avalia Seu Futuro: Continuidade ou Aposentadoria?</div>
-          <div class="ncard-excerpt">Piloto mexicano estuda opções após uma série de corridas desafiadoras no grid cada vez mais jovem da F1.</div>
-          <div class="ncard-footer">
-            <span class="ncard-meta">9 ABR · REDAÇÃO PITLANE · 3 MIN</span>
-            <button class="bm-btn" onclick="event.stopPropagation();bookmark(this,2)"><i class="fi fi-rr-bookmark"></i></button>
-          </div>
-        </div>
-        <div class="ncard-dest int"><i class="fi fi-rr-pencil"></i> Abre aqui no PitLane News</div>
-      </div>
-
-      <!-- CARD INTERNO -->
-      <div class="ncard is-int" data-cat="f1" data-type="int" data-id="4" onclick="openArticle(4)">
-        <div class="ncard-thumb">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/e/ec/FIA_F1_Austria_2023_Nr._81.jpg" alt="">
-          <div class="ncard-ribbon"><span class="badge b-f1">F1 · ANÁLISE</span></div>
-        </div>
-        <div class="ncard-body">
-          <div class="ncard-type-row">
-            <span class="tag-int"><i class="fi fi-rr-pencil"></i> PitLane News</span>
-          </div>
-          <div class="ncard-title">McLaren e as Estratégias Ousadas de Piastri: O Diferencial Técnico</div>
-          <div class="ncard-excerpt">Equipe foca na gestão do sistema híbrido em circuitos curtos. Será o suficiente contra a dominância das ponteiras?</div>
-          <div class="ncard-footer">
-            <span class="ncard-meta">8 ABR · REDAÇÃO PITLANE · 7 MIN</span>
-            <button class="bm-btn" onclick="event.stopPropagation();bookmark(this,4)"><i class="fi fi-rr-bookmark"></i></button>
-          </div>
-        </div>
-        <div class="ncard-dest int"><i class="fi fi-rr-pencil"></i> Abre aqui no PitLane News</div>
-      </div>
-
-      <!-- CARD EXTERNO -->
-      <div class="ncard is-ext" data-cat="f1" data-type="ext" onclick="extLink('https://www.skysports.com/')">
-        <div class="ncard-thumb">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Alex_Albon%2C_2022_Singapore_GP_%2852402422501%29.jpg" alt="">
-          <div class="ncard-ribbon"><span class="badge b-f1">F1 · WILLIAMS</span></div>
-        </div>
-        <div class="ncard-body">
-          <div class="ncard-type-row">
-            <span class="tag-ext"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg> Sky Sports F1</span>
-          </div>
-          <div class="ncard-title">Williams Confirma Novas Instalações Tecnológicas para Próxima Etapa</div>
-          <div class="ncard-excerpt">Equipe inglesa aproveitou o intervalo de abril para atualizar seus simuladores visando pontuar regularmente.</div>
-          <div class="ncard-footer">
-            <span class="ncard-meta">3 ABR · SKY SPORTS F1</span>
-            <span style="font-family:var(--fm);font-size:9px;color:var(--blue)">↗ sai do site</span>
-          </div>
-        </div>
-        <div class="ncard-dest ext"><i class="fi fi-rr-link"></i> Abre Sky Sports F1 em nova aba</div>
-      </div>
-
-      <!-- CARD PATROCINADO Rafael Moura -->
-      <div class="ncard is-pago" data-cat="f1" data-type="pago" data-id="5" onclick="openArticle(5)">
-        <div class="ncard-thumb">
-          <img src="img/sponsored-pilot.png" alt="">
-          <div class="ncard-ribbon"><span class="badge b-pago"><i class="fi fi-rr-star"></i> Patrocinado</span></div>
-        </div>
-        <div class="ncard-body">
-          <div class="ncard-type-row">
-            <span class="tag-pago"><i class="fi fi-rr-star"></i> Parceria · Rafael Moura</span>
-          </div>
-          <div class="ncard-title">Rafael Moura Vence na F4 Brasil e Atrai Interesse de Equipes Europeias</div>
-          <div class="ncard-excerpt">Piloto paulista de 19 anos domina as últimas corridas e negocia com equipes da Fórmula Regional para 2027.</div>
-          <div class="ncard-footer">
-            <span class="ncard-meta">9 ABR · REDAÇÃO PITLANE · 4 MIN</span>
-            <button class="bm-btn" onclick="event.stopPropagation();bookmark(this,5)"><i class="fi fi-rr-bookmark"></i></button>
-          </div>
-        </div>
-        <div class="ncard-dest int"><i class="fi fi-rr-pencil"></i> Abre aqui no PitLane News</div>
-      </div>
-
-      <!-- CARD EXTERNO -->
-      <div class="ncard is-ext" data-cat="f1" data-type="ext" onclick="extLink('https://www.gpfans.com/')">
-        <div class="ncard-thumb">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/5/50/Circuit_Francorchamps_Eau_Rouge.jpg" alt="">
-          <div class="ncard-ribbon"><span class="badge b-f1">F1 · CALENDÁRIO</span></div>
-        </div>
-        <div class="ncard-body">
-          <div class="ncard-type-row">
-            <span class="tag-ext"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg> GPFans</span>
-          </div>
-          <div class="ncard-title">Classificação Oficial F1 2026 — Aston Martin na Liderança? Tabela Atualizada</div>
-          <div class="ncard-excerpt">Alonso lidera, seguido de perto por Russell, Leclerc e Hamilton. Veja a tabela completa atualizada após o GP da Arábia Saudita.</div>
-          <div class="ncard-footer">
-            <span class="ncard-meta">29 MAR · GPFANS</span>
-            <span style="font-family:var(--fm);font-size:9px;color:var(--blue)">↗ sai do site</span>
-          </div>
-        </div>
-        <div class="ncard-dest ext"><i class="fi fi-rr-link"></i> Abre GPFans em nova aba</div>
-      </div>
-
-    </div><!-- /card-grid -->
+    </div>
+    <div class="news-load-more" id="newsLoadMore" style="display:none">
+      <button class="btn btn-out" onclick="loadMoreNews()">Carregar mais notícias</button>
+    </div>
   </div>
 
   <!-- PILOTS HIGHLIGHT -->
