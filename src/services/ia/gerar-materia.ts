@@ -1,9 +1,15 @@
 import { createClient } from "@supabase/supabase-js";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL || "",
   process.env.SUPABASE_SERVICE_ROLE_KEY || ""
 );
+
+// Puxa a chave de API (Gemini gratuita p/ Dev ou Paga em Prod)
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
+const MODELO_REDATOR = "gemini-1.5-flash"; // Agente Criativo & Ágil
+const MODELO_REVISOR = "gemini-1.5-pro"; // Agente Analítico de Qualidade / Auditor de Alucinação
 
 export interface FormInput {
   titulo: string;
@@ -21,27 +27,14 @@ export interface MateriaGerada {
   titulo: string;
   subtitulo: string | null;
   conteudo: string;
-  prompt_sistema_id: string;
+  prompt_sistema_id: string; // Vai referenciar o Revisor final
   modelo_ia: string;
 }
 
-// Simulador provisório de chamadas AI. Substituir por API do OpenAI/Claude em prod.
-async function chamarIA(params: { modelo: string; prompt: string; max_tokens: number }) {
-  console.log(`[Driver AI Engine] Chamando ${params.modelo}...`);
-  return {
-    texto: `TÍTULO: Notícia sobre a atuação de destaque na pista.\nSUBTÍTULO: Contexto resumido da performance e fatos citados.\nCORPO:\n\nAqui vai o corpo jornalístico formatado do texto. Ele interpretou os resumos enviados de forma profissional.`,
-    usage: { input: 350, output: 400 }
-  };
-}
-
-function calcularCusto(usage: { input: number; output: number }) {
-  // Placeholder cost estimation
-  return (usage.input * 0.00001) + (usage.output * 0.00003); 
-}
-
+// Helpers de extração regEx
 function extrairTitulo(texto: string) {
   const match = texto.match(/TÍTULO:\s*(.+)/i);
-  return match ? match[1].trim() : "Sem Título";
+  return match ? match[1].trim() : "Sem Título Extratado";
 }
 
 function extrairSubtitulo(texto: string) {
@@ -50,63 +43,88 @@ function extrairSubtitulo(texto: string) {
 }
 
 function extrairCorpo(texto: string) {
-  const parts = texto.split(/CORPO:/i);
-  return parts.length > 1 ? parts[1].trim() : texto.trim();
+  const match = texto.match(/CORPO:\s*([\s\S]*)/i);
+  // Se não tem match na formatação exata, retorna o texto limpo de lixos de formatação
+  return match ? match[1].trim() : texto.replace(/TÍTULO:.*?\n/ig, '').replace(/SUBTÍTULO:.*?\n/ig, '').trim();
 }
 
-export async function gerarMateria(materiaId: string, input: FormInput): Promise<MateriaGerada> {
-  // 1. Buscar prompt_sistema ativo atual
-  const { data: promptSistema, error: promptErr } = await supabase
-    .from("prompts_sistema")
-    .select("*")
-    .eq("ativo", true)
-    .single();
-
-  if (promptErr || !promptSistema) {
-    throw new Error("Não foi possível encontrar um prompt de sistema ativo.");
+/**
+ * Função Engine Multi-Agent
+ * Phase 1: Redator -> Expande os fatos
+ * Phase 2: Editor Chefe -> Revisa, checa alucinações baseadas nos dados originais e devolve resultado polido.
+ */
+export async function gerarMateriaMultiAgente(materiaId: string, input: FormInput): Promise<MateriaGerada> {
+  if (!process.env.GEMINI_API_KEY) {
+      console.warn("⚠️ GEMINI_API_KEY não encontrada. Abortando serviço real de IA.");
+      throw new Error("Serviço de IA Indisponível (Sem Chave).");
   }
 
-  // 2. Montar prompt final
-  const promptCompleto = `
-${promptSistema.texto_prompt}
+  // 1. DADOS ESTÁTICOS DO PILOTO (O Fato Cru e Indispensável)
+  const fatosDoPiloto = `
+DADOS DO AUTOR: Nome: ${input.autor.nome} | Categoria: ${input.autor.categoria}
+DADOS TÉCNICOS: Título sugerido: ${input.titulo} | Categoria da matéria: ${input.categoria}
+FATOS NO PONTO DE VISTA DO PILOTO: ${input.fatos}
+ASPAS E CITAÇÕES FORNECIDAS: ${input.citacoes || "nenhuma"}
+CONTEXTO EXTRA (CAMPEONATO): ${input.contexto || "nenhum"}
+  `;
 
-DADOS DO AUTOR:
-Nome: ${input.autor.nome}
-Categoria: ${input.autor.categoria}
+  // =========================================================================
+  // FASE 1: O AGENTE REDATOR (Gemini Flash)
+  // =========================================================================
+  const { data: promptRedator } = await supabase.from("prompts_sistema").select("*").eq("versao", "v1.0.0-redator").single();
+  const redatorAi = genAI.getGenerativeModel({ model: MODELO_REDATOR });
 
-INFORMAÇÕES FORNECIDAS:
-Título sugerido: ${input.titulo}
-Categoria da matéria: ${input.categoria}
-Fatos: ${input.fatos}
-Citações: ${input.citacoes || "nenhuma"}
-Contexto: ${input.contexto || "nenhum"}
-`;
-
-  // 3. Chamar IA
-  const MODELO_ALVO = "gpt-4-turbo";
-  const resposta = await chamarIA({
-    modelo: MODELO_ALVO,
-    prompt: promptCompleto,
-    max_tokens: 2000
-  });
-
-  // 4. Salvar log blindado no banco
+  console.log("[Driver multi-agent] 🧠 Iniciando Agente 1 (Redator)...");
+  
+  const ctxRedator = `${promptRedator?.texto_prompt}\n\nMENSAGEM A REDIGIR DA SEGUINTE FONTE DE DADOS:\n${fatosDoPiloto}`;
+  const responseRedator = await redatorAi.generateContent(ctxRedator);
+  const textoRascunho = responseRedator.response.text();
+  
+  // Logga o trabalho da Fase 1 no Banco
   await supabase.from("logs_ia").insert({
     materia_id: materiaId,
     tipo: "geracao",
-    input: input,
-    output: resposta.texto,
-    modelo: MODELO_ALVO,
-    tokens_input: resposta.usage.input,
-    tokens_output: resposta.usage.output,
-    custo_estimado: calcularCusto(resposta.usage)
+    input: { facts: input, promptConfig: 'v1.0.0-redator' },
+    output: textoRascunho,
+    modelo: MODELO_REDATOR,
+    // Gemini Flash não envia custo unitário de token tão detalhado no SDK grátis da node API simplificada (usageMetadata) diretamente. 
+    // Em prod oficial, recuperamos da propriedade usageMetadata.
+    tokens_input: responseRedator.response.usageMetadata?.promptTokenCount || 0,
+    tokens_output: responseRedator.response.usageMetadata?.candidatesTokenCount || 0
   });
 
+
+  // =========================================================================
+  // FASE 2: O AGENTE REVISOR/EDITOR-CHEFE (Gemini Pro)
+  // =========================================================================
+  const { data: promptRevisor } = await supabase.from("prompts_sistema").select("*").eq("versao", "v1.0.0-revisor").single();
+  const editorAi = genAI.getGenerativeModel({ model: MODELO_REVISOR });
+
+  console.log("[Driver multi-agent] ⚖️ Iniciando Agente 2 (Editor-Chefe de Auditoria)...");
+
+  // O Editor recebe a Missão (Prompt) + A Peça Bruta (Redator) + Os Fatos como base de Checagem.
+  const ctxEditor = `${promptRevisor?.texto_prompt}\n\nDADOS REAIS FORNECIDOS PELO PILOTO (USE COMO CHECK DE FATOS):\n${fatosDoPiloto}\n\n================\nRASCUNHO CRIADO PELA REDAÇÃO PARA SER POLIDO:\n${textoRascunho}`;
+  const responseEditor = await editorAi.generateContent(ctxEditor);
+  const textoFinalPolido = responseEditor.response.text();
+
+  // Logga o trabalho do Editor Chefe no Banco blindado
+  await supabase.from("logs_ia").insert({
+    materia_id: materiaId,
+    tipo: "revisao_oficial",
+    input: { facts: input, rascunhoInternoBase: textoRascunho, promptConfig: 'v1.0.0-revisor' },
+    output: textoFinalPolido,
+    modelo: MODELO_REVISOR,
+    tokens_input: responseEditor.response.usageMetadata?.promptTokenCount || 0,
+    tokens_output: responseEditor.response.usageMetadata?.candidatesTokenCount || 0
+  });
+
+  console.log("[Driver multi-agent] ✅ Processo Editorial Concluído.");
+
   return {
-    titulo: extrairTitulo(resposta.texto),
-    subtitulo: extrairSubtitulo(resposta.texto),
-    conteudo: extrairCorpo(resposta.texto),
-    prompt_sistema_id: promptSistema.id,
-    modelo_ia: MODELO_ALVO
+    titulo: extrairTitulo(textoFinalPolido),
+    subtitulo: extrairSubtitulo(textoFinalPolido),
+    conteudo: extrairCorpo(textoFinalPolido),
+    prompt_sistema_id: promptRevisor?.id || "unknown",
+    modelo_ia: `${MODELO_REDATOR} + ${MODELO_REVISOR}`
   };
 }
