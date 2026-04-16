@@ -248,7 +248,7 @@ async function loadLiveNews() {
         kicker: 'LATEST NEWS',
         title: n.title,
         link: n.link, // Usado para redirecionar
-        author: n.author,
+        author: n.source || n.author || 'Driver News',
         av: '<i class="fi fi-rr-newspaper"></i>',
         date: new Date(n.pubDate).toLocaleDateString('pt-BR'),
         img: n.thumbnail,
@@ -334,7 +334,7 @@ function renderHeroGrid() {
 
   grid.innerHTML = `
     <div class="hero-main" onclick="${goM}; if(${aM.isReal}) showToast('Redirecionando...')">
-      <img src="${aM.img}" onerror="this.onerror=null;this.src='img/news-placeholder.png'" alt="${aM.title}">
+      <img src="${aM.img}" onerror="this.onerror=null;this.src='/images/news-placeholder.png'" onerror="this.onerror=null;this.src='img/news-placeholder.png'" alt="${aM.title}">
       <div class="hero-content">
         <span class="badge ${aM.cat}">${aM.badge.toUpperCase()}</span>
         <h1 class="hero-title">${aM.title}</h1>
@@ -346,7 +346,7 @@ function renderHeroGrid() {
     </div>
     <div class="hero-side">
       <div class="side-card" onclick="${goS1}; if(${aS1.isReal}) showToast('Redirecionando...')">
-        <img src="${aS1.img}" onerror="this.onerror=null;this.src='img/news-placeholder.png'" alt="">
+        <img src="${aS1.img}" onerror="this.onerror=null;this.src='/images/news-placeholder.png'" onerror="this.onerror=null;this.src='img/news-placeholder.png'" alt="">
         <div class="side-content">
           <span class="badge ${aS1.cat}">${aS1.badge.toUpperCase()}</span>
           <div class="side-title">${aS1.title}</div>
@@ -354,7 +354,7 @@ function renderHeroGrid() {
         </div>
       </div>
       <div class="side-card" onclick="${goS2}; if(${aS2.isReal}) showToast('Redirecionando...')">
-        <img src="${aS2.img}" onerror="this.onerror=null;this.src='img/news-placeholder.png'" alt="">
+        <img src="${aS2.img}" onerror="this.onerror=null;this.src='/images/news-placeholder.png'" onerror="this.onerror=null;this.src='img/news-placeholder.png'" alt="">
         <div class="side-content">
           <span class="badge ${aS2.cat}">${aS2.badge.toUpperCase()}</span>
           <div class="side-title">${aS2.title}</div>
@@ -380,7 +380,7 @@ function renderNewsGrid() {
     
     return `
       <div class="ncard ${isFeat ? 'feat' : ''}" data-cat="${a.cat}" data-id="${a.id}" onclick="${clickAction}; if(a.isReal) showToast('Redirecionando para matéria oficial...')">
-        <div class="ncard-thumb"><img src="${a.img}" onerror="this.onerror=null;this.src='img/news-placeholder.png'" alt=""></div>
+        <div class="ncard-thumb"><img src="${a.img}" onerror="this.onerror=null;this.src='/images/news-placeholder.png'" onerror="this.onerror=null;this.src='img/news-placeholder.png'" alt=""></div>
         <div class="ncard-body">
           <span class="badge ${a.cat}">${a.badge.toUpperCase()}</span>
           <div class="ncard-title">${a.title}</div>
@@ -418,7 +418,7 @@ function renderVidGrid() {
     return `
       <div class="vcard ${isFeat ? 'feat' : ''}" onclick="${clickAction}; if(a.isReal) showToast('Redirecionando...')">
         <div class="vthumb">
-          <img src="${a.img}" onerror="this.onerror=null;this.src='img/news-placeholder.png'" alt="">
+          <img src="${a.img}" onerror="this.onerror=null;this.src='/images/news-placeholder.png'" onerror="this.onerror=null;this.src='img/news-placeholder.png'" alt="">
           <div class="play-btn"><div class="play-arr"></div></div>
         </div>
         <div class="vinfo">
@@ -459,7 +459,7 @@ function renderSplitGrids() {
     const clickAction = a.isReal ? `window.open('${a.link}', '_blank')` : `openArticle('${a.id}')`;
     return `
       <div class="mkt-card" onclick="${clickAction}; if(a.isReal) showToast('Redirecionando...')">
-        <div class="mkt-thumb"><img src="${a.img}" onerror="this.onerror=null;this.src='img/news-placeholder.png'" alt=""></div>
+        <div class="mkt-thumb"><img src="${a.img}" onerror="this.onerror=null;this.src='/images/news-placeholder.png'" onerror="this.onerror=null;this.src='img/news-placeholder.png'" alt=""></div>
         <div class="mkt-body">
           <span class="badge ${a.cat}">${a.badge.toUpperCase()}</span>
           <div class="mkt-title">${a.title}</div>
