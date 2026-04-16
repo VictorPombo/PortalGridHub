@@ -247,11 +247,11 @@ async function loadLiveNews() {
         badge: badge,
         kicker: 'LATEST NEWS',
         title: n.title,
-        link: n.link, // Usado para redirecionar
+        link: n.url, // Corrected from n.link to n.url
         author: n.source || n.author || 'Driver News',
         av: '<i class="fi fi-rr-newspaper"></i>',
-        date: new Date(n.pubDate).toLocaleDateString('pt-BR'),
-        img: n.thumbnail,
+        date: new Date(n.published_at).toLocaleDateString('pt-BR'), // Corrected pubDate to published_at
+        img: n.image_url, // Corrected thumbnail to image_url
         body: '',
         isReal: true
       };
