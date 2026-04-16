@@ -790,60 +790,82 @@
 
 <!-- 9. PLANOS -->
 <section id="planos" class="sec-planos reveal bg-bg">
+  <style>
+    /* ── PLAN FORMATTING INJECTED FROM PLANOS.HTML ── */
+    #planos .plan-container { max-width: 860px; margin: 0 auto; display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; align-items: start; }
+    @media (max-width: 768px) { #planos .plan-container { grid-template-columns: 1fr; max-width: 480px; } }
+    #planos .lp-plan { background: var(--bg2); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 40px 32px 36px; position: relative; transition: all 0.35s cubic-bezier(.4,0,.2,1); }
+    #planos .lp-plan:hover { transform: translateY(-4px); box-shadow: 0 20px 50px rgba(0,0,0,0.4); }
+    #planos .lp-plan.featured { border-color: var(--acc); background: linear-gradient(165deg, rgba(232,0,45,0.06) 0%, var(--bg2) 40%); transform: scale(1.03); box-shadow: 0 0 60px rgba(232,0,45,0.08); z-index: 2;}
+    #planos .lp-plan.featured:hover { transform: scale(1.03) translateY(-4px); }
+    #planos .plan-badge { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: var(--acc); color: #fff; font-family: var(--fu); font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; padding: 6px 20px; border-radius: 999px; box-shadow: 0 4px 20px rgba(232,0,45,0.4); }
+    #planos .plan-name { font-family: var(--fd); font-size: 36px; color: #fff; margin-bottom: 4px; }
+    #planos .featured .plan-name { color: var(--acc2); }
+    #planos .plan-for { font-family: var(--fm); font-size: 13px; color: var(--txt2); margin-bottom: 24px; }
+    #planos .plan-price { display: flex; align-items: baseline; gap: 4px; margin-bottom: 8px; }
+    #planos .plan-price .curr { font-family: var(--fm); font-size: 16px; font-weight: 600; color: var(--txt2); align-self: flex-start; margin-top: 8px; }
+    #planos .plan-price .val { font-family: var(--fd); font-size: 64px; color: #fff; line-height: 1; }
+    #planos .plan-price .period { font-family: var(--fm); font-size: 14px; color: var(--txt2); font-weight: 500; }
+    #planos .plan-daily { font-family: var(--fm); font-size: 12px; color: var(--txt2); margin-bottom: 28px; opacity: 0.7; }
+    #planos .plan-divider { height: 1px; background: linear-gradient(to right, transparent, rgba(255,255,255,0.08), transparent); margin: 24px 0; }
+    #planos .plan-features { list-style: none; margin-bottom: 32px; padding: 0;}
+    #planos .plan-features li { display: flex; align-items: flex-start; gap: 12px; font-family: var(--fm); font-size: 14px; color: var(--txt); padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.03); text-align: left;}
+    #planos .plan-features li:last-child { border-bottom: none; }
+    #planos .plan-features .ico { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; flex-shrink: 0; margin-top: 2px; }
+    #planos .ico-check { background: rgba(16,185,129,0.15); color: var(--success); }
+    #planos .ico-x { background: rgba(255,255,255,0.04); color: #444; }
+    #planos .plan-features li.disabled { opacity: 0.35; }
+    #planos .plan-features li.disabled span:last-child { text-decoration: line-through; }
+    #planos .plan-cta { display: block; width: 100%; padding: 16px 24px; border-radius: 10px; font-family: var(--fu); font-size: 15px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; text-align: center; cursor: pointer; border: none; transition: all 0.3s; }
+    #planos .plan-cta-outline { background: transparent; border: 1.5px solid rgba(255,255,255,0.15); color: #fff; }
+    #planos .plan-cta-outline:hover { border-color: var(--acc); color: var(--acc); background: rgba(232,0,45,0.05); }
+    #planos .plan-cta-red { background: var(--acc); color: #fff; box-shadow: 0 4px 20px rgba(232,0,45,0.3); }
+    #planos .plan-cta-red:hover { background: var(--acc2); box-shadow: 0 8px 30px rgba(232,0,45,0.4); transform: translateY(-2px); }
+  </style>
   <div class="container">
     <h2>ESCOLHA SEU PLANO</h2>
     <div class="sub font-fm">Sem contrato. Cancele quando quiser.</div>
     
-    <div class="plan-grid">
-      <!-- Starter -->
-      <div class="plan-card">
-        <div class="plan-head">
-          <div class="p-name">Starter</div>
-          <div class="p-desc">Para pilotos que estão começando</div>
-          <div class="p-price-row">
-            <span class="p-curr">R$</span>
-            <span class="p-val">99,90</span>
-            <span class="p-period">/mês</span>
-          </div>
-        </div>
-        <div class="plan-body">
-          <ul class="p-features font-fm">
-            <li><span class="check">✓</span> <strong>1 matéria por mês</strong></li>
-            <li><span class="check">✓</span> <strong>Publicação no portal</strong></li>
-            <li><span class="check">✓</span> <strong>Link profissional</strong></li>
-            <li class="cross"><span class="cross-ico">✗</span> Perfil completo</li>
-            <li class="cross"><span class="cross-ico">✗</span> Mídia kit</li>
-            <li class="cross"><span class="cross-ico">✗</span> Histórico de carreira</li>
-          </ul>
-          <button class="btn-lp btn-outline" style="width:100%" onclick="window.location.href='cadastro.html?plan=starter'">Começar agora &rarr;</button>
-          <div class="p-note font-fm">Menos de R$3,40 por dia</div>
-        </div>
+    <div class="plan-container" style="margin-top: 40px">
+      <!-- ═══ STARTER ═══ -->
+      <div class="lp-plan" id="plan-starter">
+        <div class="plan-name">Piloto Starter</div>
+        <div class="plan-for">Para pilotos que estão começando</div>
+        <div class="plan-price"><span class="curr">R$</span><span class="val">99,90</span><span class="period">/mês</span></div>
+        <div class="plan-daily">Menos de R$3,50 por dia</div>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li><span class="ico ico-check">✓</span><span><strong>1 matéria por mês</strong> otimizada pro Google</span></li>
+          <li><span class="ico ico-check">✓</span><span>Texto profissional pela redação</span></li>
+          <li><span class="ico ico-check">✓</span><span>Página de piloto básica no portal</span></li>
+          <li><span class="ico ico-check">✓</span><span>URL personalizada</span></li>
+          <li><span class="ico ico-check">✓</span><span>Identificação CONAR (transparência)</span></li>
+          <li class="disabled"><span class="ico ico-x">✗</span><span>Mídia Kit PDF personalizado</span></li>
+          <li class="disabled"><span class="ico ico-x">✗</span><span>Cotas de patrocínio na página</span></li>
+          <li class="disabled"><span class="ico ico-x">✗</span><span>Destaque na home</span></li>
+        </ul>
+        <a href="cadastro.html?plan=starter"><button class="plan-cta plan-cta-outline">Começar agora →</button></a>
       </div>
 
-      <!-- Pro -->
-      <div class="plan-card plan-pro">
-        <div class="p-badge">MAIS POPULAR</div>
-        <div class="plan-head">
-          <div class="p-name">Pro</div>
-          <div class="p-desc">Para pilotos que querem fechar patrocínio</div>
-          <div class="p-price-row">
-            <span class="p-curr">R$</span>
-            <span class="p-val">149,90</span>
-            <span class="p-period">/mês</span>
-          </div>
-        </div>
-        <div class="plan-body">
-          <ul class="p-features font-fm">
-            <li><span class="check">✓</span> <strong>2 matérias por mês</strong></li>
-            <li><span class="check">✓</span> <strong>Publicação no portal</strong></li>
-            <li><span class="check">✓</span> <strong>Link profissional</strong></li>
-            <li><span class="check">✓</span> <strong>Perfil estilo "LinkedIn do piloto"</strong></li>
-            <li><span class="check">✓</span> <strong>Histórico completo de carreira</strong></li>
-            <li><span class="check">✓</span> <strong>Mídia kit pronto para envio</strong></li>
-          </ul>
-          <button class="btn-lp btn-red" style="width:100%" onclick="window.location.href='cadastro.html?plan=pro'">Quero o Pro &rarr;</button>
-          <div class="p-note font-fm">Menos de R$5,00 por dia</div>
-        </div>
+      <!-- ═══ PRO ═══ -->
+      <div class="lp-plan featured" id="plan-pro">
+        <div class="plan-badge">MAIS POPULAR</div>
+        <div class="plan-name">Piloto Pro</div>
+        <div class="plan-for">Para pilotos que querem fechar patrocínio</div>
+        <div class="plan-price"><span class="curr">R$</span><span class="val">149,90</span><span class="period">/mês</span></div>
+        <div class="plan-daily">Menos de R$5 por dia — o preço de um café ☕</div>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li><span class="ico ico-check">✓</span><span>Tudo do Starter +</span></li>
+          <li><span class="ico ico-check">✓</span><span><strong>2 matérias por mês</strong> otimizadas</span></li>
+          <li><span class="ico ico-check">✓</span><span><strong>Mídia Kit PDF</strong> personalizado</span></li>
+          <li><span class="ico ico-check">✓</span><span><strong>Cotas de patrocínio</strong> na página</span></li>
+          <li><span class="ico ico-check">✓</span><span><strong>Formulário de contato</strong> para patrocinadores</span></li>
+          <li><span class="ico ico-check">✓</span><span><strong>Destaque na home</strong> 1x por mês</span></li>
+          <li><span class="ico ico-check">✓</span><span>Perfil estilo "LinkedIn do Piloto"</span></li>
+          <li><span class="ico ico-check">✓</span><span>Histórico completo de carreira</span></li>
+        </ul>
+        <a href="cadastro.html?plan=pro"><button class="plan-cta plan-cta-red">Quero o Pro →</button></a>
       </div>
     </div>
 
