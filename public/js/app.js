@@ -627,7 +627,7 @@ function authTab(el,tab){
   document.getElementById('auth-register').classList.toggle('hide',tab!=='register');
 }
 async function doLogin(){
-  const e=document.getElementById('loginEmail').value;
+  const e=document.getElementById('loginEmail').value.trim();
   const p=document.getElementById('loginPass').value;
   if(!e||!p){toast('Preencha e-mail e senha','err');return}
   toast('Verificando credenciais...','info');

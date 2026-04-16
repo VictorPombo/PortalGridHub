@@ -741,7 +741,7 @@ details[open] summary:after { content: '-'; }
 /* Responsive */
 @media (max-width: 768px) {
   .sec-hero h1 { font-size: 42px; }
-  .dor-grid, .passos-grid, .demo-grid, .plan-grid, .demo-dash { grid-template-columns: 1fr; }
+  .dor-grid, .passos-grid, .demo-grid, .plan-grid, .demo-dash, .valor-grid, .virada-grid { grid-template-columns: 1fr; }
   .passos-bg-line { display: none; }
   .passo-item { align-items: center; text-align:center;}
   .status-logos { font-size: 24px; gap: 24px; }
