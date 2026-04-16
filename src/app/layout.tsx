@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+// @ts-ignore (evita erro do TS bundler com import effects de css)
 import './globals.css';
 import Link from 'next/link';
 import { Shield } from 'lucide-react';
