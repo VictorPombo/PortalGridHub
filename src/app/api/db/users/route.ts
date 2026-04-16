@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '../../../../lib/supabase';
+import crypto from 'crypto';
 
 export async function POST(request: Request) {
   try {
@@ -17,12 +18,18 @@ export async function POST(request: Request) {
     }
 
     // Insert user
+    let password_hash = null;
+    if (body.password) {
+      password_hash = crypto.createHash('sha256').update(body.password).digest('hex');
+    }
+
     const { data: newUser, error } = await supabase
       .from('users')
       .insert([
         {
           name: body.name,
           email: body.email,
+          password_hash,
           type: body.type || 'piloto',
           plan: body.plan || 'starter',
           status: 'pending_payment', // Start as pending until Asaas webhook confirms

@@ -59,43 +59,27 @@
 
 <script src="js/core.js"></script>
 <script src="js/state.js"></script>
-  let USER = null;
+<script>
+// ============================
+// Auth guard
+// ============================
+if (!Driver.isLoggedIn()) { window.location = 'cadastro.html'; }
+const USER = Driver.getCurrentUser();
+if (!USER) { window.location = 'cadastro.html'; }
 
-  async function bootstrapApp() {
-    // 1. Carrega dados do banco
-    await Driver.bootSupabase();
-
-    // 2. Auth guard
-    if (!Driver.isLoggedIn()) { window.location = 'index.html'; return; }
-    USER = Driver.getCurrentUser();
-    
-    if (!USER) { 
-      Driver.logout();
-      window.location = 'index.html'; 
-      return; 
-    }
-
-    // 3. Inicia Renderização
-    renderSidebar();
-    renderOverview();
-    renderCompose();
-    renderArticles();
-    renderProfile();
-    renderMediaKit();
-  }
-
-  bootstrapApp();function renderSidebar() {
-  document.getElementById('navUserInfo').innerHTML = `
-    <span style="font-family:var(--fm);font-size:10px;color:var(--dim)">${USER.name}</span>
-    <div style="width:32px;height:32px;border-radius:50%;background:var(--acc);display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:11px;font-weight:700;color:#fff">${USER.avatar}</div>
-  `;
-  document.getElementById('sidebarProfile').innerHTML = `
-    <div class="dash-avatar">${USER.avatar}</div>
-    <div class="dash-user-name">${USER.name || ''}</div>
-    <div class="dash-user-plan">${Driver.getPlanName(USER.plan)} · ${(USER.type || '').charAt(0).toUpperCase() + (USER.type || '').slice(1)}</div>
-    <div class="dash-plan-badge">${(USER.plan || '').toUpperCase()}</div>
-  `;
-}
+// ============================
+// Render sidebar
+// ============================
+document.getElementById('navUserInfo').innerHTML = `
+  <span style="font-family:var(--fm);font-size:10px;color:var(--dim)">${USER.name}</span>
+  <div style="width:32px;height:32px;border-radius:50%;background:var(--acc);display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:11px;font-weight:700;color:#fff">${USER.avatar}</div>
+`;
+document.getElementById('sidebarProfile').innerHTML = `
+  <div class="dash-avatar">${USER.avatar}</div>
+  <div class="dash-user-name">${USER.name}</div>
+  <div class="dash-user-plan">${Driver.getPlanName(USER.plan)} · ${USER.type.charAt(0).toUpperCase() + USER.type.slice(1)}</div>
+  <div class="dash-plan-badge">${USER.plan.toUpperCase()}</div>
+`;
 
 // ============================
 // Render Overview
@@ -427,8 +411,12 @@ function showSection(name, btnEl) {
   if (name === 'mediakit') renderMediaKit();
 }
 
-// Navegação é gerenciada em runtime
-// Removida renderização inicial síncrona, foi movida para o bootstrapApp();
+// Initial render
+renderOverview();
+renderCompose();
+renderArticles();
+renderProfile();
+renderMediaKit();
 </script>
 </body>
 </html>

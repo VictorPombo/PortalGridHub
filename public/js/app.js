@@ -626,52 +626,40 @@ function authTab(el,tab){
   document.getElementById('auth-login').classList.toggle('hide',tab!=='login');
   document.getElementById('auth-register').classList.toggle('hide',tab!=='register');
 }
-function doLogin(){
+async function doLogin(){
   const e=document.getElementById('loginEmail').value;
   const p=document.getElementById('loginPass').value;
   if(!e||!p){toast('Preencha e-mail e senha','err');return}
   toast('Verificando credenciais...','info');
   
-  setTimeout(()=>{
-    if(typeof Driver !== 'undefined') {
-      const users = Driver.getUsers();
-      const u = users.find(user => user.email === e);
-      if(!u) {
-         toast('Login falhou. E-mail não encontrado.','err');
-         return;
+  if (typeof Driver !== 'undefined') {
+    const user = await Driver.login(e, p);
+    if (!user) {
+      toast('E-mail ou senha incorretos','err');
+      return;
+    }
+    toast('Login realizado!','ok');
+    
+    // Redirect logic
+    setTimeout(() => {
+      const type = user.type || 'piloto';
+      if (typeof showView === 'function') {
+        const map={admin:'dash-admin',piloto:'dash-piloto',equipe:'dash-piloto',categoria:'dash-piloto'};
+        showView(map[type]||'dash-piloto');
+      } else {
+        window.location.href = type === 'equipe' ? 'dashboard-equipe.html' : type === 'categoria' ? 'dashboard-categoria.html' : 'dashboard-piloto.html';
       }
-      Driver.login(u.id);
-      toast('Login realizado!','ok');
-      window.location.href = u.type === 'admin' ? 'admin.html' : 'dashboard-piloto.html';
-    }
-  },800);
-}
-function loginAs(type){
-  const map={admin:'admin.html',piloto:'dashboard-piloto.html',equipe:'dashboard-piloto.html',categoria:'dashboard-piloto.html'};
-  
-  if(typeof Driver !== 'undefined') {
-    const users = Driver.getUsers();
-    let u = users.find(x => x.type === type);
-    let isMock = false;
-    
-    if(!u) {
-      isMock = true;
-      const uuid = 'mock_' + type + '_' + Date.now();
-      const mockName = type === 'admin' ? 'Administrador' : type === 'equipe' ? 'Equipe Demo' : type === 'categoria' ? 'Categoria Demo' : 'Piloto Demo';
-      const mockPlan = type === 'admin' ? 'admin' : type === 'equipe' ? 'equipe' : type === 'categoria' ? 'categoria' : 'pro';
-      u = { id: uuid, name: mockName, type: type, plan: mockPlan, status: 'active', avatar: type.substring(0,2).toUpperCase(), email: type+'@demo.com' };
-    }
-    
-    Driver.login(u.id, isMock ? u : null);
-    toast('Entrando como '+u.name+'...','info');
-    setTimeout(()=> window.location.href = map[type] || 'dashboard-piloto.html', 500);
+    }, 800);
+  } else {
+    toast('Erro no sistema (Driver não encontrado)','err');
   }
 }
-function doLogout(){
-  if(typeof Driver !== 'undefined') Driver.logout();
-  toast('Saindo...','info');
-  setTimeout(()=>window.location.href='index.html',500);
+function loginAs(type){
+  const map={admin:'dash-admin',piloto:'dash-piloto',equipe:'dash-piloto',categoria:'dash-piloto'};
+  toast('Entrando como '+type+'...','info');
+  setTimeout(()=>showView(map[type]||'dash-piloto'),500);
 }
+function doLogout(){toast('Saindo...','info');setTimeout(()=>showView('portal'),500)}
 
 /* ══ NEWSLETTER ══ */
 function nlSubmit(){

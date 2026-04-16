@@ -303,18 +303,21 @@ function showMode(mode) {
   document.getElementById('pageTitle').textContent = mode === 'login' ? 'Acessar Conta' : (selectedPlan !== 'free' ? 'Assinar ' + PLAN_CONFIG[selectedPlan].name : 'Crie sua Conta');
 }
 
-function doLogin() {
+async function doLogin() {
   const email = document.getElementById('loginEmail').value.trim();
-  if (!email) { showToast('Informe seu e-mail','err'); return; }
-  const user = Driver.getUsers().find(u => u.email.toLowerCase() === email.toLowerCase());
-  if (!user) { showToast('Usuário não encontrado. Crie uma conta!','err'); return; }
-  Driver.login(user.id);
+  const pass = document.getElementById('loginPass').value;
+  if (!email || !pass) { showToast('Informe e-mail e senha','err'); return; }
+  
+  showToast('Verificando...', 'info');
+  const user = await Driver.login(email, pass);
+  if (!user) { showToast('E-mail ou senha incorretos','err'); return; }
+  
   showToast('✓ Login realizado!','ok');
   
   // If login with a plan selected, redirect to upgrade
-  if (selectedPlan !== 'free') {
+  if (selectedPlan !== 'free' && selectedPlan !== user.plan) {
     const config = PLAN_CONFIG[selectedPlan];
-    if (config.link) {
+    if (config && config.link) {
       showToast('Redirecionando para pagamento...','ok');
       setTimeout(() => window.open(config.link, '_blank'), 1000);
     }
@@ -380,6 +383,7 @@ async function goStep(step) {
       const newUser = await Driver.addUser({
         name: document.getElementById('regName').value,
         email: document.getElementById('regEmail').value,
+        password: document.getElementById('regPass').value,
         type: 'piloto',
         plan: selectedPlan,
         category: document.getElementById('regCategory')?.value || '',

@@ -29,11 +29,14 @@ CREATE TABLE IF NOT EXISTS public.users (
   conquests jsonb,
   social jsonb,
   referred_by text,
+  password_hash text,
   created_at timestamp with time zone DEFAULT now(),
   status text DEFAULT 'active'
 );
 
 -- Adiciona a coluna caso a tabela já exista de comandos anteriores
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS password_hash text;
+
 ALTER TABLE public.users ADD COLUMN IF NOT EXISTS referred_by text;
 -- 2. Criação da Tabela ARTICLES (Feed do SaaS e Admin)
 CREATE TABLE IF NOT EXISTS public.articles (
