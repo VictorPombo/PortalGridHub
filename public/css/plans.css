@@ -652,6 +652,8 @@
 .demo-badge { position: absolute; top: 12px; right: 12px; background: rgba(240,160,0,.15); color: var(--gold); padding: 4px 8px; font-size: 9px; letter-spacing: 2px; }
 
 .demo-thumb { height: 160px; background: url('../img/demo-news-img.png') no-repeat center center; background-size: cover; display: flex; align-items: center; justify-content: center; color: transparent; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.demo-thumb.thumb-stock { background-image: url('../img/demo-news-stock.png'); }
+.demo-thumb.thumb-kart { background-image: url('../img/demo-news-kart.png'); }
 .demo-thumb i { display: none; }
 .demo-body { padding: 24px; flex: 1; display:flex; flex-direction:column;}
 .demo-meta { font-family: var(--fm); font-size: 11px; color: var(--dim); margin-bottom: 12px; }
