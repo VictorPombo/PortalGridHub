@@ -19,7 +19,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--fb);line-height:1.
 body.locked{overflow:hidden}
 *{scrollbar-width:thin;scrollbar-color:var(--muted) transparent}
 .hide{display:none!important}
-.view{display:none}
+.view{display:none;width:100%;max-width:100vw;overflow-x:hidden}
 .view.active{display:block}
 
 /* ═══════════════════════════════════════════

@@ -743,7 +743,16 @@ details[open] summary:after { content: '-'; }
 /* Responsive */
 @media (max-width: 768px) {
   .sec-hero { padding: 80px 0 50px; }
-  .sec-hero h1 { font-size: 38px; line-height: 1.05; letter-spacing: 0px; }
+  .sec-hero h1 { font-size: 36px; line-height: 1.05; letter-spacing: 0px; margin-bottom: 20px; }
+  .sec-impact h2 { font-size: 26px; line-height: 1.15; }
+  .sec-dor h2 { font-size: 32px; line-height: 1.1; margin-bottom: 30px; letter-spacing: 0; }
+  .sec-virada h2 { font-size: 30px; margin-bottom: 24px; }
+  .sec-passos h2 { font-size: 32px; margin-bottom: 40px; letter-spacing: 0; }
+  .sec-demo h2, .sec-planos h2, .sec-faq h2 { font-size: 32px; margin-bottom: 30px; }
+  .sec-cta h2 { font-size: 34px; margin-bottom: 24px; }
+  .virada-item { font-size: 15px; padding: 12px 0; align-items: flex-start; }
+  .virada-item i { margin-top: 2px; }
+  .virada-closing { font-size: 18px; margin-top: 5px; }
   .sec-hero .sub { font-size: 16px; padding: 0 10px; }
   .hero-badge { 
     font-size: 10px; 
