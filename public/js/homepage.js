@@ -248,7 +248,7 @@ async function loadLiveNews() {
         kicker: 'LATEST NEWS',
         title: n.title,
         link: n.link, // Usado para redirecionar
-        author: n.author,
+        author: n.author || 'Mídia',
         av: '<i class="fi fi-rr-newspaper"></i>',
         date: new Date(n.pubDate).toLocaleDateString('pt-BR'),
         img: n.thumbnail,
@@ -350,7 +350,7 @@ function renderHeroGrid() {
         <div class="side-content">
           <span class="badge ${aS1.cat}">${aS1.badge.toUpperCase()}</span>
           <div class="side-title">${aS1.title}</div>
-          <div class="side-meta">${aS1.author.slice(0,10)} · ${aS1.date}</div>
+          <div class="side-meta">${(aS1.author || 'MÍDIA').slice(0,10)} · ${aS1.date}</div>
         </div>
       </div>
       <div class="side-card" onclick="${goS2}; if(${aS2.isReal}) showToast('Redirecionando...')">
@@ -358,7 +358,7 @@ function renderHeroGrid() {
         <div class="side-content">
           <span class="badge ${aS2.cat}">${aS2.badge.toUpperCase()}</span>
           <div class="side-title">${aS2.title}</div>
-          <div class="side-meta">${aS2.author.slice(0,10)} · ${aS2.date}</div>
+          <div class="side-meta">${(aS2.author || 'MÍDIA').slice(0,10)} · ${aS2.date}</div>
         </div>
       </div>
     </div>
@@ -386,7 +386,7 @@ function renderNewsGrid() {
           <div class="ncard-title">${a.title}</div>
           <div class="ncard-excerpt">${isFeat ? 'Acompanhe de perto as novidades e análises das principais categorias no automobilismo mundial.' : ''}</div>
           <div class="ncard-meta">
-            <span>${a.date} · ${a.author.toUpperCase().slice(0,15)}</span>
+            <span>${a.date} · ${(a.author || 'MÍDIA').toUpperCase().slice(0,15)}</span>
             <button class="ncard-bm" onclick="event.stopPropagation();toggleBookmark(this,'${a.id}')" title="Salvar"><i class="fi fi-rr-bookmark"></i></button>
           </div>
         </div>
