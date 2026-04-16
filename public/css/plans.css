@@ -612,11 +612,21 @@
 /* Sec6 O Verdadeiro Valor */
 .sec-valor { background: var(--bg); padding: 100px 0; border-top: 1px solid var(--brd); position: relative; }
 .valor-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1000px; margin: 0 auto; text-align: left; }
-.valor-card { background: var(--bg2); border: 1px solid var(--brd); padding: 40px 32px; border-radius: 16px; transition: transform 0.3s; }
-.valor-card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.1); }
-.valor-icon { font-size: 28px; color: var(--gold); margin-bottom: 24px; display: inline-block; }
-.valor-card h3 { font-family: var(--fb); font-weight: 700; font-size: 20px; color: #fff; margin-bottom: 12px; }
-.valor-card p { font-family: var(--fb); font-size: 15px; color: var(--dim); line-height: 1.6; margin: 0; }
+.valor-card { 
+  background: linear-gradient(145deg, rgba(20,20,30,0.6), rgba(12,12,18,0.9)); 
+  border: 1px solid rgba(255,255,255,0.08); 
+  padding: 40px 32px; 
+  border-radius: 16px; 
+  transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s; 
+}
+.valor-card:hover { 
+  transform: translateY(-4px); 
+  border-color: rgba(232,0,45,0.3); 
+  box-shadow: 0 8px 30px rgba(232,0,45,0.15); 
+}
+.valor-icon { font-size: 32px; color: var(--gold); margin-bottom: 24px; display: inline-block; filter: drop-shadow(0 0 10px rgba(240,160,0,0.3)); }
+.valor-card h3 { font-family: var(--fb); font-weight: 800; font-size: 20px; color: #ffffff !important; margin-bottom: 12px; letter-spacing: 0.5px;}
+.valor-card p { font-family: var(--fb); font-size: 15px; color: #a0a0b0 !important; line-height: 1.6; margin: 0; }
 
 /* Sec7 Status */
 .sec-status { padding: 40px 0 100px; text-align: center; background: var(--bg); }
