@@ -235,9 +235,9 @@ async function loadLiveNews() {
       // Define a badge com base nas categorias
       let cat = 'f1';
       let badge = 'f1';
-      const cLower = (n.categories || []).join(' ').toLowerCase();
+      const cLower = (n.category || '').toLowerCase();
       if (cLower.includes('motogp')) { cat = 'motogp'; badge = 'motogp'; }
-      else if (cLower.includes('wec') || cLower.includes('endurance') || cLower.includes('lemans')) { cat = 'wec'; badge = 'wec'; }
+      else if (cLower.includes('wec') || cLower.includes('endurance') || cLower.includes('lemans') || cLower.includes('wec')) { cat = 'wec'; badge = 'wec'; }
       else if (cLower.includes('nascar')) { cat = 'nascar'; badge = 'nascar'; }
       else if (cLower.includes('sim')) { cat = 'sim'; badge = 'sim'; }
 
@@ -247,11 +247,11 @@ async function loadLiveNews() {
         badge: badge,
         kicker: 'LATEST NEWS',
         title: n.title,
-        link: n.link, // Usado para redirecionar
-        author: n.author,
+        link: n.url || n.link, // Usado para redirecionar
+        author: n.source || n.author || 'Mídia',
         av: '<i class="fi fi-rr-newspaper"></i>',
-        date: new Date(n.pubDate).toLocaleDateString('pt-BR'),
-        img: n.thumbnail,
+        date: new Date(n.published_at || n.pubDate || Date.now()).toLocaleDateString('pt-BR'),
+        img: n.image_url || n.thumbnail || 'img/news-placeholder.png',
         body: '',
         isReal: true
       };
