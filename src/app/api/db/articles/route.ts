@@ -5,6 +5,17 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
 
+    // Válida status do autor antes de permitir inserir
+    const { data: userAuth } = await supabase
+      .from('users')
+      .select('status')
+      .eq('id', body.authorId)
+      .single();
+
+    if (!userAuth || (userAuth.status !== 'active' && userAuth.status !== 'admin')) {
+      return NextResponse.json({ success: false, error: 'Acesso negado. Assinatura pendente ou inativa.' }, { status: 403 });
+    }
+
     const { data: newArticle, error } = await supabase
       .from('articles')
       .insert([
@@ -37,6 +48,25 @@ export async function PUT(request: Request) {
     const { id, updates } = body;
     
     if (!id) return NextResponse.json({ success: false, error: 'Article ID is required' }, { status: 400 });
+
+    // Válida status do autor antes de permitir atualizar
+    const { data: articleCheck } = await supabase
+      .from('articles')
+      .select('author_id')
+      .eq('id', id)
+      .single();
+
+    if (articleCheck) {
+      const { data: userAuth } = await supabase
+        .from('users')
+        .select('status')
+        .eq('id', articleCheck.author_id)
+        .single();
+
+      if (!userAuth || (userAuth.status !== 'active' && userAuth.status !== 'admin')) {
+        return NextResponse.json({ success: false, error: 'Acesso negado. Assinatura pendente ou inativa.' }, { status: 403 });
+      }
+    }
 
     const payload: any = {};
     if (updates.status !== undefined) payload.status = updates.status;

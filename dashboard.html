@@ -136,10 +136,10 @@
 
   <!-- STATS -->
   <div class="stats-bar">
-    <div class="stat-box green"><div class="num">14</div><div class="lbl">Concluídos</div></div>
-    <div class="stat-box gold"><div class="num">4</div><div class="lbl">Próximas</div></div>
-    <div class="stat-box blue"><div class="num">3</div><div class="lbl">Planejados</div></div>
-    <div class="stat-box red"><div class="num">1</div><div class="lbl">Bloqueado</div></div>
+    <div class="stat-box green"><div class="num">19</div><div class="lbl">Concluídos</div></div>
+    <div class="stat-box gold"><div class="num">2</div><div class="lbl">Próximas</div></div>
+    <div class="stat-box blue"><div class="num">0</div><div class="lbl">Planejados</div></div>
+    <div class="stat-box red"><div class="num">0</div><div class="lbl">Bloqueado</div></div>
   </div>
 
   <div class="container">
@@ -234,64 +234,64 @@
       </ul>
     </div>
 
-    <!-- ═══════════ FASE 3: PRÓXIMAS TAREFAS ═══════════ -->
-    <div class="card" style="border-left: 4px solid var(--gold)">
-      <h2 class="gold">⏳ FASE 3 — Próximas Tarefas (Prioridade Alta)</h2>
+    <!-- ═══════════ FASE 3: CONCLUÍDA ═══════════ -->
+    <div class="card" style="border-left: 4px solid var(--green)">
+      <h2 class="green">✅ FASE 3 — Painéis, BD & Segurança</h2>
       <ul class="task-list">
         <li>
-          <div class="status next">Próxima</div>
+          <div class="status done">Concluído</div>
           <div class="detail">
-            <strong>Open Graph Meta Tags (Preview no WhatsApp)</strong>
-            <p>Ao compartilhar link de notícia no WhatsApp, deve mostrar: imagem principal, título e resumo da matéria. Implementar og:title, og:description, og:image nas páginas de notícia.</p>
+            <strong>Banco de Dados Oficial (Supabase)</strong>
+            <p>O sistema grava diretamente no Supabase dados reais dos pilotos (bio, carreira, apoiadores). Integração de API Routes (`/api/db/users`, `/api/db/articles`).</p>
           </div>
         </li>
         <li>
-          <div class="status next">Próxima</div>
+          <div class="status done">Concluído</div>
           <div class="detail">
-            <strong>Banco de Dados em Produção (Supabase)</strong>
-            <p>Migrar cadastro de localStorage (PitLane.addUser) para INSERT direto no Supabase. Criar tabela pilot_profiles com campos Pro (bio, carreira, sponsors). Validar fluxo completo de persistência.</p>
+            <strong>Confirmação de Pagamento Automatizada</strong>
+            <p>O Webhook do Asaas (`/api/webhook/asaas`) permite transição de status `pending_payment` para `active` em tempo real.</p>
           </div>
         </li>
         <li>
-          <div class="status next">Próxima</div>
+          <div class="status done">Concluído</div>
           <div class="detail">
-            <strong>Webhook Asaas → Supabase</strong>
-            <p>Endpoint /api/webhook/asaas que recebe confirmação de pagamento e ativa o plano do piloto no banco (coluna plan_active = true, plan_type = 'starter'|'pro').</p>
+            <strong>Múltiplos Painéis de Gestão</strong>
+            <p>Visão de métricas e submissões diferentes para cada tier: dashboard-piloto, dashboard-equipe e dashboard-categoria.</p>
           </div>
         </li>
         <li>
-          <div class="status blocked">Pendente</div>
+          <div class="status done">Concluído</div>
           <div class="detail">
-            <strong>Número de WhatsApp de Suporte</strong>
-            <p>Placeholder (5511999999999) precisa ser substituído pelo número real nos botões de contato da Equipe Parceira e Categoria.</p>
+            <strong>Fechadura Total e Proteção VIP</strong>
+            <p>Caso o pagamento ainda esteja pendente, os painéis bloqueiam interações ("Aguardando Pagamento"). As rotas de Backend também se recusam a escrever ou puxar conteúdos VIP se o usuário não for autenticado via banco de dados.</p>
+          </div>
+        </li>
+        <li>
+          <div class="status done">Concluído</div>
+          <div class="detail">
+            <strong>Remoção do underline azul dos botões UI</strong>
+            <p>Regra de estilo adicionada apagando a aparência feia dos botões de Link na Home (Portal).</p>
           </div>
         </li>
       </ul>
     </div>
 
-    <!-- ═══════════ FASE 4: BACKLOG ═══════════ -->
-    <div class="card" style="border-left: 4px solid var(--muted)">
-      <h2 class="muted">💡 FASE 4 — Backlog (Planejado)</h2>
+    <!-- ═══════════ FASE 4: PRÓXIMAS TAREFAS ═══════════ -->
+    <div class="card" style="border-left: 4px solid var(--gold)">
+      <h2 class="gold">⏳ FASE 4 — Próximas Tarefas</h2>
       <ul class="task-list">
         <li>
-          <div class="status todo">Futuro</div>
+          <div class="status next">Próxima</div>
           <div class="detail">
-            <strong>CMS Editorial & Automação de Matérias</strong>
-            <p>Sistema onde a redação cadastra matérias e automaticamente a página do Piloto, indexação SEO (metatags) e publicação são geradas. Integração com dados do perfil Pro.</p>
+            <strong>Open Graph Meta Tags (Preview no WP)</strong>
+            <p>Metadados dinâmicos nas urls das notícias para exibição de thumbnail/imagem e subtítulo quando o link for colado em redes sociais.</p>
           </div>
         </li>
         <li>
-          <div class="status todo">Futuro</div>
+          <div class="status next">Próxima</div>
           <div class="detail">
-            <strong>Geração Automática de Mídia Kit PDF</strong>
-            <p>Motor de exportação para PDF com métricas, dados de pista e conquistas a partir do perfil do piloto. Para captação de patrocinadores offline.</p>
-          </div>
-        </li>
-        <li>
-          <div class="status todo">Futuro</div>
-          <div class="detail">
-            <strong>Dashboard do Piloto com Métricas</strong>
-            <p>Painel exclusivo onde o assinante Pro visualiza views das matérias, cliques no formulário de patrocínio, e pode atualizar seus dados para novas matérias.</p>
+            <strong>Exportação Real de Mídia Kit / PDF</strong>
+            <p>Substituir a funcionalidade mock de Download de Mídia Kit no Painel com uma biblioteca como "html2pdf" gerando o design em tempo real.</p>
           </div>
         </li>
       </ul>

@@ -360,7 +360,7 @@ async function goStep(step) {
     if (!name || !email) { showToast('Preencha nome e e-mail','err'); return; }
     if (!isValidEmail(email)) { showToast('E-mail inválido','err'); return; }
     if (!pass || pass.length < 6) { showToast('Senha deve ter 6+ caracteres','err'); return; }
-    if (typeof Driver !== 'undefined' && Driver.getUsers().find(u => u.email.toLowerCase() === email.toLowerCase())) {
+    if (typeof Driver !== 'undefined' && Driver.getUsers().find(u => u.email && u.email.toLowerCase() === email.toLowerCase())) {
       showToast('E-mail já cadastrado! Faça login.','err'); return;
     }
   }
