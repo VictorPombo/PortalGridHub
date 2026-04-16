@@ -76,7 +76,7 @@ LEMBRE-SE: Retorne EXCLUSIVAMENTE o novo texto gerado. Não adicione frases como
     const finalPromptText = `[INSTRUÇÕES GERAIS]\n${systemInstruction}\n\n[MENSAGEM]\n${promptText}`;
     
     // Call Gemini API with basic configuration
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
     const result = await model.generateContent(finalPromptText);
 
     const responseText = result.response.text();
