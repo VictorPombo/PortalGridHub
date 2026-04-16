@@ -69,6 +69,15 @@ if (!pilot || pilot.type !== 'piloto') {
 if (Driver.isLoggedIn()) {
   const u = Driver.getCurrentUser();
   const dash = u.type === 'equipe' ? 'dashboard-equipe.html' : u.type === 'categoria' ? 'dashboard-categoria.html' : 'dashboard-piloto.html';
+  const isOwner = u.id === pilotId;
+  
+  // Se é o dono vendo sua própria página, simplifica a nav
+  if (isOwner) {
+    document.querySelector('.nav-links').innerHTML = `
+      <li><a href="index.html">Portal</a></li>
+    `;
+  }
+  
   document.getElementById('navRight').innerHTML = `
     <span style="font-family:var(--fm);font-size:10px;color:var(--dim)">${u.name}</span>
     <a href="${dash}" class="btn-nav-action">Meu Painel</a>

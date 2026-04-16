@@ -39,7 +39,7 @@
       <li><a style="cursor:not-allowed;opacity:.6" onclick="showToast('Disponível no lançamento','info')"><span class="nav-icon"><i data-lucide="paperclip" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Mídia Kit <span id="count_mk" style="font-family:var(--fu);font-size:9px;font-weight:700;color:var(--acc);margin-left:auto;letter-spacing:0.5px;text-transform:uppercase;background:rgba(232,0,45,0.1);padding:3px 6px;border-radius:3px"></span></a></li>
       <div class="dash-nav-sep"></div>
       <li><a style="cursor:not-allowed;opacity:.6" onclick="showToast('Disponível no lançamento','info')"><span class="nav-icon"><i data-lucide="globe" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i></span> Ver Landing Page <span id="count_lp" style="font-family:var(--fu);font-size:9px;font-weight:700;color:var(--acc);margin-left:auto;letter-spacing:0.5px;text-transform:uppercase;background:rgba(232,0,45,0.1);padding:3px 6px;border-radius:3px"></span></a></li>
-      <li><a href="#" onclick="Driver.logout();window.location='cadastro.html'"><span class="nav-icon"><i data-lucide="log-out" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Sair</a></li>
+      <li><a href="#" onclick="Driver.logout();window.location='index.html'"><span class="nav-icon"><i data-lucide="log-out" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Sair</a></li>
     </ul>
   </aside>
 
@@ -91,6 +91,9 @@ if (!USER) {
 // ============================
 // Render sidebar
 // ============================
+// Atualiza "Minha Página" com ID do piloto logado
+document.querySelector('a[href="piloto.html"]').href = 'piloto.html?id=' + USER.id;
+
 document.getElementById('navUserInfo').innerHTML = `
   <span style="font-family:var(--fm);font-size:10px;color:var(--dim)" class="hide-mob">${USER.name}</span>
   <div style="width:32px;height:32px;border-radius:50%;background:var(--acc);display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:11px;font-weight:700;color:#fff" class="hide-mob">${USER.avatar}</div>
@@ -188,7 +191,7 @@ function renderCompose() {
     <div class="dash-header"><h1>Nova Matéria</h1></div>
     ${stats.remaining <= 0 ? `
       <div class="card" style="padding:32px;text-align:center;border-color:var(--acc)">
-        <div style="font-size:32px;margin-bottom:12px"><i data-lucide="ban" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom;color:#e8002d"></i></div>
+        <div style="font-size:32px;margin-bottom:12px"><i class="fi fi-rr-ban" style="color:var(--acc)"></i></div>
         <div style="font-family:var(--fd);font-size:24px;margin-bottom:8px">Limite Atingido</div>
         <p style="font-size:13px;color:var(--dim);margin-bottom:16px">Você já usou todas as ${stats.limit} matéria(s) deste mês (${Driver.getPlanName(USER.plan)}). Faça upgrade para publicar mais!</p>
         <a href="index.html?view=plans" class="btn-primary">Ver Planos →</a>
@@ -197,52 +200,111 @@ function renderCompose() {
     <div class="composer carbon-subtle">
       <div class="composer-header">
         <span class="composer-title">Enviar para Redação</span>
-        <span style="font-family:var(--fm);font-size:10px;color:var(--muted)">${stats.remaining} matéria(s) restante(s) este mês</span>
+        <span style="font-family:var(--fm);font-size:10px;color:var(--muted)">${stats.remaining} matéria(s) restante(s) este mês · ${Driver.getPlanName(USER.plan)}</span>
       </div>
       <div class="composer-body">
+
         <div class="form-field"><label class="form-label">Título da Matéria</label>
           <input class="form-input" id="compTitle" type="text" placeholder="Ex: Como me preparei para a etapa de Interlagos">
         </div>
+
         <div class="form-field"><label class="form-label">Contexto / Tipo de Matéria</label>
-          <select class="form-select" id="compType">
-            <option>Corrida (Relatório / Resultado)</option>
-            <option>Treino (Treino Livre / Classificação)</option>
-            <option>Preparação (Física / Simulador)</option>
-            <option>Patrocinador (Ação de Marketing / Novo Patrocínio)</option>
-            <option>Outro (Anúncio Geral / Novidade)</option>
+          <select class="form-select" id="compType" onchange="document.getElementById('compTypeCustom').style.display = this.value === '__custom' ? 'block' : 'none'">
+            <option value="Corrida (Relatório / Resultado)">🏁 Corrida — Relatório / Resultado</option>
+            <option value="Treino (Treino Livre / Classificação)">🔧 Treino — Treino Livre / Classificação</option>
+            <option value="Preparação (Física / Simulador)">💪 Preparação — Física / Simulador</option>
+            <option value="Bastidores (Pré-corrida / Paddock)">🎬 Bastidores — Pré-corrida / Paddock</option>
+            <option value="Patrocinador (Ação de Marketing / Novo Patrocínio)">🤝 Patrocinador — Ação de Marketing</option>
+            <option value="Conquista (Pódio / Título / Recorde)">🏆 Conquista — Pódio / Título / Recorde</option>
+            <option value="Entrevista (Depoimento Pessoal)">🎙️ Entrevista — Depoimento Pessoal</option>
+            <option value="__custom">✏️ Outro — Digitar manualmente...</option>
           </select>
+          <input class="form-input" id="compTypeCustom" type="text" placeholder="Descreva o tipo de matéria..." style="display:none;margin-top:8px">
         </div>
-        <div class="form-field"><label class="form-label">Descrição / Briefing</label><textarea class="form-textarea" id="compBrief" placeholder="Descreva o conteúdo. Nossa redação vai transformar em matéria jornalística profissional." style="min-height:150px"></textarea><div class="form-hint">Mínimo 50 caracteres · Quanto mais detalhes, melhor o resultado</div></div>
-        
+
+        <div class="form-field"><label class="form-label">Descrição / Briefing</label>
+          <textarea class="form-textarea" id="compBrief" placeholder="Descreva os detalhes do conteúdo. Inclua resultados, sentimentos, dados técnicos e destaques. Quanto mais rico o briefing, melhor a matéria profissional produzida pela redação." style="min-height:160px"></textarea>
+          <div class="form-hint">Mínimo 50 caracteres · A redação transformará seu briefing em matéria jornalística profissional</div>
+        </div>
+
+        <div class="form-field"><label class="form-label" style="display:flex;justify-content:space-between"><span>Imagem de Capa</span><span style="font-size:10px;color:var(--dim);text-transform:none">Opcional</span></label>
+          <input class="form-input" id="compImg" type="url" placeholder="Cole a URL de uma imagem (Instagram, Google Drive público...)">
+          <div class="form-hint">Se não enviar, nossa redação selecionará uma imagem editorial</div>
+        </div>
+
         <div class="form-field">
-          <label class="form-label">Incorporação de Dados (Plano Pro)</label>
+          <label class="form-label" style="display:flex;align-items:center;gap:8px">
+            Dados do Perfil na Matéria
+            ${isPro ? '<span style="font-size:9px;padding:2px 6px;border-radius:3px;background:rgba(0,230,118,.1);color:#00e676;font-family:var(--fu);font-weight:700">PRO ATIVO</span>' : '<span style="font-size:9px;padding:2px 6px;border-radius:3px;background:rgba(232,0,45,.1);color:var(--acc);font-family:var(--fu);font-weight:700">RECURSO PRO</span>'}
+          </label>
           ${isPro ? `
-            <div class="pro-incorporate-box">
-              <label class="check-wrap"><input type="checkbox" id="incSponsor" checked> <span>Citar meus patrocinadores nesta matéria</span></label>
-              <label class="check-wrap"><input type="checkbox" id="incSpnMsg" checked> <span>Incluir minha mensagem aos patrocinadores</span></label>
-              <label class="check-wrap"><input type="checkbox" id="incNextRace" checked> <span>Mencionar minha próxima corrida</span></label>
-              <label class="check-wrap"><input type="checkbox" id="incGoals" checked> <span>Contextualizar minhas Metas de Carreira</span></label>
-              <div class="form-hint" style="margin-top:8px">A redação usará os dados do seu Perfil para enriquecer o artigo automaticamente.</div>
+            <div style="background:var(--bg1);border:1px solid var(--brd);border-radius:8px;padding:16px;display:grid;gap:14px">
+              <div style="font-size:11px;color:var(--dim)">Selecione quais dados do seu perfil a redação pode incorporar:</div>
+              <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer">
+                <input type="checkbox" id="incSponsor" checked style="margin-top:3px">
+                <div><span style="font-size:13px;color:#fff">Patrocinadores</span><div style="font-size:11px;color:var(--muted);margin-top:2px">${USER.sponsors || '<i>Não cadastrado — <a href="#" onclick="showSection(\\\'profile\\\')" style="color:var(--acc)">editar perfil</a></i>'}</div></div>
+              </label>
+              <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer">
+                <input type="checkbox" id="incSpnMsg" checked style="margin-top:3px">
+                <div><span style="font-size:13px;color:#fff">Mensagem aos patrocinadores</span><div style="font-size:11px;color:var(--muted);margin-top:2px">${USER.sponsor_message ? '\"' + USER.sponsor_message.substring(0,80) + '...\"' : '<i>Não cadastrada</i>'}</div></div>
+              </label>
+              <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer">
+                <input type="checkbox" id="incNextRace" checked style="margin-top:3px">
+                <div><span style="font-size:13px;color:#fff">Próxima corrida</span><div style="font-size:11px;color:var(--muted);margin-top:2px">${USER.next_race || '<i>Não informada</i>'}</div></div>
+              </label>
+              <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer">
+                <input type="checkbox" id="incGoals" checked style="margin-top:3px">
+                <div><span style="font-size:13px;color:#fff">Metas de carreira</span><div style="font-size:11px;color:var(--muted);margin-top:2px">${USER.goals ? '\"' + USER.goals.substring(0,80) + '...\"' : '<i>Não cadastradas</i>'}</div></div>
+              </label>
+              <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer">
+                <input type="checkbox" id="incCareer" style="margin-top:3px">
+                <div><span style="font-size:13px;color:#fff">Histórico de carreira</span><div style="font-size:11px;color:var(--muted);margin-top:2px">${USER.career ? '\"' + USER.career.substring(0,80) + '...\"' : '<i>Não cadastrado</i>'}</div></div>
+              </label>
             </div>
           ` : `
-            <div class="pro-locked-box" style="padding:16px;border:1px dashed var(--bg3);border-radius:4px;background:var(--bg2);opacity:0.7">
-              <div style="font-family:var(--fu);font-weight:700;font-size:12px;color:var(--acc);margin-bottom:8px">🔒 RECURSO PRO BLOQUEADO</div>
-              <p style="font-size:12px;color:var(--dim);margin:0 0 12px">Pilotos Pro podem injetar seus patrocinadores, histórico de carreira e próximas corridas automaticamente no briefing da matéria.</p>
-              <a href="index.html?view=plans" class="btn-secondary" style="font-size:10px;padding:4px 8px">Fazer Upgrade</a>
+            <div style="padding:20px;border:1px dashed rgba(255,255,255,.08);border-radius:8px;background:var(--bg1);text-align:center">
+              <div style="font-size:24px;margin-bottom:8px">🔒</div>
+              <div style="font-family:var(--fu);font-weight:700;font-size:11px;color:var(--acc);margin-bottom:8px">EXCLUSIVO PLANO PRO</div>
+              <p style="font-size:12px;color:var(--dim);margin:0 0 12px;line-height:1.5">Pilotos Pro podem injetar automaticamente patrocinadores, histórico, próximas corridas e metas de carreira em cada matéria.</p>
+              <a href="index.html?view=plans" class="btn-secondary" style="font-size:11px;padding:6px 14px">Fazer Upgrade →</a>
             </div>
           `}
         </div>
 
-        <div class="form-field"><label class="form-label" style="display:flex;justify-content:space-between"><span>Categoria Associada</span><span style="font-size:10px;color:var(--dim);text-transform:none">Opcional</span></label>
+        <div class="form-field"><label class="form-label" style="display:flex;justify-content:space-between"><span>Categoria do Automobilismo</span><span style="font-size:10px;color:var(--dim);text-transform:none">Associar à matéria</span></label>
           <select class="form-select" id="compCategory">
-            ${(USER.categories?.length ? USER.categories : (USER.category ? [USER.category] : [])).map(c => `<option value="${c}">${c.includes(' - ') ? c.split(' - ')[1] : c}</option>`).join('')}
-            <option value="Notícia Geral">Geral / Múltiplas</option>
+            ${(USER.categories?.length ? USER.categories : (USER.category ? USER.category.split(',').map(c=>c.trim()) : [])).map(c => `<option value="${c}" selected>${c.includes(' - ') ? c.split(' - ')[1] : c}</option>`).join('')}
+            <optgroup label="Categorias Internacionais">
+              <option value="F1">Fórmula 1</option>
+              <option value="MotoGP">MotoGP</option>
+              <option value="WEC">WEC / Endurance</option>
+              <option value="NASCAR">NASCAR</option>
+              <option value="IndyCar">IndyCar</option>
+              <option value="WRC">WRC / Rally</option>
+              <option value="Formula E">Fórmula E</option>
+            </optgroup>
+            <optgroup label="Categorias Nacionais">
+              <option value="Stock Car">Stock Car Brasil</option>
+              <option value="Stock Car Light">Stock Car Light</option>
+              <option value="F4 Brasil">F4 Brasil</option>
+              <option value="Porsche Cup">Porsche Cup</option>
+              <option value="GT Sprint Race">GT Sprint Race</option>
+              <option value="TCR Brasil">TCR Brasil</option>
+              <option value="Copa Truck">Copa Truck</option>
+              <option value="Endurance Brasil">Endurance Brasil</option>
+            </optgroup>
+            <optgroup label="Kart e Base">
+              <option value="Kart">Kart</option>
+              <option value="F-Vee">Fórmula Vee</option>
+            </optgroup>
+            <option value="Notícia Geral">Geral / Outras</option>
           </select>
         </div>
+
       </div>
       <div class="composer-footer">
-        <button class="btn-secondary" onclick="saveDraft()"><i data-lucide="save" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Salvar Rascunho</button>
-        <button class="btn-primary" onclick="submitArticle()"><i data-lucide="arrow-right" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Enviar para Redação</button>
+        <button class="btn-secondary" onclick="saveDraft()"><i class="fi fi-rr-disk"></i> Salvar Rascunho</button>
+        <button class="btn-primary" onclick="submitArticle()"><i class="fi fi-rr-paper-plane"></i> Enviar para Redação</button>
       </div>
     </div>
     `}
@@ -251,7 +313,11 @@ function renderCompose() {
 
 function _getFinalBrief() {
   let brief = document.getElementById('compBrief')?.value || '';
-  const type = document.getElementById('compType')?.value || '';
+  let type = document.getElementById('compType')?.value || '';
+  // Se selecionou "Outro", usar o campo customizado
+  if (type === '__custom') {
+    type = document.getElementById('compTypeCustom')?.value || 'Outro';
+  }
   const cat = document.getElementById('compCategory')?.value || 'N/A';
   if(brief) brief = `[Contexto: ${type}]\n[Categoria Relacionada: ${cat}]\n\n` + brief;
 
@@ -262,6 +328,7 @@ function _getFinalBrief() {
     if (document.getElementById('incSpnMsg')?.checked) appends.push('Mensagem ao Patrocinador: ' + (USER.sponsor_message || 'Nenhuma registrada.'));
     if (document.getElementById('incNextRace')?.checked) appends.push('Próxima Corrida: ' + (USER.next_race || 'Nenhuma registrada.'));
     if (document.getElementById('incGoals')?.checked) appends.push('Meta/Objetivos: ' + (USER.goals || 'Nenhuma registrada.'));
+    if (document.getElementById('incCareer')?.checked) appends.push('Histórico de Carreira: ' + (USER.career || 'Nenhum registrado.'));
     
     if (appends.length > 0) {
       brief += '\n\n--- DADOS PRO INCLUÍDOS DURANTE O ENVIO ---\n' + appends.join('\n');
@@ -279,7 +346,7 @@ function saveDraft() {
     title: t,
     brief: _getFinalBrief(),
     body: '',
-    img: '',
+    img: document.getElementById('compImg')?.value || '',
     status: 'draft',
     category: c
   });
@@ -300,7 +367,7 @@ function submitArticle() {
     title: t,
     brief: _getFinalBrief(),
     body: '',
-    img: '',
+    img: document.getElementById('compImg')?.value || '',
     status: 'sent',
     submittedAt: new Date().toISOString().split('T')[0],
     category: c
