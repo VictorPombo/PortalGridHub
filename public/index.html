@@ -571,7 +571,7 @@
     <h1>TENHA <span class="hl-red">PRESENÇA</span> DE PILOTO PROFISSIONAL<br>DENTRO E FORA DAS <span class="hl-grad">PISTAS</span></h1>
     <p class="sub">Melhore sua percepção como piloto, consiga os melhores materiais de portfólio e garanta sua visibilidade perante patrocinadores.</p>
     <div class="hero-actions">
-      <button class="btn-lp btn-red btn-pill" onclick="scrollToPlans()"><i class="fi fi-rr-flag"></i> CRIAR MATÉRIA AGORA</button>
+      <button class="btn-lp btn-red btn-pill" onclick="document.getElementById('planos').scrollIntoView({behavior:'smooth'})"><i class="fi fi-rr-flag"></i> CRIAR MATÉRIA AGORA</button>
       <button class="btn-lp btn-ghost-pill" onclick="document.getElementById('como-funciona').scrollIntoView({behavior:'smooth'})">Como funciona &rarr;</button>
     </div>
   </div>
@@ -635,7 +635,7 @@
 </section>
 
 <!-- 5. COMO FUNCIONA -->
-<section class="sec-passos reveal bg-bg">
+<section id="como-funciona" class="sec-passos reveal bg-bg">
   <div class="container">
     <h2>COMO FUNCIONA</h2>
     <div class="passos-grid">
