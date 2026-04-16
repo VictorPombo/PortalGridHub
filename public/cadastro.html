@@ -325,7 +325,7 @@ function doLogin() {
   setTimeout(() => window.location.href = dash, 800);
 }
 
-function goStep(step) {
+async function goStep(step) {
   // Validation Step 1 → 2
   if (step === 2) {
     const name = document.getElementById('regName')?.value;
@@ -377,7 +377,7 @@ function goStep(step) {
   if (step === 4) {
     // Create user
     if (typeof PitLane !== 'undefined') {
-      const newUser = PitLane.addUser({
+      const newUser = await PitLane.addUser({
         name: document.getElementById('regName').value,
         email: document.getElementById('regEmail').value,
         type: 'piloto',

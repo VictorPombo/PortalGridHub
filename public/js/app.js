@@ -202,6 +202,7 @@ function subNext(step){
 /* ══ ARTICLE MODAL ══ */
 function openArticle(id){
   const a=ARTICLES.find(x=>x.id===id);if(!a)return;
+  window.currentArt = a;
   document.getElementById('artBreadcrumb').textContent='PITLANE NEWS · '+a.cat.toUpperCase();
   document.getElementById('artImg').src=a.img;
   const b=document.getElementById('artBadge');b.className='badge '+a.badge;b.textContent=a.badge.replace('b-','').toUpperCase();
@@ -658,8 +659,28 @@ function bookmark(btn,id){
 bookmarks.forEach(id=>document.querySelector(`.bm-btn[onclick*=",${id}"]`)?.classList.add('saved'));
 
 /* ══ SHARE ══ */
-function copyLink(){navigator.clipboard?.writeText(location.href).then(()=>toast('✓ Link copiado!','ok')).catch(()=>toast('✓ Link copiado!','ok'))}
+function getShareUrl() {
+  if (window.currentArt) {
+    const a = window.currentArt;
+    return location.origin + '/api/share?id=' + encodeURIComponent(a.id) +
+           '&t=' + encodeURIComponent(a.title) +
+           '&d=' + encodeURIComponent(a.abstract || a.kicker || 'Acompanhe as últimas notícias do automobilismo.') +
+           '&i=' + encodeURIComponent(a.img);
+  }
+  return location.href;
+}
 
+function copyLink() {
+  const url = getShareUrl();
+  navigator.clipboard?.writeText(url)
+    .then(() => toast('✓ Link copiado!', 'ok'))
+    .catch(() => { /* fallback */ prompt('Copie este link:', url); toast('✓ Link pronto para copiar', 'info'); });
+}
+
+function shareWhatsApp() {
+  const url = getShareUrl();
+  window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent('Confira no PitLane News: ' + url), '_blank');
+}
 /* ══ UTILS ══ */
 function isEmail(e){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)}
 

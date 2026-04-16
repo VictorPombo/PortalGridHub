@@ -125,13 +125,31 @@ const PitLane = (() => {
   function getUsers() { return __dbUsers; }
   function getUserById(id) { return getUsers().find(u => u.id === id); }
   function getUsersByType(type) { return getUsers().filter(u => u.type === type); }
-  function addUser(user) {
-    user.id = 'u' + (__dbUsers.length + 1) + '_' + Date.now(); // Fallback gen
+  async function addUser(user) {
+    user.id = 'u' + (__dbUsers.length + 1) + '_' + Date.now(); // Fallback gen for cache
     user.createdAt = new Date().toISOString().split('T')[0];
-    user.status = 'active';
+    user.status = 'pending_payment';
     user.avatar = user.name.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
+    
+    // Tentativa de gravar no Supabase via API
+    try {
+      const resp = await fetch('/api/db/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(user)
+      });
+      const data = await resp.json();
+      if (data.success && data.user) {
+        // Se a API inseriu com sucesso, substitui o ID do modelo local pelo do banco
+        user = { ...user, ...data.user, id: data.user.id };
+      } else {
+        console.warn('Gravação em banco falhou, mantendo em memória', data.error);
+      }
+    } catch(err) {
+      console.warn('API DB inacessível, mantendo em memória local', err);
+    }
+
     __dbUsers.push(user);
-    // TODO: POST /api/db/users
     return user;
   }
   function updateUser(id, updates) {
