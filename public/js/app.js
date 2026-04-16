@@ -642,22 +642,19 @@ async function doLogin(){
     
     // Redirect logic
     setTimeout(() => {
-      const type = user.type || 'piloto';
-      if (typeof showView === 'function') {
-        const map={admin:'dash-admin',piloto:'dash-piloto',equipe:'dash-piloto',categoria:'dash-piloto'};
-        showView(map[type]||'dash-piloto');
-      } else {
-        window.location.href = type === 'equipe' ? 'dashboard-equipe.html' : type === 'categoria' ? 'dashboard-categoria.html' : 'dashboard-piloto.html';
-      }
+      const t = user.type === 'equipe' ? 'dashboard-equipe.html' : user.type === 'categoria' ? 'dashboard-categoria.html' : 'dashboard-piloto.html';
+      window.location.href = t;
     }, 800);
   } else {
     toast('Erro no sistema (Driver não encontrado)','err');
   }
 }
 function loginAs(type){
-  const map={admin:'dash-admin',piloto:'dash-piloto',equipe:'dash-piloto',categoria:'dash-piloto'};
   toast('Entrando como '+type+'...','info');
-  setTimeout(()=>showView(map[type]||'dash-piloto'),500);
+  setTimeout(() => {
+    const t = type === 'equipe' ? 'dashboard-equipe.html' : type === 'categoria' ? 'dashboard-categoria.html' : type === 'admin' ? 'admin.html' : 'dashboard-piloto.html';
+    window.location.href = t;
+  }, 500);
 }
 function doLogout(){toast('Saindo...','info');setTimeout(()=>showView('portal'),500)}
 
