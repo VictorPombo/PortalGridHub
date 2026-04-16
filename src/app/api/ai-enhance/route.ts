@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     }
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }); // Fast model ideal for UI interactions
+
 
     let systemInstruction = "";
 
@@ -73,19 +73,19 @@ LEMBRE-SE: Retorne EXCLUSIVAMENTE o novo texto gerado. Não adicione frases como
 
     console.log(`[AI-Enhance] Iniciando aprimoramento de campo: ${tipoCampo}`);
     
-    // Call Gemini API
-    const result = await model.generateContent({
-      contents: [{ role: "user", parts: [{ text: promptText }] }],
-      systemInstruction: { role: "system", parts: [{ text: systemInstruction }]}
-    });
+    const finalPromptText = `[INSTRUÇÕES GERAIS]\n${systemInstruction}\n\n[MENSAGEM]\n${promptText}`;
+    
+    // Call Gemini API with basic configuration
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const result = await model.generateContent(finalPromptText);
 
     const responseText = result.response.text();
     const cleanText = responseText.replace(/^Aqui.*?:/i, '').replace(/```[\s\S]*?```/g, '').trim();
 
     return NextResponse.json({ enhancedText: cleanText });
 
-  } catch (error) {
-    console.error("[AI-Enhance] Erro ao aprimorar texto:", error);
-    return NextResponse.json({ error: 'Erro interno ao comunicar com o modelo de IA.' }, { status: 500 });
+  } catch (error: any) {
+    console.error("[AI-Enhance] Erro ao aprimorar texto:", error?.message || error);
+    return NextResponse.json({ error: 'Erro interno ao comunicar com o modelo de IA. (Verifique o terminal)' }, { status: 500 });
   }
 }
