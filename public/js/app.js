@@ -481,16 +481,6 @@ const HERO_DATA={
   }
 };
 
-/* ══ updateHero ══ */
-function updateHero(cat){
-  const h=HERO_DATA[cat];if(!h)return;
-  const wrap=document.querySelector('.hero-wrap');if(!wrap)return;
-  wrap.classList.add('switching');
-  setTimeout(()=>{
-    const heroImg=wrap.querySelector('.hero-main img');
-    if(heroImg) heroImg.src=h.img;
-    const heroType=wrap.querySelector('.hero-main .hero-type');
-    if(heroType){heroType.className='hero-type '+h.typeCls;heroType.innerHTML='<i class="'+h.typeIcon+'"></i> '+h.typeLabel}
     const heroBadge=wrap.querySelector('.hero-main .badge');
     if(heroBadge){heroBadge.className='badge '+h.badgeCls;heroBadge.textContent=h.badge}
     const heroTitle=wrap.querySelector('.hero-title');
@@ -530,12 +520,11 @@ function filterCat(cat){
   // Update standings to match category
   const champCat=CHAMP_DATA[cat]?cat:'f1';
   updateStandings(champCat);
-  // Show/hide standings and calendar section for "Todos" and "Sim Racing"
   const champSec = document.getElementById('champSection');
   if(champSec) champSec.style.display = (cat === 'all' || cat === 'sim') ? 'none' : '';
-  // Update hero
-  const heroCat=HERO_DATA[cat]?cat:'f1';
-  updateHero(heroCat);
+  
+  // Re-render hero dynamically based on category
+  renderHeroGrid(cat);
 }
 function filterType(el,type){
   document.querySelectorAll('.ftag').forEach(t=>t.classList.remove('active'));el.classList.add('active');
@@ -841,26 +830,53 @@ function getCatClass(category) {
   return map[cat] || 'cat-geral';
 }
 
-function renderHeroGrid() {
+function renderHeroGrid(catFilter = 'all') {
   const grid = document.getElementById('heroGrid');
+  const wrap = document.querySelector('.hero-wrap');
   if (!grid || ARTICLES.length < 3) return;
 
-  const carNews = ARTICLES.find(a => ['f1', 'stock-car', 'wec', 'indycar', 'nascar'].includes(a.cat)) || ARTICLES[0];
-  const motoNews = ARTICLES.find(a => a.cat === 'motogp' && a.id !== carNews.id) || ARTICLES.find(a => a.id !== carNews.id) || ARTICLES[1];
-  
-  const pilotNews = {
-    id: 9999,
-    cat: 'f4-brasil',
-    badge: 'b-f4-brasil',
-    title: 'Rafael Moura Vence na F4 Brasil e Atrai Interesse de Equipes Europeias',
-    link: '#',
-    author: 'PitLane',
-    date: 'há 2h',
-    img: 'img/demo-news-img.png',
-    isReal: false
-  };
+  let a0, a1, a2;
 
-  const a0 = carNews, a1 = pilotNews, a2 = motoNews;
+  if (catFilter === 'all') {
+    if (wrap) wrap.style.display = '';
+    const carNews = ARTICLES.find(a => ['f1', 'stock-car', 'wec', 'indycar', 'nascar'].includes(a.cat)) || ARTICLES[0];
+    const motoNews = ARTICLES.find(a => a.cat === 'motogp' && a.id !== carNews?.id) || ARTICLES.find(a => a.id !== carNews?.id) || ARTICLES[1];
+    
+    const pilotNews = {
+      id: 9999,
+      cat: 'f4-brasil',
+      badge: 'b-f4-brasil',
+      title: 'Rafael Moura Vence na F4 Brasil e Atrai Interesse de Equipes Europeias',
+      link: '#',
+      author: 'PitLane',
+      date: 'há 2h',
+      img: 'img/demo-news-img.png',
+      isReal: false
+    };
+
+    a0 = carNews; a1 = pilotNews; a2 = motoNews;
+  } else {
+    // Exact category matching
+    let catArts = ARTICLES.filter(a => a.cat === catFilter);
+    // Aliases
+    if(catFilter === 'wec') catArts = ARTICLES.filter(a => ['wec', 'endurance'].includes(a.cat));
+    if(catFilter === 'stock-car') catArts = ARTICLES.filter(a => ['stock-car', 'stockcar'].includes(a.cat));
+    
+    // If not enough news for hero, just hide the hero entirely
+    if (catArts.length < 3) {
+      if (wrap) wrap.style.display = 'none';
+      return;
+    } else {
+      if (wrap) wrap.style.display = '';
+      a0 = catArts[0]; a1 = catArts[1]; a2 = catArts[2];
+    }
+  }
+
+  if (!a0 || !a1 || !a2) {
+    if (wrap) wrap.style.display = 'none';
+    return;
+  }
+
   const getClk = (a) => a.isReal === false ? `toast('Demonstração: Matéria exclusiva do piloto assinante!','info')` : `window.open('${a.link}','_blank')`;
 
   grid.innerHTML = `

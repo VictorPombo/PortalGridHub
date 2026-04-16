@@ -208,7 +208,7 @@ async function fetchAndProcessFeeds(): Promise<NewsItem[]> {
   });
 
   // Limite para performance (40 notícias — nunca acumula além disso)
-  return allNews.slice(0, 40);
+  return allNews.slice(0, 200);
 }
 
 // ═══════════════════════════════════════════
