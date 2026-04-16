@@ -479,13 +479,17 @@
      VIEW: PILOTS LIST
 ════════════════════════════════════════ -->
 <div class="view" id="view-pilots-list">
-  <div style="background:var(--bg1);border-bottom:1px solid var(--brd);padding:60px 28px;text-align:center;position:relative;overflow:hidden">
-    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--fd);font-size:220px;color:rgba(255,255,255,.012);pointer-events:none;white-space:nowrap">PILOTOS</div>
-    <div class="badge b-piloto" style="margin-bottom:14px">Plataforma Oficial</div>
-    <div style="font-family:var(--fd);font-size:62px;letter-spacing:4px;line-height:.95;margin-bottom:12px;position:relative">Pilotos Driver</div>
-    <div style="font-size:15px;font-weight:300;color:var(--dim);max-width:520px;margin:0 auto;line-height:1.65;position:relative">Pilotos clientes com página profissional, matérias no Google e vitrine para patrocinadores.</div>
-    <button class="btn btn-acc" style="margin-top:24px;position:relative" onclick="showView('plans')">Quero ser um piloto Driver →</button>
-  </div>
+  <section class="sec-hero reveal grid-herobg">
+    <div class="container" style="padding-top:60px; padding-bottom:60px;">
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--fd);font-size:220px;color:rgba(255,255,255,.012);pointer-events:none;white-space:nowrap;z-index:0">PILOTOS</div>
+      <div class="hero-badge" style="position:relative;z-index:1"><span class="hb-dot"></span> PLATAFORMA OFICIAL</div>
+      <h1 style="position:relative;z-index:1">PILOTOS <span class="hl-red">DRIVER</span></h1>
+      <p class="sub" style="position:relative;z-index:1">Pilotos clientes com página profissional, matérias no Google e vitrine para patrocinadores.</p>
+      <div class="hero-actions" style="position:relative;z-index:1">
+        <button class="btn-lp btn-red btn-pill" onclick="showView('plans')">Quero ser um piloto Driver &rarr;</button>
+      </div>
+    </div>
+  </section>
   <div class="section">
     <div class="sec-head"><span class="sec-title">Todos os Pilotos</span><span class="sec-sub" id="pilotsCount">4 pilotos ativos</span></div>
     <div class="pilots-grid" id="pilotsListGrid"></div>
@@ -496,11 +500,17 @@
      VIEW: TEAMS LIST
 ════════════════════════════════════════ -->
 <div class="view" id="view-teams-list">
-  <div style="background:var(--bg1);border-bottom:1px solid var(--brd);padding:60px 28px;text-align:center;position:relative;overflow:hidden">
-    <div style="font-family:var(--fd);font-size:62px;letter-spacing:4px;line-height:.95;margin-bottom:12px">Equipes Driver</div>
-    <div style="font-size:15px;font-weight:300;color:var(--dim);max-width:520px;margin:0 auto;line-height:1.65">Equipes com presença digital, landing page e até 10 matérias por mês.</div>
-    <button class="btn btn-acc" style="margin-top:24px" onclick="showView('plans')">Quero ser uma equipe parceira →</button>
-  </div>
+  <section class="sec-hero reveal grid-herobg">
+    <div class="container" style="padding-top:60px; padding-bottom:60px;">
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--fd);font-size:200px;color:rgba(255,255,255,.012);pointer-events:none;white-space:nowrap;z-index:0">EQUIPES</div>
+      <div class="hero-badge" style="position:relative;z-index:1"><span class="hb-dot"></span> PLATAFORMA OFICIAL</div>
+      <h1 style="position:relative;z-index:1">EQUIPES <span class="hl-red">DRIVER</span></h1>
+      <p class="sub" style="position:relative;z-index:1">Equipes com presença digital, landing page dedicada e até 10 matérias por mês.</p>
+      <div class="hero-actions" style="position:relative;z-index:1">
+        <button class="btn-lp btn-red btn-pill" onclick="showView('plans')">Quero ser uma equipe parceira &rarr;</button>
+      </div>
+    </div>
+  </section>
   <div class="section">
     <div class="sec-head"><span class="sec-title">Equipes Parceiras</span></div>
     <div class="pilots-grid" id="teamsListGrid"></div>
