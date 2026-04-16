@@ -484,6 +484,7 @@ const HERO_DATA={
 
 
 function filterCat(cat){
+  window.newsLimit = 12;
   currentCat=cat;applyFilter();
   document.getElementById('newsSectionTitle').textContent=cat==='all'?'Últimas Notícias':'Notícias · '+cat.toUpperCase();
   // Update standings to match category
@@ -499,23 +500,34 @@ function filterType(el,type){
   document.querySelectorAll('.ftag').forEach(t=>t.classList.remove('active'));el.classList.add('active');
   currentType=type;applyFilter();
 }
+window.newsLimit = 12;
+
 function applyFilter(){
   let delay=0;
+  let count=0;
+  let totalMatch=0;
   document.querySelectorAll('#cardGrid .news-card').forEach(c=>{
     const cat=c.dataset.cat;
     const catOk=currentCat==='all'||cat===currentCat;
-    if(catOk){
+    if(catOk) totalMatch++;
+    if(catOk && count < window.newsLimit){
       c.style.display='';
       c.classList.remove('filtered-out');
       c.classList.add('filtered-in');
       c.style.animationDelay=(delay*0.04)+'s';
       delay++;
+      count++;
     }else{
       c.style.display='none';
       c.classList.add('filtered-out');
       c.classList.remove('filtered-in');
     }
   });
+
+  const loadMoreBtn = document.getElementById('newsLoadMore');
+  if (loadMoreBtn) {
+    loadMoreBtn.style.display = totalMatch > window.newsLimit ? '' : 'none';
+  }
 }
 function catAct(el){document.querySelectorAll('.cat-pill').forEach(p=>p.classList.remove('active'));el.classList.add('active')}
 
@@ -947,8 +959,8 @@ function renderTicker() {
 }
 
 function loadMoreNews() {
-  // Future: paginated loading
-  toast('Todas as notícias carregadas!', 'info');
+  window.newsLimit += 12;
+  applyFilter();
 }
 
 /* ══════════════════════════════════════════
