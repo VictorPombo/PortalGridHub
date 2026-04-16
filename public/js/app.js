@@ -772,6 +772,7 @@ async function loadLiveNews() {
     // Render
     renderHeroGrid();
     renderNewsGrid();
+    applyFilter();
     renderTicker();
     updateCatCounts();
     
