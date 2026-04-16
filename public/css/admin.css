@@ -182,27 +182,28 @@
    CADASTRO MULTI-STEP
    ============================ */
 .signup-container{max-width:640px;margin:0 auto;padding:48px 32px}
-.signup-progress{display:flex;gap:0;margin-bottom:40px}
+.signup-progress{display:flex;gap:4px;margin-bottom:40px;background:rgba(0,0,0,0.2);padding:4px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
 .signup-step-dot{
-  flex:1;height:4px;background:var(--bg3);position:relative;
+  flex:1;height:6px;background:var(--bg3);position:relative;border-radius:6px;transition:all .3s ease;
 }
-.signup-step-dot.done{background:var(--acc)}
+.signup-step-dot.done{background:var(--acc);box-shadow:0 0 12px rgba(232,0,45,0.3)}
 .signup-step-dot.current{background:linear-gradient(90deg,var(--acc) 50%,var(--bg3) 50%)}
 .signup-step-label{
-  position:absolute;top:12px;left:0;
+  position:absolute;top:16px;left:0;
   font-family:var(--fm);font-size:9px;color:var(--muted);
-  letter-spacing:1px;text-transform:uppercase;white-space:nowrap;
+  letter-spacing:1px;text-transform:uppercase;white-space:nowrap;transition:all .3s ease;
 }
 .signup-step-dot.done .signup-step-label,.signup-step-dot.current .signup-step-label{color:var(--acc)}
 .signup-panel{display:none}
-.signup-panel.active{display:block}
+.signup-panel.active{display:block;animation:fadeUp .4s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 .type-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .type-card{
-  background:var(--bg1);border:1px solid var(--brd);padding:28px 20px;
-  cursor:pointer;text-align:center;transition:all .22s;position:relative;
+  background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.06);padding:28px 20px;
+  cursor:pointer;text-align:center;transition:all .3s ease;position:relative;border-radius:12px;
 }
-.type-card:hover{border-color:var(--brdb);background:var(--bg2)}
-.type-card.selected{border-color:var(--acc);background:var(--acc-d)}
+.type-card:hover{border-color:rgba(232,0,45,0.4);background:rgba(0,0,0,0.5);transform:translateY(-2px)}
+.type-card.selected{border-color:var(--acc);background:rgba(232,0,45,0.08);box-shadow:0 8px 24px -6px rgba(232,0,45,0.3)}
 .type-card-icon{font-size:36px;display:block;margin-bottom:12px}
 .type-card-name{font-family:var(--fd);font-size:22px;letter-spacing:1px;margin-bottom:4px}
 .type-card-price{font-family:var(--fm);font-size:12px;color:var(--acc);letter-spacing:.5px}
