@@ -652,17 +652,19 @@ function loginAs(type){
   if(typeof Driver !== 'undefined') {
     const users = Driver.getUsers();
     let u = users.find(x => x.type === type);
-    if(!u && type === 'admin') {
-      // Mock Admin se não existir
-      u = { id: 'admin-mock', name: 'Admin', type: 'admin' };
+    let isMock = false;
+    
+    if(!u) {
+      isMock = true;
+      const uuid = 'mock_' + type + '_' + Date.now();
+      const mockName = type === 'admin' ? 'Administrador' : type === 'equipe' ? 'Equipe Demo' : type === 'categoria' ? 'Categoria Demo' : 'Piloto Demo';
+      const mockPlan = type === 'admin' ? 'admin' : type === 'equipe' ? 'equipe' : type === 'categoria' ? 'categoria' : 'pro';
+      u = { id: uuid, name: mockName, type: type, plan: mockPlan, status: 'active', avatar: type.substring(0,2).toUpperCase(), email: type+'@demo.com' };
     }
-    if(u) {
-      Driver.login(u.id);
-      toast('Entrando como '+u.name+'...','info');
-      setTimeout(()=> window.location.href = map[type] || 'dashboard-piloto.html', 500);
-    } else {
-       toast('Nenhum Demo encontrado para '+type,'err');
-    }
+    
+    Driver.login(u.id, isMock ? u : null);
+    toast('Entrando como '+u.name+'...','info');
+    setTimeout(()=> window.location.href = map[type] || 'dashboard-piloto.html', 500);
   }
 }
 function doLogout(){

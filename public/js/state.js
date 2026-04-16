@@ -268,12 +268,16 @@ const Driver = (() => {
   // ============================
   // SESSION (current logged in user)
   // ============================
-  function login(userId) { save(KEYS.session, { userId, loggedAt: Date.now() }); }
+  function login(userId, mockUser = null) { 
+    save(KEYS.session, { userId, mockUser, loggedAt: Date.now() }); 
+  }
   function logout() { localStorage.removeItem(KEYS.session); }
   function getSession() { return load(KEYS.session, null); }
   function getCurrentUser() {
     const session = getSession();
-    return session ? getUserById(session.userId) : null;
+    if (!session) return null;
+    const dbUser = getUserById(session.userId);
+    return dbUser || session.mockUser || null;
   }
   function isLoggedIn() { return !!getSession(); }
 
