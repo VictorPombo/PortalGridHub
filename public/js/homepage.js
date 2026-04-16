@@ -199,10 +199,7 @@ function startVideo() {
 }
 
 /* ====== ARTICLE MODAL ====== */
-function openArticleById(id) {
-  openModal('articleOverlay');
-  // Dynamic article logic comes later if needed on homepage. Currently search uses toast.
-}
+// removed stub, using openArticle from app.js
 
 /* ====== LOAD NEWS (HYBRID RSS + SAAS) ====== */
 async function loadLiveNews() {
@@ -282,6 +279,19 @@ async function loadLiveNews() {
     renderSplitGrids();
     renderTicker();
 
+    // Auto-open article from URL query params
+    const params = new URLSearchParams(window.location.search);
+    if(params.has('art')) {
+      const artId = params.get('art');
+      setTimeout(() => {
+        if(typeof window.openArticle === 'function') {
+          window.openArticle(artId);
+        }
+      }, 500);
+    }
+
+
+
   } catch (err) {
     console.error("News Pipeline Falhou, caindo pro mock...", err);
     ARTICLES = saasArticles.length >= 15 ? saasArticles : [
@@ -318,9 +328,9 @@ function renderHeroGrid() {
   const aS1 = ARTICLES[1];
   const aS2 = ARTICLES[2];
 
-  const goM = aM.isReal ? `window.open('${aM.link}', '_blank')` : `openArticleById('${aM.id}')`;
-  const goS1 = aS1.isReal ? `window.open('${aS1.link}', '_blank')` : `openArticleById('${aS1.id}')`;
-  const goS2 = aS2.isReal ? `window.open('${aS2.link}', '_blank')` : `openArticleById('${aS2.id}')`;
+  const goM = aM.isReal ? `window.open('${aM.link}', '_blank')` : `openArticle('${aM.id}')`;
+  const goS1 = aS1.isReal ? `window.open('${aS1.link}', '_blank')` : `openArticle('${aS1.id}')`;
+  const goS2 = aS2.isReal ? `window.open('${aS2.link}', '_blank')` : `openArticle('${aS2.id}')`;
 
   grid.innerHTML = `
     <div class="hero-main" onclick="${goM}; if(${aM.isReal}) showToast('Redirecionando...')">
@@ -366,7 +376,7 @@ function renderNewsGrid() {
   grid.innerHTML = displayArticles.map((a, i) => {
     // A primeira matéria fica com a classe 'feat'
     const isFeat = i === 0;
-    const clickAction = a.isReal ? `window.open('${a.link}', '_blank')` : `openArticleById('${a.id}')`;
+    const clickAction = a.isReal ? `window.open('${a.link}', '_blank')` : `openArticle('${a.id}')`;
     
     return `
       <div class="ncard ${isFeat ? 'feat' : ''}" data-cat="${a.cat}" data-id="${a.id}" onclick="${clickAction}; if(a.isReal) showToast('Redirecionando para matéria oficial...')">
@@ -403,7 +413,7 @@ function renderVidGrid() {
   grid.innerHTML = displayArticles.map((a, i) => {
     // Apenas reutilizamos cards de notícia pois não temos a API do Youtube original integrada
     const isFeat = i === 0;
-    const clickAction = a.isReal ? `window.open('${a.link}', '_blank')` : `openArticleById('${a.id}')`;
+    const clickAction = a.isReal ? `window.open('${a.link}', '_blank')` : `openArticle('${a.id}')`;
     
     return `
       <div class="vcard ${isFeat ? 'feat' : ''}" onclick="${clickAction}; if(a.isReal) showToast('Redirecionando...')">
@@ -429,7 +439,7 @@ function renderSplitGrids() {
   // Opinião -> Index 10 e 11
   const opArts = ARTICLES.slice(10, 12);
   opGrid.innerHTML = opArts.map(a => {
-    const clickAction = a.isReal ? `window.open('${a.link}', '_blank')` : `openArticleById('${a.id}')`;
+    const clickAction = a.isReal ? `window.open('${a.link}', '_blank')` : `openArticle('${a.id}')`;
     return `
       <div class="op-card" onclick="${clickAction}; if(a.isReal) showToast('Redirecionando...')">
         <div class="op-tag">Especial</div>
@@ -446,7 +456,7 @@ function renderSplitGrids() {
   // Mercado -> Index 12, 13, 14
   const mktArts = ARTICLES.slice(12, 15);
   mktGrid.innerHTML = mktArts.map(a => {
-    const clickAction = a.isReal ? `window.open('${a.link}', '_blank')` : `openArticleById('${a.id}')`;
+    const clickAction = a.isReal ? `window.open('${a.link}', '_blank')` : `openArticle('${a.id}')`;
     return `
       <div class="mkt-card" onclick="${clickAction}; if(a.isReal) showToast('Redirecionando...')">
         <div class="mkt-thumb"><img src="${a.img}" alt=""></div>
@@ -468,7 +478,7 @@ function renderTicker() {
   
   // Duplicamos as matérias pro ticker não quebrar no loop do css
   const itemsHTML = [...breaking, ...breaking, ...breaking].map(a => {
-    const clickAction = a.isReal ? `window.open('${a.link}', '_blank')` : `openArticleById('${a.id}')`;
+    const clickAction = a.isReal ? `window.open('${a.link}', '_blank')` : `openArticle('${a.id}')`;
     return `<span class="ticker-item" onclick="${clickAction}">${a.title}</span>`;
   }).join('');
   
