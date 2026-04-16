@@ -610,17 +610,17 @@
 .passo-item p { font-family: var(--fb); font-size: 15px; color: var(--dim); line-height: 1.6; margin: 0; }
 
 /* Sec6 O Verdadeiro Valor */
-.sec-valor { background: #000; padding: 80px 0; text-align: center; }
-.sec-valor .t1 { font-size: 42px; margin-bottom: 4px; line-height:1.1; color: #fff !important;}
-.sec-valor .t2 { font-size: 36px; color: var(--acc); margin-bottom: 60px; line-height:1.1;}
-.valor-words { display: flex; flex-direction: column; gap: 16px; margin-bottom: 60px; }
-.valor-word { font-size: 56px; color: var(--gold); letter-spacing: 4px; line-height:1; }
-.valor-line { border-left: 4px solid var(--acc); padding-left: 16px; display: inline-block; font-size: 18px; text-align: left; color:#fff; }
+.sec-valor { background: var(--bg); padding: 100px 0; border-top: 1px solid var(--brd); position: relative; }
+.valor-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1000px; margin: 0 auto; text-align: left; }
+.valor-card { background: var(--bg2); border: 1px solid var(--brd); padding: 40px 32px; border-radius: 16px; transition: transform 0.3s; }
+.valor-card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.1); }
+.valor-icon { font-size: 28px; color: var(--gold); margin-bottom: 24px; display: inline-block; }
+.valor-card h3 { font-family: var(--fb); font-weight: 700; font-size: 20px; color: #fff; margin-bottom: 12px; }
+.valor-card p { font-family: var(--fb); font-size: 15px; color: var(--dim); line-height: 1.6; margin: 0; }
 
 /* Sec7 Status */
-.sec-status { padding: 80px 0; text-align: center; }
-.sec-status h2 { font-size: 42px; margin-bottom: 40px; }
-.status-logos { display: flex; justify-content: center; align-items: center; gap: 40px; flex-wrap: wrap; margin-bottom: 24px; font-size: 36px; color: var(--dim); }
+.sec-status { padding: 40px 0 100px; text-align: center; background: var(--bg); }
+.status-logos { display: flex; justify-content: center; align-items: center; gap: 40px; flex-wrap: wrap; margin-bottom: 24px; font-size: 32px; color: var(--dim); }
 .status-logos span { transition: color 0.3s; }
 .status-logos span:hover { color: #fff; }
 .status-sub { font-size: 14px; color: var(--acc); letter-spacing: 3px; text-transform: uppercase;}
