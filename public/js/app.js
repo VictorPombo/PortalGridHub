@@ -948,16 +948,17 @@ function renderHeroGrid(catFilter = 'all') {
     const motoA = ARTICLES.find(a => a.cat === 'motogp');
     const pilotoA = ARTICLES.find(a => a.isReal === false); // "Nossos pilotos"
     
-    a0 = pilotoA;
-    a1 = f1A;
-    a2 = motoA;
-
-    // Preencher slots nulos caso as opções preferenciais não existam
-    for(let i=0; i<ARTICLES.length; i++) {
-        if (!a0 && ARTICLES[i] !== a1 && ARTICLES[i] !== a2) { a0 = ARTICLES[i]; continue; }
-        if (!a1 && ARTICLES[i] !== a0 && ARTICLES[i] !== a2) { a1 = ARTICLES[i]; continue; }
-        if (!a2 && ARTICLES[i] !== a0 && ARTICLES[i] !== a1) { a2 = ARTICLES[i]; continue; }
+    let picks = [f1A, motoA, pilotoA].filter(Boolean);
+    
+    // Fallback if missing slots so we always have 3 distinct
+    for(let i=0; i<ARTICLES.length && picks.length < 3; i++){
+      if (!picks.includes(ARTICLES[i])) picks.push(ARTICLES[i]);
     }
+    
+    // Re-sort the 3 chosen chronologically
+    picks.sort((a,b) => b.rawDate - a.rawDate);
+    
+    a0 = picks[0]; a1 = picks[1]; a2 = picks[2];
   } else {
     // Exact category matching
     let catArts = ARTICLES.filter(a => a.cat === catFilter);
@@ -1043,7 +1044,7 @@ function renderNewsGrid() {
     return `
       <a href="${safeUrl}" target="_blank" rel="noopener nofollow" class="news-card" data-cat="${a.cat}" style="text-decoration:none; color:inherit;">
         <div class="news-card-thumb">
-          <img src="${a.img ? `/api/img-proxy?url=${encodeURIComponent(a.img)}` : 'img/news-placeholder.png'}" onerror="this.onerror=null;this.src='img/news-placeholder.png'" alt="" loading="lazy">
+          <img src="/api/img-proxy?url=${encodeURIComponent(a.img)}" alt="" loading="lazy">
           <span class="news-card-cat ${catCls}">${a.cat.toUpperCase()}</span>
         </div>
         <div class="news-card-body">

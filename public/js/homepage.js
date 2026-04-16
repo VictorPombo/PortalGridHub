@@ -235,9 +235,9 @@ async function loadLiveNews() {
       // Define a badge com base nas categorias
       let cat = 'f1';
       let badge = 'f1';
-      const cLower = (n.category || '').toLowerCase();
+      const cLower = (n.categories || []).join(' ').toLowerCase();
       if (cLower.includes('motogp')) { cat = 'motogp'; badge = 'motogp'; }
-      else if (cLower.includes('wec') || cLower.includes('endurance') || cLower.includes('lemans') || cLower.includes('wec')) { cat = 'wec'; badge = 'wec'; }
+      else if (cLower.includes('wec') || cLower.includes('endurance') || cLower.includes('lemans')) { cat = 'wec'; badge = 'wec'; }
       else if (cLower.includes('nascar')) { cat = 'nascar'; badge = 'nascar'; }
       else if (cLower.includes('sim')) { cat = 'sim'; badge = 'sim'; }
 
@@ -247,44 +247,18 @@ async function loadLiveNews() {
         badge: badge,
         kicker: 'LATEST NEWS',
         title: n.title,
-        link: n.url || n.link, // Usado para redirecionar
-        author: n.source || n.author || 'Mídia',
+        link: n.link, // Usado para redirecionar
+        author: n.author,
         av: '<i class="fi fi-rr-newspaper"></i>',
-        date: new Date(n.published_at || n.pubDate || Date.now()).toLocaleDateString('pt-BR'),
-        img: n.image_url || n.thumbnail || 'img/news-placeholder.png',
+        date: new Date(n.pubDate).toLocaleDateString('pt-BR'),
+        img: n.thumbnail,
         body: '',
         isReal: true
       };
     });
     
-    // 3. Puxar as 3 matérias OBRIGATÓRIAS do Hero
-    const heroItems = [];
-    
-    // Matéria Principal (Hero) -> Sempre de um Assinante (SaaS)
-    if (saasArticles.length > 0) {
-      heroItems.push(saasArticles.shift());
-    } else if (rssArticles.length > 0) {
-      heroItems.push(rssArticles.shift());
-    }
-
-    // Side 1 -> Sempre F1
-    const f1Idx = rssArticles.findIndex(a => a.cat === 'f1');
-    if (f1Idx > -1) {
-      heroItems.push(rssArticles.splice(f1Idx, 1)[0]);
-    } else if (rssArticles.length > 0) {
-      heroItems.push(rssArticles.shift());
-    }
-
-    // Side 2 -> Sempre MotoGP
-    const motoIdx = rssArticles.findIndex(a => a.cat === 'motogp');
-    if (motoIdx > -1) {
-      heroItems.push(rssArticles.splice(motoIdx, 1)[0]);
-    } else if (rssArticles.length > 0) {
-      heroItems.push(rssArticles.shift());
-    }
-
     // Mix them: Dar prioridade total absoluta às Notícias Reais (2 Reais para 1 SaaS)
-    const mixed = [...heroItems];
+    const mixed = [];
     let rIdx = 0, sIdx = 0;
     while (rIdx < rssArticles.length || sIdx < saasArticles.length) {
       if (rIdx < rssArticles.length) mixed.push(rssArticles[rIdx++]);
