@@ -6,9 +6,9 @@
 <title>Driver News</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
-<link rel="stylesheet" href="css/style.css?v=20260413_2342">
-<link rel="stylesheet" href="css/toast.css?v=20260413_2342">
-<link rel="stylesheet" href="css/plans.css?v=20260413_2342">
+<link rel="stylesheet" href="css/style.css?v=20260416_0325">
+<link rel="stylesheet" href="css/toast.css?v=20260416_0325">
+<link rel="stylesheet" href="css/plans.css?v=20260416_0325">
 </head>
 <body>
 
@@ -34,7 +34,7 @@
   <a onclick="showView('plans');closeMob()"><i class="fi fi-rr-clipboard"></i> Planos</a>
   <div style="margin-top:20px;display:flex;flex-direction:column;gap:8px">
     <button class="btn btn-out btn-full" onclick="showView('login');closeMob()">Entrar</button>
-    <button class="btn btn-acc btn-full" onclick="openSubscribeModal();closeMob()">Assinar</button>
+    <button class="btn btn-acc btn-full" onclick="showView('plans');closeMob()">Assinar</button>
   </div>
 </div>
 
@@ -403,7 +403,6 @@
             <li><a onclick="showView('teams-list')">Equipes</a></li>
             <li><a onclick="showView('plans')">Planos & Preços</a></li>
             <li><a onclick="showView('login')">Entrar</a></li>
-            <li><a onclick="openSubscribeModal()">Newsletter</a></li>
           </ul>
         </div>
         <div class="f-col">
@@ -481,12 +480,11 @@
 <div class="view" id="view-pilots-list">
   <section class="sec-hero reveal grid-herobg">
     <div class="container" style="padding-top:60px; padding-bottom:60px;">
-      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--fd);font-size:220px;color:rgba(255,255,255,.012);pointer-events:none;white-space:nowrap;z-index:0">PILOTOS</div>
       <div class="hero-badge" style="position:relative;z-index:1"><span class="hb-dot"></span> PLATAFORMA OFICIAL</div>
-      <h1 style="position:relative;z-index:1">PILOTOS <span class="hl-red">DRIVER</span></h1>
-      <p class="sub" style="position:relative;z-index:1">Pilotos clientes com página profissional, matérias no Google e vitrine para patrocinadores.</p>
+      <h1 style="position:relative;z-index:1">NOSSOS <span class="hl-red">PILOTOS</span></h1>
+      <p class="sub" style="position:relative;z-index:1">Atletas clientes com página profissional, matérias no Google e vitrine para patrocinadores.</p>
       <div class="hero-actions" style="position:relative;z-index:1">
-        <button class="btn-lp btn-red btn-pill" onclick="showView('plans')">Quero ser um piloto Driver &rarr;</button>
+        <button class="btn-lp btn-red btn-pill" onclick="showView('plans')">Quero entrar para o Grid &rarr;</button>
       </div>
     </div>
   </section>
@@ -502,9 +500,8 @@
 <div class="view" id="view-teams-list">
   <section class="sec-hero reveal grid-herobg">
     <div class="container" style="padding-top:60px; padding-bottom:60px;">
-      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--fd);font-size:200px;color:rgba(255,255,255,.012);pointer-events:none;white-space:nowrap;z-index:0">EQUIPES</div>
       <div class="hero-badge" style="position:relative;z-index:1"><span class="hb-dot"></span> PLATAFORMA OFICIAL</div>
-      <h1 style="position:relative;z-index:1">EQUIPES <span class="hl-red">DRIVER</span></h1>
+      <h1 style="position:relative;z-index:1">NOSSAS <span class="hl-red">EQUIPES</span></h1>
       <p class="sub" style="position:relative;z-index:1">Equipes com presença digital, landing page dedicada e até 10 matérias por mês.</p>
       <div class="hero-actions" style="position:relative;z-index:1">
         <button class="btn-lp btn-red btn-pill" onclick="showView('plans')">Quero ser uma equipe parceira &rarr;</button>
@@ -793,7 +790,25 @@
   <style>
     /* ── PLAN FORMATTING INJECTED FROM PLANOS.HTML ── */
     #planos .plan-container { max-width: 860px; margin: 0 auto; display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; align-items: start; }
-    @media (max-width: 768px) { #planos .plan-container { grid-template-columns: 1fr; max-width: 480px; } }
+    @media (max-width: 768px) { 
+      #planos .plan-container { grid-template-columns: repeat(2, 1fr) !important; gap: 8px !important; margin-top: 24px !important; margin-bottom: 40px !important; align-items: stretch !important; } 
+      #planos .lp-plan { padding: 16px 12px !important; border-radius: 12px !important; display: flex !important; flex-direction: column !important; height: auto !important; min-height: 100% !important; }
+      #planos .lp-plan.featured { transform: none !important; margin-top: 0 !important; box-shadow: 0 0 20px rgba(232,0,45,0.15) !important; }
+      #planos .plan-name { font-size: 15px !important; white-space: normal !important; line-height: 1.1 !important; margin-bottom: 4px !important;}
+      #planos .plan-for { font-size: 10px !important; margin-bottom: 12px !important; line-height: 1.3 !important; }
+      #planos .plan-price { flex-wrap: wrap !important; gap: 2px !important; margin-bottom: 4px !important; }
+      #planos .plan-price .val { font-size: 28px !important; }
+      #planos .plan-price .curr { font-size: 11px !important; margin-top: 4px !important; }
+      #planos .plan-price .period { font-size: 10px !important; }
+      #planos .plan-features { margin-bottom: 16px !important; flex: 1 !important; }
+      #planos .plan-features li { gap: 6px !important; padding: 6px 0 !important; align-items: flex-start !important; }
+      #planos .plan-features li span { font-size: 9px !important; line-height: 1.25 !important; display: block; }
+      #planos .plan-features .ico { width: 12px !important; height: 12px !important; font-size: 7px !important; margin-top: 2px !important; flex-shrink: 0 !important; }
+      #planos .plan-badge { font-size: 7px !important; padding: 4px 6px !important; top: -10px !important; }
+      #planos .plan-cta { padding: 10px 4px !important; font-size: 9px !important; border-radius: 6px !important; letter-spacing: 0px !important; text-align: center !important; margin-top: auto !important; }
+      #planos .plan-daily { font-size: 9px !important; margin-bottom: 8px !important; line-height: 1.3 !important; display: block; }
+      #planos .plan-divider { margin: 10px 0 !important; }
+    }
     #planos .lp-plan { background: var(--bg2); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 40px 32px 36px; position: relative; transition: all 0.35s cubic-bezier(.4,0,.2,1); }
     #planos .lp-plan:hover { transform: translateY(-4px); box-shadow: 0 20px 50px rgba(0,0,0,0.4); }
     #planos .lp-plan.featured { border-color: var(--acc); background: linear-gradient(165deg, rgba(232,0,45,0.06) 0%, var(--bg2) 40%); transform: scale(1.03); box-shadow: 0 0 60px rgba(232,0,45,0.08); z-index: 2;}
@@ -843,6 +858,15 @@
     #planos .plan-guarantee i { font-size: 28px; color: var(--success); flex-shrink: 0; }
     #planos .plan-guarantee strong { color: #fff; font-family: var(--fu); font-size: 14px; display: block; margin-bottom: 4px; }
     #planos .plan-guarantee p { font-family: var(--fm); font-size: 12px; color: var(--txt2); line-height: 1.6; text-align: left; margin: 0; }
+
+    /* ── MOBILE FIXES ── */
+    @media (max-width: 768px) {
+      .virada-closing { font-size: 24px !important; }
+      #planos .plan-cat-banner { padding: 24px 16px; width: 100%; box-sizing: border-box; }
+      #planos .plan-cat-banner h3 { font-size: 24px; }
+      #planos .plan-guarantee { padding: 16px; flex-direction: column; text-align: center; }
+      #planos .plan-guarantee p { text-align: center; }
+    }
   </style>
   <div class="container">
     <h2>ESCOLHA SEU PLANO</h2>
@@ -891,18 +915,7 @@
       </div>
     </div>
 
-    <!-- ALL PLANS INCLUDE -->
-    <div class="plan-notes-section">
-      <div class="plan-all-include">
-        <h4>Todos os planos incluem</h4>
-        <div class="tags">
-          <span class="tag"><i class="fi fi-rr-check"></i> Cancelamento a qualquer momento</span>
-          <span class="tag"><i class="fi fi-rr-check"></i> Sem taxa de adesão</span>
-          <span class="tag"><i class="fi fi-rr-check"></i> Suporte por WhatsApp</span>
-          <span class="tag"><i class="fi fi-rr-check"></i> Publicação em até 48h</span>
-        </div>
-      </div>
-    </div>
+<!-- Removido ALL PLANS INCLUDE -->
 
     <!-- CATEGORY BANNER -->
     <div class="plan-cat-banner">
@@ -1064,7 +1077,7 @@
       <div id="auth-register" class="hide" style="text-align:center;padding:24px 12px">
         <div style="font-family:var(--fd);font-size:24px;margin-bottom:8px">COMECE SUA JORNADA</div>
         <p style="color:var(--dim);font-size:14px;margin-bottom:24px;line-height:1.5">Escolha seu plano e junte-se aos pilotos e equipes do maior portal agregador de automobilismo.</p>
-        <button class="btn btn-acc btn-full" onclick="window.location.href='planos.html'">Conhecer os Planos →</button>
+        <button class="btn btn-acc btn-full" onclick="showView('plans')">Conhecer os Planos →</button>
       </div>
     </div>
   </div>

@@ -627,7 +627,7 @@ function authTab(el,tab){
   document.getElementById('auth-register').classList.toggle('hide',tab!=='register');
 }
 async function doLogin(){
-  const e=document.getElementById('loginEmail').value;
+  const e=document.getElementById('loginEmail').value.trim();
   const p=document.getElementById('loginPass').value;
   if(!e||!p){toast('Preencha e-mail e senha','err');return}
   toast('Verificando credenciais...','info');
@@ -821,9 +821,38 @@ async function loadLiveNews() {
         date: formatNewsDate(n.published_at),
         img: n.image_url,
         abstract: n.abstract || '',
-        isReal: true
+        isReal: true,
+        rawDate: new Date(n.published_at).getTime() || 0
       };
     });
+    
+    // Inject internal assinantes news if available
+    try {
+      if (typeof Driver !== 'undefined' && typeof Driver.getArticles === 'function') {
+        const publicArts = Driver.getArticles().filter(a => a.status === 'published');
+        const internalNews = publicArts.map(a => {
+          const slugCat = (a.category || 'geral').toLowerCase().replace(/\s+/g, '-');
+          const dTime = new Date(a.publishedAt || a.submittedAt || Date.now()).getTime();
+          return {
+            id: a.id,
+            cat: slugCat,
+            badge: 'b-' + slugCat,
+            kicker: 'PILOTO VERIFICADO',
+            title: a.title,
+            link: 'noticia.html?id=' + a.id,
+            author: a.authorName || 'Portal',
+            date: formatNewsDate(a.publishedAt || a.submittedAt || new Date()),
+            img: a.img || 'https://images.unsplash.com/photo-1541344983572-c511a5fe03fd?auto=format&fit=crop&w=1200&q=80',
+            abstract: (a.body || '').replace(/<[^>]*>?/gm, '').substring(0,180) + '...',
+            isReal: false,
+            rawDate: dTime
+          };
+        });
+        ARTICLES = [...internalNews, ...ARTICLES];
+        // Sort everything purely chronologically (Internal stays on top if fresh, falls if third party is fresher)
+        ARTICLES.sort((a,b) => b.rawDate - a.rawDate);
+      }
+    } catch(err) { console.error('Erro injetando noticias de pilotos', err); }
     
     // Render
     renderHeroGrid();
@@ -868,18 +897,35 @@ function getCatClass(category) {
   return map[cat] || 'cat-geral';
 }
 
+let HERO_IDS = [];
+
 function renderHeroGrid(catFilter = 'all') {
   const grid = document.getElementById('heroGrid');
   const wrap = document.querySelector('.hero-wrap');
   if (!grid || ARTICLES.length < 3) return;
 
+  HERO_IDS = [];
   let a0, a1, a2;
 
   if (catFilter === 'all') {
     if (wrap) wrap.style.display = '';
-    a0 = ARTICLES[0];
-    a1 = ARTICLES[1];
-    a2 = ARTICLES[2];
+    
+    // Prioritize slots
+    const f1A = ARTICLES.find(a => a.cat === 'f1');
+    const motoA = ARTICLES.find(a => a.cat === 'motogp');
+    const pilotoA = ARTICLES.find(a => a.isReal === false); // "Nossos pilotos"
+    
+    let picks = [f1A, motoA, pilotoA].filter(Boolean);
+    
+    // Fallback if missing slots so we always have 3 distinct
+    for(let i=0; i<ARTICLES.length && picks.length < 3; i++){
+      if (!picks.includes(ARTICLES[i])) picks.push(ARTICLES[i]);
+    }
+    
+    // Re-sort the 3 chosen chronologically
+    picks.sort((a,b) => b.rawDate - a.rawDate);
+    
+    a0 = picks[0]; a1 = picks[1]; a2 = picks[2];
   } else {
     // Exact category matching
     let catArts = ARTICLES.filter(a => a.cat === catFilter);
@@ -901,8 +947,10 @@ function renderHeroGrid(catFilter = 'all') {
     if (wrap) wrap.style.display = 'none';
     return;
   }
+  
+  HERO_IDS = [a0.id, a1.id, a2.id];
 
-  const getClk = (a) => a.isReal === false ? `toast('Demonstração: Matéria exclusiva do piloto assinante!','info')` : `window.open('${a.link}','_blank')`;
+  const getClk = (a) => a.isReal === false ? `window.location.href='${a.link}'` : `window.open('${a.link}','_blank')`;
 
   grid.innerHTML = `
     <div class="hero-main" onclick="${getClk(a0)}" style="position:relative;overflow:hidden;cursor:pointer">
@@ -921,7 +969,7 @@ function renderHeroGrid(catFilter = 'all') {
         </div>
       </div>
     </div>
-    <div class="hero-side" style="display:flex;flex-direction:column;gap:3px">
+    <div class="hero-side">
       <div class="side-card" onclick="${getClk(a1)}" style="flex:1;position:relative;overflow:hidden;cursor:pointer;background:var(--bg2)">
         <img src="${a1.img}" alt="" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.4) brightness(.4);transition:transform .4s">
         <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(3,3,10,.95) 0%,rgba(3,3,10,.2) 55%,transparent);z-index:1"></div>
@@ -954,7 +1002,7 @@ function renderNewsGrid() {
   const grid = document.getElementById('cardGrid');
   if (!grid || ARTICLES.length < 4) return;
 
-  const display = ARTICLES.slice(3);
+  const display = ARTICLES.filter(a => !HERO_IDS.includes(a.id));
   
   grid.innerHTML = display.map(a => {
     const catCls = getCatClass(a.cat);

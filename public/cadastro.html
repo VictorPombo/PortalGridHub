@@ -82,14 +82,12 @@
       <p style="font-size:13px;color:var(--dim);margin-bottom:24px" id="step1Desc">Preencha seus dados básicos para começar</p>
       
       <!-- Plan indicator -->
-      <div id="planIndicator" style="display:none;background:var(--acc-d);border:1px solid var(--acc);border-radius:8px;padding:14px 18px;margin-bottom:24px;display:flex;align-items:center;gap:12px">
-        <div style="width:40px;height:40px;border-radius:8px;background:var(--acc);display:flex;align-items:center;justify-content:center">
-          <i class="fi fi-rr-flag" style="color:#fff"></i>
-        </div>
-        <div>
-          <div style="font-family:var(--fu);font-size:13px;font-weight:700;color:#fff" id="planIndicatorName">Plano Starter</div>
-          <div style="font-family:var(--fm);font-size:11px;color:var(--dim)" id="planIndicatorPrice">R$99,90/mês</div>
-        </div>
+      <div id="planIndicator" style="background:var(--bg1);border:1px solid var(--brd);border-radius:8px;padding:14px 18px;margin-bottom:24px;">
+        <label class="form-label" style="margin-bottom:8px">Plano Escolhido (Mude a qualquer momento)</label>
+        <select class="form-select" id="regPlanSelector" onchange="selectedPlan=this.value; updatePlanUI()">
+          <option value="starter">Piloto Starter — R$99,90/mês</option>
+          <option value="pro">Piloto Pro — R$149,90/mês</option>
+        </select>
       </div>
 
       <div class="form-field"><label class="form-label">Nome completo</label><input class="form-input" id="regName" type="text" placeholder="Seu nome completo"></div>
@@ -156,11 +154,17 @@
         </div>
 
         <div class="form-field">
-          <label class="form-label">Bio / Sua história no automobilismo</label>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <label class="form-label" style="margin-bottom:0">Bio / Sua história no automobilismo</label>
+            <button type="button" class="btn-secondary" style="padding:6px 12px;font-size:10px;border-radius:6px" onclick="enhanceWithAI('regBio', 'bio')">✨ Aprimorar com IA</button>
+          </div>
           <textarea class="form-textarea" id="regBio" placeholder="Conte sua trajetória... quando começou, conquistas, motivação, equipes que passou..." style="min-height:100px"></textarea>
         </div>
         <div class="form-field">
-          <label class="form-label">Histórico de carreira (títulos, vitórias, pódios)</label>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <label class="form-label" style="margin-bottom:0">Histórico de carreira (títulos, vitórias, pódios)</label>
+            <button type="button" class="btn-secondary" style="padding:6px 12px;font-size:10px;border-radius:6px" onclick="enhanceWithAI('regCareer', 'career')">✨ Aprimorar com IA</button>
+          </div>
           <textarea class="form-textarea" id="regCareer" placeholder="Ex: Campeão F4 Brasil 2024, 5 vitórias em 2025, 12 pódios no total..." style="min-height:80px"></textarea>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
@@ -169,7 +173,13 @@
         </div>
         <div class="form-field"><label class="form-label">Objetivos da temporada 2026</label><input class="form-input" id="regGoals" type="text" placeholder="Ex: Top 5 no campeonato, fechar patrocínio master"></div>
         <div class="form-field"><label class="form-label">Patrocinadores atuais <span style="font-size:11px;color:var(--dim)">(para mencionar nas matérias)</span></label><input class="form-input" id="regSponsors" type="text" placeholder="Ex: Red Bull, Shell, Banco PAN"></div>
-        <div class="form-field"><label class="form-label">Mensagem para patrocinadores <span style="font-size:11px;color:var(--dim)">(aparece na sua página)</span></label><textarea class="form-textarea" id="regSponsorMsg" placeholder="O que você oferece em troca de apoio? Visibilidade no carro, redes sociais, eventos..."></textarea></div>
+        <div class="form-field">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <label class="form-label" style="margin-bottom:0">Mensagem para patrocinadores <span style="font-size:11px;color:var(--dim)">(aparece na sua página)</span></label>
+            <button type="button" class="btn-secondary" style="padding:6px 12px;font-size:10px;border-radius:6px" onclick="enhanceWithAI('regSponsorMsg', 'sponsormsg')">✨ Aprimorar com IA</button>
+          </div>
+          <textarea class="form-textarea" id="regSponsorMsg" placeholder="O que você oferece em troca de apoio? Visibilidade no carro, redes sociais, eventos..."></textarea>
+        </div>
         <div class="form-field"><label class="form-label">Fotos profissionais <span style="font-size:11px;color:var(--dim)">(URLs separadas por vírgula)</span></label><input class="form-input" id="regPhotos" type="text" placeholder="https://foto1.jpg, https://foto2.jpg"></div>
       </div>
 
@@ -210,8 +220,9 @@
           </div>
         </div>
 
-        <!-- Free option -->
-        <div id="freeOption"></div>
+        </div>
+      </div>
+    </div>
       </div>
     </div>
   </div>
@@ -219,18 +230,21 @@
 
 <footer class="carbon-subtle"><div class="f-inner"><div class="f-bottom"><div class="f-copy">© 2026 DRIVER MEDIA</div><div class="f-love"><a href="politica.html" style="color:var(--muted)">Privacidade</a> · <a href="termos.html" style="color:var(--muted)">Termos</a></div></div></div></footer>
 
-<script src="js/core.js"></script>
-<script src="js/state.js"></script>
+<script src="js/core.js?v=20260416"></script>
+<script src="js/state.js?v=20260416"></script>
+<script type="text/javascript">
+  // Force clean state just in case
+  if (module && module.hot) { module.hot.accept(); }
+</script>
 <script>
 // ══════════════════════════════════════
 //  PLAN-AWARE REGISTRATION FLOW
 // ══════════════════════════════════════
 
-let selectedPlan = 'free'; // free | starter | pro | equipe | categoria
+let selectedPlan = 'starter'; // starter | pro | equipe | categoria
 let currentStep = 1;
 
 const PLAN_CONFIG = {
-  free:     { name: 'Conta Gratuita',    price: 'Grátis',     daily: 'Acesso básico ao portal',           link: null },
   starter:  { name: 'Piloto Starter',    price: 'R$99,90',    daily: 'Menos de R$3,50 por dia',           link: 'https://www.asaas.com/c/pcd93o8dzjozlmje' },
   pro:      { name: 'Piloto Pro',        price: 'R$149,90',   daily: 'Menos de R$5 por dia — o preço de um café', link: 'https://www.asaas.com/c/vz16usxyvho09ell' },
   equipe:   { name: 'Equipe Parceira',   price: 'R$499,90',   daily: 'Cobertura completa da equipe',      link: null },
@@ -260,18 +274,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function updatePlanUI() {
   const config = PLAN_CONFIG[selectedPlan];
-  const indicator = document.getElementById('planIndicator');
-  
-  if (selectedPlan !== 'free') {
-    indicator.style.display = 'flex';
-    document.getElementById('planIndicatorName').textContent = config.name;
-    document.getElementById('planIndicatorPrice').textContent = config.price + '/mês';
-    document.getElementById('pageTitle').textContent = 'Assinar ' + config.name;
-    document.getElementById('pageSubtitle').textContent = 'Crie sua conta e ative seu plano para começar a publicar matérias profissionais.';
-  } else {
-    indicator.style.display = 'none';
-    document.getElementById('pageTitle').textContent = 'Crie sua Conta';
-  }
+  document.getElementById('regPlanSelector').value = selectedPlan;
+
+  document.getElementById('pageTitle').textContent = 'Assinar ' + config.name;
+  document.getElementById('pageSubtitle').textContent = 'Crie sua conta e ative seu plano para começar a publicar matérias profissionais.';
   
   // Show/hide step 3 label
   const dot3Label = document.getElementById('dot3Label');
@@ -297,8 +303,27 @@ if (typeof Driver !== 'undefined' && Driver.isLoggedIn()) {
 function showMode(mode) {
   document.getElementById('loginMode').style.display = mode === 'login' ? 'block' : 'none';
   document.getElementById('registerMode').style.display = mode === 'register' ? 'block' : 'none';
-  document.querySelectorAll('.tabs .tab').forEach((t, i) => t.classList.toggle('active', (mode === 'register' && i === 0) || (mode === 'login' && i === 1)));
-  document.getElementById('pageTitle').textContent = mode === 'login' ? 'Acessar Conta' : (selectedPlan !== 'free' ? 'Assinar ' + PLAN_CONFIG[selectedPlan].name : 'Crie sua Conta');
+  
+  const tabs = document.querySelectorAll('.tabs .tab');
+  if (tabs.length >= 2) {
+    if (mode === 'register') {
+      tabs[0].classList.add('active');
+      tabs[1].classList.remove('active');
+    } else {
+      tabs[0].classList.remove('active');
+      tabs[1].classList.add('active');
+    }
+  }
+
+  const title = document.getElementById('pageTitle');
+  if (title) {
+    if (mode === 'login') {
+      title.textContent = 'Acessar Conta';
+    } else {
+      const config = PLAN_CONFIG[selectedPlan] || PLAN_CONFIG['starter'];
+      title.textContent = 'Assinar ' + config.name;
+    }
+  }
 }
 
 async function doLogin() {
@@ -329,8 +354,8 @@ async function doLogin() {
 async function goStep(step) {
   // Validation Step 1 → 2
   if (step === 2) {
-    const name = document.getElementById('regName')?.value;
-    const email = document.getElementById('regEmail')?.value;
+    const name = (document.getElementById('regName')?.value || '').trim();
+    const email = (document.getElementById('regEmail')?.value || '').trim();
     const pass = document.getElementById('regPass')?.value;
     if (!name || !email) { showToast('Preencha nome e e-mail','err'); return; }
     if (!isValidEmail(email)) { showToast('E-mail inválido','err'); return; }
@@ -342,8 +367,12 @@ async function goStep(step) {
   
   // Step 3: Show pro fields or review
   if (step === 3) {
+  // Step 3: Show pro fields or review
+  if (step === 3) {
     const selectedCatsForVal = typeof getSelectedCategories === 'function' ? getSelectedCategories() : [];
     if (selectedCatsForVal.length === 0) { showToast('Selecione pelo menos uma categoria de atuação','err'); return; }
+    
+    if (selectedPlan === 'pro') {
     
     if (selectedPlan === 'pro') {
       document.getElementById('proFields').style.display = 'block';
@@ -463,6 +492,69 @@ function previewPhoto(input) {
     document.getElementById('photoFileName').textContent = file.name;
   }
 }
+
+async function enhanceWithAI(fieldId, contextType) {
+  const inputEl = document.getElementById(fieldId);
+  if (!inputEl) return;
+  const rawText = inputEl.value.trim();
+  
+  if (!rawText || rawText.length < 5) {
+    showToast('Digite pelo menos uma frase curta para a IA trabalhar!', 'info');
+    return;
+  }
+
+  // Capturar dados contextuais já preenchidos para alimentar a IA (se houver)
+  const pilotName = document.getElementById('regPilotName')?.value || 'Piloto';
+  const category = document.getElementById('regCategory')?.value || 'Categoria desconhecida';
+  
+  showToast('Processando aprimoramento via IA...', 'info');
+  const btn = event.currentTarget;
+  const oldText = btn.innerHTML;
+  btn.innerHTML = '<i class="fi fi-rr-spinner" style="animation:spin 1s linear infinite"></i> Processando...';
+  btn.style.pointerEvents = 'none';
+
+  try {
+    const response = await fetch('/api/ai-enhance', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        textoOriginal: rawText, 
+        tipoCampo: contextType,
+        contexto: \`Nome: \${pilotName} | Categoria: \${category}\` 
+      })
+    });
+
+    if (!response.ok) throw new Error('Erro na resposta do servidor IA');
+    const data = await response.json();
+    
+    if (data && data.enhancedText) {
+      inputEl.value = data.enhancedText;
+      showToast('Texto aprimorado com sucesso!', 'ok');
+      
+      // Flash animation on the textarea to grab attention
+      inputEl.style.boxShadow = '0 0 24px rgba(232,0,45,0.7)';
+      inputEl.style.borderColor = 'var(--acc)';
+      setTimeout(() => {
+        inputEl.style.boxShadow = '';
+        inputEl.style.borderColor = '';
+      }, 1500);
+      
+    } else {
+      throw new Error('Formato inválido retornado pela IA');
+    }
+  } catch (error) {
+    console.error('Enhance Error:', error);
+    showToast('Falha ao aprimorar texto. Tente novamente.', 'err');
+  } finally {
+    btn.innerHTML = oldText;
+    btn.style.pointerEvents = 'all';
+  }
+}
+
+// Add rotate animation for spinner just in case
+const styleSheet = document.createElement("style");
+styleSheet.textContent = "@keyframes spin { 100% { transform:rotate(360deg); } }";
+document.head.appendChild(styleSheet);
 </script>
 </body>
 </html>

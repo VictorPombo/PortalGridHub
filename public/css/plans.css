@@ -485,6 +485,7 @@
   text-align: center;
   position: relative;
   background-color: var(--bg1);
+  overflow: hidden;
 }
 .grid-herobg::before {
   content: '';
@@ -522,8 +523,9 @@
   color: var(--dim);
   margin-bottom: 32px;
   text-transform: uppercase;
+  text-align: left;
 }
-.hero-badge .hb-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 10px rgba(0,187,85,0.5); }
+.hero-badge .hb-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 10px rgba(0,187,85,0.5); flex-shrink: 0; }
 .sec-hero h1 { font-family: var(--fd); font-size: 72px; text-transform: uppercase; line-height: 0.95; margin-bottom: 24px; color: #fff; letter-spacing: 2px; text-wrap: balance; }
 .hl-red { color: var(--acc); }
 .hl-grad {
@@ -740,8 +742,27 @@ details[open] summary:after { content: '-'; }
 
 /* Responsive */
 @media (max-width: 768px) {
-  .sec-hero h1 { font-size: 42px; }
-  .dor-grid, .passos-grid, .demo-grid, .plan-grid, .demo-dash { grid-template-columns: 1fr; }
+  .sec-hero { padding: 80px 0 50px; }
+  .sec-hero h1 { font-size: 36px; line-height: 1.05; letter-spacing: 0px; margin-bottom: 20px; }
+  .sec-impact h2 { font-size: 26px; line-height: 1.15; }
+  .sec-dor h2 { font-size: 32px; line-height: 1.1; margin-bottom: 30px; letter-spacing: 0; }
+  .sec-virada h2 { font-size: 30px; margin-bottom: 24px; }
+  .sec-passos h2 { font-size: 32px; margin-bottom: 40px; letter-spacing: 0; }
+  .sec-demo h2, .sec-planos h2, .sec-faq h2 { font-size: 32px; margin-bottom: 30px; }
+  .sec-cta h2 { font-size: 34px; margin-bottom: 24px; }
+  .virada-item { font-size: 15px; padding: 12px 0; align-items: flex-start; }
+  .virada-item i { margin-top: 2px; }
+  .virada-closing { font-size: 18px; margin-top: 5px; }
+  .sec-hero .sub { font-size: 16px; padding: 0 10px; }
+  .hero-badge { 
+    font-size: 10px; 
+    padding: 8px 14px; 
+    border-radius: 12px; /* avoids weird pill stretching on multi-line */
+    letter-spacing: 1px;
+    align-items: flex-start;
+  }
+  .hero-badge .hb-dot { margin-top: 4px; }
+  .dor-grid, .passos-grid, .demo-grid, .plan-grid, .demo-dash, .valor-grid, .virada-grid { grid-template-columns: 1fr; }
   .passos-bg-line { display: none; }
   .passo-item { align-items: center; text-align:center;}
   .status-logos { font-size: 24px; gap: 24px; }
