@@ -839,8 +839,8 @@ function renderHeroGrid(catFilter = 'all') {
 
   if (catFilter === 'all') {
     if (wrap) wrap.style.display = '';
-    const carNews = ARTICLES.find(a => ['f1', 'stock-car', 'wec', 'indycar', 'nascar'].includes(a.cat)) || ARTICLES[0];
-    const motoNews = ARTICLES.find(a => a.cat === 'motogp' && a.id !== carNews?.id) || ARTICLES.find(a => a.id !== carNews?.id) || ARTICLES[1];
+    const f1News = ARTICLES.find(a => a.cat === 'f1') || ARTICLES.find(a => ['stock-car', 'wec', 'indycar', 'nascar'].includes(a.cat)) || ARTICLES[0];
+    const motoNews = ARTICLES.find(a => a.cat === 'motogp' && a.id !== f1News?.id) || ARTICLES.find(a => a.id !== f1News?.id) || ARTICLES[1];
     
     const pilotNews = {
       id: 9999,
@@ -854,7 +854,7 @@ function renderHeroGrid(catFilter = 'all') {
       isReal: false
     };
 
-    a0 = carNews; a1 = pilotNews; a2 = motoNews;
+    a0 = f1News; a1 = pilotNews; a2 = motoNews;
   } else {
     // Exact category matching
     let catArts = ARTICLES.filter(a => a.cat === catFilter);
