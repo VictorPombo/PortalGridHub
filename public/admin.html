@@ -82,7 +82,7 @@ function renderDashboard() {
       <div class="stat-card">
         <div class="stat-label">Matérias Pendentes</div>
         <div class="stat-value" style="color:var(--warning)">${s.pendingArticles}</div>
-        <div class="stat-detail">${PitLane.getArticlesByStatus('review').length} revisão · ${PitLane.getArticlesByStatus('sent').length} aguardando IA · ${PitLane.getArticlesByStatus('approved').length} aprovada</div>
+        <div class="stat-detail">${PitLane.getArticlesByStatus('review').length} revisão · ${PitLane.getArticlesByStatus('sent').length} aguardando redação · ${PitLane.getArticlesByStatus('approved').length} aprovada</div>
       </div>
       <div class="stat-card">
         <div class="stat-label">Views Totais</div>
@@ -156,7 +156,7 @@ function renderQueue() {
             </div>` : ''}
           </div>
           <div class="queue-card-actions">
-            ${a.status === 'sent' ? `<button class="btn-primary" style="padding:6px 12px;font-size:10px" onclick="processIA('${a.id}')"><i data-lucide="bot" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i> Processar IA</button>` : ''}
+            ${a.status === 'sent' ? `<button class="btn-primary" style="padding:6px 12px;font-size:10px" onclick="processIA('${a.id}')"><i data-lucide="bot" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i> Processar Redação</button>` : ''}
             ${a.status === 'review' ? `<button class="btn-success" style="padding:6px 12px;font-size:10px" onclick="approveArticle('${a.id}')"><i data-lucide="check-circle-2" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Aprovar</button>` : ''}
             ${a.status === 'approved' ? `<button class="btn-success" style="padding:6px 12px;font-size:10px" onclick="publishArticle('${a.id}')"><i data-lucide="globe" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Publicar</button>` : ''}
             ${a.status === 'review' ? `<button class="btn-secondary" style="padding:6px 12px;font-size:10px" onclick="rejectArticle('${a.id}')"><i data-lucide="corner-up-left" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Devolver</button>` : ''}
@@ -179,7 +179,7 @@ function filterQueue(status, btn) {
 
 function processIA(id) {
   PitLane.changeArticleStatus(id, 'review');
-  showToast('<i data-lucide="bot" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i> Matéria processada por IA! Pronta para revisão.', 'ok');
+  showToast('<i data-lucide="bot" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i> Matéria processada pela redação! Pronta para revisão.', 'ok');
   renderQueue(); renderDashboard();
 }
 function approveArticle(id) {
@@ -324,7 +324,7 @@ function rssPublish(title, brief) {
     publishedAt: new Date().toISOString().split('T')[0],
     category: 'F1',
   });
-  showToast('✓ Matéria reescrita pela IA e publicada!', 'ok');
+  showToast('✓ Matéria reescrita pela redação e publicada!', 'ok');
   renderDashboard();
 }
 
@@ -336,7 +336,7 @@ function renderSettings() {
   const rows = [
     { key: 'reviewRequired', label: 'Revisão Final Obrigatória', desc: 'Exigir revisão do admin antes de qualquer publicação.' },
     { key: 'autoCollect', label: 'Coleta Automática de Notícias', desc: 'Coletar notícias a cada 4 horas via RSS/APIs configuradas.' },
-    { key: 'aiRewrite', label: 'Reescrita Automática por IA', desc: 'Reescrever automaticamente notícias coletadas.' },
+    { key: 'aiRewrite', label: 'Reescrita Automática pela Redação', desc: 'Reescrever automaticamente notícias coletadas.' },
     { key: 'limitBlock', label: 'Bloqueio de Limite', desc: 'Bloquear envio quando atingir limite mensal do plano.' },
     { key: 'sponsoredBadge', label: 'Marca "Conteúdo Patrocinado"', desc: 'Exibir badge em todas as matérias pagas.' },
     { key: 'maintenance', label: 'Modo Manutenção', desc: 'Desativar temporariamente o portal público.' },

@@ -25,7 +25,6 @@
     <ul class="nav-links">
       <li><a href="index.html">Início</a></li>
       <li><a href="piloto.html">Pilotos</a></li>
-      <li><a href="planos.html">Planos</a></li>
     </ul>
     <div class="nav-right" id="navRight">
       <a href="cadastro.html" class="btn-nav-action">Entrar</a>
@@ -145,12 +144,12 @@
     <!-- STEP 3: Detalhes Pro (SÓ PARA PRO) ou Revisão (para Starter/Free) -->
     <div class="signup-panel" id="panel3">
       
-      <!-- PRO: Dados completos para IA -->
+      <!-- PRO: Dados completos para nossa redação -->
       <div id="proFields">
         <div style="font-family:var(--fd);font-size:34px;letter-spacing:2px;margin-bottom:8px">Dados para Matérias Pro</div>
-        <p style="font-size:13px;color:var(--dim);margin-bottom:4px">Nossa IA usa esses dados para criar matérias únicas e profissionais sobre você</p>
+        <p style="font-size:13px;color:var(--dim);margin-bottom:4px">Nossa redação usa esses dados para criar matérias únicas e profissionais sobre você</p>
         <div style="background:rgba(232,0,45,.06);border:1px solid rgba(232,0,45,.15);border-radius:8px;padding:12px 16px;margin-bottom:24px;font-family:var(--fm);font-size:11px;color:var(--acc)">
-          <strong>✨ Exclusivo Pro</strong> — Quanto mais dados, melhor a IA escreve sobre você
+          <strong>✨ Exclusivo Pro</strong> — Quanto mais dados, melhor nosso time escreve sobre você
         </div>
 
         <div class="form-field">
@@ -177,7 +176,7 @@
         <p style="font-size:13px;color:var(--dim);margin-bottom:24px">Revise seus dados antes de prosseguir</p>
         <div id="reviewSummary" style="background:var(--bg1);border:1px solid var(--brd);border-radius:8px;padding:20px"></div>
         <div style="margin-top:16px;background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.15);border-radius:8px;padding:14px 16px;font-family:var(--fm);font-size:12px;color:var(--success)">
-          <strong>💡 Dica:</strong> Após assinar o plano Pro, você poderá preencher dados completos para matérias personalizadas pela IA.
+          <strong>💡 Dica:</strong> Após assinar o plano Pro, você poderá preencher dados completos para matérias personalizadas pelo nosso time.
         </div>
       </div>
 
@@ -279,7 +278,7 @@ function updatePlanUI() {
   // Show/hide step 3 label
   const dot3Label = document.getElementById('dot3Label');
   if (selectedPlan === 'pro') {
-    dot3Label.textContent = 'Dados IA';
+    dot3Label.textContent = 'Detalhes';
   } else {
     dot3Label.textContent = 'Revisar';
   }
