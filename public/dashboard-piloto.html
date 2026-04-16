@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Painel do Piloto — PitLane News</title>
+<title>Painel do Piloto — Driver News</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
 <link rel="stylesheet" href="css/core.css">
@@ -19,7 +19,7 @@
   <div class="nav-inner">
     <a class="logo" href="index.html">
       <div class="logo-badge"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg></div>
-      <div class="logo-text"><span class="logo-name">PitLane</span><span class="logo-tag">News</span></div>
+      <div class="logo-text"><span class="logo-name">Driver</span><span class="logo-tag">News</span></div>
     </a>
     <ul class="nav-links"><li><a href="index.html">Portal</a></li><li><a href="piloto.html">Minha Página</a></li></ul>
     <div class="nav-right" id="navUserInfo"></div>
@@ -39,7 +39,7 @@
       <li><a onclick="showSection('mediakit',this)"><span class="nav-icon"><i data-lucide="paperclip" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Mídia Kit</a></li>
       <div class="dash-nav-sep"></div>
       <li><a href="piloto.html"><span class="nav-icon"><i data-lucide="globe" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i></span> Ver Landing Page</a></li>
-      <li><a href="#" onclick="PitLane.logout();window.location='cadastro.html'"><span class="nav-icon"><i data-lucide="log-out" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Sair</a></li>
+      <li><a href="#" onclick="Driver.logout();window.location='cadastro.html'"><span class="nav-icon"><i data-lucide="log-out" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Sair</a></li>
     </ul>
   </aside>
 
@@ -63,8 +63,8 @@
 // ============================
 // Auth guard
 // ============================
-if (!PitLane.isLoggedIn()) { window.location = 'cadastro.html'; }
-const USER = PitLane.getCurrentUser();
+if (!Driver.isLoggedIn()) { window.location = 'cadastro.html'; }
+const USER = Driver.getCurrentUser();
 if (!USER) { window.location = 'cadastro.html'; }
 
 // ============================
@@ -77,7 +77,7 @@ document.getElementById('navUserInfo').innerHTML = `
 document.getElementById('sidebarProfile').innerHTML = `
   <div class="dash-avatar">${USER.avatar}</div>
   <div class="dash-user-name">${USER.name}</div>
-  <div class="dash-user-plan">${PitLane.getPlanName(USER.plan)} · ${USER.type.charAt(0).toUpperCase() + USER.type.slice(1)}</div>
+  <div class="dash-user-plan">${Driver.getPlanName(USER.plan)} · ${USER.type.charAt(0).toUpperCase() + USER.type.slice(1)}</div>
   <div class="dash-plan-badge">${USER.plan.toUpperCase()}</div>
 `;
 
@@ -85,8 +85,8 @@ document.getElementById('sidebarProfile').innerHTML = `
 // Render Overview
 // ============================
 function renderOverview() {
-  const stats = PitLane.getUserStats(USER.id);
-  const articles = PitLane.getArticlesByAuthor(USER.id);
+  const stats = Driver.getUserStats(USER.id);
+  const articles = Driver.getArticlesByAuthor(USER.id);
   const recent = articles.filter(a => a.status !== 'draft').sort((a, b) => (b.publishedAt || b.submittedAt || '').localeCompare(a.publishedAt || a.submittedAt || '')).slice(0, 5);
   const usagePct = stats.limit > 0 ? ((stats.limit - stats.remaining) / stats.limit * 100) : 0;
 
@@ -103,7 +103,7 @@ function renderOverview() {
       <div class="stat-card accent">
         <div class="stat-label">Matérias Restantes</div>
         <div class="stat-value">${stats.remaining}</div>
-        <div class="stat-detail">de ${stats.limit} matérias · ${PitLane.getPlanName(USER.plan)}</div>
+        <div class="stat-detail">de ${stats.limit} matérias · ${Driver.getPlanName(USER.plan)}</div>
         <div class="rpm-bar" style="margin-top:10px"><div class="rpm-bar-fill" style="width:${usagePct}%"></div></div>
       </div>
       <div class="stat-card">
@@ -135,16 +135,16 @@ function renderOverview() {
     <div style="font-family:var(--fu);font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin:32px 0 12px">Matérias Recentes</div>
     <div class="articles-list">
       ${recent.map(a => {
-        const author = PitLane.getUserById(a.authorId);
+        const author = Driver.getUserById(a.authorId);
         return `<div class="article-row" onclick="showSection('articles')">
           <div class="article-row-thumb" style="${a.img ? '' : 'background:var(--bg3)'}">
             ${a.img ? `<img src="${a.img}" alt="">` : ''}
           </div>
           <div class="article-row-info">
             <div class="article-row-title">${a.title}</div>
-            <div class="article-row-meta">${PitLane.formatDate(a.publishedAt || a.submittedAt)} · ${a.views > 0 ? a.views.toLocaleString() + ' views' : PitLane.getStatusLabel(a.status)}</div>
+            <div class="article-row-meta">${Driver.formatDate(a.publishedAt || a.submittedAt)} · ${a.views > 0 ? a.views.toLocaleString() + ' views' : Driver.getStatusLabel(a.status)}</div>
           </div>
-          <div class="article-row-status"><span class="badge ${PitLane.getStatusCSS(a.status)}">${PitLane.getStatusLabel(a.status)}</span></div>
+          <div class="article-row-status"><span class="badge ${Driver.getStatusCSS(a.status)}">${Driver.getStatusLabel(a.status)}</span></div>
         </div>`;
       }).join('')}
       ${recent.length === 0 ? '<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">Nenhuma matéria ainda. Crie a primeira!</div>' : ''}
@@ -156,14 +156,14 @@ function renderOverview() {
 // Render Compose
 // ============================
 function renderCompose() {
-  const stats = PitLane.getUserStats(USER.id);
+  const stats = Driver.getUserStats(USER.id);
   document.getElementById('sec-compose').innerHTML = `
     <div class="dash-header"><h1>Nova Matéria</h1></div>
     ${stats.remaining <= 0 ? `
       <div class="card" style="padding:32px;text-align:center;border-color:var(--acc)">
         <div style="font-size:32px;margin-bottom:12px"><i data-lucide="ban" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom;color:#e8002d"></i></div>
         <div style="font-family:var(--fd);font-size:24px;margin-bottom:8px">Limite Atingido</div>
-        <p style="font-size:13px;color:var(--dim);margin-bottom:16px">Você já usou todas as ${stats.limit} matéria(s) deste mês (${PitLane.getPlanName(USER.plan)}). Faça upgrade para publicar mais!</p>
+        <p style="font-size:13px;color:var(--dim);margin-bottom:16px">Você já usou todas as ${stats.limit} matéria(s) deste mês (${Driver.getPlanName(USER.plan)}). Faça upgrade para publicar mais!</p>
         <a href="index.html?view=plans" class="btn-primary">Ver Planos →</a>
       </div>
     ` : `
@@ -195,7 +195,7 @@ function saveDraft() {
   const title = document.getElementById('compTitle')?.value;
   const brief = document.getElementById('compBrief')?.value;
   if (!title) { showToast('Informe pelo menos um título','err'); return; }
-  PitLane.addArticle({ authorId: USER.id, title, brief: brief || '', body: '', img: '', status: 'draft', category: document.getElementById('compCategory')?.value || '' });
+  Driver.addArticle({ authorId: USER.id, title, brief: brief || '', body: '', img: '', status: 'draft', category: document.getElementById('compCategory')?.value || '' });
   showToast('✓ Rascunho salvo!','ok');
   renderOverview(); renderArticles();
 }
@@ -205,7 +205,7 @@ function submitArticle() {
   const brief = document.getElementById('compBrief')?.value;
   if (!title) { showToast('Informe o título','err'); return; }
   if (!brief || brief.length < 50) { showToast('Descrição deve ter pelo menos 50 caracteres','err'); return; }
-  PitLane.addArticle({ authorId: USER.id, title, brief, body: '', img: '', status: 'sent', submittedAt: new Date().toISOString().split('T')[0], category: document.getElementById('compCategory')?.value || '' });
+  Driver.addArticle({ authorId: USER.id, title, brief, body: '', img: '', status: 'sent', submittedAt: new Date().toISOString().split('T')[0], category: document.getElementById('compCategory')?.value || '' });
   showToast('✓ Matéria enviada para a redação! Acompanhe o status em "Minhas Matérias".','ok');
   renderOverview(); renderCompose(); renderArticles();
   showSection('articles');
@@ -215,12 +215,12 @@ function submitArticle() {
 // Render Articles
 // ============================
 function renderArticles() {
-  const articles = PitLane.getArticlesByAuthor(USER.id).sort((a, b) => (b.publishedAt || b.submittedAt || '9999').localeCompare(a.publishedAt || a.submittedAt || '9999'));
+  const articles = Driver.getArticlesByAuthor(USER.id).sort((a, b) => (b.publishedAt || b.submittedAt || '9999').localeCompare(a.publishedAt || a.submittedAt || '9999'));
   const filterBtns = ['all','published','review','sent','draft'];
   document.getElementById('sec-articles').innerHTML = `
     <div class="dash-header"><h1>Minhas Matérias</h1></div>
     <div class="tabs" id="articleTabs">
-      ${filterBtns.map((f, i) => `<button class="tab ${i === 0 ? 'active' : ''}" onclick="filterArticles('${f}',this)">${f === 'all' ? 'Todas (' + articles.length + ')' : PitLane.getStatusLabel(f) + ' (' + articles.filter(a => a.status === f).length + ')'}</button>`).join('')}
+      ${filterBtns.map((f, i) => `<button class="tab ${i === 0 ? 'active' : ''}" onclick="filterArticles('${f}',this)">${f === 'all' ? 'Todas (' + articles.length + ')' : Driver.getStatusLabel(f) + ' (' + articles.filter(a => a.status === f).length + ')'}</button>`).join('')}
     </div>
     <div class="articles-list" id="articlesList">
       ${articles.map(a => `
@@ -230,9 +230,9 @@ function renderArticles() {
           </div>
           <div class="article-row-info">
             <div class="article-row-title">${a.title}</div>
-            <div class="article-row-meta">${PitLane.formatDate(a.publishedAt || a.submittedAt)} · ${a.views > 0 ? a.views.toLocaleString() + ' views' : a.brief ? a.brief.substring(0, 60) + '...' : ''}</div>
+            <div class="article-row-meta">${Driver.formatDate(a.publishedAt || a.submittedAt)} · ${a.views > 0 ? a.views.toLocaleString() + ' views' : a.brief ? a.brief.substring(0, 60) + '...' : ''}</div>
           </div>
-          <div class="article-row-status"><span class="badge ${PitLane.getStatusCSS(a.status)}">${PitLane.getStatusLabel(a.status)}</span></div>
+          <div class="article-row-status"><span class="badge ${Driver.getStatusCSS(a.status)}">${Driver.getStatusLabel(a.status)}</span></div>
           <div class="article-row-actions">
             ${a.status === 'draft' ? `<button class="btn-secondary" style="padding:6px 12px;font-size:10px" onclick="event.stopPropagation();editDraft('${a.id}')"><i data-lucide="pencil" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Editar</button>` : ''}
             ${a.status === 'approved' ? `<button class="btn-success" style="padding:6px 12px;font-size:10px" onclick="event.stopPropagation();approvePublish('${a.id}')"><i data-lucide="check-circle-2" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Aprovar</button>` : ''}
@@ -255,14 +255,14 @@ function filterArticles(status, btn) {
 
 function editDraft(id) { showToast('Abrindo rascunho para edição...'); showSection('compose'); }
 function approvePublish(id) {
-  PitLane.changeArticleStatus(id, 'published');
+  Driver.changeArticleStatus(id, 'published');
   showToast('✓ Matéria publicada!','ok');
   renderOverview(); renderArticles();
 }
 function previewArticle(id) {
-  const a = PitLane.getArticleById(id);
+  const a = Driver.getArticleById(id);
   if (!a) return;
-  showToast(a.title + ' — ' + PitLane.getStatusLabel(a.status));
+  showToast(a.title + ' — ' + Driver.getStatusLabel(a.status));
 }
 
 // ============================
@@ -295,7 +295,7 @@ function renderProfile() {
 }
 
 function saveProfile() {
-  const updated = PitLane.updateUser(USER.id, {
+  const updated = Driver.updateUser(USER.id, {
     name: document.getElementById('profName').value,
     category: document.getElementById('profCategory').value,
     number: document.getElementById('profNumber').value,
@@ -304,7 +304,7 @@ function saveProfile() {
 }
 
 function saveLandingPage() {
-  const updated = PitLane.updateUser(USER.id, {
+  const updated = Driver.updateUser(USER.id, {
     bio: document.getElementById('profBio').value,
     instagram: document.getElementById('profIG').value,
   });
@@ -315,7 +315,7 @@ function saveLandingPage() {
 // Render Media Kit
 // ============================
 function renderMediaKit() {
-  const stats = PitLane.getUserStats(USER.id);
+  const stats = Driver.getUserStats(USER.id);
   document.getElementById('sec-mediakit').innerHTML = `
     <div class="dash-header"><h1>Mídia Kit</h1></div>
     <div class="media-kit-card carbon-subtle">

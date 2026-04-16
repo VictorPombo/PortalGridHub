@@ -1,10 +1,10 @@
 /* =====================================================
-   PITLANE NEWS — SHARED STATE MANAGEMENT
+   DRIVER NEWS — SHARED STATE MANAGEMENT
    All pages use this as the single source of truth.
    Data is persisted to localStorage.
    ===================================================== */
 
-const PitLane = (() => {
+const Driver = (() => {
   const KEYS = {
     users: 'pl_users',
     articles: 'pl_articles',
@@ -92,10 +92,10 @@ const PitLane = (() => {
           publishedAt: a.published_at,
           submittedAt: a.submitted_at
         }));
-        console.log("[PitLane] Supabase Boot Completo:", __dbArticles.length, "Notícias locais carregadas.");
+        console.log("[Driver] Supabase Boot Completo:", __dbArticles.length, "Notícias locais carregadas.");
       }
     } catch (err) {
-      console.warn("[PitLane] Boot Supabase falhou, usando arrays vazios.", err);
+      console.warn("[Driver] Boot Supabase falhou, usando arrays vazios.", err);
       // Fallback para não quebrar a UI
       __dbUsers = SEED_USERS || [];
       __dbArticles = SEED_ARTICLES || [];

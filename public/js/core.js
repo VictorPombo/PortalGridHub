@@ -1,5 +1,5 @@
 /* =====================================================
-   PITLANE NEWS — CORE SHARED JS
+   DRIVER NEWS — CORE SHARED JS
    ===================================================== */
 
 /* ====== TOAST ====== */
@@ -136,7 +136,7 @@ function getNavHTML(activePage) {
           <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg>
         </div>
         <div class="logo-text">
-          <span class="logo-name">PitLane</span>
+          <span class="logo-name">Driver</span>
           <span class="logo-tag">News</span>
         </div>
       </a>
@@ -167,7 +167,7 @@ function getFooterHTML() {
     <div class="f-inner">
       <div class="f-grid">
         <div>
-          <div class="f-logo"><div class="dot"></div>PitLane News</div>
+          <div class="f-logo"><div class="dot"></div>Driver News</div>
           <p class="f-desc">O portal de referência em automobilismo no Brasil. Mídia digital para pilotos, equipes e categorias que buscam visibilidade e patrocinadores.</p>
           <div class="f-social">
             <div class="f-soc" onclick="shareContent('x')" title="Twitter/X">X</div>
@@ -198,12 +198,12 @@ function getFooterHTML() {
           <ul>
             <li><a href="politica.html">Política de Privacidade</a></li>
             <li><a href="termos.html">Termos de Uso</a></li>
-            <li><a href="mailto:contato@pitlanenews.com.br">Contato</a></li>
+            <li><a href="mailto:contato@drivernews.com.br">Contato</a></li>
           </ul>
         </div>
       </div>
       <div class="f-bottom">
-        <div class="f-copy">© 2026 PITLANE MEDIA · TODOS OS DIREITOS RESERVADOS</div>
+        <div class="f-copy">© 2026 DRIVER MEDIA · TODOS OS DIREITOS RESERVADOS</div>
         <div class="f-love">FEITO COM ❤ PARA QUEM AMA O ESPORTE</div>
       </div>
     </div>

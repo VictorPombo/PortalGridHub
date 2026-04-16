@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Panel — PitLane News</title>
+<title>Admin Panel — Driver News</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
 <link rel="stylesheet" href="css/core.css">
@@ -16,7 +16,7 @@
 
 <nav class="carbon-subtle" style="border-bottom-color:var(--acc)">
   <div class="nav-inner">
-    <a class="logo" href="index.html"><div class="logo-badge"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg></div><div class="logo-text"><span class="logo-name">PitLane</span><span class="logo-tag">Admin</span></div></a>
+    <a class="logo" href="index.html"><div class="logo-badge"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg></div><div class="logo-text"><span class="logo-name">Driver</span><span class="logo-tag">Admin</span></div></a>
     <ul class="nav-links"><li><a href="index.html">Ver Portal</a></li></ul>
     <div class="nav-right">
       <span class="admin-badge">ADMIN SUPREMO</span>
@@ -59,8 +59,8 @@
 // DASHBOARD
 // ============================
 function renderDashboard() {
-  const s = PitLane.getAdminStats();
-  const articles = PitLane.getArticles();
+  const s = Driver.getAdminStats();
+  const articles = Driver.getArticles();
   const recentPub = articles.filter(a => a.status === 'published').sort((a, b) => (b.publishedAt || '').localeCompare(a.publishedAt || '')).slice(0, 5);
 
   document.getElementById('adm-dashboard').innerHTML = `
@@ -82,7 +82,7 @@ function renderDashboard() {
       <div class="stat-card">
         <div class="stat-label">Matérias Pendentes</div>
         <div class="stat-value" style="color:var(--warning)">${s.pendingArticles}</div>
-        <div class="stat-detail">${PitLane.getArticlesByStatus('review').length} revisão · ${PitLane.getArticlesByStatus('sent').length} aguardando redação · ${PitLane.getArticlesByStatus('approved').length} aprovada</div>
+        <div class="stat-detail">${Driver.getArticlesByStatus('review').length} revisão · ${Driver.getArticlesByStatus('sent').length} aguardando redação · ${Driver.getArticlesByStatus('approved').length} aprovada</div>
       </div>
       <div class="stat-card">
         <div class="stat-label">Views Totais</div>
@@ -106,14 +106,14 @@ function renderDashboard() {
     <div style="font-family:var(--fu);font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin:32px 0 12px">Últimas Publicações</div>
     <div class="articles-list">
       ${recentPub.map(a => {
-        const author = PitLane.getUserById(a.authorId);
+        const author = Driver.getUserById(a.authorId);
         return `<div class="article-row">
           <div class="article-row-thumb" style="${a.img ? '' : 'background:var(--bg3)'}">${a.img ? `<img src="${a.img}" alt="">` : ''}</div>
           <div class="article-row-info">
             <div class="article-row-title">${a.title}</div>
-            <div class="article-row-meta">${author ? author.name : 'Desconhecido'} · ${PitLane.formatDate(a.publishedAt)} · ${a.views.toLocaleString()} views</div>
+            <div class="article-row-meta">${author ? author.name : 'Desconhecido'} · ${Driver.formatDate(a.publishedAt)} · ${a.views.toLocaleString()} views</div>
           </div>
-          <div class="article-row-status"><span class="badge ${PitLane.getStatusCSS(a.status)}">${PitLane.getStatusLabel(a.status)}</span></div>
+          <div class="article-row-status"><span class="badge ${Driver.getStatusCSS(a.status)}">${Driver.getStatusLabel(a.status)}</span></div>
         </div>`;
       }).join('')}
     </div>
@@ -124,7 +124,7 @@ function renderDashboard() {
 // QUEUE
 // ============================
 function renderQueue() {
-  const pending = PitLane.getArticles().filter(a => ['sent', 'review', 'approved'].includes(a.status))
+  const pending = Driver.getArticles().filter(a => ['sent', 'review', 'approved'].includes(a.status))
     .sort((a, b) => { const order = { sent: 0, review: 1, approved: 2 }; return order[a.status] - order[b.status]; });
 
   const statusFilters = ['all', 'sent', 'review', 'approved'];
@@ -134,25 +134,25 @@ function renderQueue() {
     <div class="tabs" id="queueTabs">
       ${statusFilters.map((f, i) => {
         const count = f === 'all' ? pending.length : pending.filter(a => a.status === f).length;
-        return `<button class="tab ${i === 0 ? 'active' : ''}" onclick="filterQueue('${f}',this)">${f === 'all' ? 'Todas' : PitLane.getStatusLabel(f)} (${count})</button>`;
+        return `<button class="tab ${i === 0 ? 'active' : ''}" onclick="filterQueue('${f}',this)">${f === 'all' ? 'Todas' : Driver.getStatusLabel(f)} (${count})</button>`;
       }).join('')}
     </div>
     <div id="queueList">
       ${pending.map(a => {
-        const author = PitLane.getUserById(a.authorId);
+        const author = Driver.getUserById(a.authorId);
         const borderColor = a.status === 'sent' ? 'var(--info)' : a.status === 'review' ? 'var(--warning)' : 'var(--success)';
         return `<div class="queue-card" data-status="${a.status}" style="border-left:3px solid ${borderColor}">
           <div class="queue-card-img" style="${a.img ? '' : 'background:var(--bg3)'}">${a.img ? `<img src="${a.img}" alt="">` : ''}</div>
           <div class="queue-card-body">
             <div class="queue-card-title">${a.title}</div>
             <div class="queue-card-meta">
-              <span class="badge ${PitLane.getStatusCSS(a.status)}" style="font-size:8px">${PitLane.getStatusLabel(a.status)}</span>
-              · ${a.submittedAt ? 'Enviada ' + PitLane.formatDate(a.submittedAt) : ''}
+              <span class="badge ${Driver.getStatusCSS(a.status)}" style="font-size:8px">${Driver.getStatusLabel(a.status)}</span>
+              · ${a.submittedAt ? 'Enviada ' + Driver.formatDate(a.submittedAt) : ''}
               ${a.brief ? ' · ' + a.brief.substring(0, 80) + '...' : ''}
             </div>
             ${author ? `<div class="queue-card-author">
               <div class="queue-card-av" style="background:${author.type === 'equipe' ? 'var(--gold)' : author.type === 'categoria' ? '#006e3a' : 'var(--acc)'};${author.type === 'equipe' ? 'color:#000' : 'color:#fff'}">${author.avatar}</div>
-              <div><div class="queue-card-author-name">${author.name}</div><div class="queue-card-author-plan">${PitLane.getPlanName(author.plan)}</div></div>
+              <div><div class="queue-card-author-name">${author.name}</div><div class="queue-card-author-plan">${Driver.getPlanName(author.plan)}</div></div>
             </div>` : ''}
           </div>
           <div class="queue-card-actions">
@@ -178,27 +178,27 @@ function filterQueue(status, btn) {
 }
 
 function processIA(id) {
-  PitLane.changeArticleStatus(id, 'review');
+  Driver.changeArticleStatus(id, 'review');
   showToast('<i data-lucide="bot" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i> Matéria processada pela redação! Pronta para revisão.', 'ok');
   renderQueue(); renderDashboard();
 }
 function approveArticle(id) {
-  PitLane.changeArticleStatus(id, 'approved');
+  Driver.changeArticleStatus(id, 'approved');
   showToast('<i data-lucide="check-circle-2" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Matéria aprovada! Aguardando publicação.', 'ok');
   renderQueue(); renderDashboard();
 }
 function publishArticle(id) {
-  PitLane.changeArticleStatus(id, 'published');
+  Driver.changeArticleStatus(id, 'published');
   showToast('<i data-lucide="globe" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Matéria publicada com sucesso!', 'ok');
   renderQueue(); renderDashboard();
 }
 function rejectArticle(id) {
-  PitLane.changeArticleStatus(id, 'adjust');
+  Driver.changeArticleStatus(id, 'adjust');
   showToast('<i data-lucide="corner-up-left" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Matéria devolvida para ajustes.', 'info');
   renderQueue(); renderDashboard();
 }
 function deleteArticle(id) {
-  PitLane.updateArticle(id, { status: 'draft' });
+  Driver.updateArticle(id, { status: 'draft' });
   showToast('Matéria removida da fila.', 'info');
   renderQueue(); renderDashboard();
 }
@@ -207,7 +207,7 @@ function deleteArticle(id) {
 // USERS
 // ============================
 function renderUsers() {
-  const users = PitLane.getUsers();
+  const users = Driver.getUsers();
   const types = ['all', 'piloto', 'equipe', 'categoria'];
 
   document.getElementById('adm-users').innerHTML = `
@@ -222,7 +222,7 @@ function renderUsers() {
       ${users.map(u => {
         const bgColor = u.type === 'equipe' ? 'var(--gold)' : u.type === 'categoria' ? '#006e3a' : 'var(--acc)';
         const txtColor = u.type === 'equipe' ? '#000' : '#fff';
-        const articles = PitLane.getArticlesByAuthor(u.id);
+        const articles = Driver.getArticlesByAuthor(u.id);
         const published = articles.filter(a => a.status === 'published').length;
         const badgeClass = u.type === 'piloto' ? 'piloto' : u.type === 'equipe' ? 'equipe' : 'categoria';
         return `<div class="user-row" data-type="${u.type}">
@@ -231,15 +231,15 @@ function renderUsers() {
             <div class="user-name">${u.name}</div>
             <div class="user-email">${u.email}</div>
           </div>
-          <div class="user-plan-col"><span class="badge ${badgeClass}">${PitLane.getPlanName(u.plan)}</span></div>
+          <div class="user-plan-col"><span class="badge ${badgeClass}">${Driver.getPlanName(u.plan)}</span></div>
           <div class="user-status-col">
             <span class="pulse-dot"></span>
             <span style="font-family:var(--fm);font-size:10px;color:var(--success);margin-left:4px">${u.status === 'active' ? 'Ativo' : 'Inativo'}</span>
           </div>
-          <div class="user-date-col">${PitLane.formatDate(u.createdAt)}</div>
+          <div class="user-date-col">${Driver.formatDate(u.createdAt)}</div>
           <div style="font-family:var(--fm);font-size:10px;color:var(--dim);width:80px;flex-shrink:0">${published} matéria(s)</div>
           <div class="user-actions-col">
-            <button class="btn-secondary" style="padding:4px 10px;font-size:9px" onclick="showToast('${u.name} · ${u.email} · ${PitLane.getPlanName(u.plan)} · ${published} matérias publicadas')">Ver</button>
+            <button class="btn-secondary" style="padding:4px 10px;font-size:9px" onclick="showToast('${u.name} · ${u.email} · ${Driver.getPlanName(u.plan)} · ${published} matérias publicadas')">Ver</button>
             <button class="btn-secondary" style="padding:4px 10px;font-size:9px;color:var(--acc)" onclick="toggleUserStatus('${u.id}')">${u.status === 'active' ? 'Bloquear' : 'Ativar'}</button>
           </div>
         </div>`;
@@ -257,9 +257,9 @@ function filterUsers(type, btn) {
 }
 
 function toggleUserStatus(id) {
-  const u = PitLane.getUserById(id);
+  const u = Driver.getUserById(id);
   const newStatus = u.status === 'active' ? 'inactive' : 'active';
-  PitLane.updateUser(id, { status: newStatus });
+  Driver.updateUser(id, { status: newStatus });
   showToast(newStatus === 'active' ? '✓ Usuário ativado' : 'Usuário bloqueado', newStatus === 'active' ? 'ok' : 'err');
   renderUsers(); renderDashboard();
 }
@@ -273,7 +273,7 @@ function renderRSS() {
       <h1>Notícias Automáticas</h1>
       <div class="dash-header-actions">
         <button class="btn-primary" onclick="showToast('<i data-lucide="refresh-cw" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Coletando notícias via RSS...','ok')"><i data-lucide="bot" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i> Executar Coleta</button>
-        <button class="btn-secondary" onclick="PitLane.reset();location.reload()"><i data-lucide="refresh-cw" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Resetar Dados</button>
+        <button class="btn-secondary" onclick="Driver.reset();location.reload()"><i data-lucide="refresh-cw" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Resetar Dados</button>
       </div>
     </div>
     <div class="card carbon-subtle" style="overflow:hidden">
@@ -314,7 +314,7 @@ function renderRSS() {
 
 function rssPublish(title, brief) {
   // Create as admin-authored editorial article, immediately published
-  PitLane.addArticle({
+  Driver.addArticle({
     authorId: 'admin',
     title: title,
     brief: brief,
@@ -332,7 +332,7 @@ function rssPublish(title, brief) {
 // SETTINGS
 // ============================
 function renderSettings() {
-  const s = PitLane.getSettings();
+  const s = Driver.getSettings();
   const rows = [
     { key: 'reviewRequired', label: 'Revisão Final Obrigatória', desc: 'Exigir revisão do admin antes de qualquer publicação.' },
     { key: 'autoCollect', label: 'Coleta Automática de Notícias', desc: 'Coletar notícias a cada 4 horas via RSS/APIs configuradas.' },
@@ -356,14 +356,14 @@ function renderSettings() {
       `).join('')}
     </div>
     <div style="margin-top:24px;display:flex;gap:10px">
-      <button class="btn-secondary" onclick="PitLane.reset();location.reload()"><i data-lucide="refresh-cw" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Resetar Todos os Dados (Demo)</button>
+      <button class="btn-secondary" onclick="Driver.reset();location.reload()"><i data-lucide="refresh-cw" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Resetar Todos os Dados (Demo)</button>
     </div>
   `;
 }
 
 function toggleSetting(key, el) {
-  const current = PitLane.getSettings()[key];
-  PitLane.updateSetting(key, !current);
+  const current = Driver.getSettings()[key];
+  Driver.updateSetting(key, !current);
   el.classList.toggle('on');
   showToast(!current ? '✓ ' + key + ' ativado' : key + ' desativado', !current ? 'ok' : 'info');
 }

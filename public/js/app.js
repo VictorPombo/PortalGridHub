@@ -1,7 +1,7 @@
 /* ══ DATA ══ */
 /* ── ARTIGOS ──
    Externos: redirecionam para URL real da fonte
-   Internos/patrocinados: conteúdo editorial PitLane baseado em fatos reais */
+   Internos/patrocinados: conteúdo editorial Driver baseado em fatos reais */
 let ARTICLES=[];
 
 /* ── DADOS REAIS F1 2026 ──
@@ -202,7 +202,7 @@ function subNext(step){
 /* ══ ARTICLE MODAL ══ */
 function openArticle(id){
   const a=ARTICLES.find(x=>x.id===id);if(!a)return;
-  document.getElementById('artBreadcrumb').textContent='PITLANE NEWS · '+a.cat.toUpperCase();
+  document.getElementById('artBreadcrumb').textContent='DRIVER NEWS · '+a.cat.toUpperCase();
   document.getElementById('artImg').src=a.img;
   const b=document.getElementById('artBadge');b.className='badge '+a.badge;b.textContent=a.badge.replace('b-','').toUpperCase();
   document.getElementById('artKicker').textContent=a.kicker;
@@ -219,7 +219,7 @@ function openArticle(id){
     document.getElementById('artAiContent').innerHTML=a.aiAnalysis;
     
     funnelBox.classList.remove('hide');
-    document.getElementById('artAiFunnelMsg').innerHTML="<b>" + a.author + " / PitLane AI Engine</b><br>Deseja converter a sua própria visibilidade esportiva em caixa real? Atraia B2B e patrocínios de peso rodando nossa ferramenta em suas mídias.";
+    document.getElementById('artAiFunnelMsg').innerHTML="<b>" + a.author + " / Driver AI Engine</b><br>Deseja converter a sua própria visibilidade esportiva em caixa real? Atraia B2B e patrocínios de peso rodando nossa ferramenta em suas mídias.";
     document.getElementById('artAiSourceLink').href = a.originalLink || '#';
   } else {
     aiBox.classList.add('hide');
@@ -250,7 +250,7 @@ function renderSearch(q){
   w.innerHTML=r.map(a=>`<div class="sr-item" onclick="closeOverlay('searchOverlay');openArticle(${a.id})">
     <img class="sr-img" src="${a.img}" alt="">
     <div><div class="sr-title">${a.title}</div>
-    <div class="sr-meta"><span class="badge ${a.badge}" style="font-size:8px">${a.cat.toUpperCase()}</span><span>${a.author}</span>${a.pago?'<span class="tag-pago" style="font-size:8px;padding:1px 6px"><i class="fi fi-rr-star"></i> Patrocinado</span>':'<span class="tag-int" style="font-size:8px;padding:1px 6px"><i class="fi fi-rr-pencil"></i> PitLane</span>'}</div></div>
+    <div class="sr-meta"><span class="badge ${a.badge}" style="font-size:8px">${a.cat.toUpperCase()}</span><span>${a.author}</span>${a.pago?'<span class="tag-pago" style="font-size:8px;padding:1px 6px"><i class="fi fi-rr-star"></i> Patrocinado</span>':'<span class="tag-int" style="font-size:8px;padding:1px 6px"><i class="fi fi-rr-pencil"></i> Driver</span>'}</div></div>
   </div>`).join('');
 }
 document.getElementById('searchField').addEventListener('input',e=>renderSearch(e.target.value));
@@ -416,11 +416,11 @@ let currentCat='all',currentType='all';
 const HERO_DATA={
   f1:{
     img:'https://upload.wikimedia.org/wikipedia/commons/3/3f/FIA_F1_Austria_2023_Nr._44_%282%29.jpg',
-    typeCls:'int', typeIcon:'fi fi-rr-pencil', typeLabel:'CONTEÚDO PITLANE',
+    typeCls:'int', typeIcon:'fi fi-rr-pencil', typeLabel:'CONTEÚDO DRIVER',
     badge:'F1 · TEMPORADA 2026', badgeCls:'b-f1',
     title:'Mercedes Surpreende em 2026 e Retoma o Controle do Mundial de F1',
     excerpt:'A flecha de prata domina o campeonato de construtores após 3 GPs — Austrália, China e Japão — provando que decodificou perfeitamente o novo regulamento híbrido.',
-    meta:'Redação PitLane · 10 Abr 2026 · Fonte: formula1.com · GPFans · ESPN',
+    meta:'Redação Driver · 10 Abr 2026 · Fonte: formula1.com · GPFans · ESPN',
     articleId:0,
     sides:[
       {img:'https://upload.wikimedia.org/wikipedia/commons/9/9f/FIA_F1_Austria_2023_Nr._55_%281%29.jpg',typeCls:'ext',typeLabel:'SKY SPORTS F1 ↗',badge:'F1 · FERRARI',badgeCls:'b-f1',title:'Ferrari Prepara Pacote Agressivo de Atualizações para o GP de Miami',link:'https://www.skysports.com/f1'},
@@ -429,11 +429,11 @@ const HERO_DATA={
   },
   motogp:{
     img:'https://upload.wikimedia.org/wikipedia/commons/d/dc/MotoGP_2025_Malaysian_Grand_Prix_-_Ducati_Lenovo_-_Francesco_Bagnaia.jpg',
-    typeCls:'int', typeIcon:'fi fi-rr-pencil', typeLabel:'CONTEÚDO PITLANE',
+    typeCls:'int', typeIcon:'fi fi-rr-pencil', typeLabel:'CONTEÚDO DRIVER',
     badge:'MOTOGP · TEMPORADA 2026', badgeCls:'b-motogp',
     title:'Bagnaia Domina Início de Temporada com 81 Pontos e Duas Vitórias',
     excerpt:'Francesco Bagnaia (Ducati Lenovo) lidera o campeonato após 3 GPs — Tailândia, Argentina e Américas — ameaçado de perto por Marc Márquez na Gresini.',
-    meta:'Redação PitLane · 13 Abr 2026 · Fonte: motogp.com · MotoSport',
+    meta:'Redação Driver · 13 Abr 2026 · Fonte: motogp.com · MotoSport',
     articleId:0,
     sides:[
       {img:'https://upload.wikimedia.org/wikipedia/commons/a/a1/MotoGP_2025_Malaysian_Grand_Prix_-_Honda_HRC_Castrol_-_Luca_Marini.jpg',typeCls:'ext',typeLabel:'MOTOGP.COM ↗',badge:'MOTOGP · HRC',badgeCls:'b-motogp',title:'Honda Planeja Amplo Pacote de Atualizações Após Início Difícil',link:'https://www.motogp.com'},
@@ -442,11 +442,11 @@ const HERO_DATA={
   },
   wec:{
     img:'https://upload.wikimedia.org/wikipedia/commons/a/a5/2024_6_Hours_of_Spa-Francorchamps_Porsche_Penske_Motorsport_Porsche_963_No.5_%28DSC02380%29.jpg',
-    typeCls:'int', typeIcon:'fi fi-rr-pencil', typeLabel:'CONTEÚDO PITLANE',
+    typeCls:'int', typeIcon:'fi fi-rr-pencil', typeLabel:'CONTEÚDO DRIVER',
     badge:'WEC · SUPERTEMPORADA', badgeCls:'b-wec',
     title:'Toyota vs Porsche: A Batalha Mais Acirrada da Era Hypercar',
     excerpt:'Com Toyota e Porsche separados por apenas 1 ponto na classificação de fabricantes, a temporada 2025-26 do WEC é a mais emocionante da história.',
-    meta:'Redação PitLane · 13 Abr 2026 · Fonte: fiawec.com · Sportscar365',
+    meta:'Redação Driver · 13 Abr 2026 · Fonte: fiawec.com · Sportscar365',
     articleId:0,
     sides:[
       {img:'https://upload.wikimedia.org/wikipedia/commons/9/98/2024_24_Hours_of_Le_Mans_%2854093434577%29.jpg',typeCls:'ext',typeLabel:'SPORTSCAR365 ↗',badge:'WEC · LE MANS',badgeCls:'b-wec',title:'24 Horas de Le Mans 2026: Grid Recorde com 62 Carros Confirmados',link:'https://sportscar365.com'},
@@ -455,11 +455,11 @@ const HERO_DATA={
   },
   nascar:{
     img:'https://upload.wikimedia.org/wikipedia/commons/0/07/Kyle_Larson_5_Las_Vegas_2025.jpg',
-    typeCls:'int', typeIcon:'fi fi-rr-pencil', typeLabel:'CONTEÚDO PITLANE',
+    typeCls:'int', typeIcon:'fi fi-rr-pencil', typeLabel:'CONTEÚDO DRIVER',
     badge:'NASCAR · CUP SERIES 2026', badgeCls:'b-nascar',
     title:'Kyle Larson Abre 2026 com Daytona 500: Hendrick Motorsports Avassalador',
     excerpt:'Hendrick Motorsports coloca 3 pilotos no top 3 e domina o início da temporada 2026 da NASCAR Cup Series com Larson, Elliott e Byron.',
-    meta:'Redação PitLane · 13 Abr 2026 · Fonte: nascar.com · Jayski',
+    meta:'Redação Driver · 13 Abr 2026 · Fonte: nascar.com · Jayski',
     articleId:0,
     sides:[
       {img:'https://upload.wikimedia.org/wikipedia/commons/0/07/Kyle_Larson_5_Las_Vegas_2025.jpg',typeCls:'ext',typeLabel:'NASCAR.COM ↗',badge:'NASCAR · HENDRICK',badgeCls:'b-nascar',title:'Elliott e Byron Completam Domínio da Hendrick no Início de 2026',link:'https://www.nascar.com'},
@@ -468,11 +468,11 @@ const HERO_DATA={
   },
   wrc:{
     img:'https://upload.wikimedia.org/wikipedia/commons/a/a5/2024_6_Hours_of_Spa-Francorchamps_Porsche_Penske_Motorsport_Porsche_963_No.5_%28DSC02380%29.jpg',
-    typeCls:'int', typeIcon:'fi fi-rr-pencil', typeLabel:'CONTEÚDO PITLANE',
+    typeCls:'int', typeIcon:'fi fi-rr-pencil', typeLabel:'CONTEÚDO DRIVER',
     badge:'WRC · TEMPORADA 2026', badgeCls:'b-wrc',
     title:'Ogier Lidera WRC 2026 com Toyota Invicta em Monte-Carlo',
     excerpt:'Sébastien Ogier conquista a primeira posição no campeonato após Rally de Monte-Carlo, Rally da Suécia e Safari Rally.',
-    meta:'Redação PitLane · 13 Abr 2026 · Fonte: wrc.com · FIA',
+    meta:'Redação Driver · 13 Abr 2026 · Fonte: wrc.com · FIA',
     articleId:0,
     sides:[
       {img:'https://upload.wikimedia.org/wikipedia/commons/a/a5/2024_6_Hours_of_Spa-Francorchamps_Porsche_Penske_Motorsport_Porsche_963_No.5_%28DSC02380%29.jpg',typeCls:'ext',typeLabel:'WRC.COM ↗',badge:'WRC · HYUNDAI',badgeCls:'b-wrc',title:'Neuville Pressiona Ogier na Luta Pelo Título',link:'https://www.wrc.com'},
@@ -676,11 +676,11 @@ document.addEventListener('keydown',e=>{
 
 /* ══ DYNAMIC HERO PIPELINE ══ */
 async function loadDynamicHeroAll() {
-  if(!window.PitLane || !window.PitLane.Live) return;
+  if(!window.Driver || !window.Driver.Live) return;
   try {
-    const f1News = await PitLane.Live.getNewsByCategory('f1');
-    const motogpNews = await PitLane.Live.getNewsByCategory('motogp');
-    const stockNews = await PitLane.Live.getNewsByCategory('stock-car');
+    const f1News = await Driver.Live.getNewsByCategory('f1');
+    const motogpNews = await Driver.Live.getNewsByCategory('motogp');
+    const stockNews = await Driver.Live.getNewsByCategory('stock-car');
 
     if(f1News.length && motogpNews.length && stockNews.length) {
       const m = f1News[0];
@@ -710,9 +710,9 @@ async function loadDynamicHeroAll() {
 
 /* ══ DYNAMIC LIVE NEWS PIPELINE ══ */
 document.addEventListener('DOMContentLoaded', async () => {
-  if (window.PitLane && typeof window.PitLane.bootSupabase === 'function') {
+  if (window.Driver && typeof window.Driver.bootSupabase === 'function') {
     try {
-      await window.PitLane.bootSupabase();
+      await window.Driver.bootSupabase();
     } catch(e) { console.error('Supabase boot fail', e); }
   }
   await loadLiveNews();
@@ -830,7 +830,7 @@ function renderHeroGrid(catFilter = 'all') {
       badge: 'b-f4-brasil',
       title: 'Rafael Moura Vence na F4 Brasil e Atrai Interesse de Equipes Europeias',
       link: '#',
-      author: 'PitLane',
+      author: 'Driver',
       date: 'há 2h',
       img: 'img/demo-news-img.png',
       isReal: false
@@ -1219,7 +1219,7 @@ function renderHero(rssFeed, saasFeed) {
   const buildMain = (a) => {
     if(!a) return '';
     const click = a.isReal ? `extLink('${a.link}')` : `openArticle('${a.id}')`;
-    const typLabel = a.isReal ? `<div class="hero-type ext"><i class="fi fi-rr-link"></i> HUB ORIGINAL</div>` : `<div class="hero-type int"><i class="fi fi-rr-pencil"></i> PITLANE NEWS</div>`;
+    const typLabel = a.isReal ? `<div class="hero-type ext"><i class="fi fi-rr-link"></i> HUB ORIGINAL</div>` : `<div class="hero-type int"><i class="fi fi-rr-pencil"></i> DRIVER NEWS</div>`;
     const exc = a.body ? a.body.replace(/<[^>]*>?/gm, '').substring(0, 110) + '...' : '';
     return `
       <img src="${a.img}" alt="" loading="lazy" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0;">
@@ -1237,7 +1237,7 @@ function renderHero(rssFeed, saasFeed) {
   const buildSide = (a, isVip) => {
     if(!a) return '';
     const click = a.isReal ? `extLink('${a.link}')` : `openArticle('${a.id}')`;
-    const typLabel = isVip ? `<div class="hero-type int" style="color:#d9a05b;border-color:#d9a05b"><i class="fi fi-rr-member-vip"></i> PILOTO VERIFICADO</div>` : (a.isReal ? `<div class="hero-type ext"><i class="fi fi-rr-link"></i> CURADORIA</div>` : `<div class="hero-type int"><i class="fi fi-rr-pencil"></i> PITLANE NEWS</div>`);
+    const typLabel = isVip ? `<div class="hero-type int" style="color:#d9a05b;border-color:#d9a05b"><i class="fi fi-rr-member-vip"></i> PILOTO VERIFICADO</div>` : (a.isReal ? `<div class="hero-type ext"><i class="fi fi-rr-link"></i> CURADORIA</div>` : `<div class="hero-type int"><i class="fi fi-rr-pencil"></i> DRIVER NEWS</div>`);
     
     return `
       <img src="${a.img}" alt="" loading="lazy" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0;">

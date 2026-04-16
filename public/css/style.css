@@ -358,7 +358,7 @@ nav{position:sticky;top:0;z-index:500;background:rgba(3,3,10,.92);backdrop-filte
    NEWSLETTER
 ═══════════════════════════════════════════ */
 .nl-section{background:var(--bg1);border-top:1px solid var(--brd);border-bottom:1px solid var(--brd);padding:60px 28px;margin:48px 0;position:relative;overflow:hidden}
-.nl-section::before{content:'PITLANE';position:absolute;right:-20px;top:50%;transform:translateY(-50%);font-family:var(--fd);font-size:200px;letter-spacing:8px;color:rgba(255,255,255,.012);pointer-events:none}
+.nl-section::before{content:'DRIVER';position:absolute;right:-20px;top:50%;transform:translateY(-50%);font-family:var(--fd);font-size:200px;letter-spacing:8px;color:rgba(255,255,255,.012);pointer-events:none}
 .nl-section::after{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:var(--acc)}
 .nl-inner{max-width:1680px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:40px;position:relative;z-index:1;flex-wrap:wrap}
 .nl-eye{font-family:var(--fm);font-size:10px;color:var(--acc);letter-spacing:3px;text-transform:uppercase;margin-bottom:8px}

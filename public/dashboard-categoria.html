@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Painel da Categoria — PitLane News</title>
+<title>Painel da Categoria — Driver News</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
 <link rel="stylesheet" href="css/core.css">
@@ -15,7 +15,7 @@
 <div class="toast-wrap" id="toastWrap"></div>
 <nav class="carbon-subtle">
   <div class="nav-inner">
-    <a class="logo" href="index.html"><div class="logo-badge"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg></div><div class="logo-text"><span class="logo-name">PitLane</span><span class="logo-tag">News</span></div></a>
+    <a class="logo" href="index.html"><div class="logo-badge"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg></div><div class="logo-text"><span class="logo-name">Driver</span><span class="logo-tag">News</span></div></a>
     <ul class="nav-links"><li><a href="index.html">Portal</a></li></ul>
     <div class="nav-right" id="navUserInfo"></div>
   </div>
@@ -31,7 +31,7 @@
       <li><a onclick="catNav('teams',this)"><span class="nav-icon"><i data-lucide="car" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Equipes</a></li>
       <div class="dash-nav-sep"></div>
       <li><a onclick="catNav('profile',this)"><span class="nav-icon"><i data-lucide="settings" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Configurações</a></li>
-      <li><a href="#" onclick="PitLane.logout();window.location='cadastro.html'"><span class="nav-icon"><i data-lucide="log-out" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Sair</a></li>
+      <li><a href="#" onclick="Driver.logout();window.location='cadastro.html'"><span class="nav-icon"><i data-lucide="log-out" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Sair</a></li>
     </ul>
   </aside>
   <main class="dash-main">
@@ -47,12 +47,12 @@
 <script src="js/core.js"></script>
 <script src="js/state.js"></script>
 <script>
-if (!PitLane.isLoggedIn()) { window.location = 'cadastro.html'; }
-const USER = PitLane.getCurrentUser();
+if (!Driver.isLoggedIn()) { window.location = 'cadastro.html'; }
+const USER = Driver.getCurrentUser();
 if (!USER) { window.location = 'cadastro.html'; }
 
 document.getElementById('navUserInfo').innerHTML = `<span style="font-family:var(--fm);font-size:10px;color:var(--dim)">${USER.name}</span><div style="width:32px;height:32px;border-radius:50%;background:#006e3a;display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:11px;font-weight:700;color:#fff">${USER.avatar}</div>`;
-document.getElementById('sidebarProfile').innerHTML = `<div class="dash-avatar" style="background:#006e3a">${USER.avatar}</div><div class="dash-user-name">${USER.name}</div><div class="dash-user-plan" style="color:var(--gold)">${PitLane.getPlanName(USER.plan)}</div><div class="dash-plan-badge" style="border-color:var(--gold);color:var(--gold)">CATEGORIA</div>`;
+document.getElementById('sidebarProfile').innerHTML = `<div class="dash-avatar" style="background:#006e3a">${USER.avatar}</div><div class="dash-user-name">${USER.name}</div><div class="dash-user-plan" style="color:var(--gold)">${Driver.getPlanName(USER.plan)}</div><div class="dash-plan-badge" style="border-color:var(--gold);color:var(--gold)">CATEGORIA</div>`;
 
 const CALENDAR = [
   { round: 1, track: 'Goiânia', city: 'Goiânia/GO', date: '2026-02-22', done: true },
@@ -68,16 +68,16 @@ const CALENDAR = [
 ];
 
 function renderOverview() {
-  const stats = PitLane.getUserStats(USER.id);
-  const teams = PitLane.getUsersByType('equipe');
-  const pilots = PitLane.getUsersByType('piloto');
+  const stats = Driver.getUserStats(USER.id);
+  const teams = Driver.getUsersByType('equipe');
+  const pilots = Driver.getUsersByType('piloto');
   const usagePct = stats.limit > 0 ? ((stats.limit - stats.remaining) / stats.limit * 100) : 0;
   const nextRace = CALENDAR.find(r => !r.done);
 
   document.getElementById('cat-overview').innerHTML = `
     <div class="dash-header"><h1>Visão Geral</h1><div class="dash-header-actions"><button class="btn-primary" onclick="catNav('compose')"><i class="fi fi-rr-pencil"></i> Nova Matéria</button></div></div>
     <div class="stat-grid">
-      <div class="stat-card accent" style="--acc:var(--gold)"><div class="stat-label">Matérias Restantes</div><div class="stat-value" style="color:var(--gold)">${stats.remaining}</div><div class="stat-detail">de ${stats.limit} · ${PitLane.getPlanName(USER.plan)}</div><div class="rpm-bar" style="margin-top:10px"><div class="rpm-bar-fill" style="width:${usagePct}%"></div></div></div>
+      <div class="stat-card accent" style="--acc:var(--gold)"><div class="stat-label">Matérias Restantes</div><div class="stat-value" style="color:var(--gold)">${stats.remaining}</div><div class="stat-detail">de ${stats.limit} · ${Driver.getPlanName(USER.plan)}</div><div class="rpm-bar" style="margin-top:10px"><div class="rpm-bar-fill" style="width:${usagePct}%"></div></div></div>
       <div class="stat-card"><div class="stat-label">Equipes</div><div class="stat-value">${teams.length}</div><div class="stat-detail">inscritas</div></div>
       <div class="stat-card"><div class="stat-label">Pilotos</div><div class="stat-value">${pilots.length}</div><div class="stat-detail">registrados</div></div>
       <div class="stat-card"><div class="stat-label">Views</div><div class="stat-value">${stats.totalViewsFormatted}</div><div class="stat-detail">acumulado</div></div>
@@ -88,14 +88,14 @@ function renderOverview() {
       ${CALENDAR.filter(r=>!r.done).slice(0,3).map((r,i)=>`
         <div class="article-row" ${i===0?'style="border-left:3px solid var(--acc)"':''}>
           <div style="font-family:var(--fd);font-size:28px;width:40px;text-align:center;flex-shrink:0;color:${i===0?'var(--acc)':'var(--muted)'}">${r.round}</div>
-          <div class="article-row-info"><div class="article-row-title">Etapa ${r.round} — ${r.track}</div><div class="article-row-meta">${PitLane.formatDate(r.date)} · ${r.city}</div></div>
+          <div class="article-row-info"><div class="article-row-title">Etapa ${r.round} — ${r.track}</div><div class="article-row-meta">${Driver.formatDate(r.date)} · ${r.city}</div></div>
           ${i===0?'<div class="article-row-status"><span class="badge status-sent">Próxima</span></div>':''}
         </div>`).join('')}
     </div>` : ''}`;
 }
 
 function renderCompose() {
-  const stats = PitLane.getUserStats(USER.id);
+  const stats = Driver.getUserStats(USER.id);
   document.getElementById('cat-compose').innerHTML = `
     <div class="dash-header"><h1>Nova Matéria</h1></div>
     ${stats.remaining<=0?'<div class="card" style="padding:32px;text-align:center;border-color:var(--acc)">Limite atingido.</div>':`
@@ -104,27 +104,27 @@ function renderCompose() {
     <div class="composer-footer"><button class="btn-secondary" onclick="saveDraft()"><i data-lucide="save" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Rascunho</button><button class="btn-primary" onclick="submitArticle()"><i data-lucide="arrow-right" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Enviar</button></div></div>`}`;
 }
 
-function saveDraft(){const t=document.getElementById('compTitle')?.value;if(!t){showToast('Título obrigatório','err');return;}PitLane.addArticle({authorId:USER.id,title:t,brief:document.getElementById('compBrief')?.value||'',body:'',img:'',status:'draft',category:USER.category||''});showToast('✓ Rascunho salvo!','ok');renderOverview();renderArticles();}
-function submitArticle(){const t=document.getElementById('compTitle')?.value,b=document.getElementById('compBrief')?.value;if(!t){showToast('Título','err');return;}if(!b||b.length<50){showToast('Mín. 50 chars','err');return;}PitLane.addArticle({authorId:USER.id,title:t,brief:b,body:'',img:'',status:'sent',submittedAt:new Date().toISOString().split('T')[0],category:USER.category||''});showToast('✓ Enviada!','ok');renderOverview();renderCompose();renderArticles();catNav('articles');}
+function saveDraft(){const t=document.getElementById('compTitle')?.value;if(!t){showToast('Título obrigatório','err');return;}Driver.addArticle({authorId:USER.id,title:t,brief:document.getElementById('compBrief')?.value||'',body:'',img:'',status:'draft',category:USER.category||''});showToast('✓ Rascunho salvo!','ok');renderOverview();renderArticles();}
+function submitArticle(){const t=document.getElementById('compTitle')?.value,b=document.getElementById('compBrief')?.value;if(!t){showToast('Título','err');return;}if(!b||b.length<50){showToast('Mín. 50 chars','err');return;}Driver.addArticle({authorId:USER.id,title:t,brief:b,body:'',img:'',status:'sent',submittedAt:new Date().toISOString().split('T')[0],category:USER.category||''});showToast('✓ Enviada!','ok');renderOverview();renderCompose();renderArticles();catNav('articles');}
 
 function renderArticles() {
-  const articles = PitLane.getArticlesByAuthor(USER.id).sort((a,b)=>(b.publishedAt||b.submittedAt||'9999').localeCompare(a.publishedAt||a.submittedAt||'9999'));
-  document.getElementById('cat-articles').innerHTML = `<div class="dash-header"><h1>Matérias da Categoria</h1></div><div class="articles-list">${articles.map(a=>`<div class="article-row"><div class="article-row-thumb" style="${a.img?'':'background:var(--bg3)'}">${a.img?`<img src="${a.img}" alt="">`:''}></div><div class="article-row-info"><div class="article-row-title">${a.title}</div><div class="article-row-meta">${PitLane.formatDate(a.publishedAt||a.submittedAt)} · ${a.views>0?a.views.toLocaleString()+' views':''}</div></div><div class="article-row-status"><span class="badge ${PitLane.getStatusCSS(a.status)}">${PitLane.getStatusLabel(a.status)}</span></div></div>`).join('')}${articles.length===0?'<div style="padding:24px;text-align:center;color:var(--muted)">Nenhuma matéria.</div>':''}</div>`;
+  const articles = Driver.getArticlesByAuthor(USER.id).sort((a,b)=>(b.publishedAt||b.submittedAt||'9999').localeCompare(a.publishedAt||a.submittedAt||'9999'));
+  document.getElementById('cat-articles').innerHTML = `<div class="dash-header"><h1>Matérias da Categoria</h1></div><div class="articles-list">${articles.map(a=>`<div class="article-row"><div class="article-row-thumb" style="${a.img?'':'background:var(--bg3)'}">${a.img?`<img src="${a.img}" alt="">`:''}></div><div class="article-row-info"><div class="article-row-title">${a.title}</div><div class="article-row-meta">${Driver.formatDate(a.publishedAt||a.submittedAt)} · ${a.views>0?a.views.toLocaleString()+' views':''}</div></div><div class="article-row-status"><span class="badge ${Driver.getStatusCSS(a.status)}">${Driver.getStatusLabel(a.status)}</span></div></div>`).join('')}${articles.length===0?'<div style="padding:24px;text-align:center;color:var(--muted)">Nenhuma matéria.</div>':''}</div>`;
 }
 
 function renderCalendar() {
-  document.getElementById('cat-calendar').innerHTML = `<div class="dash-header"><h1>Calendário 2026</h1></div><div class="card carbon-subtle" style="overflow:hidden">${CALENDAR.map(r=>`<div class="article-row" style="${r.done?'opacity:.5;':''}${!r.done&&CALENDAR.filter(x=>!x.done)[0]===r?'border-left:3px solid var(--acc)':''}"><div style="font-family:var(--fd);font-size:28px;width:40px;text-align:center;flex-shrink:0;color:${r.done?'var(--muted)':CALENDAR.filter(x=>!x.done)[0]===r?'var(--acc)':'var(--dim)'}">${r.round}</div><div class="article-row-info"><div class="article-row-title">${r.track} · ${r.city}</div><div class="article-row-meta">${PitLane.formatDate(r.date)}</div></div><div class="article-row-status">${r.done?'<span class="badge status-approved">✓</span>':CALENDAR.filter(x=>!x.done)[0]===r?'<span class="badge status-review">Próxima</span>':''}</div></div>`).join('')}</div>`;
+  document.getElementById('cat-calendar').innerHTML = `<div class="dash-header"><h1>Calendário 2026</h1></div><div class="card carbon-subtle" style="overflow:hidden">${CALENDAR.map(r=>`<div class="article-row" style="${r.done?'opacity:.5;':''}${!r.done&&CALENDAR.filter(x=>!x.done)[0]===r?'border-left:3px solid var(--acc)':''}"><div style="font-family:var(--fd);font-size:28px;width:40px;text-align:center;flex-shrink:0;color:${r.done?'var(--muted)':CALENDAR.filter(x=>!x.done)[0]===r?'var(--acc)':'var(--dim)'}">${r.round}</div><div class="article-row-info"><div class="article-row-title">${r.track} · ${r.city}</div><div class="article-row-meta">${Driver.formatDate(r.date)}</div></div><div class="article-row-status">${r.done?'<span class="badge status-approved">✓</span>':CALENDAR.filter(x=>!x.done)[0]===r?'<span class="badge status-review">Próxima</span>':''}</div></div>`).join('')}</div>`;
 }
 
 function renderTeams() {
-  const teams = PitLane.getUsersByType('equipe');
-  document.getElementById('cat-teams').innerHTML = `<div class="dash-header"><h1>Equipes Inscritas</h1></div>${teams.map(t=>`<div class="user-row"><div class="user-avatar-sm" style="background:var(--gold);color:#000">${t.avatar}</div><div class="user-info"><div class="user-name">${t.name}</div><div class="user-email">${(t.pilots||[]).length} pilotos · ${PitLane.getPlanName(t.plan)}</div></div><div class="user-status-col"><span class="pulse-dot"></span> ${t.status==='active'?'Ativo':'Inativo'}</div></div>`).join('')}`;
+  const teams = Driver.getUsersByType('equipe');
+  document.getElementById('cat-teams').innerHTML = `<div class="dash-header"><h1>Equipes Inscritas</h1></div>${teams.map(t=>`<div class="user-row"><div class="user-avatar-sm" style="background:var(--gold);color:#000">${t.avatar}</div><div class="user-info"><div class="user-name">${t.name}</div><div class="user-email">${(t.pilots||[]).length} pilotos · ${Driver.getPlanName(t.plan)}</div></div><div class="user-status-col"><span class="pulse-dot"></span> ${t.status==='active'?'Ativo':'Inativo'}</div></div>`).join('')}`;
 }
 
 function renderProfile() {
   document.getElementById('cat-profile').innerHTML = `<div class="dash-header"><h1>Configurações</h1></div><div class="profile-section" style="max-width:600px"><h3>Dados da Categoria</h3><div class="form-field"><label class="form-label">Nome</label><input class="form-input" id="profName" value="${USER.name}"></div><div class="form-field"><label class="form-label">Descrição</label><textarea class="form-textarea" id="profBio">${USER.bio||''}</textarea></div><button class="btn-primary" onclick="saveCatProfile()">Salvar</button></div>`;
 }
-function saveCatProfile(){PitLane.updateUser(USER.id,{name:document.getElementById('profName').value,bio:document.getElementById('profBio').value});showToast('✓ Salvo!','ok');}
+function saveCatProfile(){Driver.updateUser(USER.id,{name:document.getElementById('profName').value,bio:document.getElementById('profBio').value});showToast('✓ Salvo!','ok');}
 
 function catNav(n,btn){['overview','compose','articles','calendar','teams','profile'].forEach(s=>{document.getElementById('cat-'+s).style.display=s===n?'block':'none'});document.querySelectorAll('.dash-nav a').forEach(a=>a.classList.remove('active'));if(btn)btn.classList.add('active');window.scrollTo({top:0});if(n==='overview')renderOverview();if(n==='compose')renderCompose();if(n==='articles')renderArticles();if(n==='calendar')renderCalendar();if(n==='teams')renderTeams();if(n==='profile')renderProfile();}
 

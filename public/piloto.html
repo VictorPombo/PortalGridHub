@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Piloto — PitLane News</title>
-<meta name="description" content="Perfil profissional de piloto na PitLane News. Conheça a trajetória e patrocine.">
+<title>Piloto — Driver News</title>
+<meta name="description" content="Perfil profissional de piloto na Driver News. Conheça a trajetória e patrocine.">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
 <link rel="stylesheet" href="css/core.css">
@@ -22,7 +22,7 @@
   <div class="nav-inner">
     <a class="logo" href="index.html">
       <div class="logo-badge"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg></div>
-      <div class="logo-text"><span class="logo-name">PitLane</span><span class="logo-tag">News</span></div>
+      <div class="logo-text"><span class="logo-name">Driver</span><span class="logo-tag">News</span></div>
     </a>
     <ul class="nav-links">
       <li><a href="index.html">Início</a></li>
@@ -42,11 +42,11 @@
 <footer class="carbon-subtle">
   <div class="f-inner">
     <div class="f-grid">
-      <div><div class="f-logo"><div class="dot"></div>PitLane News</div><p class="f-desc">Mídia digital de automobilismo. Plataforma profissional para pilotos, equipes e categorias.</p></div>
+      <div><div class="f-logo"><div class="dot"></div>Driver News</div><p class="f-desc">Mídia digital de automobilismo. Plataforma profissional para pilotos, equipes e categorias.</p></div>
       <div class="f-col"><h4>Plataforma</h4><ul><li><a href="index.html?view=plans">Planos</a></li><li><a href="cadastro.html">Cadastro</a></li></ul></div>
       <div class="f-col"><h4>Legal</h4><ul><li><a href="politica.html">Privacidade</a></li><li><a href="termos.html">Termos</a></li></ul></div>
     </div>
-    <div class="f-bottom"><div class="f-copy">© 2026 PITLANE MEDIA</div><div class="f-love">FEITO COM ❤ PARA QUEM AMA O ESPORTE</div></div>
+    <div class="f-bottom"><div class="f-copy">© 2026 DRIVER MEDIA</div><div class="f-love">FEITO COM ❤ PARA QUEM AMA O ESPORTE</div></div>
   </div>
 </footer>
 
@@ -56,7 +56,7 @@
 // Get pilot ID from URL or default to u1 (Rafael Mendes)
 const params = new URLSearchParams(window.location.search);
 const pilotId = params.get('id') || 'u1';
-const pilot = PitLane.getUserById(pilotId);
+const pilot = Driver.getUserById(pilotId);
 
 if (!pilot || pilot.type !== 'piloto') {
   // Show all pilots listing
@@ -66,8 +66,8 @@ if (!pilot || pilot.type !== 'piloto') {
 }
 
 // Update nav if logged in
-if (PitLane.isLoggedIn()) {
-  const u = PitLane.getCurrentUser();
+if (Driver.isLoggedIn()) {
+  const u = Driver.getCurrentUser();
   const dash = u.type === 'equipe' ? 'dashboard-equipe.html' : u.type === 'categoria' ? 'dashboard-categoria.html' : 'dashboard-piloto.html';
   document.getElementById('navRight').innerHTML = `
     <span style="font-family:var(--fm);font-size:10px;color:var(--dim)">${u.name}</span>
@@ -76,12 +76,12 @@ if (PitLane.isLoggedIn()) {
 }
 
 function renderPilotsList() {
-  const pilots = PitLane.getUsersByType('piloto');
-  document.title = 'Pilotos — PitLane News';
+  const pilots = Driver.getUsersByType('piloto');
+  document.title = 'Pilotos — Driver News';
   document.getElementById('pilotContent').innerHTML = `
     <div class="page-header racing-stripe">
       <div class="container">
-        <div class="breadcrumb"><a href="index.html">PITLANE</a> / PILOTOS</div>
+        <div class="breadcrumb"><a href="index.html">DRIVER</a> / PILOTOS</div>
         <h1>Pilotos Cadastrados</h1>
         <p class="subtitle">${pilots.length} pilotos ativos na plataforma</p>
       </div>
@@ -89,7 +89,7 @@ function renderPilotsList() {
     <div class="section">
       <div class="pilots-grid">
         ${pilots.map(p => {
-          const articles = PitLane.getPublishedByAuthor(p.id);
+          const articles = Driver.getPublishedByAuthor(p.id);
           return `<div class="pilot-card ${articles.length > 0 ? 'card-featured' : ''}" onclick="window.location='piloto.html?id=${p.id}'" style="cursor:pointer">
             <div class="pilot-card-img">
               <img src="https://loremflickr.com/400/300/racing,driver?lock=${parseInt(p.id.replace(/\\D/g,'')) * 7}" alt="${p.name}">
@@ -115,13 +115,13 @@ function renderPilotsList() {
 }
 
 function renderPilotPage(p) {
-  const articles = PitLane.getPublishedByAuthor(p.id);
-  const stats = PitLane.getUserStats(p.id);
+  const articles = Driver.getPublishedByAuthor(p.id);
+  const stats = Driver.getUserStats(p.id);
   const conquests = p.conquests || {};
-  document.title = p.name + ' — PitLane News';
+  document.title = p.name + ' — Driver News';
 
   // If current user is viewing their own page, show edit link
-  const isOwner = PitLane.isLoggedIn() && PitLane.getCurrentUser()?.id === p.id;
+  const isOwner = Driver.isLoggedIn() && Driver.getCurrentUser()?.id === p.id;
 
   document.getElementById('pilotContent').innerHTML = `
     <div class="pilot-hero">
@@ -131,7 +131,7 @@ function renderPilotPage(p) {
       <div class="pilot-hero-content">
         <span class="pilot-hero-flag">${p.flag || '🇧🇷'}</span>
         <h1 class="pilot-hero-name">${p.name}</h1>
-        <div class="pilot-hero-category">${p.category || 'Automobilismo'} · Piloto ${PitLane.getPlanName(p.plan)}</div>
+        <div class="pilot-hero-category">${p.category || 'Automobilismo'} · Piloto ${Driver.getPlanName(p.plan)}</div>
         <div class="pilot-hero-social">
           ${p.instagram ? '<div class="f-soc" title="Instagram">IG</div>' : ''}
           <div class="f-soc" title="Twitter/X">X</div>
@@ -183,7 +183,7 @@ function renderPilotPage(p) {
                 <span class="badge" style="background:var(--info);font-size:8px">Matéria</span>
                 <div class="ncard-title">${a.title}</div>
                 <div class="ncard-excerpt">${a.brief || ''}</div>
-                <div class="ncard-meta"><span>${PitLane.formatDate(a.publishedAt)} · ${a.views.toLocaleString()} views</span></div>
+                <div class="ncard-meta"><span>${Driver.formatDate(a.publishedAt)} · ${a.views.toLocaleString()} views</span></div>
               </div>
             </div>
           `).join('')}
@@ -201,7 +201,7 @@ function renderPilotPage(p) {
         <div class="sponsor-content">
           <div style="font-family:var(--fm);font-size:10px;color:var(--acc);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px"><i data-lucide="briefcase" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i> Oportunidade de Patrocínio</div>
           <div class="sponsor-title">Seja Patrocinador<br>de ${p.name}</div>
-          <p class="sponsor-desc">Associe sua marca a ${p.name}. ${stats.totalViewsFormatted} visualizações acumuladas nas matérias da PitLane News.</p>
+          <p class="sponsor-desc">Associe sua marca a ${p.name}. ${stats.totalViewsFormatted} visualizações acumuladas nas matérias da Driver News.</p>
           <div class="sponsor-tiers">
             <div class="sponsor-tier bronze"><span class="sponsor-tier-icon"><i data-lucide="medal" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom;color:#b07040"></i></span><div class="sponsor-tier-name">Bronze</div><div style="font-family:var(--fm);font-size:10px;color:var(--dim);margin-top:4px">Logo + menções</div></div>
             <div class="sponsor-tier silver"><span class="sponsor-tier-icon"><i data-lucide="medal" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom;color:#a0a0c0"></i></span><div class="sponsor-tier-name">Prata</div><div style="font-family:var(--fm);font-size:10px;color:var(--dim);margin-top:4px">Logo no carro + conteúdo</div></div>
