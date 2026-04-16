@@ -34,7 +34,7 @@
   <a onclick="showView('plans');closeMob()"><i class="fi fi-rr-clipboard"></i> Planos</a>
   <div style="margin-top:20px;display:flex;flex-direction:column;gap:8px">
     <button class="btn btn-out btn-full" onclick="showView('login');closeMob()">Entrar</button>
-    <button class="btn btn-acc btn-full" onclick="openSubscribeModal();closeMob()">Assinar</button>
+    <button class="btn btn-acc btn-full" onclick="showView('plans');closeMob()">Assinar</button>
   </div>
 </div>
 
@@ -403,7 +403,6 @@
             <li><a onclick="showView('teams-list')">Equipes</a></li>
             <li><a onclick="showView('plans')">Planos & Preços</a></li>
             <li><a onclick="showView('login')">Entrar</a></li>
-            <li><a onclick="openSubscribeModal()">Newsletter</a></li>
           </ul>
         </div>
         <div class="f-col">
@@ -1072,7 +1071,6 @@
         <div style="font-family:var(--fd);font-size:24px;margin-bottom:8px">COMECE SUA JORNADA</div>
         <p style="color:var(--dim);font-size:14px;margin-bottom:24px;line-height:1.5">Escolha seu plano e junte-se aos pilotos e equipes do maior portal agregador de automobilismo.</p>
         <button class="btn btn-acc btn-full" onclick="showView('plans')">Conhecer os Planos →</button>
-        <button class="btn btn-out btn-full" style="margin-top:12px" onclick="window.location.href='cadastro.html?plan=starter'">Criar Conta Gratuita</button>
       </div>
     </div>
   </div>

@@ -31,12 +31,12 @@
   <aside class="dash-sidebar carbon-subtle">
     <div class="dash-profile" id="sidebarProfile"></div>
     <ul class="dash-nav">
-      <li><a class="active" onclick="showSection('overview',this)"><span class="nav-icon"><i data-lucide="bar-chart-3" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Visão Geral</a></li>
-      <li><a onclick="showSection('compose',this)"><span class="nav-icon"><i class="fi fi-rr-pencil"></i></span> Nova Matéria</a></li>
-      <li><a onclick="showSection('articles',this)"><span class="nav-icon"><i data-lucide="newspaper" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Minhas Matérias</a></li>
+      <li><a class="active" onclick="showSection('overview',this);document.querySelector('.dash-sidebar').classList.remove('open')"><span class="nav-icon"><i data-lucide="bar-chart-3" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Visão Geral</a></li>
+      <li><a onclick="showSection('compose',this);document.querySelector('.dash-sidebar').classList.remove('open')"><span class="nav-icon"><i class="fi fi-rr-pencil"></i></span> Nova Matéria</a></li>
+      <li><a onclick="showSection('articles',this);document.querySelector('.dash-sidebar').classList.remove('open')"><span class="nav-icon"><i data-lucide="newspaper" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Minhas Matérias</a></li>
       <div class="dash-nav-sep"></div>
-      <li><a onclick="showSection('profile',this)"><span class="nav-icon"><i data-lucide="user-check" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Editar Perfil</a></li>
-      <li><a onclick="showSection('mediakit',this)"><span class="nav-icon"><i data-lucide="paperclip" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Mídia Kit</a></li>
+      <li><a onclick="showSection('profile',this);document.querySelector('.dash-sidebar').classList.remove('open')"><span class="nav-icon"><i data-lucide="user-check" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Editar Perfil</a></li>
+      <li><a onclick="showSection('mediakit',this);document.querySelector('.dash-sidebar').classList.remove('open')"><span class="nav-icon"><i data-lucide="paperclip" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Mídia Kit</a></li>
       <div class="dash-nav-sep"></div>
       <li><a href="piloto.html"><span class="nav-icon"><i data-lucide="globe" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i></span> Ver Landing Page</a></li>
       <li><a href="#" onclick="Driver.logout();window.location='cadastro.html'"><span class="nav-icon"><i data-lucide="log-out" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Sair</a></li>
@@ -71,8 +71,11 @@ if (!USER) { window.location = 'cadastro.html'; }
 // Render sidebar
 // ============================
 document.getElementById('navUserInfo').innerHTML = `
-  <span style="font-family:var(--fm);font-size:10px;color:var(--dim)">${USER.name}</span>
-  <div style="width:32px;height:32px;border-radius:50%;background:var(--acc);display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:11px;font-weight:700;color:#fff">${USER.avatar}</div>
+  <span style="font-family:var(--fm);font-size:10px;color:var(--dim)" class="hide-mob">${USER.name}</span>
+  <div style="width:32px;height:32px;border-radius:50%;background:var(--acc);display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:11px;font-weight:700;color:#fff" class="hide-mob">${USER.avatar}</div>
+  <button class="btn-hamburger" style="display:flex;margin-left:16px;border-color:transparent" onclick="document.querySelector('.dash-sidebar').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
 `;
 document.getElementById('sidebarProfile').innerHTML = `
   <div class="dash-avatar">${USER.avatar}</div>
