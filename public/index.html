@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PitLane News</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
 <link rel="stylesheet" href="css/style.css?v=20260413_2342">
 <link rel="stylesheet" href="css/toast.css?v=20260413_2342">
@@ -263,11 +263,34 @@
 
   <!-- HERO -->
   <div class="hero-wrap">
-    <div class="hero-grid">
-      <div id="hero-main" class="hero-main"></div>
+    <div class="hero-grid" id="heroGrid">
+      <div id="hero-main" class="hero-main">
+        <img src="" alt="" loading="lazy">
+        <div class="hero-content">
+          <span class="hero-type"></span>
+          <span class="badge"></span>
+          <h1 class="hero-title"></h1>
+          <p class="hero-excerpt"></p>
+          <div class="hero-meta"></div>
+        </div>
+      </div>
       <div class="hero-side">
-        <div id="hero-side1" class="side-card"></div>
-        <div id="hero-side2" class="side-card"></div>
+        <div id="hero-side1" class="side-card">
+          <img src="" alt="" loading="lazy">
+          <div class="side-content">
+            <span class="hero-type"></span>
+            <span class="badge"></span>
+            <div class="side-title"></div>
+          </div>
+        </div>
+        <div id="hero-side2" class="side-card">
+          <img src="" alt="" loading="lazy">
+          <div class="side-content">
+            <span class="hero-type"></span>
+            <span class="badge"></span>
+            <div class="side-title"></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -444,7 +467,7 @@
       <!-- CARD PATROCINADO Rafael Moura -->
       <div class="ncard is-pago" data-cat="f1" data-type="pago" data-id="5" onclick="openArticle(5)">
         <div class="ncard-thumb">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/4/4c/FIA_F2_Austria_2022_Nr._11_Drugovich.jpg" alt="">
+          <img src="img/sponsored-pilot.png" alt="">
           <div class="ncard-ribbon"><span class="badge b-pago"><i class="fi fi-rr-star"></i> Patrocinado</span></div>
         </div>
         <div class="ncard-body">
@@ -702,14 +725,16 @@
      VIEW: PLANS
 ════════════════════════════════════════ -->
 <div class="view" id="view-plans">
-<section class="sec-hero reveal">
+<!-- 1. HERO -->
+<section class="sec-hero reveal grid-herobg">
   <div class="container">
-    <h1>TENHA PRESENÇA DE PILOTO PROFISSIONAL<br>DENTRO E FORA DAS PISTAS.</h1>
-    <p class="sub">Publique matérias profissionais sobre você em um portal que fala de<br>Fórmula 1, MotoGP e grandes categorias — e se posicione como piloto de verdade.</p>
-    <div class="bullets">
-      ✓ Matérias com padrão jornalístico &nbsp;·&nbsp; ✓ Publicado ao lado de grandes categorias &nbsp;·&nbsp; ✓ Link profissional para patrocinadores
+    <div class="hero-badge"><span class="hb-dot"></span> PRESENÇA DIGITAL — PUBLICAÇÃO NO PORTAL OFICIAL</div>
+    <h1>TENHA <span class="hl-red">PRESENÇA</span> DE PILOTO PROFISSIONAL<br>DENTRO E FORA DAS <span class="hl-grad">PISTAS</span></h1>
+    <p class="sub">Melhore sua percepção como piloto, consiga os melhores materiais de portfólio<br>e garanta sua visibilidade de piloto perante patrocinadores.</p>
+    <div class="hero-actions">
+      <button class="btn-lp btn-red btn-pill" onclick="scrollToPlans()"><i class="fi fi-rr-flag"></i> CRIAR MATÉRIA AGORA</button>
+      <button class="btn-lp btn-ghost-pill" onclick="document.getElementById('como-funciona').scrollIntoView({behavior:'smooth'})">Como funciona &rarr;</button>
     </div>
-    <button class="btn-lp btn-red" onclick="scrollToPlans()">CRIAR MINHA PRIMEIRA MATÉRIA &rarr;</button>
   </div>
 </section>
 
@@ -1064,6 +1089,7 @@
   </div>
 </section>
 
+<!-- FOOTER (Baseado na estrutura vigente) -->
 </div><!-- /view-plans -->
 
 <!-- ════════════════════════════════════════
@@ -1598,5 +1624,15 @@
 ════════════════════════════════════════ -->
 <script src="js/app.js?v=22"></script>
 <script src="js/state.js?v=22"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const params = new URLSearchParams(window.location.search);
+    const viewParam = params.get("view");
+    if (viewParam) {
+      setTimeout(() => showView(viewParam), 100); // Wait for initialization
+    }
+  });
+</script>
+
 </body>
 </html>

@@ -11,8 +11,8 @@
   --brd:rgba(255,255,255,.05);--brdb:rgba(255,255,255,.1);
   --fd:'Bebas Neue',sans-serif;
   --fu:'Barlow Condensed',sans-serif;
-  --fb:'Outfit',sans-serif;
-  --fm:'JetBrains Mono',monospace;
+  --fb:'Inter',sans-serif;
+  --fm:'Inter',sans-serif;
 }
 html{scroll-behavior:smooth;overflow-x:clip;max-width:100%;width:100%}
 body{background:var(--bg);color:var(--text);font-family:var(--fb);line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:clip;max-width:100%;width:100%;position:relative}
@@ -385,7 +385,7 @@ nav{position:sticky;top:0;z-index:500;background:rgba(3,3,10,.92);backdrop-filte
 
 .plans-grid{max-width:1300px;margin:48px auto;padding:0 28px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px}
 .plans-grid.four-col{grid-template-columns:repeat(4,minmax(0,1fr))}
-.plan-card{background:var(--bg1);border:1px solid var(--brd);overflow:hidden;transition:border-color .2s;display:flex;flex-direction:column}
+.plan-card{background:var(--bg1);border:1px solid var(--brd);transition:border-color .2s;display:flex;flex-direction:column}
 .plan-card:hover{border-color:var(--brdb)}
 .plan-card.best{border-color:var(--acc);position:relative}
 .plan-best-tag{background:var(--acc);font-family:var(--fu);font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#fff;padding:5px 16px;text-align:center}
