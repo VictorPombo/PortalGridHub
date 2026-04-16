@@ -980,7 +980,7 @@ function renderNewsGrid() {
         <div class="news-card-body">
           <div class="news-card-source">
             <span class="source-dot"></span>
-            <span class="source-name">Portal de Origem</span>
+            <span class="source-name">${a.author.toUpperCase()}</span>
             <span class="source-date">· ${a.date}</span>
           </div>
           <div class="news-card-title">${a.title}</div>
