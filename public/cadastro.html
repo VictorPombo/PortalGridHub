@@ -367,12 +367,8 @@ async function goStep(step) {
   
   // Step 3: Show pro fields or review
   if (step === 3) {
-  // Step 3: Show pro fields or review
-  if (step === 3) {
     const selectedCatsForVal = typeof getSelectedCategories === 'function' ? getSelectedCategories() : [];
     if (selectedCatsForVal.length === 0) { showToast('Selecione pelo menos uma categoria de atuação','err'); return; }
-    
-    if (selectedPlan === 'pro') {
     
     if (selectedPlan === 'pro') {
       document.getElementById('proFields').style.display = 'block';
