@@ -187,27 +187,57 @@ const PitLane = (() => {
     return Math.max(0, limit - used);
   }
 
-  function addArticle(article) {
-    article.id = 'a' + (__dbArticles.length + 1) + '_' + Date.now();
+  async function addArticle(article) {
+    article.id = 'a' + (__dbArticles.length + 1) + '_' + Date.now(); // Fallback gen for cache
     article.views = 0;
+    
+    // Tentativa de gravar no Supabase via API
+    try {
+      const resp = await fetch('/api/db/articles', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(article)
+      });
+      const data = await resp.json();
+      if (data.success && data.article) {
+        article = { ...article, ...data.article, id: data.article.id };
+      }
+    } catch(err) {
+      console.warn('API DB inacessível, mantendo em memória local', err);
+    }
+    
     __dbArticles.push(article);
-    // TODO: POST /api/db/articles
     return article;
   }
 
-  function updateArticle(id, updates) {
+  async function updateArticle(id, updates) {
     const idx = __dbArticles.findIndex(a => a.id === id);
     if (idx === -1) return null;
     __dbArticles[idx] = { ...__dbArticles[idx], ...updates };
-    // TODO: PUT /api/db/articles
+    
+    // ATUALIZAR no Supabase via API
+    try {
+      const resp = await fetch('/api/db/articles', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, updates })
+      });
+      const data = await resp.json();
+      if (data.success && data.article) {
+        __dbArticles[idx] = { ...__dbArticles[idx], ...data.article, id: data.article.id };
+      }
+    } catch(err) {
+      console.warn('API DB inacessível na atualização, mantendo local.', err);
+    }
+
     return __dbArticles[idx];
   }
 
-  function changeArticleStatus(id, newStatus) {
+  async function changeArticleStatus(id, newStatus) {
     const updates = { status: newStatus };
     if (newStatus === 'published') updates.publishedAt = new Date().toISOString().split('T')[0];
     if (newStatus === 'sent') updates.submittedAt = new Date().toISOString().split('T')[0];
-    return updateArticle(id, updates);
+    return await updateArticle(id, updates);
   }
 
   // ============================
