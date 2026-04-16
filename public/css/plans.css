@@ -524,14 +524,14 @@
   text-transform: uppercase;
 }
 .hero-badge .hb-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 10px rgba(0,187,85,0.5); }
-.sec-hero h1 { font-family: var(--fd); font-size: 72px; text-transform: uppercase; line-height: 0.95; margin-bottom: 24px; color: #fff; letter-spacing: 2px;}
+.sec-hero h1 { font-family: var(--fd); font-size: 72px; text-transform: uppercase; line-height: 0.95; margin-bottom: 24px; color: #fff; letter-spacing: 2px; text-wrap: balance; }
 .sec-hero .hl-red { color: var(--acc); }
 .sec-hero .hl-grad {
   background: linear-gradient(90deg, var(--acc) 0%, var(--gold) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
-.sec-hero .sub { font-family: var(--fb); font-weight: 400; font-size: 18px; color: var(--dim); max-width: 600px; margin: 0 auto 40px; line-height: 1.6; }
+.sec-hero .sub { font-family: var(--fb); font-weight: 400; font-size: 18px; color: var(--dim); max-width: 700px; margin: 0 auto 40px; line-height: 1.6; text-wrap: balance; }
 .hero-actions { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
 .btn-pill { border-radius: 100px; padding: 18px 40px; font-size: 15px; }
 .btn-ghost-pill {
@@ -558,7 +558,7 @@
 
 /* Sec3 Dor */
 .sec-dor { padding: 80px 0; background: var(--bg1); position: relative; }
-.sec-dor h2 { font-family: var(--fd); font-size: 56px; text-transform: uppercase; letter-spacing: 1px; text-align: center; margin-bottom: 60px; line-height: 1;}
+.sec-dor h2 { font-family: var(--fd); font-size: 56px; text-transform: uppercase; letter-spacing: 1px; text-align: center; margin-bottom: 60px; line-height: 1; text-wrap: balance;}
 .dor-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1000px; margin: 0 auto 60px;}
 .dor-card {
   background: var(--bg2);
