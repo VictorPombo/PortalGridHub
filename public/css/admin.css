@@ -337,3 +337,19 @@
   .sponsor-section{padding:24px}
   .signup-container{padding:24px 16px}
 }
+
+/* ── FORM GRID RESPONSIVE ── */
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 480px) {
+  .form-grid-2 {
+    grid-template-columns: 1fr;
+  }
+  .signup-step-label {
+    font-size: 8px !important;
+    letter-spacing: 0.5px !important;
+  }
+}

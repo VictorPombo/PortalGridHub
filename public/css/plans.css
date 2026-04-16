@@ -771,5 +771,25 @@ details[open] summary:after { content: '-'; }
   .plan-card { margin-bottom: 16px;}
   .sec-valor .valor-line { text-align:center; padding-left:0; border-left:none; border-top: 4px solid var(--acc); padding-top:16px;}
   .garantia { flex-direction: column; text-align: center; }
+  /* Prevent any horizontal overflow from locking vertical scroll */
+  #view-plans, .view.active {
+    overflow-x: hidden;
+  }
+  .antes-depois {
+    grid-template-columns: 1fr;
+  }
+  .ad-col.sem {
+    border-right: none;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .lp-section {
+    padding: 48px 16px;
+  }
+  .lp-pain-box {
+    padding: 24px 16px;
+  }
+  .lp-pain-box p {
+    font-size: 18px;
+  }
 }
 

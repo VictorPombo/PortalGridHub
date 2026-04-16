@@ -441,3 +441,13 @@ footer{background:var(--bg1);border-top:1px solid var(--brd);padding:56px 32px 2
 .cat-checkbox-wrap input{accent-color:var(--acc);cursor:pointer;width:14px;height:14px;}
 .cat-checkbox-wrap label{font-size:13px;color:var(--text);cursor:pointer;font-family:var(--fb);}
 
+@media(max-width:768px) {
+  /* Global overflow lock — prevents horizontal content from breaking vertical scroll */
+  html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+  .view.active {
+    overflow-x: hidden;
+  }
+}

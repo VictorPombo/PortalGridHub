@@ -145,7 +145,18 @@ const PILOTS=[
 function showView(id){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   const el=document.getElementById('view-'+id);
-  if(el){el.classList.add('active');window.scrollTo({top:0,behavior:'smooth'})}
+  if(el){
+    el.classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+    // Force reveal all sections in this view that are stuck at opacity:0
+    setTimeout(() => {
+      el.querySelectorAll('.reveal, .reveal-section').forEach(s => {
+        s.classList.add('in');
+        s.classList.add('revealed');
+        s.classList.add('active');
+      });
+    }, 50);
+  }
   // init views
   if(id==='pilots-list')renderPilotsList();
   if(id==='teams-list')renderTeamsList();
