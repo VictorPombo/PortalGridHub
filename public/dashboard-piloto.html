@@ -224,7 +224,10 @@ function renderCompose() {
 
         <div class="form-field"><label class="form-label" style="display:flex;justify-content:space-between;align-items:center">
             <span>Descrição / Briefing</span>
-            <button type="button" class="btn-ghost btn-sm" style="color:var(--acc);padding:4px 8px;font-size:10px" onclick="enhanceBriefing()"><i class="fi fi-rr-magic-wand"></i> ✨ Expandir com IA</button>
+            <div style="display:flex;gap:8px">
+              <button type="button" class="btn-ghost btn-sm" style="color:var(--dim);border:1px solid var(--brd);padding:4px 8px;font-size:10px" onclick="suggestBriefingQuestions()"><i class="fi fi-rr-interrogation"></i> Me ajude com perguntas</button>
+              <button type="button" class="btn-ghost btn-sm" style="color:var(--acc);padding:4px 8px;font-size:10px" onclick="enhanceBriefing()"><i class="fi fi-rr-magic-wand"></i> ✨ Expandir com IA</button>
+            </div>
           </label>
           <textarea class="form-textarea" id="compBrief" placeholder="Descreva os detalhes do conteúdo. Inclua resultados, sentimentos, dados técnicos e destaques. Quanto mais rico o briefing, melhor a matéria profissional produzida pela redação." style="min-height:160px"></textarea>
           <div class="form-hint">Mínimo 50 caracteres · A redação transformará seu briefing em matéria jornalística profissional</div>
@@ -461,6 +464,38 @@ async function enhanceBriefing() {
     if (data.enhancedText) {
       briefInput.value = data.enhancedText;
       showToast('✓ Briefing expandido!', 'ok');
+    } else {
+      showToast('Ops! Tente novamente.', 'err');
+    }
+  } catch (e) {
+    console.error(e);
+    showToast('Erro ao contatar IA.', 'err');
+  }
+}
+
+async function suggestBriefingQuestions() {
+  const briefInput = document.getElementById('compBrief');
+  const text = briefInput?.value;
+  if (!text || text.trim().length < 3) {
+    showToast('Digite pelo menos o local ou evento para a IA gerar perguntas específicas.', 'err');
+    return;
+  }
+  showToast('💡 Mapeando perguntas úteis...', 'info');
+  try {
+    const contextStr = `Nome: ${USER.pilot_name || USER.name}; Categoria: ${USER.category || ''}`;
+    const res = await fetch('/api/ai-enhance', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        textoOriginal: text, 
+        tipoCampo: 'questions',
+        contexto: contextStr
+      })
+    });
+    const data = await res.json();
+    if (data.enhancedText) {
+      briefInput.value = text + '\n\n-- Detalhe isso para a matéria ficar melhor:\n' + data.enhancedText;
+      showToast('✓ Perguntas geradas, responda-as!', 'ok');
     } else {
       showToast('Ops! Tente novamente.', 'err');
     }

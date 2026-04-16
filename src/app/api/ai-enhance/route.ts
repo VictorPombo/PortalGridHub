@@ -41,6 +41,11 @@ Retorne APENAS o texto aprimorado, nada mais.`;
 O usuário forneceu apenas algumas palavras-chave ou uma frase curta sobre um acontecimento (corrida, treino, etc).
 Sua missão é expandir esse texto para um briefing completo, coerente e estruturado (entre 50 e 150 caracteres), para que sirva de base rica para o repórter escrever a matéria final.
 Retorne APENAS o texto expandido.`;
+    } else if (tipoCampo === 'questions') {
+      systemInstruction = `Você é um Estrategista de Conteúdo de Automobilismo.
+O usuário quer relatar um acontecimento (corrida, treino, etc), mas não sabe o que escrever. Ele forneceu apenas um rascunho muito curto.
+A sua tarefa é fazer EXATAMENTE 3 perguntas curtas e diretas sobre o evento, para extrair mais detalhes dele (Ex: Em qual pista/etapa você correu?, Qual foi o seu tempo ou posição?, Quem foram os adversários ou como estava o clima?).
+Retorne APENAS as perguntas em bullet points curtos usando '-', sem introdução nem saudação.`;
     } else if (tipoCampo === 'article') {
       systemInstruction = `Você é um Repórter Chefe da "DriverNews", especializado no mais alto nível do jornalismo de automobilismo (estilo Autosport, The Race).
 Seu objetivo é escrever uma MATÉRIA JORNALÍSTICA COMPLETA, ÉPICA E ÚNICA com base no "Texto Original" (que é o briefing do piloto) e nas "Diretrizes de Identidade do Piloto" (onde estarão o nome, categoria, equipe, patrocinadores).
