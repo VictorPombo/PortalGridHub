@@ -484,7 +484,7 @@ const HERO_DATA={
 
 
 function filterCat(cat){
-  window.newsLimit = 12;
+  window.newsLimit = 9;
   currentCat=cat;applyFilter();
   document.getElementById('newsSectionTitle').textContent=cat==='all'?'Últimas Notícias':'Notícias · '+cat.toUpperCase();
   // Update standings to match category
@@ -500,7 +500,7 @@ function filterType(el,type){
   document.querySelectorAll('.ftag').forEach(t=>t.classList.remove('active'));el.classList.add('active');
   currentType=type;applyFilter();
 }
-window.newsLimit = 12;
+window.newsLimit = 9;
 
 function applyFilter(){
   let delay=0;
@@ -959,7 +959,7 @@ function renderTicker() {
 }
 
 function loadMoreNews() {
-  window.newsLimit += 12;
+  window.newsLimit += 9;
   applyFilter();
 }
 
