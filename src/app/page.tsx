@@ -92,12 +92,12 @@ export default function Homepage() {
         <div className="flex items-center gap-4 my-14 max-w-7xl mx-auto px-4">
           <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-zinc-800 to-zinc-800"></div>
           <div className="flex flex-col items-center">
-            <span className="text-zinc-500 text-sm font-bold uppercase tracking-widest text-center">
+            <span className="text-zinc-500 text-sm font-bold uppercase tracking-widest text-center mb-2">
               Do mundo do Motorsport
             </span>
-            <span className="text-[10px] sm:text-xs text-zinc-600 font-medium tracking-wide text-center mt-1">
-              Notícias agregadas anonimamente via RSS. Clique para ler no hub de origem.
-            </span>
+            <p className="text-xs text-zinc-500 text-center py-2 max-w-2xl leading-relaxed">
+              Notícias agregadas de portais parceiros. Clique em qualquer card para ler a matéria completa no site de origem. Todos os direitos autorais pertencem aos respectivos portais.
+            </p>
           </div>
           <div className="h-[1px] flex-1 bg-gradient-to-l from-transparent via-zinc-800 to-zinc-800"></div>
         </div>

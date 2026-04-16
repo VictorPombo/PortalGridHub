@@ -91,16 +91,19 @@ export default async function MateriaPage({ params }: { params: { slug: string }
           <p>{materia.conteudo_markdown}</p>
         </div>
 
-        {/* DISCLAIMER DE IA - OBRIGATÓRIO */}
-        <div className="mt-16 p-6 sm:p-8 bg-zinc-900 border-l-4 border-l-red-600 rounded-r-xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
-            <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5z"/></svg>
+        {/* SOBRE ESTA MATÉRIA - DISCLAIMER OBRIGATÓRIO (SUBSTITUIDO CONFORME ITEM 4) */}
+        <div className="mt-16 bg-zinc-900/50 border border-zinc-800 rounded-lg p-6 text-sm text-zinc-400">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="text-xl">ℹ️</span>
+            <h4 className="text-white font-bold uppercase tracking-wider">
+              Sobre esta matéria
+            </h4>
           </div>
-          <h4 className="text-white font-bold mb-3 uppercase text-sm tracking-wider flex items-center gap-2">
-            Nota de Publicação e IA
-          </h4>
-          <p className="text-zinc-400 text-sm sm:text-[15px] leading-relaxed">
-            Esta é uma matéria autoral e exclusiva Driver News. O conteúdo estrutural foi gerado e refinado através de <strong>Inteligência Artificial</strong> (Driver AI Engine), operando estritamente a partir do preenchimento contextual (Input Original) submetido por <strong className="text-zinc-200">{materia.autor.nome}</strong>. O autor validou o rascunho de forma afirmativa sob os Termos de Uso do Portal, isentando a NextHub de edições textuais próprias.
+          <p className="leading-relaxed mb-4">
+            Esta matéria exclusiva foi produzida por {materia.autor.nome}, {materia.autor.categoria}, utilizando a plataforma Driver News. O conteúdo foi redigido com auxílio de inteligência artificial a partir de informações fornecidas pelo autor, que revisou e aprovou a versão final e é o único responsável pelo conteúdo publicado.
+          </p>
+          <p className="leading-relaxed font-semibold">
+            Se você identificou alguma imprecisão ou deseja reportar este conteúdo, entre em contato: <a href="mailto:contato.drivernews@proton.me" className="text-red-500 hover:text-red-400">contato.drivernews@proton.me</a>
           </p>
         </div>
 

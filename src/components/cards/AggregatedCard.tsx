@@ -30,6 +30,7 @@ export function AggregatedCard({
       href={linkOriginal}
       target="_blank"
       rel="noopener nofollow"
+      title={`Esta matéria é do portal ${portal.nome}. Clique para ler lá.`}
       className="block rounded-lg overflow-hidden bg-zinc-900 border border-zinc-800 hover:border-zinc-700 transition-all duration-300 hover:scale-[1.005] group"
     >
       <div className="aspect-video relative overflow-hidden bg-zinc-800">

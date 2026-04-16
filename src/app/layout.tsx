@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import Link from 'next/link';
 import { Shield } from 'lucide-react';
+import { CookieBanner } from '../components/ui/CookieBanner';
 
 export const metadata: Metadata = {
   title: 'Driver News — Automobilismo e Agregação',
@@ -86,19 +87,22 @@ export default function RootLayout({
 
             <div className="w-full mt-16 pt-8 border-t border-white/5 flex flex-col items-center justify-between gap-6 text-center">
               
-              <div className="flex items-start justify-center gap-3 w-full bg-zinc-950 p-6 rounded-lg border border-red-900/30">
-                <Shield className="w-6 h-6 text-red-500 shrink-0 mt-0.5" />
-                <div className="text-left text-xs sm:text-sm text-zinc-500 leading-relaxed font-medium">
-                  Informação de Responsabilidade Cívil: O motor de busca da placa "Últimas Notícias Agregadas" é gerado por processos autômatos via indexadores terceiros (RSS). Este portal se isenta expressamente da reprodução de conteúdo em servidor local, publicando apenas a indicação externa e mascarando as imagens sob Fair Use da Lei 9.610. Em caso de litígio, contate a matriz operada legalmente por <strong>NextHub <span className="ml-1 text-zinc-400">CNPJ: 65.934.326/0001-31</span></strong>.
-                </div>
+              <div className="flex flex-col w-full bg-zinc-950 p-6 sm:p-8 rounded-xl border border-zinc-800/80">
+                <p className="text-left text-xs sm:text-sm text-zinc-500 leading-relaxed font-medium mb-4">
+                  Driver News é operado por NextHub, CNPJ 65.934.326/0001-31, com sede na Rua dos Ranúnculos, 357, São Paulo/SP. Contato: contato.drivernews@proton.me | (11) 97637-7682.
+                </p>
+                <p className="text-left text-xs sm:text-sm text-zinc-500 leading-relaxed font-medium">
+                  Matérias agregadas são links para conteúdos publicados por portais de terceiros, aos quais pertencem todos os direitos autorais e editoriais. Matérias exclusivas são produzidas por assinantes cadastrados, únicos responsáveis pelo conteúdo publicado.
+                </p>
               </div>
 
-              <div className="text-zinc-600 text-[11px] uppercase tracking-widest font-mono">
-                © {new Date().getFullYear()} Nexthub Driver News Project. Todos os direitos reservados.
+              <div className="text-zinc-600 text-[11px] sm:text-xs uppercase tracking-widest font-mono text-center pt-2">
+                © 2026 Driver News. Todos os direitos reservados.
               </div>
             </div>
           </div>
         </footer>
+        <CookieBanner />
       </body>
     </html>
   );
