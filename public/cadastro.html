@@ -520,7 +520,7 @@ async function enhanceWithAI(fieldId, contextType) {
       body: JSON.stringify({ 
         textoOriginal: rawText, 
         tipoCampo: contextType,
-        contexto: \`Nome: \${pilotName} | Categoria: \${category}\` 
+        contexto: `Nome: ${pilotName} | Categoria: ${category}` 
       })
     });
 
