@@ -875,22 +875,9 @@ function renderHeroGrid(catFilter = 'all') {
 
   if (catFilter === 'all') {
     if (wrap) wrap.style.display = '';
-    const f1News = ARTICLES.find(a => a.cat === 'f1') || ARTICLES.find(a => ['stock-car', 'wec', 'indycar', 'nascar'].includes(a.cat)) || ARTICLES[0];
-    const motoNews = ARTICLES.find(a => a.cat === 'motogp' && a.id !== f1News?.id) || ARTICLES.find(a => a.id !== f1News?.id) || ARTICLES[1];
-    
-    const pilotNews = {
-      id: 9999,
-      cat: 'f4-brasil',
-      badge: 'b-f4-brasil',
-      title: 'Rafael Moura Vence na F4 Brasil e Atrai Interesse de Equipes Europeias',
-      link: '#',
-      author: 'Driver',
-      date: 'há 2h',
-      img: 'img/demo-news-img.png',
-      isReal: false
-    };
-
-    a0 = f1News; a1 = pilotNews; a2 = motoNews;
+    a0 = ARTICLES[0];
+    a1 = ARTICLES[1];
+    a2 = ARTICLES[2];
   } else {
     // Exact category matching
     let catArts = ARTICLES.filter(a => a.cat === catFilter);
