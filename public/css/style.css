@@ -41,19 +41,20 @@ body.locked{overflow:hidden}
 /* ═══════════════════════════════════════════
    BUTTONS
 ═══════════════════════════════════════════ */
-.btn{font-family:var(--fu);font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:10px 22px;border:none;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
-.btn-acc{background:var(--acc);color:#fff;clip-path:polygon(0 0,100% 0,93% 100%,0 100%);padding-right:28px}
-.btn-acc:hover{background:#ff1840}
-.btn-out{background:transparent;border:1px solid var(--brdb);color:var(--dim)}
-.btn-out:hover{border-color:var(--acc);color:var(--acc)}
-.btn-ghost{background:transparent;border:none;color:var(--dim);padding:9px 12px}
-.btn-ghost:hover{color:var(--text)}
-.btn-green{background:var(--green);color:#fff}
-.btn-green:hover{background:#009944}
-.btn-gold{background:var(--gold);color:#000}
-.btn-blue{background:var(--blue);color:#fff}
+.btn{font-family:var(--fu);font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:12px 24px;border:none;cursor:pointer;transition:all .3s ease;display:inline-flex;align-items:center;gap:8px;border-radius:8px}
+.btn-acc{background:var(--acc);color:#fff;clip-path:none;padding-right:24px;box-shadow:0 4px 16px -4px rgba(232,0,45,0.4)}
+.btn-acc:hover{background:#ff1840;transform:translateY(-2px);box-shadow:0 12px 24px -6px rgba(232,0,45,0.6)}
+.btn-out{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);color:var(--dim)}
+.btn-out:hover{border-color:var(--acc);color:var(--acc);background:rgba(232,0,45,0.08);transform:translateY(-2px)}
+.btn-ghost{background:transparent;border:none;color:var(--dim);padding:9px 12px;border-radius:8px}
+.btn-ghost:hover{color:var(--text);background:rgba(255,255,255,0.05)}
+.btn-green{background:var(--green);color:#fff;box-shadow:0 4px 16px -4px rgba(0,187,85,0.4)}
+.btn-green:hover{background:#009944;transform:translateY(-2px);box-shadow:0 12px 24px -6px rgba(0,187,85,0.6)}
+.btn-gold{background:var(--gold);color:#000;box-shadow:0 4px 16px -4px rgba(240,160,0,0.4)}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 12px 24px -6px rgba(240,160,0,0.6)}
+.btn-blue{background:var(--blue);color:#fff;box-shadow:0 4px 16px -4px rgba(0,128,255,0.4)}
 .btn-full{width:100%;justify-content:center}
-.btn-sm{padding:6px 14px;font-size:10px;letter-spacing:1.5px}
+.btn-sm{padding:8px 16px;font-size:10px;letter-spacing:1.5px}
 .btn-danger{background:#c00020;color:#fff}
 
 /* ═══════════════════════════════════════════
