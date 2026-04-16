@@ -110,8 +110,11 @@
       
       <div class="form-field"><label class="form-label">Nome de competição</label><input class="form-input" id="regPilotName" type="text" placeholder="Como aparece nos resultados"></div>
       <div class="form-field">
-        <label class="form-label">Categoria de atuação</label>
-        <input class="form-input" id="regCategory" type="text" placeholder="Ex: F4 Brasil, Stock Car, Kart, MotoGP...">
+        <label class="form-label" style="display:flex;justify-content:space-between">
+          <span>Categorias de atuação</span>
+          <span style="color:var(--dim);text-transform:none;letter-spacing:normal;font-family:var(--fb)">Você pode selecionar várias</span>
+        </label>
+        <div id="regCategoryPicker"></div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
         <div class="form-field"><label class="form-label">Equipe atual</label><input class="form-input" id="regTeam" type="text" placeholder="Nome da equipe"></div>
@@ -208,12 +211,7 @@
         </div>
 
         <!-- Free option -->
-        <div id="freeOption" style="max-width:400px;margin:0 auto">
-          <div style="font-family:var(--fm);font-size:12px;color:var(--dim);margin-bottom:12px">ou</div>
-          <a href="index.html" style="font-family:var(--fm);font-size:13px;color:var(--muted);text-decoration:underline">
-            Continuar com conta gratuita (sem plano)
-          </a>
-        </div>
+        <div id="freeOption"></div>
       </div>
     </div>
   </div>
@@ -344,8 +342,8 @@ async function goStep(step) {
   
   // Step 3: Show pro fields or review
   if (step === 3) {
-    const cat = document.getElementById('regCategory')?.value?.trim();
-    if (!cat) { showToast('Digite sua categoria de atuação','err'); return; }
+    const selectedCatsForVal = typeof getSelectedCategories === 'function' ? getSelectedCategories() : [];
+    if (selectedCatsForVal.length === 0) { showToast('Selecione pelo menos uma categoria de atuação','err'); return; }
     
     if (selectedPlan === 'pro') {
       document.getElementById('proFields').style.display = 'block';
@@ -360,7 +358,11 @@ async function goStep(step) {
       const name = document.getElementById('regName').value;
       const email = document.getElementById('regEmail').value;
       const pilotName = document.getElementById('regPilotName').value;
-      const category = document.getElementById('regCategory').value;
+      const selectedCats = getSelectedCategories();
+      const categorySummary = selectedCats.length > 0 
+        ? `${selectedCats.slice(0,2).map(c=>c.split(' - ')[1]||c).join(', ')}${selectedCats.length>2?' (+'+(selectedCats.length-2)+')':''}`
+        : '—';
+      window.__regCategories = selectedCats;
       const team = document.getElementById('regTeam').value;
       
       document.getElementById('reviewSummary').innerHTML = `
@@ -368,7 +370,7 @@ async function goStep(step) {
           <div style="display:flex;justify-content:space-between"><span style="color:var(--dim)">Nome</span><strong>${name}</strong></div>
           <div style="display:flex;justify-content:space-between"><span style="color:var(--dim)">Email</span><strong>${email}</strong></div>
           <div style="display:flex;justify-content:space-between"><span style="color:var(--dim)">Piloto</span><strong>${pilotName || name}</strong></div>
-          <div style="display:flex;justify-content:space-between"><span style="color:var(--dim)">Categoria</span><strong>${category}</strong></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--dim)">Categoria</span><strong>${categorySummary}</strong></div>
           <div style="display:flex;justify-content:space-between"><span style="color:var(--dim)">Equipe</span><strong>${team || '—'}</strong></div>
           <div style="display:flex;justify-content:space-between"><span style="color:var(--dim)">Plano</span><strong style="color:var(--acc)">${PLAN_CONFIG[selectedPlan].name}</strong></div>
         </div>
@@ -386,7 +388,8 @@ async function goStep(step) {
         password: document.getElementById('regPass').value,
         type: 'piloto',
         plan: selectedPlan,
-        category: document.getElementById('regCategory')?.value || '',
+        category: (window.__regCategories || []).join(', '),
+        categories: window.__regCategories || [],
         number: document.getElementById('regNumber')?.value || '',
         bio: document.getElementById('regBio')?.value || '',
         instagram: document.getElementById('regIG')?.value || '',
@@ -438,6 +441,13 @@ async function goStep(step) {
     if (i + 1 < step) d.classList.add('done');
     if (i + 1 === step) d.classList.add('current');
   });
+  
+  if (step === 2) {
+    if (!document.querySelector('#regCategoryPicker .cat-picker')) {
+      renderCategoryPicker('regCategoryPicker', []);
+    }
+  }
+  
   window.scrollTo({ top: 200, behavior: 'smooth' });
 }
 

@@ -16,8 +16,23 @@ const Driver = (() => {
   // ============================
   // DATABASE CACHE (Supabase memory)
   // ============================
-  let __dbUsers = [];
-  let __dbArticles = [];
+  let __dbUsers = load(KEYS.users, typeof SEED_USERS !== 'undefined' ? SEED_USERS : []);
+  let __dbArticles = load(KEYS.articles, typeof SEED_ARTICLES !== 'undefined' ? SEED_ARTICLES : []);
+
+  const RACING_CATEGORIES = {
+    "KART": ["Kart Indoor", "Kart Rental", "Kart Profissional 2T", "Kart F4", "Kart Graduados", "Kart Sênior", "Kart Super Sênior", "Kart Shifter", "Kart Endurance", "Kart Cadete / Mirim"],
+    "FÓRMULA": ["Fórmula Vee", "Fórmula Delta", "Fórmula 1600", "Fórmula Inter", "Fórmula Truck Light"],
+    "TURISMO": ["Stock Car Pro Series", "Stock Series", "Turismo Nacional", "Copa HB20", "Copa Shell HB20", "NASCAR Brasil", "TCR South America", "Turismo 1.4", "Marcas e Pilotos", "Super Turismo"],
+    "GT": ["Porsche Cup Brasil", "AMG Cup Brasil", "GT Series Brasil", "Império Endurance Brasil", "Ultimate Drift"],
+    "ENDURANCE": ["Império Endurance Brasil", "6 Horas de Interlagos", "Endurance Regional"],
+    "DRIFT": ["Ultimate Drift", "Drift Brasil", "Fórmula Drift Brasil"],
+    "RALLY": ["Rally dos Sertões", "Rally Mitsubishi Motorsports", "Rally Baja", "Rally Velocidade", "Rally Raid", "Camp. Brasileiro de Rally", "Copa Troller", "Jeep Experience"],
+    "TRACK DAY": ["Track Day aberto", "Time Attack Brasil", "Hot Lap Competitions"],
+    "MOTO (BASE)": ["Minimoto", "Escola de pilotagem", "Categorias 300cc", "Categorias 400cc"],
+    "MOTO (INTERMEDIÁRIO)": ["Yamaha R3 Cup", "Ninja 400 Cup", "Copa Pro Honda CBR", "Categorias monomarca"],
+    "MOTO (PRO)": ["SuperBike Brasil", "Moto1000GP", "Supersport 600cc", "SuperSport 300cc", "Categoria 1000cc"],
+    "MOTO (OFF-ROAD)": ["Rally dos Sertões (motos)", "Enduro", "Motocross", "Supercross", "Hard Enduro"]
+  };
 
   // Mantido Settings básico fixo na memória para testes locais sem login
   let __dbSettings = {
@@ -95,19 +110,28 @@ const Driver = (() => {
         console.log("[Driver] Supabase Boot Completo:", __dbArticles.length, "Notícias locais carregadas.");
       }
     } catch (err) {
-      console.warn("[Driver] Boot Supabase falhou, usando arrays vazios.", err);
+      console.warn("[Driver] Boot Supabase falhou, usando local storage.", err);
       // Fallback para não quebrar a UI
-      __dbUsers = SEED_USERS || [];
-      __dbArticles = SEED_ARTICLES || [];
+      __dbUsers = load(KEYS.users, typeof SEED_USERS !== 'undefined' ? SEED_USERS : []);
+      __dbArticles = load(KEYS.articles, typeof SEED_ARTICLES !== 'undefined' ? SEED_ARTICLES : []);
     }
   }
 
   function save(key, data) {
-    // Legacy stub para componentes velhos não quebrarem (auth.html, painel)
-    // No futuro o save fará um POST /api/db/...
+    const isPersistable = [KEYS.session, KEYS.settings, KEYS.users, KEYS.articles].includes(key) || key.startsWith('pl_live_');
+    if (isPersistable) {
+      try { localStorage.setItem(key, JSON.stringify(data)); } catch(e){}
+    }
     if(key === KEYS.settings) __dbSettings = data;
     else if(key === KEYS.users) __dbUsers = data;
     else if(key === KEYS.articles) __dbArticles = data;
+  }
+
+  function load(key, defaultVal) {
+    try {
+      const v = localStorage.getItem(key);
+      return v ? JSON.parse(v) : defaultVal;
+    } catch(e) { return defaultVal; }
   }
 
   // Substituímos o init() antigo por isso
@@ -150,6 +174,7 @@ const Driver = (() => {
     }
 
     __dbUsers.push(user);
+    save(KEYS.users, __dbUsers);
     return user;
   }
   async function updateUser(id, updates) {
@@ -171,6 +196,7 @@ const Driver = (() => {
       console.warn('API DB inacessível na atualização de usuário.', err);
     }
     
+    save(KEYS.users, __dbUsers);
     return __dbUsers[idx];
   }
 
@@ -221,6 +247,7 @@ const Driver = (() => {
     }
     
     __dbArticles.push(article);
+    save(KEYS.articles, __dbArticles);
     return article;
   }
 
@@ -244,6 +271,7 @@ const Driver = (() => {
       console.warn('API DB inacessível na atualização, mantendo local.', err);
     }
 
+    save(KEYS.articles, __dbArticles);
     return __dbArticles[idx];
   }
 
@@ -257,7 +285,16 @@ const Driver = (() => {
   // ============================
   // SESSION (current logged in user)
   // ============================
-  function login(userId) { save(KEYS.session, { userId, loggedAt: Date.now() }); }
+  async function login(email, pass) { 
+    // In memory match (future: POST /api/auth/login)
+    const user = __dbUsers.find(u => u.email === email);
+    if(user) {
+      save(KEYS.session, { userId: user.id, loggedAt: Date.now() });
+      return user;
+    }
+    return null;
+  }
+  function forceLoginById(userId) { save(KEYS.session, { userId, loggedAt: Date.now() }); }
   function logout() { localStorage.removeItem(KEYS.session); }
   function getSession() { return load(KEYS.session, null); }
   function getCurrentUser() {
@@ -269,7 +306,7 @@ const Driver = (() => {
   // ============================
   // SETTINGS
   // ============================
-  function getSettings() { return load(KEYS.settings, SEED_SETTINGS); }
+  function getSettings() { return load(KEYS.settings, typeof SEED_SETTINGS !== 'undefined' ? SEED_SETTINGS : {}); }
   function updateSetting(key, value) {
     const s = getSettings();
     s[key] = value;
@@ -458,14 +495,15 @@ const Driver = (() => {
   // PUBLIC API
   // ============================
   return {
-    // Users
+    init, reset, bootSupabase,
+    RACING_CATEGORIES,
     getUsers, getUserById, getUsersByType, addUser, updateUser,
     // Articles
     getArticles, getArticleById, getArticlesByAuthor, getArticlesByStatus,
     getPublishedByAuthor, getPendingArticles, getMonthlyUsage, getRemainingArticles,
     addArticle, updateArticle, changeArticleStatus,
     // Session
-    login, logout, getSession, getCurrentUser, isLoggedIn,
+    login, forceLoginById, logout, getSession, getCurrentUser, isLoggedIn,
     // Settings
     getSettings, updateSetting,
     // Stats

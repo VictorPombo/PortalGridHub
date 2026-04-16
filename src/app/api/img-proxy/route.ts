@@ -34,7 +34,7 @@ export async function GET(request: Request) {
       .webp({ quality: 80 }) // Formato webp para performance
       .toBuffer();
 
-    return new NextResponse(processedBuffer, {
+    return new NextResponse(processedBuffer as any, {
       status: 200,
       headers: {
         "Content-Type": "image/webp",

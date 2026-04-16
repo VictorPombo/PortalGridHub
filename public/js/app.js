@@ -649,12 +649,29 @@ async function doLogin(){
     toast('Erro no sistema (Driver não encontrado)','err');
   }
 }
-function loginAs(type){
+async function loginAs(type){
   toast('Entrando como '+type+'...','info');
+  // Encontrar um usuário com esse tipo e logar mockado
+  if (typeof Driver !== 'undefined') {
+    const users = Driver.getUsers().filter(u => u.type === (type==='admin'?'admin':type));
+    if (users.length > 0) {
+      Driver.forceLoginById(users[0].id);
+    } else {
+      // Create a dummy session by creating a dummy user
+      const u = await Driver.addUser({
+        name: type === 'equipe' ? 'Equipe Demo' : type === 'categoria' ? 'Liga Demo' : 'Felipe Massa Demo',
+        email: 'demo@' + type + '.com',
+        type: type === 'admin' ? 'admin' : type,
+        status: 'active',
+        plan: type === 'equipe' ? 'equipe' : type === 'categoria' ? 'categoria' : 'pro'
+      });
+      if(u) Driver.forceLoginById(u.id);
+    }
+  }
   setTimeout(() => {
     const t = type === 'equipe' ? 'dashboard-equipe.html' : type === 'categoria' ? 'dashboard-categoria.html' : type === 'admin' ? 'admin.html' : 'dashboard-piloto.html';
     window.location.href = t;
-  }, 500);
+  }, 200);
 }
 function doLogout(){toast('Saindo...','info');setTimeout(()=>showView('portal'),500)}
 
@@ -1293,3 +1310,4 @@ function renderHero(rssFeed, saasFeed) {
     hSide2.style.overflow = 'hidden';
   }
 }
+

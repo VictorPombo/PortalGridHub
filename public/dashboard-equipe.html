@@ -47,10 +47,14 @@
 <script>
 if (!Driver.isLoggedIn()) { window.location = 'cadastro.html'; }
 const USER = Driver.getCurrentUser();
-if (!USER) { window.location = 'cadastro.html'; }
+if (!USER) { 
+  window.location = 'cadastro.html'; 
+} else {
 
 document.getElementById('navUserInfo').innerHTML = `<span style="font-family:var(--fm);font-size:10px;color:var(--dim)">${USER.name}</span><div style="width:32px;height:32px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:11px;font-weight:700;color:#000">${USER.avatar}</div>`;
 document.getElementById('sidebarProfile').innerHTML = `<div class="dash-avatar" style="background:var(--gold);color:#000">${USER.avatar}</div><div class="dash-user-name">${USER.name}</div><div class="dash-user-plan" style="color:var(--gold)">${Driver.getPlanName(USER.plan)}</div><div class="dash-plan-badge" style="border-color:var(--gold);color:var(--gold)">EQUIPE</div>`;
+
+}
 
 function renderOverview() {
   const stats = Driver.getUserStats(USER.id);
@@ -81,6 +85,11 @@ function renderCompose() {
       <div class="composer-header"><span class="composer-title">Enviar para Redação</span><span style="font-family:var(--fm);font-size:10px;color:var(--muted)">${stats.remaining} restante(s)</span></div>
       <div class="composer-body">
         <div class="form-field"><label class="form-label">Título</label><input class="form-input" id="compTitle" type="text" placeholder="Título da matéria"></div>
+        <div class="form-field"><label class="form-label">Contexto</label>
+          <select class="form-select" id="compType">
+            <option>Corrida / Resultado</option><option>Treino / Classificação</option><option>Preparação da Equipe</option><option>Patrocinador</option><option>Outro</option>
+          </select>
+        </div>
         <div class="form-field"><label class="form-label">Descrição</label><textarea class="form-textarea" id="compBrief" placeholder="Descreva o conteúdo..." style="min-height:150px"></textarea></div>
       </div>
       <div class="composer-footer">
@@ -90,8 +99,8 @@ function renderCompose() {
     </div>`}`;
 }
 
-function saveDraft() { const t=document.getElementById('compTitle')?.value; if(!t){showToast('Informe o título','err');return;} Driver.addArticle({authorId:USER.id,title:t,brief:document.getElementById('compBrief')?.value||'',body:'',img:'',status:'draft',category:USER.category||''}); showToast('✓ Rascunho salvo!','ok'); renderOverview(); renderArticles(); }
-function submitArticle() { const t=document.getElementById('compTitle')?.value,b=document.getElementById('compBrief')?.value; if(!t){showToast('Título obrigatório','err');return;} if(!b||b.length<50){showToast('Descrição: mín. 50 caracteres','err');return;} Driver.addArticle({authorId:USER.id,title:t,brief:b,body:'',img:'',status:'sent',submittedAt:new Date().toISOString().split('T')[0],category:USER.category||''}); showToast('✓ Enviada!','ok'); renderOverview();renderCompose();renderArticles();eqNav('articles'); }
+function saveDraft() { const t=document.getElementById('compTitle')?.value; if(!t){showToast('Informe o título','err');return;} const tp=document.getElementById('compType')?.value; const b=document.getElementById('compBrief')?.value||''; Driver.addArticle({authorId:USER.id,title:t,brief:b?`[Contexto: ${tp}]\n\n${b}`:'',body:'',img:'',status:'draft',category:USER.category||''}); showToast('✓ Rascunho salvo!','ok'); renderOverview(); renderArticles(); }
+function submitArticle() { const t=document.getElementById('compTitle')?.value,b=document.getElementById('compBrief')?.value,tp=document.getElementById('compType')?.value; if(!t){showToast('Título obrigatório','err');return;} if(!b||b.length<50){showToast('Descrição: mín. 50 caracteres','err');return;} Driver.addArticle({authorId:USER.id,title:t,brief:`[Contexto: ${tp}]\n\n${b}`,body:'',img:'',status:'sent',submittedAt:new Date().toISOString().split('T')[0],category:USER.category||''}); showToast('✓ Enviada!','ok'); renderOverview();renderCompose();renderArticles();eqNav('articles'); }
 
 function renderArticles() {
   const articles = Driver.getArticlesByAuthor(USER.id).sort((a,b)=>(b.publishedAt||b.submittedAt||'9999').localeCompare(a.publishedAt||a.submittedAt||'9999'));
@@ -116,11 +125,23 @@ function renderProfile() {
     <div class="profile-section" style="max-width:600px"><h3>Dados da Equipe</h3>
       <div class="form-field"><label class="form-label">Nome</label><input class="form-input" id="profName" value="${USER.name}"></div>
       <div class="form-field"><label class="form-label">Descrição</label><textarea class="form-textarea" id="profBio">${USER.bio||''}</textarea></div>
-      <div class="form-field"><label class="form-label">Categoria</label><select class="form-select" id="profCat">${['Stock Car','Porsche Cup','F4 Brasil','MotoGP','Sim Racing','NASCAR'].map(c=>`<option ${c===USER.category?'selected':''}>${c}</option>`).join('')}</select></div>
+      <div class="form-field"><label class="form-label" style="display:flex;justify-content:space-between"><span>Categorias de Atuação</span> <span style="color:var(--dim);text-transform:none;letter-spacing:normal;font-family:var(--fb)">Você pode selecionar várias</span></label><div id="eqCategoryPicker"></div></div>
       <button class="btn-primary" onclick="saveEqProfile()">Salvar</button>
     </div>`;
+  if (typeof renderCategoryPicker === 'function') {
+    renderCategoryPicker('eqCategoryPicker', USER.categories || (USER.category ? [USER.category] : []));
+  }
 }
-function saveEqProfile() { Driver.updateUser(USER.id,{name:document.getElementById('profName').value,bio:document.getElementById('profBio').value,category:document.getElementById('profCat').value}); showToast('✓ Equipe atualizada!','ok'); }
+function saveEqProfile() { 
+  const cats = typeof getSelectedCategories === 'function' ? getSelectedCategories() : [];
+  Driver.updateUser(USER.id,{
+    name:document.getElementById('profName').value,
+    bio:document.getElementById('profBio').value,
+    category:cats.length > 0 ? cats.join(', ') : '',
+    categories: cats
+  }); 
+  showToast('✓ Equipe atualizada!','ok'); 
+}
 
 function eqNav(n, btn) {
   ['overview','compose','articles','pilots','profile'].forEach(s=>{document.getElementById('eq-'+s).style.display=s===n?'block':'none'});
@@ -130,7 +151,9 @@ function eqNav(n, btn) {
   if(n==='overview')renderOverview();if(n==='compose')renderCompose();if(n==='articles')renderArticles();if(n==='pilots')renderPilots();if(n==='profile')renderProfile();
 }
 
-renderOverview();
+if (USER) {
+  renderOverview();
+}
 </script>
 </body>
 </html>

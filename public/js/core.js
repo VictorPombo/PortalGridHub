@@ -98,6 +98,69 @@ function initFAQ() {
 }
 
 /* ====== TOGGLE ====== */
+
+/* ══ CATEGORY PICKER ══ */
+function renderCategoryPicker(containerId, initialSelected = []) {
+  if (typeof Driver === 'undefined' || !Driver.RACING_CATEGORIES) return;
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  const cats = Driver.RACING_CATEGORIES;
+  let html = `<div class="cat-picker">`;
+  
+  // Backward compatibility filter
+  const oldCats = initialSelected.filter(s => typeof s === 'string' && !s.includes(' - '));
+  
+  for (const group in cats) {
+    const subcats = cats[group];
+    const selCount = subcats.filter(s => initialSelected.includes(`${group} - ${s}`) || oldCats.includes(s)).length;
+    
+    html += `
+      <div class="cat-picker-group">
+        <div class="cat-picker-head" onclick="this.nextElementSibling.classList.toggle('open')">
+          <span>${group}</span>
+          ${selCount > 0 ? `<span class="qty">${selCount}</span>` : ''}
+        </div>
+        <div class="cat-picker-body">
+    `;
+    
+    subcats.forEach(sub => {
+      const val = `${group} - ${sub}`;
+      const checked = (initialSelected.includes(val) || initialSelected.includes(sub)) ? 'checked' : '';
+      html += `
+          <div class="cat-checkbox-wrap">
+            <input type="checkbox" value="${val}" id="chk_${val.replace(/\W/g,'')}" class="cat-chk" ${checked}>
+            <label for="chk_${val.replace(/\W/g,'')}">${sub}</label>
+          </div>
+      `;
+    });
+    
+    html += `</div></div>`;
+  }
+  
+  html += `</div>`;
+  container.innerHTML = html;
+  
+  const chks = container.querySelectorAll('.cat-chk');
+  chks.forEach(chk => {
+    chk.addEventListener('change', () => {
+      const g = chk.closest('.cat-picker-group');
+      const headQty = g.querySelector('.qty');
+      const count = g.querySelectorAll('.cat-chk:checked').length;
+      if (count > 0) {
+        if (headQty) headQty.innerText = count;
+        else g.querySelector('.cat-picker-head').insertAdjacentHTML('beforeend', `<span class="qty">${count}</span>`);
+      } else {
+        if (headQty) headQty.remove();
+      }
+    });
+  });
+}
+
+function getSelectedCategories() {
+  const chks = document.querySelectorAll('.cat-chk:checked');
+  return Array.from(chks).map(c => c.value);
+}
 function initToggles() {
   document.querySelectorAll('.toggle').forEach(t=>{
     t.addEventListener('click', ()=>{

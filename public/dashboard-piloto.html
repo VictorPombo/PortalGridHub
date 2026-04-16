@@ -36,9 +36,9 @@
       <li><a onclick="showSection('articles',this)"><span class="nav-icon"><i data-lucide="newspaper" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Minhas Matérias</a></li>
       <div class="dash-nav-sep"></div>
       <li><a onclick="showSection('profile',this)"><span class="nav-icon"><i data-lucide="user-check" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Editar Perfil</a></li>
-      <li><a onclick="showSection('mediakit',this)"><span class="nav-icon"><i data-lucide="paperclip" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Mídia Kit</a></li>
+      <li><a style="cursor:not-allowed;opacity:.6" onclick="showToast('Disponível no lançamento','info')"><span class="nav-icon"><i data-lucide="paperclip" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Mídia Kit <span id="count_mk" style="font-family:var(--fu);font-size:9px;font-weight:700;color:var(--acc);margin-left:auto;letter-spacing:0.5px;text-transform:uppercase;background:rgba(232,0,45,0.1);padding:3px 6px;border-radius:3px"></span></a></li>
       <div class="dash-nav-sep"></div>
-      <li><a href="piloto.html"><span class="nav-icon"><i data-lucide="globe" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i></span> Ver Landing Page</a></li>
+      <li><a style="cursor:not-allowed;opacity:.6" onclick="showToast('Disponível no lançamento','info')"><span class="nav-icon"><i data-lucide="globe" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i></span> Ver Landing Page <span id="count_lp" style="font-family:var(--fu);font-size:9px;font-weight:700;color:var(--acc);margin-left:auto;letter-spacing:0.5px;text-transform:uppercase;background:rgba(232,0,45,0.1);padding:3px 6px;border-radius:3px"></span></a></li>
       <li><a href="#" onclick="Driver.logout();window.location='cadastro.html'"><span class="nav-icon"><i data-lucide="log-out" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Sair</a></li>
     </ul>
   </aside>
@@ -65,7 +65,9 @@
 // ============================
 if (!Driver.isLoggedIn()) { window.location = 'cadastro.html'; }
 const USER = Driver.getCurrentUser();
-if (!USER) { window.location = 'cadastro.html'; }
+if (!USER) { 
+  window.location = 'cadastro.html'; 
+} else {
 
 // ============================
 // Render sidebar
@@ -76,10 +78,11 @@ document.getElementById('navUserInfo').innerHTML = `
 `;
 document.getElementById('sidebarProfile').innerHTML = `
   <div class="dash-avatar">${USER.avatar}</div>
-  <div class="dash-user-name">${USER.name}</div>
+  <div class="dash-user-name">${USER.name || 'Piloto'}</div>
   <div class="dash-user-plan">${Driver.getPlanName(USER.plan)} · ${USER.type.charAt(0).toUpperCase() + USER.type.slice(1)}</div>
-  <div class="dash-plan-badge">${USER.plan.toUpperCase()}</div>
+  <div class="dash-plan-badge">${(USER.plan || '').toUpperCase()}</div>
 `;
+}
 
 // ============================
 // Render Overview
@@ -175,7 +178,18 @@ function renderCompose() {
         <span style="font-family:var(--fm);font-size:10px;color:var(--muted)">${stats.remaining} matéria(s) restante(s) este mês</span>
       </div>
       <div class="composer-body">
-        <div class="form-field"><label class="form-label">Título da matéria</label><input class="form-input" id="compTitle" type="text" placeholder="Ex: Como me preparei para a etapa de Interlagos"></div>
+        <div class="form-field"><label class="form-label">Título da Matéria</label>
+          <input class="form-input" id="compTitle" type="text" placeholder="Ex: Como me preparei para a etapa de Interlagos">
+        </div>
+        <div class="form-field"><label class="form-label">Contexto / Tipo de Matéria</label>
+          <select class="form-select" id="compType">
+            <option>Corrida (Relatório / Resultado)</option>
+            <option>Treino (Treino Livre / Classificação)</option>
+            <option>Preparação (Física / Simulador)</option>
+            <option>Patrocinador (Ação de Marketing / Novo Patrocínio)</option>
+            <option>Outro (Anúncio Geral / Novidade)</option>
+          </select>
+        </div>
         <div class="form-field"><label class="form-label">Descrição / Briefing</label><textarea class="form-textarea" id="compBrief" placeholder="Descreva o conteúdo. Nossa redação vai transformar em matéria jornalística profissional." style="min-height:150px"></textarea><div class="form-hint">Mínimo 50 caracteres · Quanto mais detalhes, melhor o resultado</div></div>
         
         <div class="form-field">
@@ -197,10 +211,10 @@ function renderCompose() {
           `}
         </div>
 
-        <div class="form-field"><label class="form-label">Categoria</label>
+        <div class="form-field"><label class="form-label" style="display:flex;justify-content:space-between"><span>Categoria Associada</span><span style="font-size:10px;color:var(--dim);text-transform:none">Opcional</span></label>
           <select class="form-select" id="compCategory">
-            <option>${USER.category || 'Stock Car'}</option>
-            <option>Fórmula 1</option><option>MotoGP</option><option>WEC</option><option>Sim Racing</option><option>NASCAR</option><option>Rally</option>
+            ${(USER.categories?.length ? USER.categories : (USER.category ? [USER.category] : [])).map(c => `<option value="${c}">${c.includes(' - ') ? c.split(' - ')[1] : c}</option>`).join('')}
+            <option value="Notícia Geral">Geral / Múltiplas</option>
           </select>
         </div>
       </div>
@@ -215,6 +229,10 @@ function renderCompose() {
 
 function _getFinalBrief() {
   let brief = document.getElementById('compBrief')?.value || '';
+  const type = document.getElementById('compType')?.value || '';
+  const cat = document.getElementById('compCategory')?.value || 'N/A';
+  if(brief) brief = `[Contexto: ${type}]\n[Categoria Relacionada: ${cat}]\n\n` + brief;
+
   
   if (USER.plan === 'pro' || USER.plan === 'equipe' || USER.plan === 'categoria') {
     let appends = [];
@@ -224,29 +242,47 @@ function _getFinalBrief() {
     if (document.getElementById('incGoals')?.checked) appends.push('Meta/Objetivos: ' + (USER.goals || 'Nenhuma registrada.'));
     
     if (appends.length > 0) {
-      brief += '\\n\\n--- DADOS PRO INCLUÍDOS DURANTE O ENVIO ---\\n' + appends.join('\\n');
+      brief += '\n\n--- DADOS PRO INCLUÍDOS DURANTE O ENVIO ---\n' + appends.join('\n');
     }
   }
   return brief;
 }
 
 function saveDraft() {
-  const title = document.getElementById('compTitle')?.value;
-  const brief = _getFinalBrief();
-  if (!title) { showToast('Informe pelo menos um título','err'); return; }
-  Driver.addArticle({ authorId: USER.id, title, brief: brief || '', body: '', img: '', status: 'draft', category: document.getElementById('compCategory')?.value || '' });
-  showToast('✓ Rascunho salvo!','ok');
-  renderOverview(); renderArticles();
+  const t = document.getElementById('compTitle')?.value;
+  if (!t) { showToast('Informe o título', 'err'); return; }
+  const c = document.getElementById('compCategory')?.value || '';
+  Driver.addArticle({
+    authorId: USER.id,
+    title: t,
+    brief: _getFinalBrief(),
+    body: '',
+    img: '',
+    status: 'draft',
+    category: c
+  });
+  showToast('✓ Rascunho salvo!', 'ok');
+  renderOverview();
+  renderArticles();
 }
 
 function submitArticle() {
-  const title = document.getElementById('compTitle')?.value;
+  const t = document.getElementById('compTitle')?.value;
   const brief = document.getElementById('compBrief')?.value; // check original min length
-  if (!title) { showToast('Informe o título','err'); return; }
-  if (!brief || brief.length < 50) { showToast('Descrição deve ter pelo menos 50 caracteres','err'); return; }
-  
-  const finalBrief = _getFinalBrief();
-  Driver.addArticle({ authorId: USER.id, title, brief: finalBrief, body: '', img: '', status: 'sent', submittedAt: new Date().toISOString().split('T')[0], category: document.getElementById('compCategory')?.value || '' });
+  if (!t) { showToast('Título obrigatório', 'err'); return; }
+  if (!brief || brief.length < 50) { showToast('O briefing deve conter pelo menos 50 caracteres para gerar uma boa matéria.', 'err'); return; }
+  const c = document.getElementById('compCategory')?.value || '';
+
+  Driver.addArticle({
+    authorId: USER.id,
+    title: t,
+    brief: _getFinalBrief(),
+    body: '',
+    img: '',
+    status: 'sent',
+    submittedAt: new Date().toISOString().split('T')[0],
+    category: c
+  });
   showToast('✓ Matéria enviada para a redação! Acompanhe o status em "Minhas Matérias".','ok');
   renderOverview(); renderCompose(); renderArticles();
   showSection('articles');
@@ -314,6 +350,12 @@ function renderProfile() {
     <div class="dash-header"><h1>Editar Perfil</h1></div>
     <div class="profile-grid">
       <div class="profile-section">
+        <h3>Foto Principal</h3>
+        <label class="avatar-upload" onclick="showToast('Upload de imagem da galeria (em breve)', 'info')">
+          ${USER.avatar_url ? `<img src="${USER.avatar_url}" alt="">` : `<i data-lucide="camera" style="width:24px;height:24px;color:var(--dim)"></i><div style="position:absolute;font-family:var(--fu);font-size:11px;font-weight:700;color:#fff">${USER.avatar}</div>`}
+        </label>
+        <p style="font-size:12px;color:var(--muted);margin-top:-8px;margin-bottom:24px">Sua foto aparecerá nas matérias e na Landing Page.</p>
+        
         <h3>Dados Básicos</h3>
         <div class="form-field"><label class="form-label">Nome de Piloto</label><input class="form-input" id="profPilotName" type="text" value="${USER.pilot_name || USER.name || ''}"></div>
         <div class="form-field"><label class="form-label">E-mail</label><input class="form-input" type="email" value="${USER.email}" disabled style="opacity:.5"></div>
@@ -322,10 +364,8 @@ function renderProfile() {
         
         <div style="margin-top:24px;border-top:1px solid var(--bg3);padding-top:16px;"></div>
         <h3>Carreira e Competição</h3>
-        <div class="form-field"><label class="form-label">Categoria de Atuação</label>
-          <select class="form-select" id="profCategory">
-            ${['Stock Car','F4 Brasil','Porsche Cup','Fórmula 1','MotoGP','Sim Racing','Kart','NASCAR','WEC','Rally'].map(c => `<option ${c === USER.category ? 'selected' : ''}>${c}</option>`).join('')}
-          </select>
+        <div class="form-field"><label class="form-label" style="display:flex;justify-content:space-between"><span>Categorias de Atuação</span> <span style="color:var(--dim);text-transform:none;letter-spacing:normal;font-family:var(--fb)">Você pode selecionar várias</span></label>
+          <div id="profCategoryPicker"></div>
         </div>
         <div class="form-field"><label class="form-label">Equipe Atual</label><input class="form-input" id="profTeam" type="text" value="${USER.team || ''}"></div>
         <div class="form-field"><label class="form-label">Número do Carro</label><input class="form-input" id="profNumber" type="text" value="${USER.number || ''}"></div>
@@ -348,15 +388,22 @@ function renderProfile() {
         <button class="btn-primary" onclick="saveProfile()" style="margin-top:24px;width:100%;font-size:16px;padding:12px">💾 SALVAR TODOS OS DADOS</button>
       </div>
     </div>
+    </div>
   `;
+  
+  if (typeof renderCategoryPicker === 'function') {
+    renderCategoryPicker('profCategoryPicker', USER.categories || (USER.category ? [USER.category] : []));
+  }
 }
 
 async function saveProfile() {
+  const cats = typeof getSelectedCategories === 'function' ? getSelectedCategories() : [];
   const updated = await Driver.updateUser(USER.id, {
     pilot_name: document.getElementById('profPilotName').value,
     dob: document.getElementById('profDob').value,
     city: document.getElementById('profCity').value,
-    category: document.getElementById('profCategory').value,
+    category: cats.length > 0 ? cats.join(', ') : '',
+    categories: cats,
     team: document.getElementById('profTeam').value,
     number: document.getElementById('profNumber').value,
     last_race: document.getElementById('profLastRace').value,
@@ -412,11 +459,29 @@ function showSection(name, btnEl) {
 }
 
 // Initial render
-renderOverview();
-renderCompose();
-renderArticles();
-renderProfile();
-renderMediaKit();
+if (USER) {
+  renderOverview();
+  renderCompose();
+  renderArticles();
+  renderProfile();
+  renderMediaKit();
+  
+  // Launch Countdown Injector
+  let launchTime = localStorage.getItem('pl_launch_cd');
+  if (!launchTime) { launchTime = Date.now() + (48 * 60 * 60 * 1000); localStorage.setItem('pl_launch_cd', launchTime); }
+  setInterval(() => {
+    let diff = launchTime - Date.now();
+    if (diff <= 0) diff = 0;
+    const h = Math.floor(diff / (1000 * 60 * 60));
+    const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const s = Math.floor((diff % (1000 * 60)) / 1000);
+    const t = diff > 0 ? `Lançamento em ${h}h ${m}m ${s}s` : 'Lançado';
+    const c1 = document.getElementById('count_mk');
+    const c2 = document.getElementById('count_lp');
+    if (c1) c1.innerText = t;
+    if (c2) c2.innerText = t;
+  }, 1000);
+}
 </script>
 </body>
 </html>
