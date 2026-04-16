@@ -995,19 +995,12 @@
           </div>
         </div>
       </div>
-      <!-- Register form -->
-      <div id="auth-register" class="hide">
-        <div class="form-grid" style="margin-bottom:14px">
-          <div class="f-group"><label class="f-label">Nome</label><input class="f-input" type="text" placeholder="Seu nome completo"></div>
-          <div class="f-group"><label class="f-label">Tipo de conta</label>
-            <select class="f-input f-select">
-              <option>Piloto</option><option>Equipe</option><option>Categoria</option>
-            </select>
-          </div>
-        </div>
-        <div class="f-group" style="margin-bottom:14px"><label class="f-label">E-mail</label><input class="f-input" type="email" placeholder="seu@email.com"></div>
-        <div class="f-group" style="margin-bottom:20px"><label class="f-label">Senha</label><input class="f-input" type="password" placeholder="Mínimo 8 caracteres"></div>
-        <button class="btn btn-acc btn-full" onclick="toast('Conta criada! Verifique seu e-mail.','ok');showView('dash-piloto')">Criar conta →</button>
+      <!-- Register form redirect -->
+      <div id="auth-register" class="hide" style="text-align:center;padding:24px 12px">
+        <div style="font-family:var(--fd);font-size:24px;margin-bottom:8px">COMECE SUA JORNADA</div>
+        <p style="color:var(--dim);font-size:14px;margin-bottom:24px;line-height:1.5">Escolha seu plano e junte-se aos pilotos e equipes do maior portal agregador de automobilismo.</p>
+        <button class="btn btn-acc btn-full" onclick="window.location.href='planos.html'">Conhecer os Planos →</button>
+        <button class="btn btn-out btn-full" style="margin-top:12px" onclick="window.location.href='cadastro.html?plan=starter'">Criar Conta Gratuita</button>
       </div>
     </div>
   </div>
