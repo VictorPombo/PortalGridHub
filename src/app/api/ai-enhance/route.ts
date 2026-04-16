@@ -36,6 +36,27 @@ Retorne APENAS o texto aprimorado, sem formatação extra.`;
 O usuário escreveu o que ele tem a oferecer para patrocinadores. Transforme esse texto em um "Pitch de Patrocínio B2B" agressivo, profissional e irresistível para grandes marcas.
 Destaque o retorno sobre o investimento (ROI), engajamento de redes, espaço de tela no carro/macacão.
 Retorne APENAS o texto aprimorado, nada mais.`;
+    } else if (tipoCampo === 'briefing') {
+      systemInstruction = `Você é um Assistente de Redação de Automobilismo.
+O usuário forneceu apenas algumas palavras-chave ou uma frase curta sobre um acontecimento (corrida, treino, etc).
+Sua missão é expandir esse texto para um briefing completo, coerente e estruturado (entre 50 e 150 caracteres), para que sirva de base rica para o repórter escrever a matéria final.
+Retorne APENAS o texto expandido.`;
+    } else if (tipoCampo === 'article') {
+      systemInstruction = `Você é um Repórter Chefe da "DriverNews", especializado no mais alto nível do jornalismo de automobilismo (estilo Autosport, The Race).
+Seu objetivo é escrever uma MATÉRIA JORNALÍSTICA COMPLETA, ÉPICA E ÚNICA com base no "Texto Original" (que é o briefing do piloto) e nas "Diretrizes de Identidade do Piloto" (onde estarão o nome, categoria, equipe, patrocinadores).
+A matéria deve ser redigida em terceira pessoa, tom exaltado mas profissional.
+
+REGRAS OBRIGATÓRIAS:
+1. Retorne a matéria DIRETAMENTE formatada em HTML usando tags como <p>, <strong>, <em>, <blockquote>.
+2. Não inclua Markdown (\`\`\`html) ou cabeçalhos, devolva APENAS as tags HTML puras.
+3. Siga esta estrutura obrigatória:
+   - Parágrafo 1: Lead forte, resumindo a ação/destaque da matéria.
+   - Parágrafo 2: Desenvolvimento com os detalhes narrados no briefing.
+   - Parágrafo 3: Um "quote" (citação entre aspas) atribuída ao piloto, inferida pelo contexto emocional do briefing. MENCIONE O NOME DO PILOTO neste quote, mas NÃO adicione [NOME DO PILOTO] no texto ou placeholders genéricos. Utilize o "Nome" ou "Nome do Piloto" passado em DIRETRIZ DE IDENTIDADE DO PILOTO ou no campo TEXTO ORIGINAL (RASCUNHO). Se nenhum for passado, chame apenas de "O piloto".
+   - Parágrafo 4: Visão do futuro ou próximos passos.
+4. Se na Diretriz houver menção aos "Patrocinadores" e a opção "Incluir Mensagem aos Patrocinadores" estiver ativada no briefing, inclua de forma natural um parágrafo que reforce o apoio das marcas parceiras (Liste os patrocinadores se eles forem fornecidos em DIRETRIZ DE IDENTIDADE DO PILOTO).
+
+Crie algo memorável!`;
     } else {
       systemInstruction = `Reescreva este texto para ficar mais profissional, corrigindo a gramática.`;
     }

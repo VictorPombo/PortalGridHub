@@ -222,7 +222,10 @@ function renderCompose() {
           <input class="form-input" id="compTypeCustom" type="text" placeholder="Descreva o tipo de matéria..." style="display:none;margin-top:8px">
         </div>
 
-        <div class="form-field"><label class="form-label">Descrição / Briefing</label>
+        <div class="form-field"><label class="form-label" style="display:flex;justify-content:space-between;align-items:center">
+            <span>Descrição / Briefing</span>
+            <button class="btn-ghost btn-sm" style="color:var(--acc);padding:4px 8px;font-size:10px" onclick="enhanceBriefing()"><i class="fi fi-rr-magic-wand"></i> ✨ Expandir com IA</button>
+          </label>
           <textarea class="form-textarea" id="compBrief" placeholder="Descreva os detalhes do conteúdo. Inclua resultados, sentimentos, dados técnicos e destaques. Quanto mais rico o briefing, melhor a matéria profissional produzida pela redação." style="min-height:160px"></textarea>
           <div class="form-hint">Mínimo 50 caracteres · A redação transformará seu briefing em matéria jornalística profissional</div>
         </div>
@@ -440,7 +443,34 @@ function saveDraft() {
   renderArticles();
 }
 
-function submitArticle() {
+async function enhanceBriefing() {
+  const briefInput = document.getElementById('compBrief');
+  const text = briefInput?.value;
+  if (!text || text.trim().length < 5) {
+    showToast('Digite algumas palavras-chave primeiro.', 'err');
+    return;
+  }
+  showToast('🤖 IA expandindo seu briefing...', 'info');
+  try {
+    const res = await fetch('/api/ai-enhance', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ textoOriginal: text, tipoCampo: 'briefing' })
+    });
+    const data = await res.json();
+    if (data.enhancedText) {
+      briefInput.value = data.enhancedText;
+      showToast('✓ Briefing expandido!', 'ok');
+    } else {
+      showToast('Ops! Tente novamente.', 'err');
+    }
+  } catch (e) {
+    console.error(e);
+    showToast('Erro ao contatar IA.', 'err');
+  }
+}
+
+async function submitArticle() {
   const t = document.getElementById('compTitle')?.value;
   const brief = document.getElementById('compBrief')?.value;
   if (!t) { showToast('Título obrigatório', 'err'); return; }
@@ -452,11 +482,24 @@ function submitArticle() {
   const finalBrief = _getFinalBrief();
 
   // Mostrar loading
-  showToast('🤖 Gerando matéria profissional com IA...', 'info');
+  showToast('🤖 AI Redação escrevendo artigo final...', 'info');
 
-  // Simular processamento da IA (300ms)
-  setTimeout(() => {
-    const aiBody = _generateAIArticle(t, brief, finalBrief, articleType, USER);
+  try {
+    const contextStr = `Nome: ${USER.pilot_name || USER.name}; Categoria: ${USER.category || ''}; Patrocinadores: ${USER.sponsors || ''}`;
+    const res = await fetch('/api/ai-enhance', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        textoOriginal: finalBrief, 
+        tipoCampo: 'article',
+        contexto: contextStr
+      })
+    });
+    const data = await res.json();
+    let aiBody = data.enhancedText;
+
+    if (!aiBody) throw new Error("Sem resposta da IA");
+
     const today = new Date().toISOString().split('T')[0];
 
     Driver.addArticle({
@@ -478,63 +521,11 @@ function submitArticle() {
     showToast('✓ Matéria publicada com sucesso! Já está visível no portal.','ok');
     renderOverview(); renderCompose(); renderArticles();
     showSection('articles');
-  }, 350);
-}
 
-// ============================
-// AI Article Generator
-// ============================
-function _generateAIArticle(title, rawBrief, fullBrief, articleType, pilot) {
-  const pilotName = pilot.pilot_name || pilot.name;
-  const team = pilot.team || '';
-  const category = pilot.category || '';
-  const sponsors = pilot.sponsors || '';
-  const city = pilot.city || '';
-
-  // Extrair contexto do tipo
-  const typeContext = articleType || 'Automobilismo';
-
-  // Parágrafos inteligentes baseados no briefing
-  const briefLines = rawBrief.split(/[.\n]/).filter(l => l.trim().length > 10);
-  const mainFact = briefLines[0]?.trim() || rawBrief.substring(0, 200);
-  const details = briefLines.slice(1, 4).map(l => l.trim()).filter(Boolean);
-
-  // Construir lead jornalístico
-  const lead = `${pilotName}${team ? ', piloto da ' + team : ''}${category ? ' na ' + category : ''}, é destaque nesta ${typeContext.toLowerCase().includes('corrida') ? 'etapa' : 'matéria'}. ${mainFact.charAt(0).toUpperCase() + mainFact.slice(1)}${mainFact.endsWith('.') ? '' : '.'}`;
-
-  // Corpo expandido
-  let body = `<p><strong>${lead}</strong></p>\n\n`;
-
-  // Desenvolvimento baseado nos detalhes
-  if (details.length > 0) {
-    body += `<p>${details.join('. ')}.</p>\n\n`;
+  } catch(e) {
+    console.error(e);
+    showToast('Erro interno na redação IA.', 'err');
   }
-
-  // Parágrafos contextuais baseados no tipo
-  if (typeContext.toLowerCase().includes('corrida') || typeContext.toLowerCase().includes('resultado')) {
-    body += `<p>A competição foi marcada por momentos decisivos que definiram o resultado. ${pilotName} demonstrou habilidade e determinação durante toda a prova, enfrentando os desafios da pista com a estratégia traçada pela equipe${team ? ' ' + team : ''}.</p>\n\n`;
-    body += `<p>"O trabalho de preparação fez toda a diferença. Estou muito satisfeito com o desempenho e focado nos próximos desafios", comentou ${pilotName} ao final da etapa.</p>\n\n`;
-  } else if (typeContext.toLowerCase().includes('preparação') || typeContext.toLowerCase().includes('treino')) {
-    body += `<p>A fase de preparação é fundamental para os resultados nas pistas. ${pilotName} tem investido intensamente em treinamento${city ? ' na região de ' + city : ''}, buscando a evolução contínua${category ? ' na ' + category : ''}.</p>\n\n`;
-    body += `<p>"Cada sessão de treino é uma oportunidade de aprendizado. O objetivo é chegar nas corridas com a melhor preparação possível", afirmou o piloto.</p>\n\n`;
-  } else if (typeContext.toLowerCase().includes('patrocínio') || typeContext.toLowerCase().includes('marketing')) {
-    body += `<p>A parceria representa um passo importante na carreira de ${pilotName}${category ? ' na ' + category : ''}. A visibilidade proporcionada pelo automobilismo profissional gera valor tanto para o piloto quanto para as marcas envolvidas.</p>\n\n`;
-  } else if (typeContext.toLowerCase().includes('conquista') || typeContext.toLowerCase().includes('título')) {
-    body += `<p>A conquista coroa um trabalho consistente de ${pilotName}${team ? ' e da equipe ' + team : ''}. O resultado é fruto de dedicação, talento e planejamento estratégico ao longo da temporada${category ? ' da ' + category : ''}.</p>\n\n`;
-    body += `<p>"Este é um momento especial na minha carreira. Agradeço a todos que acreditaram no meu potencial", declarou o piloto emocionado.</p>\n\n`;
-  } else {
-    body += `<p>${pilotName} segue consolidando sua trajetória no automobilismo${category ? ' na ' + category : ''}. Com dedicação e profissionalismo, o piloto${city ? ' de ' + city : ''} busca alcançar novos patamares em sua carreira esportiva.</p>\n\n`;
-  }
-
-  // Seção de patrocinadores (se houver no brief)
-  if (sponsors && fullBrief.toLowerCase().includes('patrocinadores')) {
-    body += `<p><em>Patrocínio: ${sponsors}.</em></p>\n\n`;
-  }
-
-  // Rodapé editorial
-  body += `<p style="color:#888;font-size:12px;border-top:1px solid #333;padding-top:12px;margin-top:24px"><em>Matéria produzida pela redação Driver News em parceria com ${pilotName}. Conteúdo editorial.</em></p>`;
-
-  return body;
 }
 
 // ============================
