@@ -131,10 +131,12 @@ const CHAMP_DATA={
 const DRIVERS=CHAMP_DATA.f1.drivers;
 const CONSTRUCTORS=CHAMP_DATA.f1.constructors;
 const PILOTS=[
-  {id:0,name:'Rafael Moura',cats:'F4 Brasil · Stock Car Light',plan:'Intermediário',wins:3,podios:8,img:'https://loremflickr.com/400/280/racing,driver?lock=14'},
-  {id:1,name:'Ana Torres',cats:'F4 Brasil',plan:'Básico',wins:1,podios:3,img:'https://loremflickr.com/400/280/woman,driver?lock=22'},
-  {id:2,name:'Bruno Castilho',cats:'TCR Brasil · Copa Hyundai',plan:'Intermediário',wins:5,podios:12,img:'https://loremflickr.com/400/280/motorsport,man?lock=31'},
-  {id:3,name:'Carla Mendes',cats:'Fórmula Delta · F4 Brasil',plan:'Básico',wins:0,podios:2,img:'https://loremflickr.com/400/280/sport,woman?lock=42'},
+  {id:0,name:'Rafael Moura',cats:'F4 Brasil · Stock Car Light',plan:'Intermediário',wins:3,podios:8,img:'img/pilot-rafael.png'},
+  {id:1,name:'Ana Torres',cats:'F4 Brasil',plan:'Básico',wins:1,podios:3,img:'img/pilot-ana.png'},
+  {id:2,name:'Bruno Castilho',cats:'TCR Brasil · Copa Hyundai',plan:'Intermediário',wins:5,podios:12,img:'img/pilot-bruno.png'},
+  {id:3,name:'Carla Mendes',cats:'Fórmula Delta · F4 Brasil',plan:'Básico',wins:0,podios:2,img:'img/pilot-carla.png'},
+  {id:4,name:'Beto Silva',cats:'Porsche Cup',plan:'Avançado',wins:12,podios:30,img:'https://loremflickr.com/400/280/racing,car?lock=55'},
+  {id:5,name:'Diana Souza',cats:'Turismo Nacional',plan:'Básico',wins:2,podios:5,img:'https://loremflickr.com/400/280/track,woman?lock=77'}
 ];
 
 /* ══ VIEW ROUTER ══ */
