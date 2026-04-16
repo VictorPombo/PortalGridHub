@@ -231,24 +231,31 @@ async function loadLiveNews() {
     const pipelineFeed = [...(data.brasil || []), ...(data.global || [])];
     
     // Formatar pro modelo do layout
-    const rssArticles = pipelineFeed.map((n, i) => ({
-      id: 'pr' + i,
-      cat: (n.category || 'geral').toLowerCase().replace(/ /g, ''),
-      badge: (n.category || 'geral').toLowerCase().replace(/ /g, ''),
-      kicker: 'PRESS RELEASE',
-      title: n.title,
-      link: n.source_url || '#',
-      author: n.source || 'Driver News',
-      av: '<i class="fi fi-rr-megaphone"></i>',
-      date: new Date(n.published_at).toLocaleDateString('pt-BR'),
-      img: n.image_url || '/images/placeholder-geral.jpg',
-      body: n.excerpt || '',
-      isReal: true,
-      isTranslated: n.was_translated || false,
-      source: n.source || '',
-      sourceUrl: n.source_url || '',
-      feedTipo: n.tipo || 'oficial_news',
-    }));
+    const rssArticles = pipelineFeed.map((n, i) => {
+      // Define a badge com base nas categorias
+      let cat = 'f1';
+      let badge = 'f1';
+      const cLower = (n.categories || []).join(' ').toLowerCase();
+      if (cLower.includes('motogp')) { cat = 'motogp'; badge = 'motogp'; }
+      else if (cLower.includes('wec') || cLower.includes('endurance') || cLower.includes('lemans')) { cat = 'wec'; badge = 'wec'; }
+      else if (cLower.includes('nascar')) { cat = 'nascar'; badge = 'nascar'; }
+      else if (cLower.includes('sim')) { cat = 'sim'; badge = 'sim'; }
+
+      return {
+        id: 'rss' + i,
+        cat: cat,
+        badge: badge,
+        kicker: 'LATEST NEWS',
+        title: n.title,
+        link: n.link, // Usado para redirecionar
+        author: n.author,
+        av: '<i class="fi fi-rr-newspaper"></i>',
+        date: new Date(n.pubDate).toLocaleDateString('pt-BR'),
+        img: n.thumbnail,
+        body: '',
+        isReal: true
+      };
+    });
     
     // Mix them: Dar prioridade total absoluta às Notícias Reais (2 Reais para 1 SaaS)
     const mixed = [];
@@ -260,7 +267,7 @@ async function loadLiveNews() {
       if (sIdx < saasArticles.length) mixed.push(saasArticles[sIdx++]); // 1 SaaS
     }
     
-    if (mixed.length < 3) {
+    if (mixed.length < 4) {
       throw new Error('API respondeu mas com noticias insuficientes. Forçando fallback mock.');
     }
     ARTICLES = mixed;
@@ -379,15 +386,8 @@ function renderNewsGrid() {
           <div class="ncard-title">${a.title}</div>
           <div class="ncard-excerpt">${isFeat ? 'Acompanhe de perto as novidades e análises das principais categorias no automobilismo mundial.' : ''}</div>
           <div class="ncard-meta">
-            <div class="pr-header">
-              <span class="badge-pr">PRESS RELEASE</span>
-              <span class="pr-source">Fonte: <strong>${a.author}</strong></span>
-              ${a.isTranslated ? '<span class="pr-translated"> Traduzido</span>' : ''}
-            </div>
-            <div class="pr-footer">
-              <span class="pr-date">${a.date}</span>
-              ${a.sourceUrl ? `<a href="${a.sourceUrl}" target="_blank" rel="noopener noreferrer" class="pr-ver-original" onclick="event.stopPropagation()">Ver original ↗</a>` : ''} 
-            </div>
+            <span>${a.date} · ${a.author.toUpperCase().slice(0,15)}</span>
+            <button class="ncard-bm" onclick="event.stopPropagation();toggleBookmark(this,'${a.id}')" title="Salvar"><i class="fi fi-rr-bookmark"></i></button>
           </div>
         </div>
       </div>
