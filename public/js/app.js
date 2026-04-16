@@ -131,12 +131,14 @@ const CHAMP_DATA={
 const DRIVERS=CHAMP_DATA.f1.drivers;
 const CONSTRUCTORS=CHAMP_DATA.f1.constructors;
 const PILOTS=[
-  {id:0,name:'Rafael Moura',cats:'F4 Brasil · Stock Car Light',plan:'Intermediário',wins:3,podios:8,img:'img/pilot-rafael.png'},
-  {id:1,name:'Ana Torres',cats:'F4 Brasil',plan:'Básico',wins:1,podios:3,img:'img/pilot-ana.png'},
-  {id:2,name:'Bruno Castilho',cats:'TCR Brasil · Copa Hyundai',plan:'Intermediário',wins:5,podios:12,img:'img/pilot-bruno.png'},
-  {id:3,name:'Carla Mendes',cats:'Fórmula Delta · F4 Brasil',plan:'Básico',wins:0,podios:2,img:'img/pilot-carla.png'},
-  {id:4,name:'Beto Silva',cats:'Porsche Cup',plan:'Avançado',wins:12,podios:30,img:'https://loremflickr.com/400/280/racing,car?lock=55'},
-  {id:5,name:'Diana Souza',cats:'Turismo Nacional',plan:'Básico',wins:2,podios:5,img:'https://loremflickr.com/400/280/track,woman?lock=77'}
+  {id:0,name:'Carla Mendes',cats:'F4 Brasil',plan:'Avançado',wins:3,podios:8,img:'img/pilot-carla.png'},
+  {id:1,name:'Bruno Castilho',cats:'Stock Car Pro Series',plan:'Intermediário',wins:5,podios:12,img:'img/pilot-bruno.png'},
+  {id:2,name:'Beto Silva',cats:'Copa HB20',plan:'Básico',wins:1,podios:3,img:'img/pilot-hb20.png'},
+  {id:3,name:'Diego Souza',cats:'SuperMoto · SBK',plan:'Básico',wins:0,podios:2,img:'img/pilot-moto.png'},
+  {id:4,name:'Lucas Martins',cats:'Kart Profissional',plan:'Avançado',wins:12,podios:30,img:'img/pilot-kart.png'},
+  {id:5,name:'Ana Torres',cats:'Fórmula 1600',plan:'Intermediário',wins:2,podios:5,img:'img/pilot-ana.png'},
+  {id:6,name:'Rafael Moura',cats:'Mercedes Cup AMG',plan:'Avançado',wins:4,podios:9,img:'img/pilot-rafael.png'},
+  {id:7,name:'Diana Costa',cats:'Kart Indoor',plan:'Básico',wins:0,podios:6,img:'img/pilot-kartindoor.png'}
 ];
 
 /* ══ VIEW ROUTER ══ */
