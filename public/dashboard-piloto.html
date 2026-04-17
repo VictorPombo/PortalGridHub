@@ -138,7 +138,7 @@ document.getElementById('navUserInfo').innerHTML = `
 document.getElementById('sidebarProfile').innerHTML = `
   <div class="dash-avatar" id="sideAvatar" style="overflow:hidden">${USER.avatar_url ? '<img src="'+USER.avatar_url+'" style="width:100%;height:100%;object-fit:cover">' : USER.avatar}</div>
   <div class="dash-user-name">${USER.name || 'Piloto'}</div>
-  <div class="dash-user-plan">${Driver.getPlanName(USER.plan)} · ${USER.type.charAt(0).toUpperCase() + USER.type.slice(1)}</div>
+  <div class="dash-user-plan">${Driver.getPlanName(USER.plan)} · ${USER.type ? (USER.type.charAt(0).toUpperCase() + USER.type.slice(1)) : 'Piloto'}</div>
   <div class="dash-plan-badge">${(USER.plan || '').toUpperCase()}</div>
 `;
 }
@@ -981,7 +981,7 @@ function renderProfile() {
             if(uf) loadProfCities(uf, parts.slice(0, parts.length-1).join(' - ').trim());
           } else if(rawCity) {
             const c = document.getElementById('profCity');
-            c.innerHTML = \`<option value="\${rawCity}" selected>\${rawCity}</option>\`;
+            c.innerHTML = `<option value="${rawCity}" selected>${rawCity}</option>`;
           }
         }
       }).catch(e => console.error('IBGE Error', e));

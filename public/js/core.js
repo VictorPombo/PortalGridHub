@@ -105,6 +105,8 @@ function renderCategoryPicker(containerId, initialSelected = []) {
   const container = document.getElementById(containerId);
   if (!container) return;
 
+  if (!Array.isArray(initialSelected)) initialSelected = [initialSelected].filter(Boolean);
+
   const cats = Driver.RACING_CATEGORIES;
   let html = `<div class="cat-picker">`;
   
