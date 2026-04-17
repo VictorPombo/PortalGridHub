@@ -20,6 +20,16 @@ export async function POST(req: Request) {
 
     const { event, payment, subscription } = body
 
+    // 🛠️ Função Helper: Extrair User ID (Fallback para ler da description do link de pagamento Asaas)
+    const extractUserId = (obj: any): string | null => {
+      if (obj?.externalReference) return obj.externalReference;
+      if (obj?.description && obj.description.includes('| user: ')) {
+        const parts = obj.description.split('| user: ');
+        if (parts.length > 1) return parts[1].trim();
+      }
+      return null;
+    };
+
     // ============================
     // 💳 PAGAMENTO CONFIRMADO
     // ============================
@@ -33,7 +43,7 @@ export async function POST(req: Request) {
       // segurança
       if (payment.status !== "RECEIVED" && payment.status !== "CONFIRMED") return new Response("ok")
 
-      const userId = payment.externalReference
+      const userId = extractUserId(payment)
       const paymentId = payment.id
 
       if (!userId) return new Response("ok")
@@ -69,7 +79,8 @@ export async function POST(req: Request) {
     if (event === "SUBSCRIPTION_CREATED") {
       if (!subscription) return new Response("ok")
 
-      const userId = subscription.externalReference
+      const userId = extractUserId(subscription)
+      if (!userId) return new Response("ok")
 
       await supabase.from("subscriptions").insert({
         user_id: userId,
