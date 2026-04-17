@@ -489,45 +489,11 @@ async function goStep(step) {
     document.getElementById('payPlanDaily').textContent = config.daily;
     
     if (selectedPlan === 'starter' || selectedPlan === 'pro') {
-      // Gera link DINÂMICO no Asaas com user_id
       document.getElementById('paymentCTA').style.display = 'block';
-      document.querySelector('#paymentCTA button').innerHTML = '<i class="fi fi-rr-lock" style="margin-right:8px"></i> GERANDO LINK SEGURO...';
-      document.querySelector('#paymentCTA button').style.opacity = '0.6';
-      
-      const loggedUser = Driver.getCurrentUser();
-      if (loggedUser && loggedUser.id) {
-        fetch('/api/asaas/create-subscription', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            user_id: loggedUser.id,
-            user_name: loggedUser.name,
-            user_email: loggedUser.email,
-            plan: selectedPlan,
-          }),
-        })
-        .then(r => r.json())
-        .then(data => {
-          if (data.success && data.payment_url) {
-            document.getElementById('paymentLink').href = data.payment_url;
-            document.querySelector('#paymentCTA button').innerHTML = '<i class="fi fi-rr-lock" style="margin-right:8px"></i> PAGAR ' + config.price + '/MÊS →';
-            document.querySelector('#paymentCTA button').style.opacity = '1';
-          } else {
-            console.error('Erro ao gerar link:', data);
-            // Fallback para link estático
-            document.getElementById('paymentLink').href = config.link || '#';
-            document.querySelector('#paymentCTA button').innerHTML = '<i class="fi fi-rr-lock" style="margin-right:8px"></i> PAGAR ' + config.price + '/MÊS →';
-            document.querySelector('#paymentCTA button').style.opacity = '1';
-          }
-        })
-        .catch(err => {
-          console.error('Erro na API de pagamento:', err);
-          // Fallback
-          document.getElementById('paymentLink').href = config.link || '#';
-          document.querySelector('#paymentCTA button').innerHTML = '<i class="fi fi-rr-lock" style="margin-right:8px"></i> PAGAR ' + config.price + '/MÊS →';
-          document.querySelector('#paymentCTA button').style.opacity = '1';
-        });
-      }
+      // Redireciona para a tela de checkout dentro do site
+      document.getElementById('paymentLink').href = '/checkout?plan=' + selectedPlan;
+      document.getElementById('paymentLink').removeAttribute('target'); // abre na mesma aba
+
     } else if (selectedPlan === 'free') {
       document.getElementById('paymentCTA').style.display = 'none';
       document.getElementById('step4Desc').textContent = 'Sua conta gratuita foi criada! Você pode navegar no portal e assinar um plano a qualquer momento.';

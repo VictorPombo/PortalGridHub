@@ -76,36 +76,8 @@
 // ============================
 if (!Driver.isLoggedIn()) { window.location = 'cadastro.html'; }
 const USER = Driver.getCurrentUser();
-if (!USER) { 
-  window.location = 'cadastro.html'; 
 } else if ((USER.is_active === false) && !location.hostname.includes('localhost')) {
-  let payLink = '#';
-  
-  // Gera link dinâmico via API (com user_id embutido)
-  if (USER.plan === 'equipe' || USER.plan === 'categoria') {
-    payLink = 'https://wa.me/5511976377682?text=Quero finalizar minha assinatura para ativar o painel';
-  } else {
-    (async function() {
-      try {
-        const res = await fetch('/api/asaas/create-subscription', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            user_id: USER.id,
-            user_name: USER.name,
-            user_email: USER.email,
-            plan: USER.plan || 'starter',
-          }),
-        });
-        const data = await res.json();
-        if (data.success && data.payment_url) {
-          payLink = data.payment_url;
-          const payBtn = document.querySelector('.dash-main a.btn-primary');
-          if (payBtn) payBtn.href = data.payment_url;
-        }
-      } catch(e) { console.error('Erro ao gerar link Asaas:', e); }
-    })();
-  }
+  let payLink = '/checkout?plan=' + (USER.plan || 'starter');
 
   document.querySelector('.dash-sidebar').style.opacity = '0.3';
   document.querySelector('.dash-sidebar').style.pointerEvents = 'none';
@@ -138,7 +110,7 @@ document.getElementById('navUserInfo').innerHTML = `
 document.getElementById('sidebarProfile').innerHTML = `
   <div class="dash-avatar" id="sideAvatar" style="overflow:hidden">${USER.avatar_url ? '<img src="'+USER.avatar_url+'" style="width:100%;height:100%;object-fit:cover">' : USER.avatar}</div>
   <div class="dash-user-name">${USER.name || 'Piloto'}</div>
-  <div class="dash-user-plan">${Driver.getPlanName(USER.plan)} · ${USER.type ? (USER.type.charAt(0).toUpperCase() + USER.type.slice(1)) : 'Piloto'}</div>
+  <div class="dash-user-plan">${Driver.getPlanName(USER.plan)} · ${USER.type.charAt(0).toUpperCase() + USER.type.slice(1)}</div>
   <div class="dash-plan-badge">${(USER.plan || '').toUpperCase()}</div>
 `;
 }
@@ -981,7 +953,7 @@ function renderProfile() {
             if(uf) loadProfCities(uf, parts.slice(0, parts.length-1).join(' - ').trim());
           } else if(rawCity) {
             const c = document.getElementById('profCity');
-            c.innerHTML = `<option value="${rawCity}" selected>${rawCity}</option>`;
+            c.innerHTML = \`<option value="\${rawCity}" selected>\${rawCity}</option>\`;
           }
         }
       }).catch(e => console.error('IBGE Error', e));

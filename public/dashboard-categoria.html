@@ -54,25 +54,7 @@ const USER = Driver.getCurrentUser();
 if (!USER) { 
   window.location = 'cadastro.html'; 
 } else if ((USER.is_active === false) && !location.hostname.includes('localhost')) {
-  let payLink = '#';
-  if (USER.plan === 'equipe' || USER.plan === 'categoria') {
-    payLink = 'https://wa.me/5511976377682?text=Quero finalizar minha assinatura para ativar o painel';
-  } else {
-    (async function() {
-      try {
-        const res = await fetch('/api/asaas/create-subscription', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ user_id: USER.id, user_name: USER.name, user_email: USER.email, plan: USER.plan || 'starter' }),
-        });
-        const data = await res.json();
-        if (data.success && data.payment_url) {
-          const payBtn = document.querySelector('.dash-main a.btn-primary');
-          if (payBtn) payBtn.href = data.payment_url;
-        }
-      } catch(e) { console.error('Erro ao gerar link Asaas:', e); }
-    })();
-  }
+  let payLink = '/checkout?plan=' + (USER.plan || 'starter');
 
   document.querySelector('.dash-sidebar').style.opacity = '0.3';
   document.querySelector('.dash-sidebar').style.pointerEvents = 'none';
