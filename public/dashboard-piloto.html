@@ -19,6 +19,8 @@
 <link rel="stylesheet" href="css/carbon.css">
 <link rel="stylesheet" href="css/dashboard.css">
 <link rel="stylesheet" href="css/admin.css">
+<!-- Cropper.js -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
 </head>
 <body class="carbon-bg">
 <div class="toast-wrap" id="toastWrap"></div>
@@ -406,18 +408,35 @@ function handleComposeImgUpload(fileInput) {
   const files = Array.from(fileInput.files);
   if (composeImages.length + files.length > 5) {
     showToast('Máximo de 5 imagens por matéria!', 'err');
+    fileInput.value = '';
     return;
   }
-  files.forEach(file => {
-    if (file.size > 5 * 1024 * 1024) { showToast('Imagem "'+file.name+'" é muito grande (max 5MB)', 'err'); return; }
+  
+  // Como agora temos um modal de recorte, abrir vários em sequência seria doloroso.
+  // Vamos processar apenas 1 por vez para recorte (ou todos em cascata sequencial)
+  // Para UX otimizada, processaremos um loop assíncrono para recortes.
+
+  const processFilesSequentially = async () => {
+    for (const file of files) {
+      if (file.size > 5 * 1024 * 1024) { showToast('Imagem "'+file.name+'" é muito grande (max 5MB)', 'err'); continue; }
+      const dataUrl = await readFileDataUrl(file);
+      const croppedUrl = await openCropper(dataUrl, NaN); // Recorte livre para matérias
+      if (croppedUrl) {
+        composeImages.push(croppedUrl);
+        renderComposeImgGrid();
+      }
+    }
+    fileInput.value = '';
+  };
+  processFilesSequentially();
+}
+
+function readFileDataUrl(file) {
+  return new Promise((res) => {
     const reader = new FileReader();
-    reader.onload = function(e) {
-      composeImages.push(e.target.result);
-      renderComposeImgGrid();
-    };
+    reader.onload = e => res(e.target.result);
     reader.readAsDataURL(file);
   });
-  fileInput.value = '';
 }
 
 function addComposeImgUrl() {
@@ -963,51 +982,84 @@ function renderProfile() {
   });
 }
 
-// Upload de imagem do dispositivo → converte, reduz resolução (canvas) e atualiza preview
-function handleImgUpload(fileInput, inputId, previewId) {
+// Recorte de imagem (WhatsApp flow) com proporção livre (NaN)
+function openCropper(imgSrc, aspect) {
+  return new Promise((resolve) => {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;';
+    
+    overlay.innerHTML = `
+      <div style="width:100%;max-width:800px;height:70vh;background:#000;border-radius:12px;overflow:hidden;position:relative;">
+        <img id="cropperTarget" src="${imgSrc}" style="max-width:100%;display:block;">
+      </div>
+      <div style="display:flex;gap:12px;margin-top:24px;width:100%;max-width:800px;justify-content:flex-end;">
+        <button id="cropCancel" style="padding:12px 24px;border-radius:8px;border:1px solid rgba(255,255,255,.2);background:transparent;color:#fff;font-family:var(--fu);font-weight:600;font-size:16px;cursor:pointer;letter-spacing:1px">Cancelar</button>
+        <button id="cropConfirm" style="padding:12px 24px;border-radius:8px;border:none;background:var(--acc);color:#fff;font-family:var(--fu);font-weight:600;font-size:16px;cursor:pointer;letter-spacing:1px">✂️ RECORTAR</button>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+
+    const image = document.getElementById('cropperTarget');
+    const cropper = new Cropper(image, {
+      aspectRatio: aspect, // livre = NaN, quadrado = 1
+      viewMode: 1,
+      background: false,
+      dragMode: 'move',
+      autoCropArea: 0.9,
+    });
+
+    document.getElementById('cropCancel').onclick = () => {
+      cropper.destroy();
+      overlay.remove();
+      resolve(null);
+    };
+
+    document.getElementById('cropConfirm').onclick = () => {
+      const canvas = cropper.getCroppedCanvas({
+        maxWidth: 1200,
+        maxHeight: 1200,
+        fillColor: '#04040a',
+        imageSmoothingEnabled: true,
+        imageSmoothingQuality: 'high',
+      });
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.82); // Otimização alta no crop
+      cropper.destroy();
+      overlay.remove();
+      resolve(dataUrl);
+    };
+  });
+}
+
+// Upload de imagem do dispositivo → joga no Cropper → atualiza preview
+async function handleImgUpload(fileInput, inputId, previewId) {
   const file = fileInput.files[0];
   if (!file) return;
   if (!file.type.startsWith('image/')) { showToast('Selecione uma imagem válida.', 'err'); return; }
   
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const img = new Image();
-    img.onload = function() {
-      // Redimensionar para evitar estourar localStorage (5MB) e limites de Payload
-      const MAX_WIDTH = 1200;
-      const MAX_HEIGHT = 1200;
-      let width = img.width;
-      let height = img.height;
+  const dataUrlOriginal = await readFileDataUrl(file);
+  
+  // Decide se é 1:1, 16:9 ou Livre, mas pelo pedido o usuário quer LIVRE (WhatsApp sem seguir o padrão quadrado necessariamente)
+  let aspect = NaN;
+  if (inputId === 'profAvatarUrl') aspect = 1; // Avatar faz sentido ser 1:1 mesmo livre a matéria
+  if (inputId === 'profCoverUrl') aspect = NaN; // Capa livre
+  
+  const croppedDataUrl = await openCropper(dataUrlOriginal, aspect);
+  if (!croppedDataUrl) {
+    fileInput.value = '';
+    return;
+  }
 
-      if (width > height) {
-        if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
-      } else {
-        if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
-      }
+  document.getElementById(inputId).value = croppedDataUrl;
+  const preview = document.getElementById(previewId);
+  if (preview) {
+    preview.innerHTML = `<img src="${croppedDataUrl}" style="width:100%;height:100%;object-fit:cover">`;
+  }
+  
+  const btnRemv = document.getElementById(inputId === 'profAvatarUrl' ? 'btnClearAvatar' : inputId === 'profCoverUrl' ? 'btnClearCover' : '');
+  if (btnRemv) btnRemv.style.display = 'inline-flex';
 
-      const canvas = document.createElement('canvas');
-      canvas.width = width;
-      canvas.height = height;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, width, height);
-
-      // Comprime como JPEG (70% de qualidade) - Fica muito leve (<200kb)
-      const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
-
-      document.getElementById(inputId).value = dataUrl;
-      const preview = document.getElementById(previewId);
-      if (preview) {
-        preview.innerHTML = `<img src="${dataUrl}" style="width:100%;height:100%;object-fit:cover">`;
-      }
-      
-      const btnRemv = document.getElementById(inputId === 'profAvatarUrl' ? 'btnClearAvatar' : inputId === 'profCoverUrl' ? 'btnClearCover' : '');
-      if (btnRemv) btnRemv.style.display = 'inline-flex';
-
-      showToast('✓ Imagem carregada e otimizada! Clique em Salvar para confirmar.', 'ok');
-    };
-    img.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
+  showToast('✓ Imagem recortada! Clique em Salvar para fixar as edições.', 'ok');
+  fileInput.value = '';
 }
 
 // Remover imagem: limpa input e preview
@@ -1157,6 +1209,8 @@ if (USER) {
   }, 1000);
 }
 </script>
+<!-- Cropper.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 <script src="cookie-banner.js"></script>
 </body>
 </html>
