@@ -99,14 +99,30 @@ export async function POST(req: Request) {
     }
 
     // ============================
-    // 🟠 PAGAMENTO ATRASADO
+    // 🟠 PAGAMENTO ATRASADO (3 dias de carência)
     // ============================
-    
+
     if (event === "PAYMENT_OVERDUE") {
-      // Opcional: Implementar Grace Period (Carência de x dias antes de derrubar o usuário)
-      // Por ora, a asaas continua tentando cobrar, não inativamos imediatamente aqui caso
-      // você tenha dias de tolerância configurados.
-      console.log(`Pagamento em atraso para o usuário/fatura: ${payment?.id}`);
+      if (!payment) return new Response("ok")
+
+      const userId = extractUserId(payment)
+      if (!userId) return new Response("ok")
+
+      // Verifica data de vencimento — se passou 3 dias, desativa
+      const dueDate = new Date(payment.dueDate || payment.originalDueDate)
+      const now = new Date()
+      const diasAtraso = Math.floor((now.getTime() - dueDate.getTime()) / (1000 * 60 * 60 * 24))
+
+      if (diasAtraso >= 3) {
+        await supabase
+          .from("users")
+          .update({ is_active: false })
+          .eq("id", userId)
+
+        console.log(`[Webhook] Inadimplência ${diasAtraso} dias: usuário ${userId} desativado.`);
+      } else {
+        console.log(`[Webhook] Pagamento atrasado ${diasAtraso} dias (carência 3 dias). Aguardando.`);
+      }
     }
 
     // ============================
@@ -155,6 +171,40 @@ export async function POST(req: Request) {
         .from("subscriptions")
         .update({ status: "inactive" })
         .eq("asaas_subscription_id", subId)
+    }
+
+    // ============================
+    // 💸 PAGAMENTO REEMBOLSADO
+    // ============================
+
+    if (event === "PAYMENT_REFUNDED" || event === "PAYMENT_DELETED") {
+      if (!payment) return new Response("ok")
+
+      const userId = extractUserId(payment)
+      if (!userId) return new Response("ok")
+
+      // Desativa o usuário (reembolso = perda de acesso)
+      await supabase
+        .from("users")
+        .update({ is_active: false })
+        .eq("id", userId)
+
+      console.log(`[Webhook] Reembolso/Exclusão: usuário ${userId} desativado.`);
+    }
+
+    // ============================
+    // 🔴 CARTÃO RECUSADO
+    // ============================
+
+    if (event === "PAYMENT_CREDIT_CARD_CAPTURE_REFUSED") {
+      if (!payment) return new Response("ok")
+
+      const userId = extractUserId(payment)
+      if (userId) {
+        console.log(`[Webhook] Cartão recusado para usuário ${userId}. Asaas tentará novamente.`);
+        // Não desativa imediatamente — Asaas tentará cobrar novamente
+        // Se virar OVERDUE por 3+ dias, o bloco acima desativa
+      }
     }
 
     return new Response("ok", { status: 200 })

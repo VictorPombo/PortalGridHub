@@ -5,12 +5,55 @@ import Link from "next/link";
 import { Lock, FileText, ArrowRight } from "lucide-react";
 
 export default function CheckoutAssinaturaPage() {
-  const [termos, setTermos] = useState(false);
-  const [privacidade, setPrivacidade] = useState(false);
-  const [idade, setIdade] = useState(false);
-  const [marcoCivil, setMarcoCivil] = useState(false);
-  
-  const tudoVerde = termos && privacidade && idade && marcoCivil;
+  const [loading, setLoading] = useState(false);
+
+  const handlePayment = async () => {
+    setLoading(true);
+    try {
+      // Buscar dados do usuário logado
+      const userStr = typeof window !== 'undefined' ? localStorage.getItem('pl_session') : null;
+      if (!userStr) {
+        alert('Faça login antes de assinar.');
+        window.location.href = '/cadastro.html';
+        return;
+      }
+      const session = JSON.parse(userStr);
+      
+      // Buscar dados completos do usuário do cache local
+      const usersStr = localStorage.getItem('pl_users');
+      const users = usersStr ? JSON.parse(usersStr) : [];
+      const user = users.find((u: any) => u.id === session.userId) || session;
+      
+      // Detectar plano (pode vir da URL)
+      const params = new URLSearchParams(window.location.search);
+      const plan = params.get('plan') || user.plan || 'starter';
+      
+      const res = await fetch('/api/asaas/create-subscription', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_id: user.id || session.userId,
+          user_name: user.name || 'Assinante',
+          user_email: user.email || '',
+          plan: plan,
+        }),
+      });
+      
+      const data = await res.json();
+      
+      if (data.success && data.payment_url) {
+        window.location.href = data.payment_url;
+      } else {
+        alert('Erro ao gerar pagamento. Tente novamente.');
+        console.error(data);
+      }
+    } catch (err) {
+      alert('Erro de conexão. Tente novamente.');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-16">
@@ -58,14 +101,11 @@ export default function CheckoutAssinaturaPage() {
         </div>
 
         <button 
-          disabled={!tudoVerde}
-          onClick={() => {
-            alert("Redirecionando para Asaas Payment Gateway...");
-            // TODO: Integrar Checkout Asaas implementado com Webhooks
-          }}
-          className={`w-full mt-8 flex items-center justify-center gap-2 py-4 rounded-xl text-lg font-bold transition-all ${!tudoVerde ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed border-none' : 'bg-white hover:bg-zinc-200 text-black shadow-lg shadow-white/10'}`}
+          disabled={!tudoVerde || loading}
+          onClick={handlePayment}
+          className={`w-full mt-8 flex items-center justify-center gap-2 py-4 rounded-xl text-lg font-bold transition-all ${!tudoVerde || loading ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed border-none' : 'bg-white hover:bg-zinc-200 text-black shadow-lg shadow-white/10'}`}
         >
-          Continuar para o Pagamento
+          {loading ? 'Gerando link seguro...' : 'Continuar para o Pagamento'}
           <ArrowRight className="w-5 h-5" />
         </button>
 

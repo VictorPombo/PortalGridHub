@@ -79,10 +79,33 @@ const USER = Driver.getCurrentUser();
 if (!USER) { 
   window.location = 'cadastro.html'; 
 } else if ((USER.is_active === false) && !location.hostname.includes('localhost')) {
-  let payLink = 'index.html?view=plans';
-  if (USER.plan === 'starter') payLink = 'https://www.asaas.com/c/pcd93o8dzjozlmje';
-  else if (USER.plan === 'pro') payLink = 'https://www.asaas.com/c/4k06baj1ohs71v30';
-  else if (USER.plan === 'equipe' || USER.plan === 'categoria') payLink = 'https://wa.me/5511976377682?text=Quero finalizar minha assinatura para ativar o painel';
+  let payLink = '#';
+  
+  // Gera link dinâmico via API (com user_id embutido)
+  if (USER.plan === 'equipe' || USER.plan === 'categoria') {
+    payLink = 'https://wa.me/5511976377682?text=Quero finalizar minha assinatura para ativar o painel';
+  } else {
+    (async function() {
+      try {
+        const res = await fetch('/api/asaas/create-subscription', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user_id: USER.id,
+            user_name: USER.name,
+            user_email: USER.email,
+            plan: USER.plan || 'starter',
+          }),
+        });
+        const data = await res.json();
+        if (data.success && data.payment_url) {
+          payLink = data.payment_url;
+          const payBtn = document.querySelector('.dash-main a.btn-primary');
+          if (payBtn) payBtn.href = data.payment_url;
+        }
+      } catch(e) { console.error('Erro ao gerar link Asaas:', e); }
+    })();
+  }
 
   document.querySelector('.dash-sidebar').style.opacity = '0.3';
   document.querySelector('.dash-sidebar').style.pointerEvents = 'none';
@@ -93,7 +116,7 @@ if (!USER) {
       </div>
       <h1 style="font-family:var(--fd);font-size:36px;letter-spacing:1px;margin-bottom:16px;color:#fff">Assinatura Pendente</h1>
       <p style="font-size:14px;color:var(--dim);margin-bottom:32px;line-height:1.6">O seu plano <b>${Driver.getPlanName(USER.plan)}</b> ainda está aguardando pagamento ou processamento. O painel será liberado automaticamente após a confirmação.</p>
-      <a href="${payLink}" target="_blank" class="btn-primary" style="font-size:16px;padding:16px">Finalizar Pagamento Agora →</a>
+      <a href="${payLink}" target="_blank" class="btn-primary" style="font-size:16px;padding:16px" id="payBtnDash">Finalizar Pagamento Agora →</a>
       <div style="margin-top:24px;font-size:11px;color:var(--muted)">Já pagou por PIX/Cartão? Atualize a página se o e-mail for o mesmo do cadastro.<br>Boletos podem levar até 2 dias úteis. <a href="index.html" style="color:var(--dim);text-decoration:underline">Sair para o Portal</a></div>
     </div>
   `;
