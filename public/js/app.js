@@ -862,41 +862,36 @@ async function loadLiveNews() {
     updateCatCounts();
     
   } catch(e) {
-    console.warn('[News] Pipeline error, using fallback:', e);
-    // FALLBACK IMEDIATO: Garantir que a renderização prossiga mesmo sem feed
-    ARTICLES = typeof Driver !== 'undefined' ? Driver.getArticles().filter(a => a.status === 'published').map(a => ({
-      id: a.id, cat: (a.category||'geral').toLowerCase().replace(/\s+/g, '-'), badge: 'b-f1',
-      kicker: 'MOCK VERIFICADO', title: a.title, link: 'noticia.html?id='+a.id, author: a.authorName,
-      date: formatNewsDate(a.publishedAt), img: a.img || 'img/news-placeholder.png', abstract: '', isReal: false, rawDate: Date.now()
-    })) : [];
-
-    if (ARTICLES.length < 15) {
-      ARTICLES.push(
-        { id:'1', cat:'f1', badge:'b-f1', kicker:'LATEST NEWS', title:'Antonelli lidera F1 2026 com 72 pts — ANÁLISE DRIVER', link:'#', author:'Driver', date: formatNewsDate(new Date()), img:'https://loremflickr.com/800/400/formula1?lock=31', abstract:'', isReal:true, rawDate: Date.now() },
-        { id:'2', cat:'motogp', badge:'b-motogp', kicker:'LATEST NEWS', title:'Bagnaia e Márquez disputam as décimas de segundo em final eletrizante', link:'#', author:'Driver', date: formatNewsDate(new Date()), img:'https://loremflickr.com/400/280/motorcycle?lock=32', abstract:'', isReal:true, rawDate: Date.now() },
-        { id:'3', cat:'wec', badge:'b-wec', kicker:'LATEST NEWS', title:'Ferrari Hypercar mostra bom rendimento e desafia a Toyota em Le Mans', link:'#', author:'Driver', date: formatNewsDate(new Date()), img:'https://loremflickr.com/400/280/hypercar?lock=33', abstract:'', isReal:true, rawDate: Date.now() },
-        { id:'4', cat:'nascar', badge:'b-nascar', kicker:'LATEST NEWS', title:'Drafting e Bump and Run: as estratégias decisivas de Talladega', link:'#', author:'Driver', date: formatNewsDate(new Date()), img:'https://loremflickr.com/400/280/nascar?lock=34', abstract:'', isReal:true, rawDate: Date.now() },
-        { id:'5', cat:'f1', badge:'b-f1', kicker:'LATEST NEWS', title:'O mercado de pilotos agitado para a próxima janela de transferências', link:'#', author:'Driver', date: formatNewsDate(new Date()), img:'https://loremflickr.com/400/280/racecar?lock=35', abstract:'', isReal:true, rawDate: Date.now() },
-        { id:'6', cat:'sim', badge:'b-sim', kicker:'LATEST NEWS', title:'iRacing anuncia novo update revolucionário com clima totalmente dinâmico', link:'#', author:'Driver', date: formatNewsDate(new Date()), img:'https://loremflickr.com/400/280/simracing?lock=36', abstract:'', isReal:true, rawDate: Date.now() },
-        { id:'7', cat:'f1', badge:'b-f1', kicker:'LATEST NEWS', title:'Revolução aerodinâmica: o segredo da asa flexível na F1 2026', link:'#', author:'Driver', date: formatNewsDate(new Date()), img:'https://loremflickr.com/400/280/f1?lock=37', abstract:'', isReal:true, rawDate: Date.now() },
-        { id:'8', cat:'wrc', badge:'b-wrc', kicker:'LATEST NEWS', title:'Rally Rovanperä domina com folga as neves remotas do Norte', link:'#', author:'Driver', date: formatNewsDate(new Date()), img:'https://loremflickr.com/400/280/rally?lock=38', abstract:'', isReal:true, rawDate: Date.now() },
-        { id:'9', cat:'f1', badge:'b-f1', kicker:'LATEST NEWS', title:'Pit stops impressionantes na casa do 1.5s viram o novo padrão', link:'#', author:'Driver', date: formatNewsDate(new Date()), img:'https://loremflickr.com/400/280/pitstop?lock=39', abstract:'', isReal:true, rawDate: Date.now() },
-        { id:'10', cat:'motogp', badge:'b-motogp', kicker:'LATEST NEWS', title:'Aerodinâmica excessiva: pilotos reclamam abertamente das turbulências', link:'#', author:'Driver', date: formatNewsDate(new Date()), img:'https://loremflickr.com/400/280/bike?lock=40', abstract:'', isReal:true, rawDate: Date.now() },
-        { id:'11', cat:'wec', badge:'b-wec', kicker:'LATEST NEWS', title:'Porsche anuncia pacote de expansão ambicioso na classe LMDh', link:'#', author:'Driver', date: formatNewsDate(new Date()), img:'https://loremflickr.com/400/280/lemans?lock=41', abstract:'', isReal:true, rawDate: Date.now() },
-        { id:'12', cat:'sim', badge:'b-sim', kicker:'LATEST NEWS', title:'Assetto Corsa Evo vs iRacing: Qual a melhor engine baseada na atualidade?', link:'#', author:'Driver', date: formatNewsDate(new Date()), img:'https://loremflickr.com/400/280/sim?lock=42', abstract:'', isReal:true, rawDate: Date.now() },
-        { id:'13', cat:'f1', badge:'b-f1', kicker:'LATEST NEWS', title:'Rumores do Paddock: Audi prepara aquisição surpresa no grid?', link:'#', author:'Driver', date: formatNewsDate(new Date()), img:'https://loremflickr.com/400/280/audi?lock=43', abstract:'', isReal:true, rawDate: Date.now() },
-        { id:'14', cat:'motogp', badge:'b-motogp', kicker:'LATEST NEWS', title:'Recordes caindo: Bagnaia crava volta espetacular em testes na Ásia', link:'#', author:'Driver', date: formatNewsDate(new Date()), img:'https://loremflickr.com/400/280/bagnaia?lock=44', abstract:'', isReal:true, rawDate: Date.now() },
-        { id:'15', cat:'wec', badge:'b-wec', kicker:'LATEST NEWS', title:'A revolução verde: detalhes do novo bio-combustível no endurance', link:'#', author:'Driver', date: formatNewsDate(new Date()), img:'https://loremflickr.com/400/280/fuel?lock=45', abstract:'', isReal:true, rawDate: Date.now() }
-      );
-    }
+    console.warn('[News] Pipeline error, using internal articles only:', e);
+    // FALLBACK: Usar apenas matérias reais dos pilotos cadastrados (Supabase)
+    ARTICLES = [];
+    try {
+      if (typeof Driver !== 'undefined' && typeof Driver.getArticles === 'function') {
+        const publicArts = Driver.getArticles().filter(a => a.status === 'published');
+        ARTICLES = publicArts.map(a => {
+          const slugCat = (a.category || 'geral').toLowerCase().replace(/\s+/g, '-');
+          return {
+            id: a.id, cat: slugCat, badge: 'b-' + slugCat,
+            kicker: 'PILOTO VERIFICADO', title: a.title,
+            link: 'materia.html?id=' + a.id, author: a.authorName || 'Portal',
+            date: formatNewsDate(a.publishedAt || a.submittedAt || new Date()),
+            img: a.img || 'https://images.unsplash.com/photo-1541344983572-c511a5fe03fd?auto=format&fit=crop&w=1200&q=80',
+            abstract: (a.body || '').replace(/<[^>]*>?/gm, '').substring(0, 180) + '...',
+            isReal: false, rawDate: new Date(a.publishedAt || a.submittedAt || Date.now()).getTime()
+          };
+        });
+      }
+    } catch(err) { console.error('Fallback article load failed', err); }
     
     if (grid) {
       const loading = document.getElementById('newsLoading');
-      if (loading) loading.innerHTML = '<span style="color:#666">Usando notícias cacheadas. <button class="btn btn-out btn-sm" onclick="loadLiveNews()" style="margin-left:8px">Forçar att</button></span>';
+      if (loading) loading.innerHTML = '<span style="color:#666">Feed temporariamente indisponível. Exibindo matérias internas. <button class="btn btn-out btn-sm" onclick="loadLiveNews()" style="margin-left:8px">Tentar novamente</button></span>';
     }
     
-    // Forçar a renderização mesmo com o Mock!
-    renderHeroGrid();
+    // Renderizar mesmo com fallback
+    if (ARTICLES.length >= 3) {
+      renderHeroGrid();
+    }
     renderNewsGrid();
     applyFilter();
     renderTicker();
