@@ -101,7 +101,7 @@ function renderPilotsList() {
           const articles = Driver.getPublishedByAuthor(p.id);
           return `<div class="pilot-card ${articles.length > 0 ? 'card-featured' : ''}" onclick="window.location='piloto.html?id=${p.id}'" style="cursor:pointer">
             <div class="pilot-card-img">
-              <img src="https://loremflickr.com/400/300/racing,driver?lock=${parseInt(p.id.replace(/\\D/g,'')) * 7}" alt="${p.name}">
+              <img src="${p.avatar_url || p.cover_url || 'https://images.unsplash.com/photo-1541344983572-c511a5fe03fd?auto=format&fit=crop&w=600&q=80'}" alt="${p.name}" style="object-fit:cover">
               <span class="pilot-card-num">#${p.number || '00'}</span>
             </div>
             <div class="pilot-card-body">
@@ -134,7 +134,7 @@ function renderPilotPage(p) {
 
   document.getElementById('pilotContent').innerHTML = `
     <div class="pilot-hero">
-      <img class="pilot-hero-bg" src="${p.cover_url || 'https://loremflickr.com/1400/600/racing,car,motorsport?lock=' + parseInt(p.id.replace(/\\D/g, '')) * 13}" alt="">
+      <img class="pilot-hero-bg" src="${p.cover_url || p.avatar_url || 'https://images.unsplash.com/photo-1541344983572-c511a5fe03fd?auto=format&fit=crop&w=1400&q=80'}" alt="" style="object-fit:cover">
       <div class="pilot-hero-overlay"></div>
       <div class="pilot-hero-number">${p.number || '00'}</div>
       <div class="pilot-hero-content">
@@ -172,10 +172,8 @@ function renderPilotPage(p) {
       <div class="sec-head"><span class="sec-title">Galeria</span></div>
       <div class="pilot-gallery">
         ${(p.gallery && p.gallery.length > 0) ? p.gallery.map(url => `
-          <div class="pilot-gallery-item"><img src="${url}" alt=""></div>
-        `).join('') : [90, 91, 92, 93, 94, 95].map(lock => `
-          <div class="pilot-gallery-item"><img src="https://loremflickr.com/500/300/racing,car?lock=${lock + parseInt(p.id.replace(/\\D/g, ''))}" alt=""></div>
-        `).join('')}
+          <div class="pilot-gallery-item"><img src="${url}" alt="" style="object-fit:cover"></div>
+        `).join('') : '<div style="color:var(--dim);text-align:center;padding:24px;width:100%;font-size:14px">O piloto ainda não disponibilizou fotos na galeria pública.</div>'}
       </div>
     </div>
 
