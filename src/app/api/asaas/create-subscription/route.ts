@@ -1,18 +1,13 @@
 import { NextResponse } from 'next/server';
 
-const ASAAS_API_KEY = process.env.ASAAS_API_KEY!;
-const ASAAS_BASE_URL = process.env.ASAAS_API_URL || 'https://api.asaas.com/v3';
-
-// Headers padrão para API Asaas
-const asaasHeaders = {
-  'Content-Type': 'application/json',
-  'access_token': ASAAS_API_KEY,
-};
-
-// ═══════════════════════════════════════════════════════
-// Criar ou buscar cliente no Asaas
-// ═══════════════════════════════════════════════════════
+// Buscar ou criar cliente no Asaas
 async function findOrCreateCustomer(name: string, email: string, cpf?: string): Promise<string> {
+  const asaasHeaders = {
+    'Content-Type': 'application/json',
+    'access_token': process.env.ASAAS_API_KEY || '',
+  };
+  const ASAAS_BASE_URL = process.env.ASAAS_API_URL || 'https://api.asaas.com/v3';
+
   // 1. Tenta buscar cliente existente pelo email
   const searchRes = await fetch(`${ASAAS_BASE_URL}/customers?email=${encodeURIComponent(email)}`, {
     method: 'GET',
@@ -51,6 +46,12 @@ async function findOrCreateCustomer(name: string, email: string, cpf?: string): 
 // ═══════════════════════════════════════════════════════
 export async function POST(req: Request) {
   try {
+    const asaasHeaders = {
+      'Content-Type': 'application/json',
+      'access_token': process.env.ASAAS_API_KEY || '',
+    };
+    const ASAAS_BASE_URL = process.env.ASAAS_API_URL || 'https://api.asaas.com/v3';
+
     const body = await req.json();
     const { user_id, user_name, user_email, user_cpf, plan } = body;
 
