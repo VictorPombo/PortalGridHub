@@ -81,9 +81,9 @@ body.locked{overflow:hidden}
    NAV
 ═══════════════════════════════════════════ */
 nav{position:sticky;top:0;z-index:500;background:rgba(3,3,10,.92);backdrop-filter:blur(24px);border-bottom:1px solid var(--brd)}
-.nav-inner{max-width:1680px;margin:0 auto;padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:60px;gap:18px}
+.nav-inner{max-width:1680px;margin:0 auto;padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:72px;gap:18px}
 .logo{display:flex;align-items:center;cursor:pointer;flex-shrink:0;text-decoration:none}
-.logo img{height:38px;width:auto;display:block}
+.logo img{height:52px;width:auto;display:block}
 .logo-badge,.logo-text{display:none} /* Hidden for transition to image logo */
 .nav-links{display:flex;list-style:none;gap:1px;flex:1;justify-content:center}
 .nav-links a{font-family:var(--fu);font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);padding:6px 12px;position:relative;transition:color .2s;cursor:pointer;display:block;text-decoration:none}
@@ -641,8 +641,9 @@ nav{position:sticky;top:0;z-index:500;background:rgba(3,3,10,.92);backdrop-filte
 footer{background:var(--bg1);border-top:1px solid var(--brd);padding:52px 28px 24px}
 .f-inner{max-width:1680px;margin:0 auto}
 .f-grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:44px;margin-bottom:44px}
-.f-logo{font-family:var(--fd);font-size:26px;letter-spacing:4px;margin-bottom:12px;display:flex;align-items:center;gap:10px}
-.f-dot{width:7px;height:7px;background:var(--acc);border-radius:50%}
+.f-logo{display:flex;align-items:center;margin-bottom:16px}
+.f-logo img{height:40px;width:auto}
+.f-dot{display:none}
 .f-desc{font-size:12px;font-weight:300;color:var(--muted);line-height:1.7;max-width:260px;margin-bottom:18px}
 .f-social{display:flex;gap:6px}
 .f-soc{width:32px;height:32px;border:1px solid var(--brd);background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:var(--fu);font-size:10px;font-weight:700;color:var(--dim);transition:all .2s}

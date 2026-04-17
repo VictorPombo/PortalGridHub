@@ -94,9 +94,9 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
    NAVIGATION
    ============================ */
 nav{position:sticky;top:0;z-index:500;background:rgba(4,4,10,.9);backdrop-filter:blur(24px) saturate(180%);border-bottom:1px solid var(--brd)}
-.nav-inner{max-width:var(--max-w);margin:0 auto;padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:62px;gap:24px}
+.nav-inner{max-width:var(--max-w);margin:0 auto;padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:72px;gap:24px}
 .logo{display:flex;align-items:center;cursor:pointer;flex-shrink:0;text-decoration:none}
-.logo img{height:34px;width:auto;display:block}
+.logo img{height:48px;width:auto;display:block}
 .logo-badge,.logo-text{display:none}
 .nav-links{display:flex;list-style:none;gap:2px;flex:1;justify-content:center}
 .nav-links a{font-family:var(--fu);font-size:13px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);text-decoration:none;padding:6px 14px;position:relative;transition:color .2s;cursor:pointer}
@@ -252,7 +252,7 @@ footer{background:var(--bg1);border-top:1px solid var(--brd);padding:56px 32px 2
 .f-inner{max-width:var(--max-w);margin:0 auto}
 .f-grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:48px;margin-bottom:48px}
 .f-logo{margin-bottom:20px;display:flex;align-items:center}
-.f-logo img{height:32px;width:auto}
+.f-logo img{height:40px;width:auto}
 .f-logo .dot{display:none}
 .f-desc{font-size:13px;font-weight:300;color:var(--muted);line-height:1.72;max-width:268px;margin-bottom:20px}
 .f-social{display:flex;gap:7px}
