@@ -8,11 +8,11 @@ export async function POST(request: Request) {
     // Válida status do autor antes de permitir inserir
     const { data: userAuth } = await supabase
       .from('users')
-      .select('status')
+      .select('type, is_active')
       .eq('id', body.authorId)
       .single();
 
-    if (!userAuth || (userAuth.status !== 'active' && userAuth.status !== 'admin')) {
+    if (!userAuth || (!userAuth.is_active && userAuth.type !== 'admin')) {
       return NextResponse.json({ success: false, error: 'Acesso negado. Assinatura pendente ou inativa.' }, { status: 403 });
     }
 
@@ -59,11 +59,11 @@ export async function PUT(request: Request) {
     if (articleCheck) {
       const { data: userAuth } = await supabase
         .from('users')
-        .select('status')
+        .select('type, is_active')
         .eq('id', articleCheck.author_id)
         .single();
 
-      if (!userAuth || (userAuth.status !== 'active' && userAuth.status !== 'admin')) {
+      if (!userAuth || (!userAuth.is_active && userAuth.type !== 'admin')) {
         return NextResponse.json({ success: false, error: 'Acesso negado. Assinatura pendente ou inativa.' }, { status: 403 });
       }
     }

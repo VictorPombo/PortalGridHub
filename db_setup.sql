@@ -31,11 +31,11 @@ CREATE TABLE IF NOT EXISTS public.users (
   referred_by text,
   password_hash text,
   created_at timestamp with time zone DEFAULT now(),
-  status text DEFAULT 'active'
+  is_active boolean DEFAULT false
 );
 
 -- Adiciona a coluna caso a tabela já exista de comandos anteriores
-ALTER TABLE public.users ADD COLUMN IF NOT EXISTS password_hash text;
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS is_active boolean DEFAULT false;
 
 ALTER TABLE public.users ADD COLUMN IF NOT EXISTS referred_by text;
 -- 2. Criação da Tabela ARTICLES (Feed do SaaS e Admin)

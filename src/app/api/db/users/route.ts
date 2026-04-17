@@ -32,7 +32,7 @@ export async function POST(request: Request) {
           password_hash,
           type: body.type || 'piloto',
           plan: body.plan || 'starter',
-          status: 'pending_payment', // Start as pending until Asaas webhook confirms
+          is_active: false, // Start as false until Asaas webhook confirms
           avatar: body.avatar,
           referred_by: body.referredBy || null,
           category: body.category || '',

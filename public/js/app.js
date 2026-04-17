@@ -662,7 +662,7 @@ async function loginAs(type){
         name: type === 'equipe' ? 'Equipe Demo' : type === 'categoria' ? 'Liga Demo' : 'Felipe Massa Demo',
         email: 'demo@' + type + '.com',
         type: type === 'admin' ? 'admin' : type,
-        status: 'active',
+        is_active: true,
         plan: type === 'equipe' ? 'equipe' : type === 'categoria' ? 'categoria' : 'pro'
       });
       if(u) Driver.forceLoginById(u.id);

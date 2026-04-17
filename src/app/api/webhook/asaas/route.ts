@@ -1,9 +1,8 @@
-import { NextResponse } from 'next/server';
 import { createClient } from "@supabase/supabase-js"
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || '',
-  process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
 export async function POST(req: Request) {
@@ -16,6 +15,7 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json()
+
     console.log("Webhook recebido:", body)
 
     const { event, payment, subscription } = body
@@ -33,13 +33,10 @@ export async function POST(req: Request) {
       // segurança
       if (payment.status !== "RECEIVED" && payment.status !== "CONFIRMED") return new Response("ok")
 
-      const userId = payment.externalReference // Espera-se que passe o user ID no checkout como externalReference
+      const userId = payment.externalReference
       const paymentId = payment.id
 
-      if (!userId) {
-        console.warn("Pagamento não possui externalReference (User ID) do nosso banco.");
-        return new Response("ok")
-      }
+      if (!userId) return new Response("ok")
 
       // 🚫 evita duplicidade
       const { data: existing } = await supabase
@@ -55,13 +52,13 @@ export async function POST(req: Request) {
         user_id: userId,
         payment_id: paymentId,
         status: "paid",
-        value: payment.value || 0
+        value: payment.value
       })
 
-      // ✅ ativa usuário (Adaptado para nosso schema: status = 'active')
+      // ✅ ativa usuário
       await supabase
         .from("users")
-        .update({ status: 'active' })
+        .update({ is_active: true })
         .eq("id", userId)
     }
 
@@ -73,7 +70,6 @@ export async function POST(req: Request) {
       if (!subscription) return new Response("ok")
 
       const userId = subscription.externalReference
-      if (!userId) return new Response("ok")
 
       await supabase.from("subscriptions").insert({
         user_id: userId,
@@ -99,10 +95,10 @@ export async function POST(req: Request) {
         .single()
 
       if (sub?.user_id) {
-        // bloqueia usuário (Adaptado para nosso schema: reverting to pending)
+        // bloqueia usuário
         await supabase
           .from("users")
-          .update({ status: 'pending_payment' })
+          .update({ is_active: false })
           .eq("id", sub.user_id)
       }
 
