@@ -232,8 +232,14 @@ const Driver = (() => {
     const year = now.getFullYear();
     // Opcional de exclusão: contabilizar itens excluídos que não eram rascunhos puros (já consumiram crédito)
     return getArticles().filter(a => {
-      if (a.authorId !== authorId || a.status === 'draft') return false;
-      const d = new Date(a.submittedAt || a.publishedAt);
+      if (a.authorId !== authorId) return false;
+      // Se for rascunho PÚRO (nunca foi publicado), não consome a cota do mês.
+      // Porém, se foi publicado e depois OCULTADO (wasPublished: true), a IA/credito já foi consumida.
+      if (a.status === 'draft' && !a.wasPublished) return false;
+      
+      const dt = a.publishedAt || a.submittedAt;
+      if (!dt) return false;
+      const d = new Date(dt);
       return d.getMonth() === month && d.getFullYear() === year;
     }).length;
   }
