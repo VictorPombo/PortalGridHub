@@ -581,7 +581,7 @@
 .virada-grid { display: flex; flex-direction: column; gap: 16px; max-width: 600px; margin: 0 auto 50px; text-align: left;}
 .virada-item { font-size: 18px; color: var(--text); padding: 16px 0; display: flex; align-items: center; gap: 16px;}
 .virada-item i { color: var(--success); font-size: 20px; flex-shrink: 0; }
-.virada-closing { font-size: 24px; color: var(--acc); margin-top: 10px; }
+.virada-closing { font-size: 32px; color: var(--acc); margin-top: 20px; letter-spacing: 1px; }
 
 /* Sec5 Passos */
 .sec-passos { padding: 100px 0; background-color: var(--bg); position: relative;}
@@ -644,6 +644,10 @@
 .status-logos span { transition: color 0.3s; }
 .status-logos span:hover { color: #fff; }
 .status-sub { font-size: 14px; color: var(--acc); letter-spacing: 3px; text-transform: uppercase;}
+
+/* Moved from inline styles */
+.valor-heading { font-size: 56px; line-height: 1; letter-spacing: 1px; color: #fff; text-wrap: balance; margin-bottom: 60px; }
+.status-heading { max-width: 900px; margin: 0 auto 32px; font-size: 20px; font-weight: 500; color: var(--dim); line-height: 1.5; text-wrap: balance; }
 
 /* Sec8 Preview / Demo */
 .sec-demo { background: #000; padding: 80px 0; }
@@ -727,6 +731,9 @@ details[open] summary:after { content: '-'; }
 /* Sec12 Final CTA */
 .sec-cta { padding: 100px 0; text-align: center; background: linear-gradient(0deg, rgba(232,0,45,0.08) 0%, transparent 100%); }
 .sec-cta h2 { font-size: 48px; margin-bottom: 40px; line-height: 1.1; }
+.cta-heading { text-wrap: balance; }
+.cta-main-btn { font-size: 22px; }
+.cta-wpp-btn { font-size: 18px; }
 .cta-btns { display: flex; justify-content: center; gap: 16px; margin-bottom: 24px; flex-wrap: wrap;}
 .sec-cta .txt-ref { font-family: var(--fm); font-size: 13px; color: var(--muted); }
 
@@ -778,7 +785,7 @@ details[open] summary:after { content: '-'; }
   .sec-virada h2 { font-size: 26px; margin-bottom: 20px; line-height: 1.15; }
   .virada-item { font-size: 15px; padding: 12px 0; align-items: flex-start; }
   .virada-item i { margin-top: 2px; font-size: 18px; }
-  .virada-closing { font-size: 16px; margin-top: 8px; }
+  .virada-closing { font-size: 20px; margin-top: 12px; letter-spacing: 0; line-height: 1.25; }
 
   /* ══ PASSOS ══ */
   .sec-passos { padding: 50px 0; }
@@ -790,7 +797,7 @@ details[open] summary:after { content: '-'; }
 
   /* ══ VALOR ══ */
   .sec-valor { padding: 50px 0; }
-  .sec-valor h2 { font-size: 26px; margin-bottom: 28px; }
+  .valor-heading { font-size: 28px; line-height: 1.1; margin-bottom: 32px; letter-spacing: 0; }
   .valor-card { padding: 36px 24px; border-radius: 16px; }
   .valor-icon { font-size: 36px; margin-bottom: 20px; }
   .valor-card h3 { font-size: 26px !important; letter-spacing: 0.5px; }
@@ -799,6 +806,7 @@ details[open] summary:after { content: '-'; }
 
   /* ══ STATUS / CATEGORIAS ══ */
   .sec-status { padding: 24px 0 50px; }
+  .status-heading { font-size: 16px; margin-bottom: 20px; }
   .status-logos { font-size: 20px; gap: 16px; margin-bottom: 16px; }
   .status-sub { font-size: 11px; letter-spacing: 2px; }
   .status-logos span { display: inline; }
@@ -822,6 +830,8 @@ details[open] summary:after { content: '-'; }
   /* ══ CTA FINAL ══ */
   .sec-cta { padding: 60px 0; }
   .sec-cta h2 { font-size: 26px; margin-bottom: 20px; line-height: 1.15; }
+  .cta-main-btn { font-size: 16px; }
+  .cta-wpp-btn { font-size: 14px; }
   .cta-btns { flex-direction: column; align-items: center; }
   .sec-cta .txt-ref { font-size: 12px; }
 
