@@ -78,15 +78,15 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 /* ============================
    TOAST SYSTEM
    ============================ */
-.toast-wrap{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:9000;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none}
+.toast-wrap{position:fixed;bottom:24px;right:24px;z-index:9000;display:flex;flex-direction:column;align-items:flex-end;gap:8px;pointer-events:none}
 .toast{
   background:rgba(14,14,24,.95);border:1px solid var(--brdb);border-left:3px solid var(--acc);
   padding:16px 28px;font-family:var(--fu);font-size:15px;font-weight:600;letter-spacing:.5px;
-  color:#fff;opacity:0;transform:translateY(14px);transition:all .3s ease;
-  min-width:320px;max-width:600px;text-align:center;pointer-events:none;
+  color:#fff;opacity:0;transform:translateX(50px);transition:all .4s cubic-bezier(0.16, 1, 0.3, 1);
+  min-width:320px;max-width:600px;text-align:left;pointer-events:none;
   box-shadow:0 12px 40px rgba(0,0,0,.6);backdrop-filter:blur(16px);border-radius:8px;
 }
-.toast.show{opacity:1;transform:none}
+.toast.show{opacity:1;transform:translateX(0)}
 .toast.ok{border-left-color:var(--success)}
 .toast.err{border-left-color:var(--acc)}
 

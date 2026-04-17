@@ -4,14 +4,14 @@
 
 /* ====== TOAST ====== */
 function showToast(msg, type='info') {
-  const w = document.getElementById('toastWrap');
+  const w = document.getElementById('toastWrap') || document.getElementById('toasts');
   if(!w) return;
   const t = document.createElement('div');
   t.className = 'toast' + (type==='ok'?' ok':type==='err'?' err':'');
   t.textContent = msg;
   w.appendChild(t);
-  requestAnimationFrame(()=>t.classList.add('show'));
-  setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(),350); }, 3000);
+  setTimeout(()=>{ t.classList.add('show'); }, 10);
+  setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(),400); }, 3500);
 }
 
 /* ====== MODAL OPEN/CLOSE ====== */
