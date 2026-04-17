@@ -26,8 +26,8 @@ const Driver = (() => {
       name: 'Victor Assis',
       email: 'victordeassis2010@hotmail.com',
       password: '29183627Mae', // Mocks apenas para o fallback
-      type: 'admin',
-      plan: 'admin',
+      type: 'piloto',
+      plan: 'pro',
       status: 'active',
       avatar: 'VA'
     });
