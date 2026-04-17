@@ -159,12 +159,12 @@ CREATE INDEX IF NOT EXISTS idx_consent_materia ON public.publication_consents (m
 -- 💳 PAYMENTS & SUBSCRIPTIONS (ASAAS WEBHOOK)
 -- ==========================================
 CREATE TABLE IF NOT EXISTS public.payments (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id UUID NOT NULL,
-  payment_id TEXT UNIQUE NOT NULL,
-  status TEXT NOT NULL,
-  value NUMERIC DEFAULT 0,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid,
+  payment_id text,
+  status text,
+  value numeric,
+  created_at timestamp DEFAULT now(),
   CONSTRAINT fk_payments_user FOREIGN KEY (user_id) REFERENCES public.users (id) ON DELETE CASCADE
 );
 
