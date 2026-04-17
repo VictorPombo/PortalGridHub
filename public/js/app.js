@@ -605,6 +605,12 @@ function renderTeamsList(){
 }
 renderPilotsHighlight();
 
+// Re-render pilots when Supabase data arrives (solves timing issue)
+window.addEventListener('driver-data-ready', () => {
+  renderPilotsHighlight();
+  if (document.getElementById('pilotsListGrid')) renderPilotsList();
+});
+
 /* ══ PLANS TABS ══ */
 function showPlanGroup(el,group){
   document.querySelectorAll('.plan-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');
@@ -651,21 +657,19 @@ async function doLogin(){
 }
 async function loginAs(type){
   toast('Entrando como '+type+'...','info');
-  // Encontrar um usuário com esse tipo e logar mockado
   if (typeof Driver !== 'undefined') {
-    const users = Driver.getUsers().filter(u => u.type === (type==='admin'?'admin':type));
-    if (users.length > 0) {
-      Driver.forceLoginById(users[0].id);
+    // Fixed demo accounts per type
+    const DEMO_IDS = {
+      piloto: 'b0d74e3a-0b2f-48d6-8bfc-31a89c8a99a1', // Rafael Mendes
+    };
+    const fixedId = DEMO_IDS[type];
+    if (fixedId) {
+      Driver.forceLoginById(fixedId);
     } else {
-      // Create a dummy session by creating a dummy user
-      const u = await Driver.addUser({
-        name: type === 'equipe' ? 'Equipe Demo' : type === 'categoria' ? 'Liga Demo' : 'Felipe Massa Demo',
-        email: 'demo@' + type + '.com',
-        type: type === 'admin' ? 'admin' : type,
-        is_active: true,
-        plan: type === 'equipe' ? 'equipe' : type === 'categoria' ? 'categoria' : 'pro'
-      });
-      if(u) Driver.forceLoginById(u.id);
+      const users = Driver.getUsers().filter(u => u.type === type);
+      if (users.length > 0) {
+        Driver.forceLoginById(users[0].id);
+      }
     }
   }
   setTimeout(() => {
@@ -769,6 +773,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (window.Driver && typeof window.Driver.bootSupabase === 'function') {
     try {
       await window.Driver.bootSupabase();
+      // Re-render pilots after data is loaded from Supabase
+      renderPilotsHighlight();
+      if (document.getElementById('pilotsListGrid')) renderPilotsList();
     } catch(e) { console.error('Supabase boot fail', e); }
   }
   await loadLiveNews();

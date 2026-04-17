@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '../../../../lib/supabase';
+import { supabaseAdmin as supabase } from '../../../../lib/supabase';
 import crypto from 'crypto';
 
 export async function POST(request: Request) {
@@ -70,14 +70,31 @@ export async function PUT(request: Request) {
     const { id, updates } = body;
     if (!id) return NextResponse.json({ success: false, error: 'ID requerido.' }, { status: 400 });
 
-    const { data: updatedUser, error } = await supabase
-      .from('users')
-      .update(updates)
-      .eq('id', id)
-      .select()
-      .single();
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
-    if (error) throw error;
+    // Use raw fetch to bypass Supabase JS SDK schema cache
+    const res = await fetch(
+      `${supabaseUrl}/rest/v1/users?id=eq.${id}`,
+      {
+        method: 'PATCH',
+        headers: {
+          'apikey': serviceKey,
+          'Authorization': `Bearer ${serviceKey}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=representation',
+        },
+        body: JSON.stringify(updates),
+      }
+    );
+
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(errText);
+    }
+
+    const rows = await res.json();
+    const updatedUser = rows[0];
 
     return NextResponse.json({ success: true, user: updatedUser });
   } catch (error: any) {

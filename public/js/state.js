@@ -125,7 +125,7 @@ const Driver = (() => {
           ...u,
           createdAt: u.created_at,
           referredBy: u.referred_by,
-          avatar: u.avatar || u.name.substring(0, 2).toUpperCase()
+          avatar: u.avatar || u.name.substring(0, 2).toUpperCase(),
         }));
         
         __dbArticles = data.articles.map(a => ({
@@ -136,7 +136,12 @@ const Driver = (() => {
         }));
         save(KEYS.users, __dbUsers);
         save(KEYS.articles, __dbArticles);
-        console.log("[Driver] Supabase Boot Completo:", __dbArticles.length, "Notícias locais carregadas.");
+        console.log("[Driver] Supabase Boot Completo:", __dbUsers.length, "Users,", __dbArticles.length, "Artigos carregados.");
+        // Notify the UI that data is ready
+        window.dispatchEvent(new Event('driver-data-ready'));
+        // Directly re-render pilots if function exists (use window. since we're inside IIFE)
+        if (typeof window.renderPilotsHighlight === 'function') window.renderPilotsHighlight();
+        if (typeof window.renderPilotsList === 'function' && document.getElementById('pilotsListGrid')) window.renderPilotsList();
       }
     } catch (err) {
       console.warn("[Driver] Boot Supabase falhou, usando local storage.", err);
@@ -219,7 +224,13 @@ const Driver = (() => {
       });
       const data = await resp.json();
       if (data.success && data.user) {
-        __dbUsers[idx] = { ...__dbUsers[idx], ...data.user };
+        __dbUsers[idx] = {
+          ...__dbUsers[idx],
+          ...data.user,
+          avatar: data.user.avatar || data.user.name.substring(0, 2).toUpperCase(),
+        };
+      } else if (data.error) {
+        console.error('[Driver] updateUser API error:', data.error);
       }
     } catch(err) {
       console.warn('API DB inacessível na atualização de usuário.', err);

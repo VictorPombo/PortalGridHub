@@ -29,6 +29,7 @@
   z-index:0;
 }
 .carbon-bg>*{position:relative;z-index:1}
+.carbon-bg>nav{z-index:500}
 
 /* Subtle version for light areas */
 .carbon-subtle::after{

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '../../../../lib/supabase';
+import { supabaseAdmin as supabase } from '../../../../lib/supabase';
 
 export async function POST(request: Request) {
   try {
@@ -8,11 +8,11 @@ export async function POST(request: Request) {
     // Válida status do autor antes de permitir inserir
     const { data: userAuth } = await supabase
       .from('users')
-      .select('type, is_active')
+      .select('type, status')
       .eq('id', body.authorId)
       .single();
 
-    if (!userAuth || (!userAuth.is_active && userAuth.type !== 'admin')) {
+    if (!userAuth || (userAuth.status !== 'active' && userAuth.type !== 'admin')) {
       return NextResponse.json({ success: false, error: 'Acesso negado. Assinatura pendente ou inativa.' }, { status: 403 });
     }
 
@@ -59,11 +59,11 @@ export async function PUT(request: Request) {
     if (articleCheck) {
       const { data: userAuth } = await supabase
         .from('users')
-        .select('type, is_active')
+        .select('type, status')
         .eq('id', articleCheck.author_id)
         .single();
 
-      if (!userAuth || (!userAuth.is_active && userAuth.type !== 'admin')) {
+      if (!userAuth || (userAuth.status !== 'active' && userAuth.type !== 'admin')) {
         return NextResponse.json({ success: false, error: 'Acesso negado. Assinatura pendente ou inativa.' }, { status: 403 });
       }
     }
@@ -76,15 +76,34 @@ export async function PUT(request: Request) {
     if (updates.brief !== undefined) payload.brief = updates.brief;
     if (updates.body !== undefined) payload.body = updates.body;
     if (updates.img !== undefined) payload.img = updates.img;
+    if (updates.category !== undefined) payload.category = updates.category;
+    if (updates.deleted !== undefined) payload.deleted = updates.deleted;
 
-    const { data: updatedArticle, error } = await supabase
-      .from('articles')
-      .update(payload)
-      .eq('id', id)
-      .select()
-      .single();
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
-    if (error) throw error;
+    // Use raw fetch to bypass SDK schema cache (for new columns like 'deleted')
+    const res = await fetch(
+      `${supabaseUrl}/rest/v1/articles?id=eq.${id}`,
+      {
+        method: 'PATCH',
+        headers: {
+          'apikey': serviceKey,
+          'Authorization': `Bearer ${serviceKey}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=representation',
+        },
+        body: JSON.stringify(payload),
+      }
+    );
+
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(errText);
+    }
+
+    const rows = await res.json();
+    const updatedArticle = rows[0];
 
     return NextResponse.json({ success: true, article: updatedArticle });
   } catch (error: any) {
