@@ -66,12 +66,14 @@ export default function CheckoutPage() {
     }
 
     try {
+      setError("ESTADO 1: Lendo Session JSON...");
       const session = JSON.parse(userStr);
       
-      // Buscar dados completos se available (ajuste de state var)
       const usersStr = localStorage.getItem('pl_users');
       const users = (usersStr && usersStr !== 'undefined') ? JSON.parse(usersStr) : [];
       const user = users.find((u: any) => u.id === session.userId || u.id === session.id) || session;
+      
+      setError("ESTADO 2: Enviando Fetch para API...");
       const res = await fetch('/api/asaas/create-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -83,16 +85,19 @@ export default function CheckoutPage() {
         }),
       });
 
+      setError("ESTADO 3: Aguardando res.json()...");
       const data = await res.json();
+
+      setError(`ESTADO 4: Payload Lido! success=${data.success}`);
 
       if (data.success && data.invoice_url) {
         setInvoiceUrl(data.invoice_url);
         setShowPayment(true);
       } else {
-        setError(data.error || 'Erro ao gerar pagamento. Tente novamente.');
+        setError(data.error || 'Erro ao gerar: ' + JSON.stringify(data));
       }
     } catch (err: any) {
-      setError(err.message || 'Erro de conexão/execução. Tente novamente.');
+      setError(err.message || String(err) || 'CATCH BLOCK HIT!');
     }
 
     setLoading(false);
