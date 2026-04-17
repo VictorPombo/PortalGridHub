@@ -17,6 +17,16 @@ const Driver = (() => {
   // DATABASE CACHE (Supabase memory)
   // ============================
   let __dbUsers = load(KEYS.users, typeof SEED_USERS !== 'undefined' ? SEED_USERS : []);
+  
+  // MIGRATION: Protege contra crash no cache legado do frontend antes do fetch do Supabase terminar
+  if (Array.isArray(__dbUsers)) {
+    __dbUsers.forEach(u => {
+      if (u.is_active === undefined) {
+         u.is_active = (u.status === 'active' || u.status === 'admin' || u.type === 'admin');
+      }
+    });
+  }
+
   let __dbArticles = load(KEYS.articles, typeof SEED_ARTICLES !== 'undefined' ? SEED_ARTICLES : []);
 
   // INJETANDO O USUÁRIO SOLICITADO NO FALLBACK (CASO SUPABASE NÃO CONECTE)
@@ -28,7 +38,7 @@ const Driver = (() => {
       password: '29183627Mae', // Mocks apenas para o fallback
       type: 'piloto',
       plan: 'pro',
-      status: 'active',
+      is_active: true,
       avatar: 'VA'
     });
     save(KEYS.users, __dbUsers);
@@ -171,7 +181,7 @@ const Driver = (() => {
   async function addUser(user) {
     user.id = 'u' + (__dbUsers.length + 1) + '_' + Date.now(); // Fallback gen for cache
     user.createdAt = new Date().toISOString().split('T')[0];
-    if (!user.status) user.status = 'pending_payment'; // Respeita status se já definido (ex: DEMO)
+    if (user.is_active === undefined) user.is_active = false; // Inativo até o webhook Asaas confirmar
     user.avatar = user.name.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
     
     // Tentativa de gravar no Supabase via API
@@ -370,9 +380,9 @@ const Driver = (() => {
   function getAdminStats() {
     const users = getUsers();
     const articles = getArticles();
-    const pilots = users.filter(u => u.type === 'piloto' && u.status === 'active');
-    const teams = users.filter(u => u.type === 'equipe' && u.status === 'active');
-    const cats = users.filter(u => u.type === 'categoria' && u.status === 'active');
+    const pilots = users.filter(u => u.type === 'piloto' && u.is_active);
+    const teams = users.filter(u => u.type === 'equipe' && u.is_active);
+    const cats = users.filter(u => u.type === 'categoria' && u.is_active);
     const totalActive = pilots.length + teams.length + cats.length;
     const pending = articles.filter(a => ['sent', 'review', 'approved'].includes(a.status)).length;
     const totalViews = articles.reduce((s, a) => s + (a.views || 0), 0);
