@@ -18,6 +18,24 @@ export async function POST(req: Request) {
 
     console.log("Webhook recebido:", body)
 
+    const event_id = body.id
+    if (event_id) {
+      // 🚫 Idempotency check: verifica se já processou esse webhook exato
+      const { data: alreadyProcessed } = await supabase
+        .from("webhook_events")
+        .select("event_id")
+        .eq("event_id", event_id)
+        .single()
+      
+      if (alreadyProcessed) {
+        console.log(`Webhook Event ${event_id} já processado. Ignorando.`);
+        return new Response("ok")
+      }
+
+      // Registra a intenção de processo para bloquear concorrência
+      await supabase.from("webhook_events").insert({ event_id, processed: true })
+    }
+
     const { event, payment, subscription } = body
 
     // 🛠️ Função Helper: Extrair User ID (Fallback para ler da description do link de pagamento Asaas)
@@ -65,11 +83,30 @@ export async function POST(req: Request) {
         value: payment.value
       })
 
-      // ✅ ativa usuário
+      // Update plan based on value
+      const value = payment.value || 0
+      let plan = "starter"
+      if (value >= 149.9) plan = "pro"
+
+      // ✅ ativa usuário e atualiza o plano pago
       await supabase
         .from("users")
-        .update({ is_active: true })
+        .update({ 
+          is_active: true,
+          plan: plan
+        })
         .eq("id", userId)
+    }
+
+    // ============================
+    // 🟠 PAGAMENTO ATRASADO
+    // ============================
+    
+    if (event === "PAYMENT_OVERDUE") {
+      // Opcional: Implementar Grace Period (Carência de x dias antes de derrubar o usuário)
+      // Por ora, a asaas continua tentando cobrar, não inativamos imediatamente aqui caso
+      // você tenha dias de tolerância configurados.
+      console.log(`Pagamento em atraso para o usuário/fatura: ${payment?.id}`);
     }
 
     // ============================

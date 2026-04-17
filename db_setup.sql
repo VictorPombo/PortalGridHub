@@ -169,12 +169,19 @@ CREATE TABLE IF NOT EXISTS public.payments (
 );
 
 CREATE TABLE IF NOT EXISTS public.subscriptions (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id UUID NOT NULL,
-  asaas_subscription_id TEXT UNIQUE NOT NULL,
-  status TEXT NOT NULL,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL,
+  asaas_subscription_id text UNIQUE NOT NULL,
+  status text NOT NULL,
+  current_period_end timestamp,
+  created_at timestamp DEFAULT now(),
   CONSTRAINT fk_subs_user FOREIGN KEY (user_id) REFERENCES public.users (id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS public.webhook_events (
+  event_id text PRIMARY KEY,
+  processed boolean DEFAULT true,
+  created_at timestamp DEFAULT now()
 );
 
 CREATE INDEX IF NOT EXISTS idx_payments_asaas ON public.payments (payment_id);
