@@ -218,24 +218,33 @@
     const draftStr = sessionStorage.getItem('draft_materia');
     let DRAFT = draftStr ? JSON.parse(draftStr) : null;
     
-    // Auth Check
-    const currentUser = typeof Driver !== 'undefined' ? Driver.getCurrentUser() : null;
-    if (!currentUser) {
-      alert("Você não está logado!");
-      window.location.href = 'cadastro.html';
-    }
-
+    let currentUser = typeof Driver !== 'undefined' ? Driver.getCurrentUser() : null;
+    
     function navTo(id) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       document.getElementById(id).classList.add('active');
     }
 
-    // Inicialização
-    if (DRAFT) {
-      startGeneration();
-    } else {
-      document.getElementById('screen-loading').innerHTML = '<h1>Nenhum rascunho encontrado.</h1><a href="javascript:history.back()" style="color:#fff">Voltar</a>';
+    async function __initRedacao() {
+      if (!currentUser) {
+        try { await Driver.bootSupabase(); } catch(e) { console.warn('Boot falhou:', e); }
+        currentUser = Driver.getCurrentUser();
+      }
+
+      if (!currentUser) {
+        window.location.href = 'cadastro.html';
+        return;
+      }
+
+      if (DRAFT) {
+        startGeneration();
+      } else {
+        document.getElementById('screen-loading').innerHTML = '<h1 style="color:#fff;margin-bottom:16px;">Nenhum rascunho encontrado.</h1><button class="secondary" onclick="window.history.back()">Voltar</button>';
+      }
     }
+
+    // Inicialização
+    __initRedacao();
 
     async function startGeneration() {
       navTo('screen-loading');
