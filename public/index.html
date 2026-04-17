@@ -1063,7 +1063,7 @@
         </div>
         <button class="btn btn-acc btn-full" onclick="doLogin()">Entrar →</button>
         <div class="auth-footer"><button class="auth-link" onclick="toast('E-mail de recuperação enviado!','ok')">Esqueci minha senha</button></div>
-        <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--brd);text-align:center">
+        <div id="demoLoginBlock" style="margin-top:16px;padding-top:16px;border-top:1px solid var(--brd);text-align:center;display:none">
           <div style="font-family:var(--fm);font-size:10px;color:var(--muted);margin-bottom:10px">DEMO — Clique para simular acesso:</div>
           <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap">
             <button class="btn btn-out btn-sm" onclick="loginAs('admin')"><i class="fi fi-rr-crown"></i> Admin</button>
@@ -1072,6 +1072,12 @@
             <button class="btn btn-out btn-sm" onclick="loginAs('categoria')"><i class="fi fi-rr-trophy"></i> Categoria</button>
           </div>
         </div>
+        <script>
+          // Só exibe botões DEMO em localhost (desenvolvimento)
+          if(location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+            document.getElementById('demoLoginBlock').style.display = 'block';
+          }
+        </script>
       </div>
       <!-- Register form redirect -->
       <div id="auth-register" class="hide" style="text-align:center;padding:24px 12px">
