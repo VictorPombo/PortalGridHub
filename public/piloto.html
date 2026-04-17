@@ -52,36 +52,41 @@
 <script src="js/core.js"></script>
 <script src="js/state.js"></script>
 <script>
-// Get pilot ID from URL or default to u1 (Rafael Mendes)
-const params = new URLSearchParams(window.location.search);
-const pilotId = params.get('id') || 'u1';
-const pilot = Driver.getUserById(pilotId);
+// Aguarda o banco Sincronizar antes de buscar ID ou renderizar (evita cache vazio)
+(async function initPage() {
+  await Driver.bootSupabase();
 
-if (!pilot || pilot.type !== 'piloto') {
-  // Show all pilots listing
-  renderPilotsList();
-} else {
-  renderPilotPage(pilot);
-}
+  // Get pilot ID from URL or default to u1 (Rafael Mendes)
+  const params = new URLSearchParams(window.location.search);
+  const pilotId = params.get('id') || 'u1';
+  let pilot = Driver.getUserById(pilotId);
 
-// Update nav if logged in
-if (Driver.isLoggedIn()) {
-  const u = Driver.getCurrentUser();
-  const dash = u.type === 'equipe' ? 'dashboard-equipe.html' : u.type === 'categoria' ? 'dashboard-categoria.html' : 'dashboard-piloto.html';
-  const isOwner = u.id === pilotId;
-  
-  // Se é o dono vendo sua própria página, simplifica a nav
-  if (isOwner) {
-    document.querySelector('.nav-links').innerHTML = `
-      <li><a href="index.html">Portal</a></li>
+  if (!pilot || pilot.type !== 'piloto') {
+    // Show all pilots listing
+    renderPilotsList();
+  } else {
+    renderPilotPage(pilot);
+  }
+
+  // Update nav se estiver logado
+  if (Driver.isLoggedIn()) {
+    const u = Driver.getCurrentUser();
+    const dash = u.type === 'equipe' ? 'dashboard-equipe.html' : u.type === 'categoria' ? 'dashboard-categoria.html' : 'dashboard-piloto.html';
+    const isOwner = u.id === pilotId;
+    
+    // Se é o dono vendo sua própria página, simplifica a nav
+    if (isOwner) {
+      document.querySelector('.nav-links').innerHTML = `
+        <li><a href="index.html">Portal</a></li>
+      `;
+    }
+    
+    document.getElementById('navRight').innerHTML = `
+      <span style="font-family:var(--fm);font-size:10px;color:var(--dim)">${u.name}</span>
+      <a href="${dash}" class="btn-nav-action">Meu Painel</a>
     `;
   }
-  
-  document.getElementById('navRight').innerHTML = `
-    <span style="font-family:var(--fm);font-size:10px;color:var(--dim)">${u.name}</span>
-    <a href="${dash}" class="btn-nav-action">Meu Painel</a>
-  `;
-}
+})();
 
 function renderPilotsList() {
   const pilots = Driver.getUsersByType('piloto');
@@ -153,7 +158,7 @@ function renderPilotPage(p) {
       <div class="sec-head"><span class="sec-title">Títulos e Conquistas</span></div>
       <div class="pilot-conquests" style="display:flex;gap:12px;align-items:center;background:var(--bg1);border:1px solid var(--brd);border-radius:12px;padding:24px;">
         <div class="pilot-conquest" style="flex-shrink:0;margin:0;background:none;border:none"><span class="pilot-conquest-icon"><i data-lucide="trophy" style="width:24px;height:24px;display:inline-block;vertical-align:text-bottom"></i></span><span class="pilot-conquest-val" style="font-size:32px">${conquests.titles || 0}</span><span class="pilot-conquest-lbl" style="font-size:12px">Títulos</span></div>
-        ${conquests.titles_desc ? \`<div style="flex:1;border-left:1px solid var(--brd);padding-left:24px;font-size:15px;color:var(--dim);line-height:1.4">\${conquests.titles_desc}</div>\` : ''}
+        ${conquests.titles_desc ? `<div style="flex:1;border-left:1px solid var(--brd);padding-left:24px;font-size:15px;color:var(--dim);line-height:1.4">${conquests.titles_desc}</div>` : ''}
       </div>
     </div>
 
