@@ -24,7 +24,10 @@ async function findOrCreateCustomer(name: string, email: string, cpf?: string): 
     body: JSON.stringify({ name, email, cpfCnpj: cpf || undefined }),
   });
   const createData = await createRes.json();
-  if (!createData.id) throw new Error('Falha ao criar cliente no Asaas');
+  if (!createData.id) {
+    const errorDetails = createData.errors ? JSON.stringify(createData.errors) : 'Desconhecido';
+    throw new Error('Falha ao criar cliente no Asaas: ' + errorDetails);
+  }
   return createData.id;
 }
 
@@ -53,60 +56,41 @@ export async function POST(req: Request) {
     // 1. Criar/buscar cliente
     const customerId = await findOrCreateCustomer(user_name, user_email, user_cpf);
 
-    // 2. Criar cobrança com link de pagamento
-    const paymentRes = await fetch(`${ASAAS_BASE_URL}/payments`, {
+    // 2. Criar assinatura recorrente nativa
+    const subRes = await fetch(`${ASAAS_BASE_URL}/subscriptions`, {
       method: 'POST',
       headers: asaasHeaders,
       body: JSON.stringify({
         customer: customerId,
-        billingType: 'UNDEFINED', // Pix + Cartão + Boleto
+        billingType: 'UNDEFINED',
         value: planData.value,
+        cycle: 'MONTHLY',
         description: `Driver News - ${planData.name} | user: ${user_id}`,
         externalReference: user_id,
-        dueDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0], // vence amanhã
       }),
     });
 
-    const paymentData = await paymentRes.json();
+    const subData = await subRes.json();
 
-    if (!paymentData.id) {
-      console.error('[Asaas] Erro ao criar cobrança:', paymentData);
-      return NextResponse.json({ error: 'Falha ao criar cobrança' }, { status: 500 });
+    if (!subData.id) {
+      console.error('[Asaas] Erro ao criar assinatura:', subData);
+      const errs = subData.errors ? JSON.stringify(subData.errors) : 'Desconhecido';
+      return NextResponse.json({ error: 'Falha ao criar assinatura: ' + errs }, { status: 500 });
     }
 
-    // 3. O invoiceUrl é a página de pagamento do Asaas (pode ser embeddada)
-    const invoiceUrl = paymentData.invoiceUrl;
-
-    // 4. Também criar assinatura recorrente para os próximos meses
-    try {
-      await fetch(`${ASAAS_BASE_URL}/subscriptions`, {
-        method: 'POST',
-        headers: asaasHeaders,
-        body: JSON.stringify({
-          customer: customerId,
-          billingType: 'UNDEFINED',
-          value: planData.value,
-          cycle: 'MONTHLY',
-          description: `Driver News - ${planData.name} | user: ${user_id}`,
-          externalReference: user_id,
-          nextDueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        }),
-      });
-    } catch (subErr) {
-      console.warn('[Asaas] Erro ao criar assinatura recorrente (não crítico):', subErr);
-    }
+    const invoiceUrl = subData.invoiceUrl || `https://www.asaas.com/i/${subData.id}`;
 
     return NextResponse.json({
       success: true,
-      payment_id: paymentData.id,
+      payment_id: subData.id,
       invoice_url: invoiceUrl,
       plan: plan,
       plan_name: planData.name,
       value: planData.value,
     });
 
-  } catch (err) {
+  } catch (err: any) {
     console.error('[Asaas Checkout] Erro:', err);
-    return NextResponse.json({ error: 'Erro interno' }, { status: 500 });
+    return NextResponse.json({ error: String(err.stack || err.message || err) }, { status: 500 });
   }
 }
