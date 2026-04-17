@@ -126,7 +126,7 @@ document.getElementById('sidebarProfile').innerHTML = `
 function renderOverview() {
   const stats = Driver.getUserStats(USER.id);
   const articles = Driver.getArticlesByAuthor(USER.id);
-  const recent = articles.filter(a => a.status !== 'draft').sort((a, b) => (b.publishedAt || b.submittedAt || '').localeCompare(a.publishedAt || a.submittedAt || '')).slice(0, 5);
+  const recent = articles.filter(a => a.status !== 'draft').sort((a, b) => String(b.publishedAt || b.submittedAt || '').localeCompare(String(a.publishedAt || a.submittedAt || ''))).slice(0, 5);
   const usagePct = stats.limit > 0 ? ((stats.limit - stats.remaining) / stats.limit * 100) : 0;
 
   // Count by status
@@ -637,7 +637,7 @@ async function submitArticle() {
 // Render Articles
 // ============================
 function renderArticles() {
-  const articles = Driver.getArticlesByAuthor(USER.id).sort((a, b) => (b.publishedAt || b.submittedAt || '9999').localeCompare(a.publishedAt || a.submittedAt || '9999'));
+  const articles = Driver.getArticlesByAuthor(USER.id).sort((a, b) => String(b.publishedAt || b.submittedAt || '9999').localeCompare(String(a.publishedAt || a.submittedAt || '9999')));
   const filterBtns = ['all','published','review','sent','draft'];
   document.getElementById('sec-articles').innerHTML = `
     <div class="dash-header"><h1>Minhas Matérias</h1></div>

@@ -403,7 +403,7 @@ const Driver = (() => {
       totalViews,
       totalViewsFormatted: totalViews > 1000 ? (totalViews / 1000).toFixed(1) + 'K' : totalViews.toString(),
       remaining: getRemainingArticles(userId),
-      limit: PLAN_LIMITS[getUserById(userId)?.plan] || 0,
+      limit: PLAN_LIMITS[getUserById(userId) ? getUserById(userId).plan : 'starter'] || 0,
     };
   }
 
