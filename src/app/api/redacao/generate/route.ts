@@ -45,20 +45,20 @@ async function generateArticleBg(id: string, payload: any) {
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     
     const prompt = `Você é um redator experiente de automobilismo (Driver News). 
-Escreva uma matéria profissional completa usando as informações abaixo do piloto/equipe.
-A matéria deve ser jornalística e atrativa. Retorne estritamente um JSON com "titulo" e "corpo".
+Escreva uma matéria profissional completa cruzando AS INFORMAÇÕES DETALHADAS e o TÍTULO fornecido. O "TÍTULO / CONTEXTO" abaixo é vital, analise-o profundamente para embasar o contexto e tema central da matéria no geral.
+A matéria deve ser jornalística e atrativa. Retorne estritamente um JSON contendo o "titulo" (crie uma manchete forte baseada no contexto) e "corpo" (HTML).
 
-TÍTULO SUGERIDO / CONTEXTO:
+TÍTULO DA PAUTA / CONTEXTO GERAL (MUITO IMPORTANTE):
 ${payload.input_titulo}
 
-INFORMAÇÕES DISPONÍVEIS:
+INFORMAÇÕES DETALHADAS:
 ${payload.input_corpo}
 
 CATEGORIA:
 ${payload.input_categoria}
 
 SUA SAÍDA DEVE SER EXATAMENTE NESTE FORMATO JSON:
-{ "titulo": "Título Jornalístico Forte...", "corpo": "<p>Primeiro paragrafo...</p><p>Segundo...</p>" }`;
+{ "titulo": "Manchete Jornalística de Impacto...", "corpo": "<p>Primeiro parágrafo...</p><p>Segundo...</p>" }`;
 
     const result = await model.generateContent(prompt);
     const text = result.response.text();
