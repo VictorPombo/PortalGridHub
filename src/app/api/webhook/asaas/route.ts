@@ -1,69 +1,121 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "@supabase/supabase-js"
 
-// Cliente Supabase dedicado ao servidor com Service Role (Ignora RLS)
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || '';
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
-const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey);
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || '',
+  process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+)
 
-export async function POST(request: Request) {
+export async function POST(req: Request) {
   try {
-    const rawBody = await request.text();
-    
-    // Validação de segurança do Webhook Asaas para evitar fraudes ou pings falsos
-    const asaasSignature = request.headers.get('asaas-signature');
-    if (!asaasSignature && process.env.ASAAS_WEBHOOK_TOKEN) {
-      // Se não enviou a assinatura e nós exigimos (temos o token no ENV), bloqueia.
-      console.warn("Webhook negado: Falta asaas-signature header");
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    // 🔐 valida token do Asaas
+    const token = req.headers.get("asaas-access-token")
+
+    if (token !== process.env.ASAAS_WEBHOOK_TOKEN) {
+      return new Response("unauthorized", { status: 401 })
     }
 
-    const body = JSON.parse(rawBody);
+    const body = await req.json()
+    console.log("Webhook recebido:", body)
 
-    // Rejeita eventos que não sejam de confirmação de pagamento
-    if (body.event !== 'PAYMENT_RECEIVED' && body.event !== 'PAYMENT_CONFIRMED') {
-      return NextResponse.json({ success: true, message: 'Evento ignorado' });
-    }
+    const { event, payment, subscription } = body
 
-    const customerId = body.payment?.customer;
-    if (!customerId) {
-      return NextResponse.json({ success: false, error: 'Customer ID não encontrado' }, { status: 400 });
-    }
+    // ============================
+    // 💳 PAGAMENTO CONFIRMADO
+    // ============================
 
-    // Buscamos o email associado a esse customer na API do Asaas.
-    const asaasResponse = await fetch(`https://api.asaas.com/v3/customers/${customerId}`, {
-      method: 'GET',
-      headers: {
-        'access_token': process.env.ASAAS_API_KEY || '',
-        'Content-Type': 'application/json'
+    if (
+      event === "PAYMENT_RECEIVED" ||
+      event === "PAYMENT_CONFIRMED"
+    ) {
+      if (!payment) return new Response("ok")
+
+      // segurança
+      if (payment.status !== "RECEIVED" && payment.status !== "CONFIRMED") return new Response("ok")
+
+      const userId = payment.externalReference // Espera-se que passe o user ID no checkout como externalReference
+      const paymentId = payment.id
+
+      if (!userId) {
+        console.warn("Pagamento não possui externalReference (User ID) do nosso banco.");
+        return new Response("ok")
       }
-    });
 
-    if (!asaasResponse.ok) {
-      throw new Error('Falha ao buscar dados do cliente no Asaas');
+      // 🚫 evita duplicidade
+      const { data: existing } = await supabase
+        .from("payments")
+        .select("id")
+        .eq("payment_id", paymentId)
+        .single()
+
+      if (existing) return new Response("ok")
+
+      // 💾 salva pagamento
+      await supabase.from("payments").insert({
+        user_id: userId,
+        payment_id: paymentId,
+        status: "paid",
+        value: payment.value || 0
+      })
+
+      // ✅ ativa usuário (Adaptado para nosso schema: status = 'active')
+      await supabase
+        .from("users")
+        .update({ status: 'active' })
+        .eq("id", userId)
     }
 
-    const customerData = await asaasResponse.json();
-    const customerEmail = customerData.email;
+    // ============================
+    // 🔁 ASSINATURA CRIADA
+    // ============================
 
-    if (!customerEmail) {
-       return NextResponse.json({ success: false, error: 'Cliente no Asaas sem email' }, { status: 400 });
+    if (event === "SUBSCRIPTION_CREATED") {
+      if (!subscription) return new Response("ok")
+
+      const userId = subscription.externalReference
+      if (!userId) return new Response("ok")
+
+      await supabase.from("subscriptions").insert({
+        user_id: userId,
+        asaas_subscription_id: subscription.id,
+        status: "active"
+      })
     }
 
-    // Ativamos o Piloto no nosso banco de dados (Bypassing RLS usando Admin Client).
-    const { data: updatedUser, error: dbError } = await supabaseAdmin
-      .from('users')
-      .update({ status: 'active' }) // Ativa a conta!
-      .eq('email', customerEmail)
-      .select()
-      .single();
+    // ============================
+    // 🔁 ASSINATURA CANCELADA
+    // ============================
 
-    if (dbError) throw dbError;
-    
-    return NextResponse.json({ success: true, activated: customerEmail });
+    if (event === "SUBSCRIPTION_INACTIVATED" || event === "SUBSCRIPTION_CANCELED") {
+      if (!subscription) return new Response("ok")
 
-  } catch (error: any) {
-    console.error('Asaas Webhook Error:', error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+      const subId = subscription.id
+
+      // pega usuário
+      const { data: sub } = await supabase
+        .from("subscriptions")
+        .select("user_id")
+        .eq("asaas_subscription_id", subId)
+        .single()
+
+      if (sub?.user_id) {
+        // bloqueia usuário (Adaptado para nosso schema: reverting to pending)
+        await supabase
+          .from("users")
+          .update({ status: 'pending_payment' })
+          .eq("id", sub.user_id)
+      }
+
+      // atualiza assinatura
+      await supabase
+        .from("subscriptions")
+        .update({ status: "inactive" })
+        .eq("asaas_subscription_id", subId)
+    }
+
+    return new Response("ok", { status: 200 })
+  } catch (err) {
+    console.error("Erro webhook:", err)
+    return new Response("error", { status: 500 })
   }
 }

@@ -154,3 +154,28 @@ ALTER TABLE public.publication_consents ALTER COLUMN content_hash DROP NOT NULL;
 
 CREATE INDEX IF NOT EXISTS idx_consent_user ON public.publication_consents (user_id);
 CREATE INDEX IF NOT EXISTS idx_consent_materia ON public.publication_consents (materia_id);
+
+-- ==========================================
+-- 💳 PAYMENTS & SUBSCRIPTIONS (ASAAS WEBHOOK)
+-- ==========================================
+CREATE TABLE IF NOT EXISTS public.payments (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID NOT NULL,
+  payment_id TEXT UNIQUE NOT NULL,
+  status TEXT NOT NULL,
+  value NUMERIC DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  CONSTRAINT fk_payments_user FOREIGN KEY (user_id) REFERENCES public.users (id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS public.subscriptions (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID NOT NULL,
+  asaas_subscription_id TEXT UNIQUE NOT NULL,
+  status TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  CONSTRAINT fk_subs_user FOREIGN KEY (user_id) REFERENCES public.users (id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_payments_asaas ON public.payments (payment_id);
+CREATE INDEX IF NOT EXISTS idx_subs_asaas ON public.subscriptions (asaas_subscription_id);
