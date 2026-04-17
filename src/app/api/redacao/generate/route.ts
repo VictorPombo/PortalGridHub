@@ -44,9 +44,15 @@ async function generateArticleBg(id: string, payload: any) {
   try {
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     
-    const prompt = `Você é um redator experiente de automobilismo (Driver News). 
-Escreva uma matéria profissional completa cruzando AS INFORMAÇÕES DETALHADAS e o TÍTULO fornecido. O "TÍTULO / CONTEXTO" abaixo é vital, analise-o profundamente para embasar o contexto e tema central da matéria no geral.
-A matéria deve ser jornalística e atrativa. Retorne estritamente um JSON contendo o "titulo" (crie uma manchete forte baseada no contexto) e "corpo" (HTML).
+    const prompt = `Você é um redator experiente e realista de automobilismo (Driver News). 
+Escreva uma matéria profissional completa cruzando AS INFORMAÇÕES DETALHADAS e o TÍTULO fornecido. O "TÍTULO / CONTEXTO" abaixo é vital, analise-o profundamente para embasar o tema central da matéria.
+
+REGRA DE OURO (TOM DE VOZ):
+- Escreva EXATAMENTE como um jornalista humano normal, do cotidiano.
+- PROIBIDO usar clichês de IA ou linguagem dramática/poética (ex: "saga", "balé de máquinas", "jornada gloriosa", "destino traçado").
+- Seja objetivo, claro, limpo e direto. Não seja um robô tentando soar emocionante.
+- Não comece os parágrafos sempre do mesmo jeito.
+A matéria deve ser atraente apenas pela informação e narração dos fatos reais da corrida/evento.
 
 TÍTULO DA PAUTA / CONTEXTO GERAL (MUITO IMPORTANTE):
 ${payload.input_titulo}
@@ -57,8 +63,8 @@ ${payload.input_corpo}
 CATEGORIA:
 ${payload.input_categoria}
 
-SUA SAÍDA DEVE SER EXATAMENTE NESTE FORMATO JSON:
-{ "titulo": "Manchete Jornalística de Impacto...", "corpo": "<p>Primeiro parágrafo...</p><p>Segundo...</p>" }`;
+SUA SAÍDA DEVE SER EXATAMENTE NESTE FORMATO JSON (O corpo deve estar em HTML limpo, usando <p>, <blockquote> se precisar):
+{ "titulo": "Manchete Simples e Cativante...", "corpo": "<p>Primeiro parágrafo de notícia normal...</p><p>Segundo...</p>" }`;
 
     const result = await model.generateContent(prompt);
     const text = result.response.text();
