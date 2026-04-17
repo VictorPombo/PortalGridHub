@@ -222,16 +222,17 @@ const Driver = (() => {
   // ============================
   function getArticles() { return __dbArticles; }
   function getArticleById(id) { return getArticles().find(a => a.id === id); }
-  function getArticlesByAuthor(authorId) { return getArticles().filter(a => a.authorId === authorId); }
-  function getArticlesByStatus(status) { return getArticles().filter(a => a.status === status); }
+  function getArticlesByAuthor(authorId) { return getArticles().filter(a => a.authorId === authorId && !a.deleted); }
+  function getArticlesByStatus(status) { return getArticles().filter(a => a.status === status && !a.deleted); }
   function getPublishedByAuthor(authorId) { return getArticlesByAuthor(authorId).filter(a => a.status === 'published'); }
-  function getPendingArticles() { return getArticles().filter(a => ['sent', 'review', 'approved'].includes(a.status)); }
+  function getPendingArticles() { return getArticles().filter(a => ['sent', 'review', 'approved'].includes(a.status) && !a.deleted); }
   function getMonthlyUsage(authorId) {
     const now = new Date();
     const month = now.getMonth();
     const year = now.getFullYear();
-    return getArticlesByAuthor(authorId).filter(a => {
-      if (a.status === 'draft') return false;
+    // Opcional de exclusão: contabilizar itens excluídos que não eram rascunhos puros (já consumiram crédito)
+    return getArticles().filter(a => {
+      if (a.authorId !== authorId || a.status === 'draft') return false;
       const d = new Date(a.submittedAt || a.publishedAt);
       return d.getMonth() === month && d.getFullYear() === year;
     }).length;
@@ -297,6 +298,10 @@ const Driver = (() => {
     if (newStatus === 'published') updates.publishedAt = new Date().toISOString().split('T')[0];
     if (newStatus === 'sent') updates.submittedAt = new Date().toISOString().split('T')[0];
     return await updateArticle(id, updates);
+  }
+
+  async function deleteArticle(id) {
+    return await updateArticle(id, { deleted: true });
   }
 
   // ============================
@@ -538,7 +543,7 @@ const Driver = (() => {
     // Articles
     getArticles, getArticleById, getArticlesByAuthor, getArticlesByStatus,
     getPublishedByAuthor, getPendingArticles, getMonthlyUsage, getRemainingArticles,
-    addArticle, updateArticle, changeArticleStatus,
+    addArticle, updateArticle, changeArticleStatus, deleteArticle,
     // Session
     login, forceLoginById, logout, getSession, getCurrentUser, isLoggedIn,
     // Settings

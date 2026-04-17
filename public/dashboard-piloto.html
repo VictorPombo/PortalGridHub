@@ -681,6 +681,7 @@ function renderArticles() {
             ${a.status === 'approved' ? `<button class="btn-success" style="padding:6px 12px;font-size:10px" onclick="event.stopPropagation();approvePublish('${a.id}')"><i data-lucide="check-circle-2" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Aprovar</button>` : ''}
             ${a.status === 'published' ? `<button class="btn-secondary" style="padding:6px 12px;font-size:10px;color:var(--warning)" onclick="event.stopPropagation();hideMyArticle('${a.id}')"><i data-lucide="eye-off" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Ocultar</button>` : ''}
             ${['published','review','approved'].includes(a.status) ? `<button class="btn-secondary" style="padding:6px 12px;font-size:10px" onclick="event.stopPropagation();previewArticle('${a.id}')"><i data-lucide="eye" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Ver</button>` : ''}
+            <button class="btn-secondary" style="padding:6px 12px;font-size:10px;color:var(--dim)" onclick="event.stopPropagation();deleteMyArticle('${a.id}')"><i data-lucide="trash-2" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Excluir</button>
           </div>
         </div>
       `).join('')}
@@ -742,6 +743,33 @@ function republishArticle(id) {
 }
 function previewArticle(id) {
   window.open(`materia.html?id=${id}`, '_blank');
+}
+function deleteMyArticle(id) {
+  const overlay = document.createElement('div');
+  overlay.id = 'delConfirmModal';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)';
+  overlay.innerHTML = `
+    <div style="background:var(--bg2,#1a1a22);border:1px solid var(--brd,rgba(255,255,255,.08));border-radius:12px;padding:32px;max-width:400px;width:90%;text-align:center">
+      <div style="font-size:32px;margin-bottom:12px">🗑️</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;margin-bottom:8px;color:#fff">Excluir matéria visualmente?</div>
+      <p style="color:#999;font-size:13px;line-height:1.5;margin-bottom:12px">Esta matéria será excluída permanentemente do seu painel e não poderá ser recuperada.</p>
+      <div style="background:rgba(232,0,45,.1);border:1px solid rgba(232,0,45,.2);padding:10px;border-radius:6px;font-size:11px;color:rgba(255,255,255,.6);margin-bottom:24px;">Note: A exclusão do card não credita o limite mensal da IA de volta.</div>
+      <div style="display:flex;gap:10px;justify-content:center">
+        <button id="delConfirmCancel" style="padding:10px 24px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:transparent;color:#fff;cursor:pointer;font-size:13px;font-weight:600">Cancelar</button>
+        <button id="delConfirmOk" style="padding:10px 24px;border-radius:6px;border:none;background:#E10600;color:#fff;cursor:pointer;font-size:13px;font-weight:600">Apagar Matéria</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  document.getElementById('delConfirmCancel').onclick = () => overlay.remove();
+  overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
+  document.getElementById('delConfirmOk').onclick = async () => {
+    await Driver.deleteArticle(id);
+    showToast('Matéria apagada do painel.','ok');
+    overlay.remove();
+    renderOverview(); renderArticles();
+  };
 }
 
 // ============================
