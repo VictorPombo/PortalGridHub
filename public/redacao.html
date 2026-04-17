@@ -244,7 +244,7 @@
       
       try {
         // Obter contexto enriquecido (Nome do piloto, cat, etc)
-        const d_ct = \`Piloto \${currentUser.name || ''} - Categoria: \${document.getElementById('prev-cat')?.textContent || 'Automobilismo'}\`;
+        const d_ct = `Piloto ${currentUser.name || ''} - Categoria: ${document.getElementById('prev-cat')?.textContent || 'Automobilismo'}`;
         
         // Chamada à nosa API confiável
         const res = await fetch('/api/ai-enhance', {
