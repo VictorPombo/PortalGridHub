@@ -22,50 +22,42 @@ export async function POST(req: Request) {
     let systemInstruction = "";
 
     if (tipoCampo === 'bio') {
-      systemInstruction = `Você é um Redator de Automobilismo escrevendo para um portal.
-Sua missão é reescrever a biografia do piloto para que fique coerente e profissional, MAS COM UMA REGRA DE OURO: USE PALAVRAS NORMAIS DO COTIDIANO.
-PROIBIDO usar palavras poéticas, absurdas ou dramáticas como "saga", "destino traçado na borracha", "empoeirados", "palco primordial", "lapidou", "jornada". Fale como uma pessoa normal conversando.
-Corrija erros gramaticais e mantenha os fatos narrados pelo piloto, organizando o texto.
-Retorne APENAS o texto aprimorado, sem introduções ou formatação markdown complexa.`;
+      systemInstruction = `REESCREVA ESTA BIOGRAFIA USANDO APENAS PALAVRAS SIMPLES DO DIA A DIA.
+PROIBIDO USAR: saga, destino traçado, empoeirados, palco primordial, inquestionável, coroa, triunfo, avassaladora, sagrar-se, maestria técnica, elite.
+Fale como se fosse uma pessoa normal conversando em 2024.
+OBJETIVO: Pegar o que o piloto escreveu e apenas corrigir o português e organizar as frases de um jeito humano e simples. Não adicione drama, emoção ou palavras chiques.
+Retorne apenas o texto final.`;
     } else if (tipoCampo === 'career') {
-      systemInstruction = `Você é um Assessor de Imprensa de Automobilismo.
-Transforme o histórico e conquistas do piloto em um texto limpo, direto e profissional.
-REGRA DE OURO: Use palavras normais do cotidiano. Proibido forçar a barra com exageros teatrais, linguagem heroica ou "contextos doidos". 
-Seja super claro e objetivo. Organize os fatos em texto que dê gosto de ler.
-Retorne APENAS o texto aprimorado.`;
+      systemInstruction = `REESCREVA O HISTÓRICO DE CARREIRA USANDO APENAS PALAVRAS SIMPLES DO DIA A DIA.
+PROIBIDO USAR: saga, inquestionável, elite, triunfo, avassaladora, sagrar-se, coroa, maestria, destaque absoluto, incomparável.
+Fale como uma pessoa normal. Apenas liste os campeonatos que ele correu e os títulos que ele ganhou, usando frases normais e curtas.
+OBJETIVO: Ser direto. Ex: "Victor é campeão da F1600." (NÃO "Victor consolidou sua maestria técnica ao sagrar-se campeão da altamente competitiva F1600").
+Retorne apenas o texto final.`;
     } else if (tipoCampo === 'sponsormsg') {
-      systemInstruction = `Você é um Profissional de Marketing Comercial.
-Reescreva a mensagem para patrocinadores para que seja B2B, séria e agregue valor de marca.
-REGRA DE OURO: Linguagem corporativa normal e acessível. Nada de drama, nada de palavras de efeito exageradas ou promessas mirabolantes inventadas. Baseie-se apenas nos fatos informados.
-Retorne APENAS o texto aprimorado.`;
+      systemInstruction = `REESCREVA ESSA MENSAGEM PARA PATROCINADORES DE FORMA DIRETA E SIMPLES.
+PROIBIDO USAR palavras corporativas exageradas ou emocionais. Use palavras normais de uma conversa de negócios sincera e humilde.
+Retorne apenas o texto final.`;
     } else if (tipoCampo === 'briefing') {
-      systemInstruction = `Você é um Redator de Automobilismo.
-Expanda as anotações do piloto sobre o evento para formar um relato com 3 parágrafos curtos.
-REGRA DE OURO: ESCREVA COMO UMA PESSOA NORMAL FALARIA. Evite a todo custo jargões literários, poéticos e clichês de IA (ex: "em um balé de máquinas", "desafiando a física"). 
-Use a "Diretriz de Identidade do Piloto" com leveza e contexto real.
-NÃO repita o nome do piloto exaustivamente. Alterne (ex: ele, o piloto).
-Retorne APENAS o texto.`;
+      systemInstruction = `ESCREVA UM RESUMO DE 3 PARÁGRAFOS CURTOS SOBRE O EVENTO USANDO PALAVRAS SIMPLES DO DIA A DIA.
+PROIBIDO usar linguagem poética, épica, ou adjetivos dramáticos (avassalador, triunfo, heróico, maestria, inquestionável).
+Pareça com um repórter normal relatando um fato ocorrido na pista, e ponto final.
+Não repita muito o nome do piloto. Use apenas o que aconteceu de verdade.
+Retorne apenas o texto.`;
     } else if (tipoCampo === 'questions') {
-      systemInstruction = `Você é um Estrategista de Conteúdo de Automobilismo.
-SUA TAREFA:
-1. Resuma o que o usuário escreveu de forma super natural, como uma pessoa normal comentando, sem robô e sem palavras dramáticas.
-2. Liste EXATAMENTE 3 perguntas curtas diretas para o piloto extrair mais fatos da corrida, sem fru-fru gramatical.
-Retorne de forma limpa.`;
+      systemInstruction = `Escreva 3 perguntas curtas e muito simples, em bullet points, para o piloto contar mais sobre a corrida. Sem enrolação.
+Retorne apenas as perguntas de forma limpa.`;
     } else if (tipoCampo === 'title') {
-      systemInstruction = `Você é um Jornalista Automotivo.
-Crie um TÍTULO JORNALÍSTICO (manchete) simples, real e direto, sem sensacionalismo exagerado.
-Deve soar como matéria normal de portal. Máximo 10 palavras, sem ponto final, sem aspas.
-Retorne APENAS a string do título finalizado.`;
+      systemInstruction = `Crie um título de notícia simples e direto. Sem sensacionalismo.
+Baseie-se no rascunho do piloto. Máximo 10 palavras, sem ponto final, sem aspas.
+Retorne apenas o título.`;
     } else if (tipoCampo === 'article') {
-      systemInstruction = `Você é um Repórter da DriverNews.
-Escreva uma MATÉRIA JORNALÍSTICA (em HTML) baseada no "Texto Original" e nas Diretrizes.
-REGRAS ESTRITAS DE TOM DE VOZ:
-- USE PORTUGUÊS NORMAL DO COTIDIANO. Proibido linguagem épica, teatral ou absurda ("a saga", "o menino nascido para correr", "o rugido dos motores").
-- Foco jornalístico: relato claro, dados concretos, corrida limpa. Se soar como inteligência artificial tentando imitar Shakespeare, você falhou.
-- Retorne apenas tags HTML puras (<p>, <strong>, etc). Sem \`\`\`html.
-- Adicione um "quote" (aspas) natural no 3º parágrafo.`;
+      systemInstruction = `ESCREVA UMA MATÉRIA (em HTML <p> e <blockquote>) USANDO APENAS PALAVRAS SIMPLES E COMUNS.
+PROIBIDO USAR QUAISQUER ADJETIVOS DRAMÁTICOS OU POÉTICOS: "saga", "inquestionável", "maestria", "triunfo", "elite", "avassalador", "sagrar-se".
+Escreva como um jornalista escreve hoje: seco, informativo, focado no fato. Sem emoção robótica.
+Adicione um "quote" (aspas) natural no 3º parágrafo imitando a fala de uma pessoa comum.
+Retorne apenas o HTML, nada mais.`;
     } else {
-      systemInstruction = `Reescreva este texto para ficar com tom profissional, usando português claro e simples do cotidiano. Sem floreios ou palavras dramáticas artificiais.`;
+      systemInstruction = `Reescreva o texto corrigindo o português, usando palavras simples como em uma conversa normal. PROIBIDO drama ou adjetivos exagerados.`;
     }
 
     const promptText = `

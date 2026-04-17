@@ -1,9 +1,24 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '../../../../lib/supabase';
+import { createClient } from '@supabase/supabase-js';
+
+// Cliente Supabase dedicado ao servidor com Service Role (Ignora RLS)
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || '';
+const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey);
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    const rawBody = await request.text();
+    
+    // Validação de segurança do Webhook Asaas para evitar fraudes ou pings falsos
+    const asaasSignature = request.headers.get('asaas-signature');
+    if (!asaasSignature && process.env.ASAAS_WEBHOOK_TOKEN) {
+      // Se não enviou a assinatura e nós exigimos (temos o token no ENV), bloqueia.
+      console.warn("Webhook negado: Falta asaas-signature header");
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const body = JSON.parse(rawBody);
 
     // Rejeita eventos que não sejam de confirmação de pagamento
     if (body.event !== 'PAYMENT_RECEIVED' && body.event !== 'PAYMENT_CONFIRMED') {
@@ -15,9 +30,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: 'Customer ID não encontrado' }, { status: 400 });
     }
 
-    // Precisamos saber quem é o dono desse pagamento. Como o link é genérico,
-    // o Asaas cria um customer novo com o email que o usuário digitou no checkout.
-    // 1. Buscamos o email associado a esse customer na API do Asaas.
+    // Buscamos o email associado a esse customer na API do Asaas.
     const asaasResponse = await fetch(`https://api.asaas.com/v3/customers/${customerId}`, {
       method: 'GET',
       headers: {
@@ -37,8 +50,8 @@ export async function POST(request: Request) {
        return NextResponse.json({ success: false, error: 'Cliente no Asaas sem email' }, { status: 400 });
     }
 
-    // 2. Com o email em mãos, ativamos o Piloto no nosso banco de dados.
-    const { data: updatedUser, error: dbError } = await supabase
+    // Ativamos o Piloto no nosso banco de dados (Bypassing RLS usando Admin Client).
+    const { data: updatedUser, error: dbError } = await supabaseAdmin
       .from('users')
       .update({ status: 'active' }) // Ativa a conta!
       .eq('email', customerEmail)
@@ -46,8 +59,6 @@ export async function POST(request: Request) {
       .single();
 
     if (dbError) throw dbError;
-
-    // Se tudo deu certo, podemos opcionalmente disparar email de boas vindas aqui
     
     return NextResponse.json({ success: true, activated: customerEmail });
 

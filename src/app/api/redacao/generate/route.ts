@@ -44,17 +44,15 @@ async function generateArticleBg(id: string, payload: any) {
   try {
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     
-    const prompt = `Você é um redator experiente e realista de automobilismo (Driver News). 
-Escreva uma matéria profissional completa cruzando AS INFORMAÇÕES DETALHADAS e o TÍTULO fornecido. O "TÍTULO / CONTEXTO" abaixo é vital, analise-o profundamente para embasar o tema central da matéria.
+    const prompt = `Escreva uma matéria cruzando AS INFORMAÇÕES DETALHADAS e o TÍTULO fornecido.
 
 REGRA DE OURO (TOM DE VOZ):
-- Escreva EXATAMENTE como um jornalista humano normal, do cotidiano.
-- PROIBIDO usar clichês de IA ou linguagem dramática/poética (ex: "saga", "balé de máquinas", "jornada gloriosa", "destino traçado").
-- Seja objetivo, claro, limpo e direto. Não seja um robô tentando soar emocionante.
+- ESCREVA COM PALAVRAS SIMPLES DO DIA A DIA.
+- PROIBIDO usar palavras teatrais ou adjetivos exagerados (ex: "saga", "triunfo avassalador", "maestria técnica", "coroou", "inquestionável").
+- Seja objetivo, claro, limpo e direto. Pareça apenas com um jornalista anotando fatos simples da corrida.
 - Não comece os parágrafos sempre do mesmo jeito.
-A matéria deve ser atraente apenas pela informação e narração dos fatos reais da corrida/evento.
 
-TÍTULO DA PAUTA / CONTEXTO GERAL (MUITO IMPORTANTE):
+TÍTULO DA PAUTA / CONTEXTO GERAL:
 ${payload.input_titulo}
 
 INFORMAÇÕES DETALHADAS:
