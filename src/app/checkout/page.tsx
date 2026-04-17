@@ -59,20 +59,19 @@ export default function CheckoutPage() {
 
     // Buscar dados do usuário logado
     const userStr = localStorage.getItem('pl_user') || localStorage.getItem('pl_session');
-    if (!userStr) {
+    if (!userStr || userStr === 'undefined') {
       setError('Faça login antes de assinar.');
       setLoading(false);
       return;
     }
 
-    const session = JSON.parse(userStr);
-    
-    // Buscar dados completos se available (ajuste de state var)
-    const usersStr = localStorage.getItem('pl_users');
-    const users = usersStr ? JSON.parse(usersStr) : [];
-    const user = users.find((u: any) => u.id === session.userId || u.id === session.id) || session;
-
     try {
+      const session = JSON.parse(userStr);
+      
+      // Buscar dados completos se available (ajuste de state var)
+      const usersStr = localStorage.getItem('pl_users');
+      const users = (usersStr && usersStr !== 'undefined') ? JSON.parse(usersStr) : [];
+      const user = users.find((u: any) => u.id === session.userId || u.id === session.id) || session;
       const res = await fetch('/api/asaas/create-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -92,8 +91,8 @@ export default function CheckoutPage() {
       } else {
         setError(data.error || 'Erro ao gerar pagamento. Tente novamente.');
       }
-    } catch (err) {
-      setError('Erro de conexão. Verifique sua internet e tente novamente.');
+    } catch (err: any) {
+      setError(err.message || 'Erro de conexão/execução. Tente novamente.');
     }
 
     setLoading(false);
