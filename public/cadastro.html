@@ -192,7 +192,25 @@
         </div>
       </div>
 
-      <div style="display:flex;gap:10px;margin-top:24px"><button class="btn-secondary" onclick="goStep(2)" style="flex:1">← Voltar</button><button class="btn-full" onclick="goStep(4)" style="flex:2;margin-top:0" id="btnStep3">Continuar →</button></div>
+      <!-- ACEITE LEGAL DE ASSINATURA -->
+      <div style="background:rgba(232,0,45,.03); border:1px solid rgba(232,0,45,.5); border-radius:8px; padding:20px; margin-top:30px; text-align:left;">
+        <h4 style="color:var(--acc); margin-bottom:12px; font-family:'Bebas Neue'; font-size:20px; letter-spacing:1px;">TERMO DE RESPONSABILIDADE</h4>
+        <div style="font-size:13px; color:var(--dim); margin-bottom:16px; line-height:1.6; max-height:180px; overflow-y:auto; padding-right:8px;">
+          <p style="margin-bottom:8px">Ao assinar, declaro que:</p>
+          <p style="margin-bottom:8px"><strong>1.</strong> Autorizo o Driver News a utilizar meu <strong>nome, imagem, dados biográficos, fotos e conteúdo</strong> que eu fornecer para fins de publicação de matérias, divulgação na plataforma, redes sociais e materiais promocionais do portal, por prazo indeterminado, conforme Art. 20 do Código Civil e Art. 46 da Lei 9.610/98.</p>
+          <p style="margin-bottom:8px"><strong>2.</strong> Sou o <strong>titular legítimo</strong> de todo material que enviar (textos, fotos, vídeos, dados) ou possuo autorização expressa de terceiros envolvidos.</p>
+          <p style="margin-bottom:8px"><strong>3.</strong> Reconheço que as matérias publicadas em meu nome serão redigidas com auxílio de <strong>inteligência artificial</strong> a partir das informações que eu fornecer, e que a <strong>aprovação final é minha responsabilidade exclusiva</strong>.</p>
+          <p style="margin-bottom:8px"><strong>4.</strong> Compreendo que sou <strong>integralmente responsável</strong> pela veracidade das informações que fornecer e pelo conteúdo que aprovar para publicação, inclusive perante terceiros e autoridades.</p>
+          <p style="margin-bottom:8px"><strong>5.</strong> Autorizo o Driver News a manter registros (logs) de todos os meus envios, aprovações e publicações pelo prazo de <strong>5 anos</strong>, para fins de comprovação legal.</p>
+          <p style="margin-bottom:0; font-size:12px;"><a href="termos.html" target="_blank" style="color:rgba(255,255,255,0.6)">Ler Termos de Uso completos</a> · <a href="politica.html" target="_blank" style="color:rgba(255,255,255,0.6)">Ler Política de Privacidade</a></p>
+        </div>
+        <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer;" onclick="setTimeout(()=> { document.getElementById('btnStep3').disabled = !document.getElementById('regConsent').checked; }, 50);">
+          <input type="checkbox" id="regConsent" style="width:20px;height:20px;accent-color:var(--acc);margin-top:2px;">
+          <span style="font-size:14px;color:#fff;font-weight:600;">Li e aceito os Termos de Uso e Política de Privacidade do Driver News.</span>
+        </label>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-top:24px"><button class="btn-secondary" onclick="goStep(2)" style="flex:1">← Voltar</button><button class="btn-full" onclick="if(!document.getElementById('regConsent').checked) return showToast('Você precisa aceitar os termos.', 'err'); goStep(4);" style="flex:2;margin-top:0" id="btnStep3" disabled>Assinar e Continuar →</button></div>
     </div>
 
     <!-- STEP 4: Pagamento -->
@@ -440,6 +458,16 @@ async function goStep(step) {
         referredBy: document.getElementById('regRef')?.value?.toUpperCase() || null,
         conquests: { titles: 0, wins: 0, podiums: 0, poles: 0, fastlaps: 0 },
       });
+      
+      // Log legal subscription consent immediately after user creation
+      try {
+        await fetch('/api/auth/register-consent', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id: newUser.id, consent_version: 'v1' })
+        });
+      } catch(e) { console.error('Erro logging subscription consent:', e); }
+      
       Driver.forceLoginById(newUser.id);
       showToast('✓ Conta criada! Bem-vindo, ' + newUser.name + '!', 'ok');
     }

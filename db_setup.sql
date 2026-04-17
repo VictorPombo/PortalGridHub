@@ -139,14 +139,18 @@ CREATE INDEX IF NOT EXISTS idx_materias_status ON public.materias (status);
 CREATE TABLE IF NOT EXISTS public.publication_consents (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID NOT NULL,
-  materia_id UUID NOT NULL REFERENCES public.materias(id),
+  materia_id UUID REFERENCES public.materias(id),
   consent_type TEXT NOT NULL DEFAULT 'publication',
   consent_version TEXT NOT NULL DEFAULT 'v1',
-  content_hash TEXT NOT NULL,
+  content_hash TEXT,
   ip_address TEXT NOT NULL,
   user_agent TEXT,
   accepted_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Forçando permissão de null para suporte a assinaturas caso a tabela já exista
+ALTER TABLE public.publication_consents ALTER COLUMN materia_id DROP NOT NULL;
+ALTER TABLE public.publication_consents ALTER COLUMN content_hash DROP NOT NULL;
 
 CREATE INDEX IF NOT EXISTS idx_consent_user ON public.publication_consents (user_id);
 CREATE INDEX IF NOT EXISTS idx_consent_materia ON public.publication_consents (materia_id);

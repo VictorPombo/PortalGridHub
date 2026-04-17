@@ -156,25 +156,39 @@
 
   <!-- TELA 5: ACEITE LEGAL -->
   <div id="screen-legal" class="screen">
-    <h1 style="color:var(--acc)">⚠️ Declaração Obrigatória</h1>
-    <div class="legal-box">
-      <p style="color:#fff; margin-bottom:16px; max-width:none;">Ao publicar, eu declaro sob as penas da lei que:</p>
-      <ol style="padding-left:16px;">
-        <li><strong>VERACIDADE</strong> Todas as informações são verdadeiras. Revisei o conteúdo e confirmo que os fatos correspondem à realidade.</li>
-        <li><strong>DIREITOS DE IMAGEM</strong> Possuo direitos ou autorização sobre todas as fotos anexadas.</li>
-        <li><strong>RESPONSABILIDADE LEGAL</strong> Publicar informações falsas pode configurar crime contra a honra. Concordo em assumir total responsabilidade civil e criminal pelo material distribuído.</li>
-        <li><strong>REGISTRO</strong> Esta aprovação é registrada com meu IP, data e hora, e será mantida para fins legais.</li>
-      </ol>
+    <h1 style="color:var(--acc); font-family:'Bebas Neue'; font-size:48px; letter-spacing:1px; margin-bottom:8px;">⚠️ DECLARAÇÃO OBRIGATÓRIA</h1>
+    <p style="color:var(--dim); font-size:16px; margin-bottom:32px;">LEIA COM ATENÇÃO ANTES DE CONTINUAR</p>
+    
+    <div class="legal-box" style="max-width:650px; background:rgba(232,0,45,0.04); border:1px solid #e8002d; padding:32px;">
+      <p style="color:#fff; margin-bottom:24px; font-size:15px;">Ao clicar em <strong>"Publicar"</strong>, eu declaro sob as penas da lei que:</p>
+      
+      <div style="font-size:14px; color:var(--dim); line-height:1.6; max-height:280px; overflow-y:auto; padding-right:12px;">
+        <p style="margin-bottom:16px"><strong>1. VERACIDADE</strong> — Todas as informações contidas nesta matéria são <strong>verdadeiras e de minha inteira responsabilidade</strong>. Revisei o conteúdo gerado pela inteligência artificial e confirmo que os fatos, nomes, resultados, citações e dados apresentados correspondem à realidade.</p>
+        
+        <p style="margin-bottom:16px"><strong>2. DIREITOS DE IMAGEM</strong> — Possuo os <strong>direitos ou autorização expressa</strong> sobre todas as fotos e imagens enviadas. Caso as imagens retratem terceiros, declaro ter o consentimento dessas pessoas para publicação.</p>
+        
+        <p style="margin-bottom:16px"><strong>3. DIREITOS AUTORAIS</strong> — O conteúdo que forneci é <strong>original ou devidamente autorizado</strong>. Não há plágio, cópia ou reprodução de conteúdo protegido por direitos autorais de terceiros.</p>
+        
+        <p style="margin-bottom:8px"><strong>4. RESPONSABILIDADE LEGAL</strong> — Estou ciente de que:</p>
+        <ul style="padding-left:24px; margin-bottom:16px; display:flex; flex-direction:column; gap:8px;">
+          <li>A publicação de <strong>informações falsas</strong> pode configurar crime contra a honra (calúnia, difamação ou injúria) nos termos dos <strong>Arts. 138 a 140 do Código Penal</strong>, com penas de detenção de 1 mês a 2 anos e multa;</li>
+          <li>A divulgação de <strong>fato inverídico</strong> sobre pessoa, empresa ou instituição pode gerar <strong>obrigação de indenizar</strong> por danos morais e materiais, conforme <strong>Arts. 186 e 927 do Código Civil</strong>;</li>
+          <li>O uso indevido de imagem de terceiros sem autorização viola o <strong>Art. 20 do Código Civil</strong> e o <strong>Art. 5º, inciso X da Constituição Federal</strong>;</li>
+          <li>O Driver News <strong>não é responsável</strong> pelo conteúdo aprovado por mim, conforme <strong>Art. 19 do Marco Civil da Internet (Lei 12.965/14)</strong>, e poderá fornecer meus dados cadastrais e registros de publicação mediante ordem judicial.</li>
+        </ul>
+        
+        <p style="margin-bottom:0"><strong>5. REGISTRO</strong> — Esta aprovação será registrada com meu <strong>nome, IP, data e hora</strong>, e mantida por <strong>5 anos</strong> para fins de comprovação legal, podendo ser apresentada em juízo.</p>
+      </div>
 
-      <label class="checkbox-wrap" onclick="toggleLegal(event)">
-        <input type="checkbox" id="legal-check" style="width:20px;height:20px;accent-color:var(--acc);margin-top:2px;">
-        <span style="font-size:14px;color:#fff;">Declaro que li, compreendi e aceito os termos acima descritos de forma irrevogável.</span>
+      <label class="checkbox-wrap" onclick="toggleLegal(event)" style="border-top:1px solid rgba(232,0,45,0.3); padding-top:24px; margin-top:24px;">
+        <input type="checkbox" id="legal-check" style="width:24px;height:24px;accent-color:var(--acc);margin-top:2px;">
+        <span style="font-size:15px;color:#fff;font-weight:600;line-height:1.4;">Declaro que li, compreendi e aceito integralmente os termos acima. Assumo total responsabilidade pelo conteúdo desta matéria.</span>
       </label>
     </div>
 
     <div class="actions">
       <button class="secondary" onclick="navTo('screen-preview')">VOLTAR</button>
-      <button class="primary" id="btn-publish" disabled onclick="publishFinal()">🔴 PUBLICAR MATÉRIA</button>
+      <button class="primary" id="btn-publish" disabled onclick="publishFinal()" style="padding-left:32px; padding-right:32px; font-size:16px;">🔴 PUBLICAR MATÉRIA</button>
     </div>
   </div>
 
