@@ -62,10 +62,11 @@ Retorne no formato JSON rigoroso:
       timestamp: new Date().toISOString()
     };
 
-    const { error: updErr } = await supabase.rpc('append_history', { // Fallback se rpc nao houver
-      row_id: id, entry: historyEntry 
-    }).catch(() => null);
-
+    try {
+      await supabase.rpc('append_history', { row_id: id, entry: historyEntry });
+    } catch (e) {
+      // Falha ignorada. Cai no fallback do fetch+update abaixo.
+    }
     // Na falta de um append native RLS json, faremos fetch + update:
     const { data: row } = await supabase.from('materias').select('historico_correcoes').eq('id', id).single();
     let currentHistory = row?.historico_correcoes || [];
