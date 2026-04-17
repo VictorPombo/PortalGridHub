@@ -150,13 +150,10 @@ function renderPilotPage(p) {
 
     <!-- Conquests -->
     <div class="pilot-section">
-      <div class="sec-head"><span class="sec-title">Conquistas</span></div>
-      <div class="pilot-conquests">
-        <div class="pilot-conquest"><span class="pilot-conquest-icon"><i data-lucide="trophy" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span><span class="pilot-conquest-val">${conquests.titles || 0}</span><span class="pilot-conquest-lbl">Títulos</span></div>
-        <div class="pilot-conquest"><span class="pilot-conquest-icon"><i data-lucide="medal" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom;color:#f0a000"></i></span><span class="pilot-conquest-val">${conquests.wins || 0}</span><span class="pilot-conquest-lbl">Vitórias</span></div>
-        <div class="pilot-conquest"><span class="pilot-conquest-icon"><i data-lucide="award" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span><span class="pilot-conquest-val">${conquests.podiums || 0}</span><span class="pilot-conquest-lbl">Pódios</span></div>
-        <div class="pilot-conquest"><span class="pilot-conquest-icon"><i data-lucide="timer" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span><span class="pilot-conquest-val">${conquests.poles || 0}</span><span class="pilot-conquest-lbl">Poles</span></div>
-        <div class="pilot-conquest"><span class="pilot-conquest-icon"><i data-lucide="zap" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span><span class="pilot-conquest-val">${conquests.fastlaps || 0}</span><span class="pilot-conquest-lbl">Voltas Rápidas</span></div>
+      <div class="sec-head"><span class="sec-title">Títulos e Conquistas</span></div>
+      <div class="pilot-conquests" style="display:flex;gap:12px;align-items:center;background:var(--bg1);border:1px solid var(--brd);border-radius:12px;padding:24px;">
+        <div class="pilot-conquest" style="flex-shrink:0;margin:0;background:none;border:none"><span class="pilot-conquest-icon"><i data-lucide="trophy" style="width:24px;height:24px;display:inline-block;vertical-align:text-bottom"></i></span><span class="pilot-conquest-val" style="font-size:32px">${conquests.titles || 0}</span><span class="pilot-conquest-lbl" style="font-size:12px">Títulos</span></div>
+        ${conquests.titles_desc ? \`<div style="flex:1;border-left:1px solid var(--brd);padding-left:24px;font-size:15px;color:var(--dim);line-height:1.4">\${conquests.titles_desc}</div>\` : ''}
       </div>
     </div>
 

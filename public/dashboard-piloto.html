@@ -848,10 +848,10 @@ function renderProfile() {
         </div>
         
         <div style="margin-top:24px;border-top:1px solid var(--bg3);padding-top:16px;"></div>
-        <h3>🏆 Conquistas</h3>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-          <div class="form-field"><label class="form-label" style="font-size:9px">Títulos</label><input class="form-input" id="profTitles" type="number" min="0" value="${USER.conquests?.titles ? USER.conquests.titles : ''}" placeholder="Ex: 2" style="text-align:center;font-size:18px;font-weight:700"></div>
-          <div class="form-field"><label class="form-label" style="font-size:9px">Poles</label><input class="form-input" id="profPoles" type="number" min="0" value="${USER.conquests?.poles ? USER.conquests.poles : ''}" placeholder="Ex: 5" style="text-align:center;font-size:18px;font-weight:700"></div>
+        <h3>🏆 Conquistas / Títulos</h3>
+        <div style="display:grid;grid-template-columns:1fr 2fr;gap:12px">
+          <div class="form-field"><label class="form-label">Qtd Títulos</label><input class="form-input" id="profTitles" type="number" min="0" value="${USER.conquests?.titles ? USER.conquests.titles : ''}" placeholder="Ex: 2" style="text-align:center;font-size:18px;font-weight:700"></div>
+          <div class="form-field"><label class="form-label">Quais campeonatos? (Opcional)</label><input class="form-input" id="profTitlesDesc" type="text" value="${USER.conquests?.titles_desc || ''}" placeholder="Ex: Campeão F4 Brasil 2024, Vice Sprint Race..." style="font-size:14px;font-weight:500;padding-top:14px;padding-bottom:14px;"></div>
         </div>
         
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
@@ -1100,10 +1100,7 @@ async function saveProfile() {
     number: document.getElementById('profNumber').value,
     conquests: {
       titles: parseInt(document.getElementById('profTitles').value) || 0,
-      wins: parseInt(document.getElementById('profWins').value) || 0,
-      podiums: parseInt(document.getElementById('profPodiums').value) || 0,
-      poles: parseInt(document.getElementById('profPoles').value) || 0,
-      fastlaps: parseInt(document.getElementById('profFastlaps').value) || 0,
+      titles_desc: document.getElementById('profTitlesDesc')?.value || ''
     },
     last_race: document.getElementById('profLastRace').value,
     next_race: document.getElementById('profNextRace').value,
