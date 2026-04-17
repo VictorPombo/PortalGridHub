@@ -6,6 +6,12 @@ import { Lock, FileText, ArrowRight } from "lucide-react";
 
 export default function CheckoutAssinaturaPage() {
   const [loading, setLoading] = useState(false);
+  const [termos, setTermos] = useState(false);
+  const [privacidade, setPrivacidade] = useState(false);
+  const [idade, setIdade] = useState(false);
+  const [marcoCivil, setMarcoCivil] = useState(false);
+
+  const tudoVerde = termos && privacidade && idade && marcoCivil;
 
   const handlePayment = async () => {
     setLoading(true);
