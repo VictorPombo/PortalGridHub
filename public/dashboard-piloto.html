@@ -620,65 +620,17 @@ async function submitArticle() {
   const brief = document.getElementById('compBrief')?.value;
   if (!t) { showToast('Título obrigatório', 'err'); return; }
   if (!brief || brief.length < 50) { showToast('O briefing deve conter pelo menos 50 caracteres para gerar uma boa matéria.', 'err'); return; }
-  const c = document.getElementById('compCategory')?.value || '';
-  const typeEl = document.getElementById('compType');
-  const typeCustom = document.getElementById('compTypeCustom')?.value;
-  const articleType = typeEl?.value === '__custom' ? typeCustom : typeEl?.value || '';
-  const finalBrief = _getFinalBrief();
+  
+  const finalBrief = typeof _getFinalBrief === 'function' ? _getFinalBrief() : brief;
 
-  // Mostrar loading
-  showToast('🤖 AI Redação escrevendo artigo final...', 'info');
+  // Redirect to full publishing pipeline
+  sessionStorage.setItem('draft_materia', JSON.stringify({
+    titulo: t,
+    contexto: finalBrief,
+    fotos: typeof composeImages !== 'undefined' ? composeImages : []
+  }));
 
-  try {
-    const contextStr = `Nome: ${USER.pilot_name || USER.name}; Categoria: ${USER.category || ''}; Patrocinadores: ${USER.sponsors || ''}`;
-    const res = await fetch('/api/ai-enhance', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        textoOriginal: finalBrief, 
-        tipoCampo: 'article',
-        contexto: contextStr
-      })
-    });
-    const data = await res.json();
-    let aiBody = data.enhancedText;
-
-    if (!aiBody) throw new Error("Sem resposta da IA");
-
-    const today = new Date().toISOString().split('T')[0];
-
-    const payload = {
-      authorId: USER.id,
-      title: t,
-      brief: finalBrief,
-      body: aiBody,
-      img: composeImages[0] || '',
-      images: [...composeImages],
-      status: 'published',
-      submittedAt: today,
-      publishedAt: today,
-      category: c,
-      type: articleType,
-      views: 0,
-      aiGenerated: true,
-    };
-
-    if (currentComposeId) {
-      Driver.updateArticle(currentComposeId, payload);
-    } else {
-      Driver.addArticle(payload);
-    }
-
-    currentComposeId = null;
-    composeImages = [];
-    showToast('✓ Matéria enviada e publicada! Já está visível no portal.','ok');
-    renderOverview(); renderCompose(); renderArticles();
-    showSection('articles');
-
-  } catch(e) {
-    console.error(e);
-    showToast('Erro interno na redação IA.', 'err');
-  }
+  window.location.href = 'redacao.html';
 }
 
 // ============================

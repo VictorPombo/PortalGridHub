@@ -83,7 +83,7 @@ INSERT INTO public.users (id, name, email, type, plan, number, category, avatar,
 ('b0d74e3a-0b2f-48d6-8bfc-31a89c8a99a4', 'Pedro Silva', 'pedro@silva.com', 'piloto', 'pro', '88', 'Sim Racing', 'PS', '🇧🇷', null, 'active'),
 ('b0d74e3a-0b2f-48d6-8bfc-31a89c8a99a5', 'Thunder Racing', 'contato@thunderracing.com', 'equipe', 'equipe', null, 'Stock Car', 'TR', '🇧🇷', null, 'active'),
 ('b0d74e3a-0b2f-48d6-8bfc-31a89c8a99a6', 'Categoria F4 Brasil', 'contato@f4.com', 'categoria', 'categoria', null, 'F4 Brasil', 'F4', '🇧🇷', null, 'active'),
-('admin-user-id-0000-0000-000000000000', 'Victor Assis', 'victordeassis2010@hotmail.com', 'piloto', 'pro', null, null, 'VA', '🇧🇷', null, 'active')
+('00000000-0000-0000-0000-000000000000', 'Victor Assis', 'victordeassis2010@hotmail.com', 'piloto', 'pro', null, null, 'VA', '🇧🇷', null, 'active')
 ON CONFLICT (id) DO NOTHING;
 
 -- Definindo a senha para a conta admin
@@ -95,3 +95,58 @@ INSERT INTO public.articles (author_id, title, brief, body, img, status, publish
 ('b0d74e3a-0b2f-48d6-8bfc-31a89c8a99a2', 'Vitória épica! Lucas Andrade larga em 5º e ganha a corrida em Interlagos sob chuva', 'Piloto paulista escala o grid sob forte chuva e conquista o lugar mais alto do pódio.', '<p>Que corrida emocionante.</p>', 'https://loremflickr.com/760/320/interlagos,podium?lock=101', 'published', '2026-04-09', 1890, 'F4 Brasil'),
 ('b0d74e3a-0b2f-48d6-8bfc-31a89c8a99a6', 'MUDANÇAS NO REGULAMENTO: Categoria F4 anuncia novidades e teto de gastos', 'Focada em equilibrar os times menores com as grandes estruturas.', '<p>Novas regras para a temporada de 2027.</p>', 'https://loremflickr.com/760/320/documents,rules?lock=202', 'published', '2026-04-08', 4120, 'F4 Brasil'),
 ('b0d74e3a-0b2f-48d6-8bfc-31a89c8a99a5', 'Apex Engineering abre novo programa de Sim Racing para selecionar pilotos', 'Os pilotos virtuais mais rápidos ganharão testes num F4.', '<p>Vagas abertas para inscritos do pacote Starter!</p>', 'https://loremflickr.com/760/320/simracing,wheel?lock=203', 'published', '2026-04-07', 3150, 'Sim Racing');
+
+
+-- ==========================================
+-- ESTRUTURA PARA FLUXO DE PUBLICAÇÃO COM IA
+-- ==========================================
+
+CREATE TABLE IF NOT EXISTS public.materias (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID NOT NULL,
+  status TEXT NOT NULL DEFAULT 'rascunho',
+  
+  -- Conteúdo original (input do usuário)
+  input_titulo TEXT,
+  input_corpo TEXT,
+  input_fotos TEXT[],
+  input_categoria TEXT,
+  input_dados_extras JSONB,
+  
+  -- Conteúdo gerado pela IA
+  ia_titulo TEXT,
+  ia_corpo TEXT,
+  ia_versao INT DEFAULT 1,
+  
+  -- Conteúdo final (pode ser editado pelo usuário)
+  final_titulo TEXT,
+  final_corpo TEXT,
+  final_fotos TEXT[],
+  final_fotos_ordem INT[],
+  
+  -- Metadados
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  published_at TIMESTAMPTZ,
+  
+  -- Logs de correção
+  historico_correcoes JSONB DEFAULT '[]'::jsonb
+);
+
+CREATE INDEX IF NOT EXISTS idx_materias_user ON public.materias (user_id);
+CREATE INDEX IF NOT EXISTS idx_materias_status ON public.materias (status);
+
+CREATE TABLE IF NOT EXISTS public.publication_consents (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID NOT NULL,
+  materia_id UUID NOT NULL REFERENCES public.materias(id),
+  consent_type TEXT NOT NULL DEFAULT 'publication',
+  consent_version TEXT NOT NULL DEFAULT 'v1',
+  content_hash TEXT NOT NULL,
+  ip_address TEXT NOT NULL,
+  user_agent TEXT,
+  accepted_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_consent_user ON public.publication_consents (user_id);
+CREATE INDEX IF NOT EXISTS idx_consent_materia ON public.publication_consents (materia_id);

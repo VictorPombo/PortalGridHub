@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Driver News — Redação IA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      --bg0: #0e0e18;
+      --bg1: #1a1a24;
+      --fg: #ffffff;
+      --dim: #a0a0b8;
+      --acc: #e8002d;
+      --fm: 'DM Sans', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--fm); background: var(--bg0); color: var(--fg); line-height: 1.6; }
+    
+    .screen {
+      display: none;
+      min-height: 100vh;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+    }
+    .screen.active { display: flex; }
+    
+    .icon-lg { width: 64px; height: 64px; color: var(--acc); margin-bottom: 24px; animation: pulse 2s infinite; }
+    h1 { font-size: 28px; margin-bottom: 12px; font-weight: 600; }
+    p { color: var(--dim); margin-bottom: 32px; max-width: 400px; }
+    
+    .countdown { font-size: 48px; font-family: 'Bebas Neue', sans-serif; color: var(--acc); margin-bottom: 24px; }
+    .progress-bar { width: 100%; max-width: 320px; height: 6px; background: var(--bg1); border-radius: 4px; overflow: hidden; margin-bottom: 16px; }
+    .progress-fill { height: 100%; background: var(--acc); width: 0%; transition: width 1s linear; }
+
+    /* Screen 2 - Preview */
+    .preview-container { text-align: left; max-width: 800px; width: 100%; margin: 40px auto; background: var(--bg1); padding: 40px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
+    .preview-cat { display: inline-block; background: var(--acc); color: #fff; font-size: 11px; padding: 4px 10px; border-radius: 4px; text-transform: uppercase; font-family: 'Bebas Neue'; margin-bottom: 16px; }
+    .preview-title { font-family: 'Bebas Neue'; font-size: 48px; line-height: 1.1; margin-bottom: 24px; color: #fff; }
+    .preview-body { color: #d0d0d0; font-size: 18px; line-height: 1.8; }
+    .preview-body p { margin-bottom: 24px; }
+    
+    /* Screen 3 - Editor */
+    input.ed-title { width: 100%; max-width: 800px; background: transparent; border: none; border-bottom: 2px solid var(--bg1); color: #fff; font-family: 'Bebas Neue'; font-size: 48px; outline: none; margin-bottom: 24px; padding-bottom: 8px; }
+    input.ed-title:focus { border-color: var(--acc); }
+    textarea.ed-body { width: 100%; max-width: 800px; height: 400px; background: var(--bg1); border: 1px solid rgba(255,255,255,0.1); color: #fff; font-family: var(--fm); font-size: 16px; padding: 24px; border-radius: 8px; outline: none; resize: vertical; line-height: 1.8;}
+    textarea.ed-body:focus { border-color: var(--acc); }
+
+    /* Screen 4 - Chat */
+    textarea.chat-input { width: 100%; max-width: 500px; height: 150px; background: var(--bg1); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 16px; border-radius: 8px; margin-bottom: 24px; }
+
+    /* Screen 5 - Legal */
+    .legal-box { max-width: 500px; background: rgba(232, 0, 45, 0.05); border: 1px solid var(--acc); padding: 32px; border-radius: 8px; text-align: left; }
+    .legal-box li { color: var(--dim); font-size: 14px; margin-bottom: 16px; margin-left: 20px; }
+    .legal-box strong { color: #fff; display: block; margin-bottom: 4px;}
+    .checkbox-wrap { display: flex; align-items: flex-start; gap: 12px; margin-top: 24px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
+    
+    .actions { display: flex; gap: 16px; justify-content: center; margin-top: 32px; flex-wrap: wrap; }
+    button { padding: 14px 28px; border-radius: 6px; font-weight: 600; font-family: var(--fm); cursor: pointer; border: none; transition: all 0.2s; font-size: 15px; }
+    button.primary { background: var(--acc); color: #fff; }
+    button.primary:hover { filter: brightness(1.1); transform: translateY(-2px); }
+    button.primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    button.secondary { background: var(--bg1); color: #fff; border: 1px solid rgba(255,255,255,0.1); }
+    button.secondary:hover { background: rgba(255,255,255,0.05); }
+
+    @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
+  </style>
+</head>
+<body>
+
+  <!-- TELA 1: AGUARDANDO REDAÇÃO -->
+  <div id="screen-loading" class="screen active">
+    <i data-lucide="pen-tool" class="icon-lg"></i>
+    <h1 id="loading-title">Aguarde enquanto nossa equipe<br>redige sua matéria profissional</h1>
+    <p id="loading-desc">Estamos transformando suas informações em uma matéria jornalística de alto nível.</p>
+    
+    <div class="countdown" id="countdown-timer">00:60</div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    
+    <div id="loading-error" style="display:none; color: var(--acc); margin-top: 20px;">
+      Houve um erro na comunicação. <button class="secondary" onclick="startGeneration()" style="padding: 6px 12px; margin-left: 10px;">Tentar Novamente</button>
+    </div>
+  </div>
+
+  <!-- TELA 2: PREVIEW -->
+  <div id="screen-preview" class="screen" style="justify-content: flex-start; padding-top: 60px;">
+    <h1>👁 Pré-visualização da Sua Matéria</h1>
+    <p style="margin-bottom: 0;">Revise exatamente como a matéria ficará no portal.</p>
+    
+    <div class="preview-container">
+      <span class="preview-cat" id="prev-cat">Categoria</span>
+      <h2 class="preview-title" id="prev-title">Carregando Título...</h2>
+      <div class="preview-body" id="prev-body">
+        Carregando corpo da matéria...
+      </div>
+    </div>
+    
+    <div class="actions">
+      <button class="secondary" onclick="navTo('screen-options')"><i data-lucide="pencil" style="width:16px; height:16px; display:inline-block; vertical-align:middle; margin-right:6px"></i> QUERO EDITAR ALGO</button>
+      <button class="primary" onclick="navTo('screen-legal')"><i data-lucide="check-circle" style="width:16px; height:16px; display:inline-block; vertical-align:middle; margin-right:6px"></i> APROVAR MATÉRIA</button>
+    </div>
+  </div>
+
+  <!-- TELA INTERMEDIÁRIA DE OPÇÕES -->
+  <div id="screen-options" class="screen">
+    <h1 style="margin-bottom:40px;">Como você quer editar?</h1>
+    <div style="display:flex; gap:24px; flex-wrap:wrap; justify-content:center; max-width:800px;">
+      
+      <div style="background:var(--bg1); padding:32px; border-radius:8px; width:300px; cursor:pointer; border:1px solid rgba(255,255,255,0.05); transition:transform 0.2s" onclick="openManualEditor()" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='none'">
+        <i data-lucide="edit-3" style="width:32px;height:32px;color:var(--dim);margin-bottom:16px"></i>
+        <h3 style="margin-bottom:8px">Quero eu mesmo atualizar</h3>
+        <p style="font-size:14px; margin-bottom:0">Abrir editor completo para modificar os textos manualmente.</p>
+      </div>
+
+      <div style="background:var(--bg1); padding:32px; border-radius:8px; width:300px; cursor:pointer; border:1px solid rgba(255,255,255,0.05); transition:transform 0.2s" onclick="navTo('screen-chat')" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='none'">
+        <i data-lucide="bot" style="width:32px;height:32px;color:var(--acc);margin-bottom:16px"></i>
+        <h3 style="margin-bottom:8px">Quero que a equipe corrija</h3>
+        <p style="font-size:14px; margin-bottom:0">Descreva o que deve ser alterado e nossa IA reescreve automaticamente.</p>
+      </div>
+
+    </div>
+    <div class="actions" style="margin-top:40px">
+      <button class="secondary" onclick="navTo('screen-preview')">VOLTAR</button>
+    </div>
+  </div>
+
+  <!-- TELA 3: EDITOR MANUAL -->
+  <div id="screen-editor" class="screen" style="justify-content: flex-start; padding-top: 60px;">
+    <h1>Editor Manual</h1>
+    <input type="text" id="ed-in-title" class="ed-title" placeholder="Título da Matéria">
+    <textarea id="ed-in-body" class="ed-body" placeholder="Corpo da Matéria... <p>HTML permitido</p>"></textarea>
+    
+    <div class="actions">
+      <button class="secondary" onclick="navTo('screen-preview')">CANCELAR</button>
+      <button class="primary" onclick="saveManualEdit()">SALVAR E VISUALIZAR</button>
+    </div>
+  </div>
+
+  <!-- TELA 4: SOLICITAR CORREÇÃO CHAT -->
+  <div id="screen-chat" class="screen">
+    <i data-lucide="bot" class="icon-lg" style="animation:none"></i>
+    <h1>Solicitar Correção</h1>
+    <p>Descreva detalhadamente o que deve ser corrigido na matéria.</p>
+    
+    <textarea id="chat-instruction" class="chat-input" placeholder="Ex: Adicionar que foi a minha primeira vitória na temporada e encurtar o último parágrafo..."></textarea>
+    
+    <div class="actions">
+      <button class="secondary" onclick="navTo('screen-options')">VOLTAR</button>
+      <button class="primary" onclick="submitRewrite()">ENVIAR CORREÇÃO</button>
+    </div>
+  </div>
+
+  <!-- TELA 5: ACEITE LEGAL -->
+  <div id="screen-legal" class="screen">
+    <h1 style="color:var(--acc)">⚠️ Declaração Obrigatória</h1>
+    <div class="legal-box">
+      <p style="color:#fff; margin-bottom:16px; max-width:none;">Ao publicar, eu declaro sob as penas da lei que:</p>
+      <ol style="padding-left:16px;">
+        <li><strong>VERACIDADE</strong> Todas as informações são verdadeiras. Revisei o conteúdo e confirmo que os fatos correspondem à realidade.</li>
+        <li><strong>DIREITOS DE IMAGEM</strong> Possuo direitos ou autorização sobre todas as fotos anexadas.</li>
+        <li><strong>RESPONSABILIDADE LEGAL</strong> Publicar informações falsas pode configurar crime contra a honra. Concordo em assumir total responsabilidade civil e criminal pelo material distribuído.</li>
+        <li><strong>REGISTRO</strong> Esta aprovação é registrada com meu IP, data e hora, e será mantida para fins legais.</li>
+      </ol>
+
+      <label class="checkbox-wrap" onclick="toggleLegal(event)">
+        <input type="checkbox" id="legal-check" style="width:20px;height:20px;accent-color:var(--acc);margin-top:2px;">
+        <span style="font-size:14px;color:#fff;">Declaro que li, compreendi e aceito os termos acima descritos de forma irrevogável.</span>
+      </label>
+    </div>
+
+    <div class="actions">
+      <button class="secondary" onclick="navTo('screen-preview')">VOLTAR</button>
+      <button class="primary" id="btn-publish" disabled onclick="publishFinal()">🔴 PUBLICAR MATÉRIA</button>
+    </div>
+  </div>
+
+  <!-- TELA 6: SUCESSO -->
+  <div id="screen-success" class="screen">
+    <i data-lucide="party-popper" class="icon-lg" style="animation:none; width:80px; height:80px; color:#10b981;"></i>
+    <h1>Matéria Publicada com Sucesso!</h1>
+    <p>Sua matéria já está disponível no feed oficial do Driver News.</p>
+    
+    <div class="actions">
+      <button class="secondary" onclick="window.location.href='index.html'">Capa do Portal</button>
+      <button class="primary" onclick="copyMockLink()">Copiar Link / Compartilhar</button>
+    </div>
+  </div>
+
+  <script src="js/core.js"></script>
+  <script src="js/state.js"></script>
+  <script>
+    lucide.createIcons();
+    
+    let STATE = {
+      materia_id: null,
+      pollInterval: null,
+      data: null // { titulo, corpo, versao... }
+    };
+
+    const draftStr = sessionStorage.getItem('draft_materia');
+    let DRAFT = draftStr ? JSON.parse(draftStr) : null;
+    
+    // Auth Check
+    const currentUser = typeof Driver !== 'undefined' ? Driver.getCurrentUser() : null;
+    if (!currentUser) {
+      alert("Você não está logado!");
+      window.location.href = 'cadastro.html';
+    }
+
+    function navTo(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    // Inicialização
+    if (DRAFT && DRAFT.id) {
+      // Retomando uma matéria já existente (ex: usuário recarregou a página)
+      STATE.materia_id = DRAFT.id;    
+      startPolling();
+    } else if (DRAFT) {
+      // Nova submissão
+      startGeneration();
+    } else {
+      document.getElementById('screen-loading').innerHTML = '<h1>Nenhum rascunho encontrado.</h1><a href="javascript:history.back()" style="color:#fff">Voltar</a>';
+    }
+
+    async function startGeneration() {
+      navTo('screen-loading');
+      document.getElementById('loading-error').style.display = 'none';
+      startTimer(60);
+      
+      try {
+        const res = await fetch('/api/redacao/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user_id: currentUser.id,
+            input_titulo: DRAFT.titulo,
+            input_corpo: DRAFT.contexto,
+            input_categoria: document.getElementById('prev-cat').textContent || 'Geral',
+            input_fotos: DRAFT.fotos || []
+          })
+        });
+        
+        const json = await res.json();
+        if(!json.success) throw new Error(json.error);
+        
+        STATE.materia_id = json.id;
+        // Salva para persistir no reload
+        sessionStorage.setItem('draft_materia', JSON.stringify({...DRAFT, id: json.id}));
+        
+        startPolling();
+      } catch (err) {
+        console.error(err);
+        document.getElementById('countdown-timer').style.display = 'none';
+        document.getElementById('loading-error').style.display = 'block';
+        clearInterval(STATE.pollInterval);
+      }
+    }
+
+    // Timer visual TELA 1
+    let tmOut;
+    function startTimer(seconds) {
+      let s = seconds;
+      const el = document.getElementById('countdown-timer');
+      const bar = document.getElementById('progress-fill');
+      el.style.display = 'block';
+      clearInterval(tmOut);
+      
+      tmOut = setInterval(() => {
+        s--;
+        if(s < 0) {
+           el.textContent = "Finalizando...";
+           bar.style.width = "100%";
+           return;
+        }
+        el.textContent = `00:${s.toString().padStart(2,'0')}`;
+        bar.style.width = ((seconds - s)/seconds)*100 + "%";
+      }, 1000);
+    }
+
+    // Polling TELA 1
+    function startPolling() {
+      if(STATE.pollInterval) clearInterval(STATE.pollInterval);
+      
+      STATE.pollInterval = setInterval(async () => {
+        try {
+          const res = await fetch('/api/redacao/status?id=' + STATE.materia_id);
+          const json = await res.json();
+          if (json.success && json.data) {
+             if (json.data.status === 'revisao' || json.data.status === 'publicada') {
+                clearInterval(STATE.pollInterval);
+                clearInterval(tmOut);
+                
+                if (json.data.status === 'publicada') {
+                  navTo('screen-success');
+                } else {
+                  STATE.data = json.data;
+                  renderPreview();
+                  navTo('screen-preview');
+                }
+             }
+          }
+        } catch(e) { console.error('Polling error', e); }
+      }, 3000);
+    }
+
+    function renderPreview() {
+      document.getElementById('prev-title').textContent = STATE.data.final_titulo || 'Sem Título';
+      document.getElementById('prev-body').innerHTML = STATE.data.final_corpo || '<p>Erro ao ler o corpo</p>';
+      
+      // Update form editors
+      document.getElementById('ed-in-title').value = STATE.data.final_titulo || '';
+      document.getElementById('ed-in-body').value = STATE.data.final_corpo || '';
+    }
+
+    function openManualEditor() {
+      navTo('screen-editor');
+    }
+
+    async function saveManualEdit() {
+      const nt = document.getElementById('ed-in-title').value;
+      const nb = document.getElementById('ed-in-body').value;
+      
+      // Salario em um caso real faria POST pro banco tb.
+      // Para o teste assumimos a UI salvando na variavel antes de publicar
+      STATE.data.final_titulo = nt;
+      STATE.data.final_corpo = nb;
+      
+      renderPreview();
+      navTo('screen-preview');
+      showToast('Alterações salvas localmente!', 'ok');
+    }
+
+    async function submitRewrite() {
+       const inst = document.getElementById('chat-instruction').value;
+       if (!inst.trim()) { alert("Digite o que deve ser corrigido."); return; }
+       
+       navTo('screen-loading');
+       document.getElementById('loading-title').textContent = 'Aplicando suas correções...';
+       document.getElementById('loading-desc').textContent = 'Nossa equipe de IA está ajustando a matéria conforme seu pedido.';
+       startTimer(45);
+
+       try {
+         const res = await fetch('/api/redacao/rewrite', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+               materia_id: STATE.materia_id,
+               instructions: inst,
+               final_titulo: STATE.data.final_titulo,
+               final_corpo: STATE.data.final_corpo,
+               ia_versao: STATE.data.ia_versao || 1
+            })
+         });
+         
+         const json = await res.json();
+         if(!json.success) throw new Error(json.error);
+         
+         document.getElementById('chat-instruction').value = '';
+         startPolling();
+
+       } catch(e) {
+         console.error(e);
+         clearInterval(tmOut);
+         alert("Houve um erro enviando a correção.");
+         navTo('screen-options');
+       }
+    }
+
+    function toggleLegal(e) {
+      if(e.target.tagName !== 'INPUT') return;
+      document.getElementById('btn-publish').disabled = !e.target.checked;
+    }
+
+    async function publishFinal() {
+       const btn = document.getElementById('btn-publish');
+       btn.disabled = true;
+       btn.textContent = "PUBLICANDO...";
+       
+       try {
+          const res = await fetch('/api/redacao/consent', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              user_id: currentUser.id,
+              materia_id: STATE.materia_id,
+              final_titulo: STATE.data.final_titulo,
+              final_corpo: STATE.data.final_corpo
+            })
+          });
+          const json = await res.json();
+          if(!json.success) throw new Error(json.error);
+          
+          sessionStorage.removeItem('draft_materia'); // clear draft
+          navTo('screen-success');
+
+       } catch(e) {
+          alert('Erro na publicação!');
+          btn.disabled = false;
+          btn.textContent = "🔴 PUBLICAR MATÉRIA";
+       }
+    }
+
+    function copyMockLink() {
+       showToast("Link copiado para área de transferência!");
+    }
+
+    // Aux UI Toast
+    function showToast(msg, type='info') {
+      const t = document.createElement('div');
+      t.style.cssText = `position:fixed;bottom:20px;right:20px;padding:12px 24px;border-radius:4px;color:#fff;z-index:99999;font-family:var(--fm);font-weight:600;background:${type==='err'?'#e8002d':'#10b981'}`;
+      t.textContent = msg;
+      document.body.appendChild(t);
+      setTimeout(()=>t.remove(), 3000);
+    }
+  </script>
+</body>
+</html>

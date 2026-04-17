@@ -121,7 +121,20 @@ function renderCompose() {
 }
 
 function saveDraft() { const t=document.getElementById('compTitle')?.value; if(!t){showToast('Informe o título','err');return;} const tp=document.getElementById('compType')?.value; const b=document.getElementById('compBrief')?.value||''; Driver.addArticle({authorId:USER.id,title:t,brief:b?`[Contexto: ${tp}]\n\n${b}`:'',body:'',img:'',status:'draft',category:USER.category||''}); showToast('✓ Rascunho salvo!','ok'); renderOverview(); renderArticles(); }
-function submitArticle() { const t=document.getElementById('compTitle')?.value,b=document.getElementById('compBrief')?.value,tp=document.getElementById('compType')?.value; if(!t){showToast('Título obrigatório','err');return;} if(!b||b.length<50){showToast('Descrição: mín. 50 caracteres','err');return;} Driver.addArticle({authorId:USER.id,title:t,brief:`[Contexto: ${tp}]\n\n${b}`,body:'',img:'',status:'sent',submittedAt:new Date().toISOString().split('T')[0],category:USER.category||''}); showToast('✓ Enviada!','ok'); renderOverview();renderCompose();renderArticles();eqNav('articles'); }
+function submitArticle() {
+  const t = document.getElementById('compTitle')?.value;
+  const b = document.getElementById('compBrief')?.value;
+  const tp = document.getElementById('compType')?.value;
+  if(!t){showToast('Título obrigatório','err');return;}
+  if(!b||b.length<50){showToast('Descrição: mín. 50 caracteres','err');return;}
+  
+  sessionStorage.setItem('draft_materia', JSON.stringify({
+    titulo: t,
+    contexto: `[Contexto: ${tp}]\n\n${b}`,
+    fotos: typeof composeImages !== 'undefined' ? composeImages : []
+  }));
+  window.location.href = 'redacao.html';
+}
 
 function renderArticles() {
   const articles = Driver.getArticlesByAuthor(USER.id).sort((a,b)=>(b.publishedAt||b.submittedAt||'9999').localeCompare(a.publishedAt||a.submittedAt||'9999'));

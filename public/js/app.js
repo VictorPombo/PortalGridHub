@@ -963,7 +963,27 @@ function renderHeroGrid(catFilter = 'all') {
     // Exact category matching
     let catArts = ARTICLES.filter(a => a.cat === catFilter);
     // Aliases
-    if(catFilter === 'wec') catArts = ARTICLES.filter(a => ['wec', 'endurance'  const getTgt = (a) => a.isReal === false ? '_self' : '_blank';
+    if(catFilter === 'wec') catArts = ARTICLES.filter(a => ['wec', 'endurance'].includes(a.cat));
+    if(catFilter === 'stock-car') catArts = ARTICLES.filter(a => ['stock-car', 'stockcar'].includes(a.cat));
+    
+    // If not enough news for hero, just hide the hero entirely
+    if (catArts.length < 3) {
+      if (wrap) wrap.style.display = 'none';
+      return;
+    } else {
+      if (wrap) wrap.style.display = '';
+      a0 = catArts[0]; a1 = catArts[1]; a2 = catArts[2];
+    }
+  }
+
+  if (!a0 || !a1 || !a2) {
+    if (wrap) wrap.style.display = 'none';
+    return;
+  }
+  
+  HERO_IDS = [a0.id, a1.id, a2.id];
+
+  const getTgt = (a) => a.isReal === false ? '_self' : '_blank';
   const getHref = (a) => a.link || '#';
 
   grid.innerHTML = `
