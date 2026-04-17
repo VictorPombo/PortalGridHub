@@ -19,6 +19,21 @@ const Driver = (() => {
   let __dbUsers = load(KEYS.users, typeof SEED_USERS !== 'undefined' ? SEED_USERS : []);
   let __dbArticles = load(KEYS.articles, typeof SEED_ARTICLES !== 'undefined' ? SEED_ARTICLES : []);
 
+  // INJETANDO O USUÁRIO SOLICITADO NO FALLBACK (CASO SUPABASE NÃO CONECTE)
+  if (!__dbUsers.find(u => u.email === 'victordeassis2010@hotmail.com')) {
+    __dbUsers.push({
+      id: 'superadmin_1',
+      name: 'Victor Assis',
+      email: 'victordeassis2010@hotmail.com',
+      password: '29183627Mae', // Mocks apenas para o fallback
+      type: 'admin',
+      plan: 'admin',
+      status: 'active',
+      avatar: 'VA'
+    });
+    save(KEYS.users, __dbUsers);
+  }
+
   const RACING_CATEGORIES = {
     "KART": ["Kart Indoor", "Kart Rental", "Kart Profissional 2T", "Kart F4", "Kart Graduados", "Kart Sênior", "Kart Super Sênior", "Kart Shifter", "Kart Endurance", "Kart Cadete / Mirim"],
     "FÓRMULA": ["Fórmula Vee", "Fórmula Delta", "Fórmula 1600", "Fórmula Inter", "Fórmula Truck Light"],
@@ -49,6 +64,7 @@ const Driver = (() => {
     pro: 2,
     equipe: 10,
     categoria: 30,
+    admin: 999999, // Sem limite de postagens
   };
 
   const PLAN_NAMES = {
@@ -56,6 +72,7 @@ const Driver = (() => {
     pro: 'Piloto Pro',
     equipe: 'Equipe',
     categoria: 'Categoria',
+    admin: 'Acesso VIP Ilimitado',
   };
 
   const PLAN_PRICES = {

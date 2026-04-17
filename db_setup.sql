@@ -82,8 +82,12 @@ INSERT INTO public.users (id, name, email, type, plan, number, category, avatar,
 ('b0d74e3a-0b2f-48d6-8bfc-31a89c8a99a3', 'Camila Torres', 'camila@torres.com', 'piloto', 'starter', '33', 'Porsche Cup', 'CT', '🇧🇷', null, 'active'),
 ('b0d74e3a-0b2f-48d6-8bfc-31a89c8a99a4', 'Pedro Silva', 'pedro@silva.com', 'piloto', 'pro', '88', 'Sim Racing', 'PS', '🇧🇷', null, 'active'),
 ('b0d74e3a-0b2f-48d6-8bfc-31a89c8a99a5', 'Thunder Racing', 'contato@thunderracing.com', 'equipe', 'equipe', null, 'Stock Car', 'TR', '🇧🇷', null, 'active'),
-('b0d74e3a-0b2f-48d6-8bfc-31a89c8a99a6', 'Categoria F4 Brasil', 'contato@f4.com', 'categoria', 'categoria', null, 'F4 Brasil', 'F4', '🇧🇷', null, 'active')
+('b0d74e3a-0b2f-48d6-8bfc-31a89c8a99a6', 'Categoria F4 Brasil', 'contato@f4.com', 'categoria', 'categoria', null, 'F4 Brasil', 'F4', '🇧🇷', null, 'active'),
+('admin-user-id-0000-0000-000000000000', 'Victor Assis', 'victordeassis2010@hotmail.com', 'admin', 'admin', null, null, 'VA', '🇧🇷', null, 'active')
 ON CONFLICT (id) DO NOTHING;
+
+-- Definindo a senha para a conta admin
+UPDATE public.users SET password_hash = '5f1e157a8175031a882c1ca2cbe29de75348b91fd1145b5154c4648df7018f11' WHERE email = 'victordeassis2010@hotmail.com';
 
 -- Inserindo Artigos Iniciais
 INSERT INTO public.articles (author_id, title, brief, body, img, status, published_at, views, category) VALUES
