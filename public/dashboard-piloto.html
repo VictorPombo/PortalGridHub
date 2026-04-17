@@ -630,7 +630,7 @@ async function submitArticle() {
     fotos: typeof composeImages !== 'undefined' ? composeImages : []
   }));
 
-  window.location.href = 'redacao.html';
+  window.location.href = 'redacao.html?v=' + Date.now();
 }
 
 // ============================

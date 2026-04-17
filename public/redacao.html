@@ -244,7 +244,8 @@
       
       try {
         // Obter contexto enriquecido (Nome do piloto, cat, etc)
-        const d_ct = `Piloto ${currentUser.name || ''} - Categoria: ${document.getElementById('prev-cat')?.textContent || 'Automobilismo'}`;
+        const prevCatEl = document.getElementById('prev-cat');
+        const d_ct = `Piloto ${currentUser.name || ''} - Categoria: ${prevCatEl ? prevCatEl.textContent : 'Automobilismo'}`;
         
         // Chamada à nosa API confiável
         const res = await fetch('/api/ai-enhance', {
@@ -260,36 +261,18 @@
         const json = await res.json();
         if(!json.enhancedText) throw new Error(json.error || 'Erro na geração da matéria');
         
-        // Finalizamos e salvamos na base Local.
-        const generatedHtml = json.enhancedText;
-        
-        const payload = {
-          id: 'a' + Date.now(),
-          author: currentUser.name,
-          authorId: currentUser.id,
-          title: DRAFT.titulo,
-          body: generatedHtml,
-          category: document.getElementById('prev-cat')?.textContent || 'Aviso',
-          gallery: DRAFT.fotos || [],
-          img: (DRAFT.fotos && DRAFT.fotos[0]) ? DRAFT.fotos[0] : null,
-          views: 0,
-          likes: 0,
-          status: 'published',
-          submittedAt: new Date().toISOString(),
-          publishedAt: new Date().toISOString(),
-          aiGenerated: true,
-          deleted: false
+        // Mantém a estrutura de dados esperada pelo restante da tela (Preview/Correção)
+        STATE.materia_id = 'a' + Date.now() + Math.floor(Math.random()*1000);
+        STATE.data = {
+          final_titulo: DRAFT.titulo,
+          final_corpo: json.enhancedText
         };
         
-        Driver.addArticle(payload);
-        sessionStorage.removeItem('draft_materia'); // Limpa a sujeira do sessionStorage
         clearInterval(tmOut); // Para o timer
-        navTo('screen-success');
         
-        // Deslocar para a página da matéria (Segunda tela da foto), exatamente como antes
-        setTimeout(() => {
-           window.location.href = 'materia.html?id=' + payload.id;
-        }, 800);
+        // Em vez de pular e publicar direto, enviamos para a Tela de Preview e Aceite Legal:
+        renderPreview();
+        navTo('screen-preview');
         
       } catch (err) {
         console.error(err);
@@ -397,7 +380,29 @@
        btn.textContent = "PUBLICANDO...";
        
        try {
-          const res = await fetch('/api/redacao/consent', {
+          // Cria carga completa da matéria unindo rascunhos e correções do preview
+          const payload = {
+            id: STATE.materia_id,
+            author: currentUser.name,
+            authorId: currentUser.id,
+            title: STATE.data.final_titulo,
+            body: STATE.data.final_corpo,
+            category: document.getElementById('prev-cat')?.textContent || 'Geral',
+            gallery: DRAFT.fotos || [],
+            img: (DRAFT.fotos && DRAFT.fotos[0]) ? DRAFT.fotos[0] : null,
+            views: 0,
+            likes: 0,
+            status: 'published',
+            submittedAt: new Date().toISOString(),
+            publishedAt: new Date().toISOString(),
+            aiGenerated: true,
+            deleted: false
+          };
+          
+          await Driver.addArticle(payload);
+
+          // Tenta acionar consentimento persistente no DB online
+          fetch('/api/redacao/consent', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -406,12 +411,15 @@
               final_titulo: STATE.data.final_titulo,
               final_corpo: STATE.data.final_corpo
             })
-          });
-          const json = await res.json();
-          if(!json.success) throw new Error(json.error);
+          }).catch(e => console.warn('Supabase consent offline', e));
           
           sessionStorage.removeItem('draft_materia'); // clear draft
           navTo('screen-success');
+
+          // Deslocar para a página da matéria final (Segunda tela da foto do usuário)
+          setTimeout(() => {
+             window.location.href = 'materia.html?id=' + STATE.materia_id;
+          }, 2000);
 
        } catch(e) {
           alert('Erro na publicação!');
