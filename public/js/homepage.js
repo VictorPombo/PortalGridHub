@@ -328,12 +328,15 @@ function renderHeroGrid() {
   const aS1 = ARTICLES[1];
   const aS2 = ARTICLES[2];
 
-  const goM = aM.isReal ? `window.open('${aM.link}', '_blank')` : `openArticle('${aM.id}')`;
-  const goS1 = aS1.isReal ? `window.open('${aS1.link}', '_blank')` : `openArticle('${aS1.id}')`;
-  const goS2 = aS2.isReal ? `window.open('${aS2.link}', '_blank')` : `openArticle('${aS2.id}')`;
+  const lM = aM.isReal ? aM.link : 'materia.html?id=' + aM.id;
+  const lS1 = aS1.isReal ? aS1.link : 'materia.html?id=' + aS1.id;
+  const lS2 = aS2.isReal ? aS2.link : 'materia.html?id=' + aS2.id;
+  const tM = aM.isReal ? '_blank' : '_self';
+  const tS1 = aS1.isReal ? '_blank' : '_self';
+  const tS2 = aS2.isReal ? '_blank' : '_self';
 
   grid.innerHTML = `
-    <div class="hero-main" onclick="${goM}; if(${aM.isReal}) showToast('Redirecionando...')">
+    <a href="${lM}" target="${tM}" class="hero-main" onclick="${aM.isReal ? "showToast('Redirecionando...')" : ""}">
       <img src="${aM.img}" onerror="this.onerror=null;this.src='img/news-placeholder.png'" alt="${aM.title}">
       <div class="hero-content">
         <span class="badge ${aM.cat}">${aM.badge.toUpperCase()}</span>
@@ -343,24 +346,24 @@ function renderHeroGrid() {
           <span>${aM.author}</span><span>${aM.date}</span>
         </div>
       </div>
-    </div>
+    </a>
     <div class="hero-side">
-      <div class="side-card" onclick="${goS1}; if(${aS1.isReal}) showToast('Redirecionando...')">
+      <a href="${lS1}" target="${tS1}" class="side-card" onclick="${aS1.isReal ? "showToast('Redirecionando...')" : ""}">
         <img src="${aS1.img}" onerror="this.onerror=null;this.src='img/news-placeholder.png'" alt="">
         <div class="side-content">
           <span class="badge ${aS1.cat}">${aS1.badge.toUpperCase()}</span>
           <div class="side-title">${aS1.title}</div>
           <div class="side-meta">${(aS1.author || 'MÍDIA').slice(0,10)} · ${aS1.date}</div>
         </div>
-      </div>
-      <div class="side-card" onclick="${goS2}; if(${aS2.isReal}) showToast('Redirecionando...')">
+      </a>
+      <a href="${lS2}" target="${tS2}" class="side-card" onclick="${aS2.isReal ? "showToast('Redirecionando...')" : ""}">
         <img src="${aS2.img}" onerror="this.onerror=null;this.src='img/news-placeholder.png'" alt="">
         <div class="side-content">
           <span class="badge ${aS2.cat}">${aS2.badge.toUpperCase()}</span>
           <div class="side-title">${aS2.title}</div>
           <div class="side-meta">${(aS2.author || 'MÍDIA').slice(0,10)} · ${aS2.date}</div>
         </div>
-      </div>
+      </a>
     </div>
   `;
 }
@@ -376,10 +379,12 @@ function renderNewsGrid() {
   grid.innerHTML = displayArticles.map((a, i) => {
     // A primeira matéria fica com a classe 'feat'
     const isFeat = i === 0;
-    const clickAction = a.isReal ? `window.open('${a.link}', '_blank')` : `openArticle('${a.id}')`;
+    const lUrl = a.isReal ? a.link : 'materia.html?id=' + a.id;
+    const tUrl = a.isReal ? '_blank' : '_self';
+    const clickAttr = a.isReal ? `onclick="showToast('Redirecionando para matéria oficial...')"` : '';
     
     return `
-      <div class="ncard ${isFeat ? 'feat' : ''}" data-cat="${a.cat}" data-id="${a.id}" onclick="${clickAction}; if(a.isReal) showToast('Redirecionando para matéria oficial...')">
+      <a href="${lUrl}" target="${tUrl}" class="ncard ${isFeat ? 'feat' : ''}" data-cat="${a.cat}" data-id="${a.id}" ${clickAttr} style="text-decoration:none;color:inherit;display:flex;flex-direction:column;">
         <div class="ncard-thumb"><img src="${a.img}" onerror="this.onerror=null;this.src='img/news-placeholder.png'" alt=""></div>
         <div class="ncard-body">
           <span class="badge ${a.cat}">${a.badge.toUpperCase()}</span>
@@ -387,10 +392,10 @@ function renderNewsGrid() {
           <div class="ncard-excerpt">${isFeat ? 'Acompanhe de perto as novidades e análises das principais categorias no automobilismo mundial.' : ''}</div>
           <div class="ncard-meta">
             <span>${a.date} · ${(a.author || 'MÍDIA').toUpperCase().slice(0,15)}</span>
-            <button class="ncard-bm" onclick="event.stopPropagation();toggleBookmark(this,'${a.id}')" title="Salvar"><i class="fi fi-rr-bookmark"></i></button>
+            <div class="ncard-bm" onclick="event.preventDefault(); event.stopPropagation(); toggleBookmark(this,'${a.id}')" title="Salvar"><i class="fi fi-rr-bookmark"></i></div>
           </div>
         </div>
-      </div>
+      </a>
     `;
   }).join('');
 
@@ -413,10 +418,12 @@ function renderVidGrid() {
   grid.innerHTML = displayArticles.map((a, i) => {
     // Apenas reutilizamos cards de notícia pois não temos a API do Youtube original integrada
     const isFeat = i === 0;
-    const clickAction = a.isReal ? `window.open('${a.link}', '_blank')` : `openArticle('${a.id}')`;
+    const lUrl = a.isReal ? a.link : 'materia.html?id=' + a.id;
+    const tUrl = a.isReal ? '_blank' : '_self';
+    const clickAttr = a.isReal ? `onclick="showToast('Redirecionando...')"` : '';
     
     return `
-      <div class="vcard ${isFeat ? 'feat' : ''}" onclick="${clickAction}; if(a.isReal) showToast('Redirecionando...')">
+      <a href="${lUrl}" target="${tUrl}" class="vcard ${isFeat ? 'feat' : ''}" ${clickAttr} style="text-decoration:none;color:inherit;">
         <div class="vthumb">
           <img src="${a.img}" onerror="this.onerror=null;this.src='img/news-placeholder.png'" alt="">
           <div class="play-btn"><div class="play-arr"></div></div>
@@ -426,7 +433,7 @@ function renderVidGrid() {
           <div class="vtitle">${a.title}</div>
           <div class="vmeta">${a.date} · EM DESTAQUE</div>
         </div>
-      </div>
+      </a>
     `;
   }).join('');
 }
@@ -439,9 +446,11 @@ function renderSplitGrids() {
   // Opinião -> Index 10 e 11
   const opArts = ARTICLES.slice(10, 12);
   opGrid.innerHTML = opArts.map(a => {
-    const clickAction = a.isReal ? `window.open('${a.link}', '_blank')` : `openArticle('${a.id}')`;
+    const lUrl = a.isReal ? a.link : 'materia.html?id=' + a.id;
+    const tUrl = a.isReal ? '_blank' : '_self';
+    const clickAttr = a.isReal ? `onclick="showToast('Redirecionando...')"` : '';
     return `
-      <div class="op-card" onclick="${clickAction}; if(a.isReal) showToast('Redirecionando...')">
+      <a href="${lUrl}" target="${tUrl}" class="op-card" ${clickAttr} style="text-decoration:none;color:inherit;display:flex;flex-direction:column;">
         <div class="op-tag">Especial</div>
         <div class="op-title">${a.title}</div>
         <div class="op-excerpt">Leia a análise aprofundada direto da redação.</div>
@@ -449,23 +458,25 @@ function renderSplitGrids() {
           <div class="op-avatar"><i class="fi fi-rr-newspaper"></i></div>
           <div><div class="op-name">${a.author}</div><div class="op-role">${a.date}</div></div>
         </div>
-      </div>
+      </a>
     `;
   }).join('');
 
   // Mercado -> Index 12, 13, 14
   const mktArts = ARTICLES.slice(12, 15);
   mktGrid.innerHTML = mktArts.map(a => {
-    const clickAction = a.isReal ? `window.open('${a.link}', '_blank')` : `openArticle('${a.id}')`;
+    const lUrl = a.isReal ? a.link : 'materia.html?id=' + a.id;
+    const tUrl = a.isReal ? '_blank' : '_self';
+    const clickAttr = a.isReal ? `onclick="showToast('Redirecionando...')"` : '';
     return `
-      <div class="mkt-card" onclick="${clickAction}; if(a.isReal) showToast('Redirecionando...')">
+      <a href="${lUrl}" target="${tUrl}" class="mkt-card" ${clickAttr} style="text-decoration:none;color:inherit;display:flex;">
         <div class="mkt-thumb"><img src="${a.img}" onerror="this.onerror=null;this.src='img/news-placeholder.png'" alt=""></div>
         <div class="mkt-body">
           <span class="badge ${a.cat}">${a.badge.toUpperCase()}</span>
           <div class="mkt-title">${a.title}</div>
           <div class="mkt-meta">${a.date}</div>
         </div>
-      </div>
+      </a>
     `;
   }).join('');
 }
@@ -476,10 +487,10 @@ function renderTicker() {
   const breaking = ARTICLES.slice(0, 5); // top 5
   if(breaking.length === 0) return;
   
-  // Duplicamos as matérias pro ticker não quebrar no loop do css
   const itemsHTML = [...breaking, ...breaking, ...breaking].map(a => {
-    const clickAction = a.isReal ? `window.open('${a.link}', '_blank')` : `openArticle('${a.id}')`;
-    return `<span class="ticker-item" onclick="${clickAction}">${a.title}</span>`;
+    const lUrl = a.isReal ? a.link : 'materia.html?id=' + a.id;
+    const tUrl = a.isReal ? '_blank' : '_self';
+    return `<a href="${lUrl}" target="${tUrl}" class="ticker-item" style="text-decoration:none;color:inherit;">${a.title}</a>`;
   }).join('');
   
   track.innerHTML = itemsHTML;

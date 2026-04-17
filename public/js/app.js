@@ -963,30 +963,11 @@ function renderHeroGrid(catFilter = 'all') {
     // Exact category matching
     let catArts = ARTICLES.filter(a => a.cat === catFilter);
     // Aliases
-    if(catFilter === 'wec') catArts = ARTICLES.filter(a => ['wec', 'endurance'].includes(a.cat));
-    if(catFilter === 'stock-car') catArts = ARTICLES.filter(a => ['stock-car', 'stockcar'].includes(a.cat));
-    
-    // If not enough news for hero, just hide the hero entirely
-    if (catArts.length < 3) {
-      if (wrap) wrap.style.display = 'none';
-      return;
-    } else {
-      if (wrap) wrap.style.display = '';
-      a0 = catArts[0]; a1 = catArts[1]; a2 = catArts[2];
-    }
-  }
-
-  if (!a0 || !a1 || !a2) {
-    if (wrap) wrap.style.display = 'none';
-    return;
-  }
-  
-  HERO_IDS = [a0.id, a1.id, a2.id];
-
-  const getClk = (a) => a.isReal === false ? `window.location.href='${a.link}'` : `window.open('${a.link}','_blank')`;
+    if(catFilter === 'wec') catArts = ARTICLES.filter(a => ['wec', 'endurance'  const getTgt = (a) => a.isReal === false ? '_self' : '_blank';
+  const getHref = (a) => a.link || '#';
 
   grid.innerHTML = `
-    <div class="hero-main" onclick="${getClk(a0)}" style="position:relative;overflow:hidden;cursor:pointer">
+    <a href="${getHref(a0)}" target="${getTgt(a0)}" class="hero-main" style="position:relative;overflow:hidden;cursor:pointer;display:block;text-decoration:none;color:inherit;">
       <img src="${a0.img}" alt="${a0.title}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.5) brightness(.4);transition:transform .6s">
       <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(3,3,10,.98) 0%,rgba(3,3,10,.5) 40%,transparent 100%);z-index:1"></div>
       <div class="hero-content" style="position:absolute;bottom:0;left:0;right:0;padding:36px;z-index:2">
@@ -1001,9 +982,9 @@ function renderHeroGrid(catFilter = 'all') {
           <span>Acessar portal ↗</span>
         </div>
       </div>
-    </div>
+    </a>
     <div class="hero-side">
-      <div class="side-card" onclick="${getClk(a1)}" style="flex:1;position:relative;overflow:hidden;cursor:pointer;background:var(--bg2)">
+      <a href="${getHref(a1)}" target="${getTgt(a1)}" class="side-card" style="flex:1;position:relative;overflow:hidden;cursor:pointer;background:var(--bg2);display:block;text-decoration:none;color:inherit;">
         <img src="${a1.img}" alt="" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.4) brightness(.4);transition:transform .4s">
         <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(3,3,10,.95) 0%,rgba(3,3,10,.2) 55%,transparent);z-index:1"></div>
         <div class="side-content" style="position:absolute;bottom:0;left:0;right:0;padding:16px 18px;z-index:2">
@@ -1014,8 +995,8 @@ function renderHeroGrid(catFilter = 'all') {
           <div style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;text-transform:uppercase;line-height:1.15;color:#fff;margin-bottom:5px">${a1.title}</div>
           <div style="font-family:var(--fm);font-size:9px;color:rgba(255,255,255,.3)">${a1.date} · Acessar ↗</div>
         </div>
-      </div>
-      <div class="side-card" onclick="${getClk(a2)}" style="flex:1;position:relative;overflow:hidden;cursor:pointer;background:var(--bg2)">
+      </a>
+      <a href="${getHref(a2)}" target="${getTgt(a2)}" class="side-card" style="flex:1;position:relative;overflow:hidden;cursor:pointer;background:var(--bg2);display:block;text-decoration:none;color:inherit;">
         <img src="${a2.img}" alt="" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.4) brightness(.4);transition:transform .4s">
         <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(3,3,10,.95) 0%,rgba(3,3,10,.2) 55%,transparent);z-index:1"></div>
         <div class="side-content" style="position:absolute;bottom:0;left:0;right:0;padding:16px 18px;z-index:2">
@@ -1026,7 +1007,7 @@ function renderHeroGrid(catFilter = 'all') {
           <div style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;text-transform:uppercase;line-height:1.15;color:#fff;margin-bottom:5px">${a2.title}</div>
           <div style="font-family:var(--fm);font-size:9px;color:rgba(255,255,255,.3)">${a2.date} · Acessar ↗</div>
         </div>
-      </div>
+      </a>
     </div>
   `;
 }
