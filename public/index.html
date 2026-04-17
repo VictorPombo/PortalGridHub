@@ -1219,9 +1219,14 @@
             </a>`;
         }
         // Mobile menu
-        const mobEnter = document.querySelector('.mob-menu a[onclick*="login"]');
-        if (mobEnter) {
-          mobEnter.outerHTML = `<a href="${dash}">Meu Painel</a>`;
+        const mobMenuAuthBlock = document.querySelector('.mob-menu > div[style*="flex-direction:column"]');
+        if (mobMenuAuthBlock) {
+          mobMenuAuthBlock.outerHTML = `
+            <div style="margin-top:20px;display:flex;flex-direction:column;gap:8px">
+              <button class="btn btn-acc btn-full" onclick="window.location.href='${dash}'">Acessar Meu Painel</button>
+              <button class="btn btn-out btn-full" onclick="Driver.logout();window.location.reload()">Sair</button>
+            </div>
+          `;
         }
       }
     }
