@@ -111,6 +111,6 @@ LEMBRE-SE: Retorne EXCLUSIVAMENTE o novo texto gerado. Não adicione frases como
 
   } catch (error: any) {
     console.error("[AI-Enhance] Erro ao aprimorar texto:", error?.message || error);
-    return NextResponse.json({ error: 'Erro interno ao comunicar com o modelo de IA. (Verifique o terminal)' }, { status: 500 });
+    return NextResponse.json({ error: 'Erro de IA: ' + (error?.message || 'Falha de conexão') }, { status: 500 });
   }
 }

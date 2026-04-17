@@ -96,13 +96,13 @@ document.querySelector('a[href="piloto.html"]').href = 'piloto.html?id=' + USER.
 
 document.getElementById('navUserInfo').innerHTML = `
   <span style="font-family:var(--fm);font-size:10px;color:var(--dim)" class="hide-mob">${USER.name}</span>
-  <div style="width:32px;height:32px;border-radius:50%;background:var(--acc);display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:11px;font-weight:700;color:#fff" class="hide-mob">${USER.avatar}</div>
+  <div id="topAvatar" style="width:32px;height:32px;border-radius:50%;background:var(--acc);display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:11px;font-weight:700;color:#fff;overflow:hidden" class="hide-mob">${USER.avatar_url ? '<img src="'+USER.avatar_url+'" style="width:100%;height:100%;object-fit:cover">' : USER.avatar}</div>
   <button class="btn-hamburger" style="display:flex;margin-left:16px;border-color:transparent" onclick="document.querySelector('.dash-sidebar').classList.toggle('open')">
     <span></span><span></span><span></span>
   </button>
 `;
 document.getElementById('sidebarProfile').innerHTML = `
-  <div class="dash-avatar">${USER.avatar}</div>
+  <div class="dash-avatar" id="sideAvatar" style="overflow:hidden">${USER.avatar_url ? '<img src="'+USER.avatar_url+'" style="width:100%;height:100%;object-fit:cover">' : USER.avatar}</div>
   <div class="dash-user-name">${USER.name || 'Piloto'}</div>
   <div class="dash-user-plan">${Driver.getPlanName(USER.plan)} · ${USER.type.charAt(0).toUpperCase() + USER.type.slice(1)}</div>
   <div class="dash-plan-badge">${(USER.plan || '').toUpperCase()}</div>
@@ -391,6 +391,7 @@ function _getFinalBrief() {
 // Compose Multi-Image Upload
 // ============================
 let composeImages = [];
+let currentComposeId = null;
 
 function handleComposeImgUpload(fileInput) {
   const files = Array.from(fileInput.files);
@@ -442,7 +443,8 @@ function saveDraft() {
   const t = document.getElementById('compTitle')?.value;
   if (!t) { showToast('Informe o título', 'err'); return; }
   const c = document.getElementById('compCategory')?.value || '';
-  Driver.addArticle({
+  
+  const payload = {
     authorId: USER.id,
     title: t,
     brief: _getFinalBrief(),
@@ -451,11 +453,21 @@ function saveDraft() {
     images: [...composeImages],
     status: 'draft',
     category: c
-  });
+  };
+
+  if (currentComposeId) {
+    Driver.updateArticle(currentComposeId, payload);
+    showToast('✓ Rascunho atualizado!', 'ok');
+  } else {
+    Driver.addArticle(payload);
+    showToast('✓ Rascunho salvo!', 'ok');
+  }
+
+  currentComposeId = null;
   composeImages = [];
-  showToast('✓ Rascunho salvo!', 'ok');
   renderOverview();
   renderArticles();
+  showSection('articles');
 }
 
 async function enhanceBriefing(btn) {
@@ -486,11 +498,12 @@ async function enhanceBriefing(btn) {
       briefInput.value = data.enhancedText;
       showToast('✓ Briefing expandido!', 'ok');
     } else {
-      showToast('Ops! Tente novamente.', 'err');
+      console.error('[AI Briefing] Resposta sem texto:', data);
+      showToast(data.error || 'Ops! A IA não retornou texto. Tente novamente.', 'err');
     }
   } catch (e) {
-    console.error(e);
-    showToast('Erro ao contatar IA.', 'err');
+    console.error('[AI Briefing] Erro:', e);
+    showToast('Erro ao contatar IA: ' + e.message, 'err');
   } finally {
     if(btn) { btn.innerHTML = originalText; btn.style.opacity = '1'; btn.style.pointerEvents = 'all'; }
   }
@@ -523,11 +536,12 @@ async function suggestBriefingQuestions(btn) {
       briefInput.value = text + '\n\n-- Detalhe isso para a matéria ficar melhor:\n' + data.enhancedText;
       showToast('✓ Perguntas geradas, responda-as!', 'ok');
     } else {
-      showToast('Ops! Tente novamente.', 'err');
+      console.error('[AI Questions] Resposta sem texto:', data);
+      showToast(data.error || 'Ops! A IA não retornou perguntas. Tente novamente.', 'err');
     }
   } catch (e) {
-    console.error(e);
-    showToast('Erro ao contatar IA.', 'err');
+    console.error('[AI Questions] Erro:', e);
+    showToast('Erro ao contatar IA: ' + e.message, 'err');
   } finally {
     if(btn) { btn.innerHTML = originalText; btn.style.opacity = '1'; btn.style.pointerEvents = 'all'; }
   }
@@ -605,7 +619,7 @@ async function submitArticle() {
 
     const today = new Date().toISOString().split('T')[0];
 
-    Driver.addArticle({
+    const payload = {
       authorId: USER.id,
       title: t,
       brief: finalBrief,
@@ -619,9 +633,17 @@ async function submitArticle() {
       type: articleType,
       views: 0,
       aiGenerated: true,
-    });
+    };
+
+    if (currentComposeId) {
+      Driver.updateArticle(currentComposeId, payload);
+    } else {
+      Driver.addArticle(payload);
+    }
+
+    currentComposeId = null;
     composeImages = [];
-    showToast('✓ Matéria publicada com sucesso! Já está visível no portal.','ok');
+    showToast('✓ Matéria enviada e publicada! Já está visível no portal.','ok');
     renderOverview(); renderCompose(); renderArticles();
     showSection('articles');
 
@@ -675,7 +697,11 @@ function filterArticles(status, btn) {
   });
 }
 
-function editDraft(id) { showToast('Abrindo rascunho para edição...'); showSection('compose'); }
+function editDraft(id) { 
+  currentComposeId = id; 
+  showToast('Abrindo rascunho para edição...'); 
+  showSection('compose'); 
+}
 function approvePublish(id) {
   Driver.changeArticleStatus(id, 'published');
   showToast('✓ Matéria publicada!','ok');
@@ -900,20 +926,49 @@ function renderProfile() {
   });
 }
 
-// Upload de imagem do dispositivo → converte para base64 e atualiza preview
+// Upload de imagem do dispositivo → converte, reduz resolução (canvas) e atualiza preview
 function handleImgUpload(fileInput, inputId, previewId) {
   const file = fileInput.files[0];
   if (!file) return;
-  if (file.size > 5 * 1024 * 1024) { showToast('Imagem muito grande! Máximo 5MB.', 'err'); return; }
+  if (!file.type.startsWith('image/')) { showToast('Selecione uma imagem válida.', 'err'); return; }
+  
   const reader = new FileReader();
   reader.onload = function(e) {
-    const dataUrl = e.target.result;
-    document.getElementById(inputId).value = dataUrl;
-    const preview = document.getElementById(previewId);
-    if (preview) {
-      preview.innerHTML = `<img src="${dataUrl}" style="width:100%;height:100%;object-fit:cover">`;
-    }
-    showToast('✓ Imagem carregada! Clique em Salvar para confirmar.', 'ok');
+    const img = new Image();
+    img.onload = function() {
+      // Redimensionar para evitar estourar localStorage (5MB) e limites de Payload
+      const MAX_WIDTH = 1200;
+      const MAX_HEIGHT = 1200;
+      let width = img.width;
+      let height = img.height;
+
+      if (width > height) {
+        if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+      } else {
+        if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
+      }
+
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+
+      // Comprime como JPEG (70% de qualidade) - Fica muito leve (<200kb)
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+
+      document.getElementById(inputId).value = dataUrl;
+      const preview = document.getElementById(previewId);
+      if (preview) {
+        preview.innerHTML = `<img src="${dataUrl}" style="width:100%;height:100%;object-fit:cover">`;
+      }
+      
+      const btnRemv = document.getElementById(inputId === 'profAvatarUrl' ? 'btnClearAvatar' : inputId === 'profCoverUrl' ? 'btnClearCover' : '');
+      if (btnRemv) btnRemv.style.display = 'inline-flex';
+
+      showToast('✓ Imagem carregada e otimizada! Clique em Salvar para confirmar.', 'ok');
+    };
+    img.src = e.target.result;
   };
   reader.readAsDataURL(file);
 }
@@ -973,11 +1028,12 @@ async function saveProfile() {
     // Atualiza sidebar com novo nome/avatar
     const sidebarName = document.querySelector('.dash-user-name');
     if (sidebarName) sidebarName.textContent = USER.name;
-    // Atualiza avatar na sidebar se houver URL
-    if (USER.avatar_url) {
-      const sidebarAvatar = document.querySelector('.dash-avatar');
-      if (sidebarAvatar) sidebarAvatar.innerHTML = `<img src="${USER.avatar_url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
-    }
+    // Atualiza avatar na sidebar e no header se houver URL
+    const topAvatar = document.getElementById('topAvatar');
+    const sideAvatar = document.getElementById('sideAvatar');
+    const avatarHtml = USER.avatar_url ? '<img src="'+USER.avatar_url+'" style="width:100%;height:100%;object-fit:cover">' : USER.avatar;
+    if (topAvatar) topAvatar.innerHTML = avatarHtml;
+    if (sideAvatar) sideAvatar.innerHTML = avatarHtml;
     showToast('✓ Perfil salvo com sucesso! As alterações já estão visíveis em Minha Página.','ok'); 
     renderProfile(); // Re-render com dados atualizados
   }
@@ -1005,6 +1061,8 @@ function renderMediaKit() {
 // Navigation
 // ============================
 function showSection(name, btnEl) {
+  if (name !== 'compose') { currentComposeId = null; composeImages = []; }
+
   ['overview','compose','articles','profile','mediakit'].forEach(s => {
     document.getElementById('sec-' + s).style.display = s === name ? 'block' : 'none';
   });
@@ -1013,7 +1071,21 @@ function showSection(name, btnEl) {
   window.scrollTo({ top: 0 });
   // Re-render on navigate
   if (name === 'overview') renderOverview();
-  if (name === 'compose') renderCompose();
+  if (name === 'compose') {
+    renderCompose();
+    if (currentComposeId) {
+      const art = Driver.getArticlesByAuthor(USER.id).find(a => a.id === currentComposeId);
+      if (art) {
+        document.getElementById('compTitle').value = art.title || '';
+        document.getElementById('compBrief').value = art.brief || '';
+        if (art.category) document.getElementById('compCategory').value = art.category;
+        composeImages = art.images && art.images.length ? [...art.images] : (art.img ? [art.img] : []);
+        setTimeout(() => renderComposeImgGrid(), 50);
+      }
+    } else {
+      setTimeout(() => renderComposeImgGrid(), 50);
+    }
+  }
   if (name === 'articles') renderArticles();
   if (name === 'profile') renderProfile();
   if (name === 'mediakit') renderMediaKit();
