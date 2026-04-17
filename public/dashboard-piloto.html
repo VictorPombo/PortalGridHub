@@ -75,7 +75,7 @@
 // Auth guard
 // ============================
 if (!Driver.isLoggedIn()) { window.location = 'cadastro.html'; }
-const USER = Driver.getCurrentUser();
+let USER = Driver.getCurrentUser();
 if (!USER) {
   window.location = 'cadastro.html';
 } else if ((USER.is_active === false) && !location.hostname.includes('localhost')) {
@@ -100,21 +100,24 @@ if (!USER) {
 // Render sidebar
 // ============================
 // Atualiza "Minha Página" com ID do piloto logado
-document.querySelector('a[href="piloto.html"]').href = 'piloto.html?id=' + USER.id;
+function __renderDashboardNav() {
+  document.querySelector('a[href="piloto.html"]').href = 'piloto.html?id=' + USER.id;
 
-document.getElementById('navUserInfo').innerHTML = `
-  <span style="font-family:var(--fm);font-size:10px;color:var(--dim)" class="hide-mob">${USER.name}</span>
-  <div id="topAvatar" style="width:32px;height:32px;border-radius:50%;background:var(--acc);display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:11px;font-weight:700;color:#fff;overflow:hidden" class="hide-mob">${USER.avatar_url ? '<img src="'+USER.avatar_url+'" style="width:100%;height:100%;object-fit:cover">' : USER.avatar}</div>
-  <button class="btn-hamburger" style="display:flex;margin-left:16px;border-color:transparent" onclick="document.querySelector('.dash-sidebar').classList.toggle('open')">
-    <span></span><span></span><span></span>
-  </button>
-`;
-document.getElementById('sidebarProfile').innerHTML = `
-  <div class="dash-avatar" id="sideAvatar" style="overflow:hidden">${USER.avatar_url ? '<img src="'+USER.avatar_url+'" style="width:100%;height:100%;object-fit:cover">' : USER.avatar}</div>
-  <div class="dash-user-name">${USER.name || 'Piloto'}</div>
-  <div class="dash-user-plan">${Driver.getPlanName(USER.plan)} · ${USER.type ? (USER.type.charAt(0).toUpperCase() + USER.type.slice(1)) : 'Piloto'}</div>
-  <div class="dash-plan-badge">${(USER.plan || '').toUpperCase()}</div>
-`;
+  document.getElementById('navUserInfo').innerHTML = `
+    <span style="font-family:var(--fm);font-size:10px;color:var(--dim)" class="hide-mob">${USER.name || 'Piloto'}</span>
+    <div id="topAvatar" style="width:32px;height:32px;border-radius:50%;background:var(--acc);display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:11px;font-weight:700;color:#fff;overflow:hidden" class="hide-mob">${USER.avatar_url ? '<img src="'+USER.avatar_url+'" style="width:100%;height:100%;object-fit:cover">' : (USER.avatar || 'VA')}</div>
+    <button class="btn-hamburger" style="display:flex;margin-left:16px;border-color:transparent" onclick="document.querySelector('.dash-sidebar').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </button>
+  `;
+  document.getElementById('sidebarProfile').innerHTML = `
+    <div class="dash-avatar" id="sideAvatar" style="overflow:hidden">${USER.avatar_url ? '<img src="'+USER.avatar_url+'" style="width:100%;height:100%;object-fit:cover">' : (USER.avatar || 'VA')}</div>
+    <div class="dash-user-name">${USER.name || 'Piloto'}</div>
+    <div class="dash-user-plan">${Driver.getPlanName(USER.plan)} · ${USER.type ? (USER.type.charAt(0).toUpperCase() + USER.type.slice(1)) : 'Piloto'}</div>
+    <div class="dash-plan-badge">${(USER.plan || '').toUpperCase()}</div>
+  `;
+}
+__renderDashboardNav();
 }
 
 // ============================
@@ -1186,6 +1189,19 @@ if (USER) {
   renderArticles();
   renderProfile();
   renderMediaKit();
+
+  // Background Sync para pegar Avatar ou Dados mudados em outro dispositivo
+  (async function() {
+    try {
+      await Driver.bootSupabase();
+      // Atualiza o USER interno se o boot baixar as informações com sucesso
+      const refreshedUser = Driver.getCurrentUser();
+      if (refreshedUser) {
+        USER = refreshedUser;
+        __renderDashboardNav();
+      }
+    } catch(e) {}
+  })();
 
   // Auto-abrir seção via URL (ex: ?sec=profile vindo do Editar Página)
   const urlSec = new URLSearchParams(window.location.search).get('sec');
