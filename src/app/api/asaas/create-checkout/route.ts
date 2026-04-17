@@ -53,6 +53,17 @@ export async function POST(req: Request) {
     const planData = PLANS[plan];
     if (!planData) return NextResponse.json({ error: 'Plano inválido' }, { status: 400 });
 
+    // TEMPORARY BYPASS TO DIAGNOSE INFINITE HANG:
+    return NextResponse.json({
+      success: true,
+      payment_id: "fake_id_123",
+      invoice_url: "https://sandbox.asaas.com/i/fake_abc",
+      plan: plan,
+      plan_name: planData.name,
+      value: planData.value,
+    });
+
+    /* -- Comentando código temporariamente --
     // 1. Criar/buscar cliente
     const customerId = await findOrCreateCustomer(user_name, user_email, user_cpf);
 
@@ -88,6 +99,7 @@ export async function POST(req: Request) {
       plan_name: planData.name,
       value: planData.value,
     });
+    */
 
   } catch (err: any) {
     console.error('[Asaas Checkout] Erro:', err);
