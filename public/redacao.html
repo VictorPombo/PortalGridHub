@@ -231,12 +231,7 @@
     }
 
     // Inicialização
-    if (DRAFT && DRAFT.id) {
-      // Retomando uma matéria já existente (ex: usuário recarregou a página)
-      STATE.materia_id = DRAFT.id;    
-      startPolling();
-    } else if (DRAFT) {
-      // Nova submissão
+    if (DRAFT) {
       startGeneration();
     } else {
       document.getElementById('screen-loading').innerHTML = '<h1>Nenhum rascunho encontrado.</h1><a href="javascript:history.back()" style="color:#fff">Voltar</a>';
