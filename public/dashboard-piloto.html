@@ -822,7 +822,18 @@ function renderProfile() {
             </select>
           </div>
         </div>
-        <div class="form-field"><label class="form-label">Cidade / Estado</label><input class="form-input" id="profCity" type="text" value="${USER.city || ''}"></div>
+        <div class="form-field">
+          <label class="form-label">Cidade / Estado</label>
+          <div style="display:flex;gap:8px">
+            <select class="form-input" id="profState" style="width:80px;padding:12px" onchange="loadProfCities(this.value)">
+              <option value="">UF</option>
+            </select>
+            <select class="form-input" id="profCity" style="flex:1">
+              <option value="">Cidade</option>
+            </select>
+          </div>
+          <input type="hidden" id="profCityRaw" value="${USER.city || ''}">
+        </div>
         
         <div style="margin-top:24px;border-top:1px solid var(--bg3);padding-top:16px;"></div>
 
@@ -838,12 +849,9 @@ function renderProfile() {
         
         <div style="margin-top:24px;border-top:1px solid var(--bg3);padding-top:16px;"></div>
         <h3>🏆 Conquistas</h3>
-        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px">
-          <div class="form-field"><label class="form-label" style="font-size:9px">Títulos</label><input class="form-input" id="profTitles" type="number" min="0" value="${(USER.conquests?.titles) || 0}" style="text-align:center;font-size:18px;font-weight:700"></div>
-          <div class="form-field"><label class="form-label" style="font-size:9px">Vitórias</label><input class="form-input" id="profWins" type="number" min="0" value="${(USER.conquests?.wins) || 0}" style="text-align:center;font-size:18px;font-weight:700"></div>
-          <div class="form-field"><label class="form-label" style="font-size:9px">Pódios</label><input class="form-input" id="profPodiums" type="number" min="0" value="${(USER.conquests?.podiums) || 0}" style="text-align:center;font-size:18px;font-weight:700"></div>
-          <div class="form-field"><label class="form-label" style="font-size:9px">Poles</label><input class="form-input" id="profPoles" type="number" min="0" value="${(USER.conquests?.poles) || 0}" style="text-align:center;font-size:18px;font-weight:700"></div>
-          <div class="form-field"><label class="form-label" style="font-size:9px">V. Rápidas</label><input class="form-input" id="profFastlaps" type="number" min="0" value="${(USER.conquests?.fastlaps) || 0}" style="text-align:center;font-size:18px;font-weight:700"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="form-field"><label class="form-label" style="font-size:9px">Títulos</label><input class="form-input" id="profTitles" type="number" min="0" value="${USER.conquests?.titles ? USER.conquests.titles : ''}" placeholder="Ex: 2" style="text-align:center;font-size:18px;font-weight:700"></div>
+          <div class="form-field"><label class="form-label" style="font-size:9px">Poles</label><input class="form-input" id="profPoles" type="number" min="0" value="${USER.conquests?.poles ? USER.conquests.poles : ''}" placeholder="Ex: 5" style="text-align:center;font-size:18px;font-weight:700"></div>
         </div>
         
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
@@ -856,9 +864,27 @@ function renderProfile() {
 
         <!-- BIOGRAFIA -->
         <h3>📝 Biografia</h3>
-        <div class="form-field"><label class="form-label">Texto da Biografia (Landing Page)</label><textarea class="form-textarea" id="profBio" style="min-height:120px" placeholder="Conte sua história no automobilismo, suas paixões e motivações...">${USER.bio || ''}</textarea></div>
-        <div class="form-field"><label class="form-label">Histórico de Carreira</label><textarea class="form-textarea" id="profCareer" style="min-height:80px" placeholder="Resumo de onde correu, categorias em que competiu...">${USER.career || ''}</textarea></div>
-        <div class="form-field"><label class="form-label">Metas de Carreira / Objetivos</label><textarea class="form-textarea" id="profGoals" style="min-height:80px" placeholder="Qual o próximo alvo? Campeonato, categoria superior...">${USER.goals || ''}</textarea></div>
+        <div class="form-field">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <label class="form-label" style="margin-bottom:0">Texto da Biografia (Landing Page)</label>
+            <button type="button" class="btn-secondary" style="padding:6px 12px;font-size:10px;border-radius:6px" onclick="enhanceWithAI('profBio', 'bio')">✨ Aprimorar com IA</button>
+          </div>
+          <textarea class="form-textarea" id="profBio" style="min-height:120px" placeholder="Conte sua história no automobilismo, suas paixões e motivações...">${USER.bio || ''}</textarea>
+        </div>
+        <div class="form-field">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <label class="form-label" style="margin-bottom:0">Histórico de Carreira</label>
+            <button type="button" class="btn-secondary" style="padding:6px 12px;font-size:10px;border-radius:6px" onclick="enhanceWithAI('profCareer', 'career')">✨ Aprimorar com IA</button>
+          </div>
+          <textarea class="form-textarea" id="profCareer" style="min-height:80px" placeholder="Resumo de onde correu, categorias em que competiu...">${USER.career || ''}</textarea>
+        </div>
+        <div class="form-field">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <label class="form-label" style="margin-bottom:0">Metas de Carreira / Objetivos</label>
+            <button type="button" class="btn-secondary" style="padding:6px 12px;font-size:10px;border-radius:6px" onclick="enhanceWithAI('profGoals', 'goals')">✨ Aprimorar com IA</button>
+          </div>
+          <textarea class="form-textarea" id="profGoals" style="min-height:80px" placeholder="Qual o próximo alvo? Campeonato, categoria superior...">${USER.goals || ''}</textarea>
+        </div>
         
         <div style="margin-top:24px;border-top:1px solid var(--bg3);padding-top:16px;"></div>
 
@@ -888,7 +914,13 @@ function renderProfile() {
         <!-- PATROCÍNIO -->
         <h3>🤝 Mídia e Patrocínio</h3>
         <div class="form-field"><label class="form-label">Suas Marcas/Patrocinadores</label><input class="form-input" id="profSponsors" type="text" placeholder="Red Bull, Monster Energy, Pirelli..." value="${USER.sponsors || ''}"></div>
-        <div class="form-field"><label class="form-label">Mensagem Institucional (para Redação)</label><textarea class="form-textarea" id="profSponsorMsg" style="min-height:60px" placeholder="Mensagem padrão que será incorporada nas matérias...">${USER.sponsor_message || ''}</textarea></div>
+        <div class="form-field">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <label class="form-label" style="margin-bottom:0">Mensagem Institucional (para Redação)</label>
+            <button type="button" class="btn-secondary" style="padding:6px 12px;font-size:10px;border-radius:6px" onclick="enhanceWithAI('profSponsorMsg', 'sponsormsg')">✨ Aprimorar com IA</button>
+          </div>
+          <textarea class="form-textarea" id="profSponsorMsg" style="min-height:60px" placeholder="Mensagem padrão que será incorporada nas matérias...">${USER.sponsor_message || ''}</textarea>
+        </div>
         
         <div style="margin-top:24px;border-top:1px solid var(--bg3);padding-top:16px;"></div>
 
@@ -896,7 +928,6 @@ function renderProfile() {
         <h3>🔗 Redes Sociais</h3>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
           <div class="form-field"><label class="form-label">Instagram</label><input class="form-input" id="profIG" type="text" placeholder="@seuperfil" value="${USER.instagram || ''}"></div>
-          <div class="form-field"><label class="form-label">Twitter / X</label><input class="form-input" id="profTwitter" type="text" placeholder="@seuperfil" value="${USER.twitter || ''}"></div>
         </div>
         <div class="form-field"><label class="form-label">WhatsApp Contato</label><input class="form-input" id="profWhatsapp" type="text" placeholder="(11) 99999-9999" value="${USER.whatsapp || ''}"></div>
 
@@ -910,6 +941,28 @@ function renderProfile() {
   if (typeof renderCategoryPicker === 'function') {
     renderCategoryPicker('profCategoryPicker', USER.categories || (USER.category ? [USER.category] : []));
   }
+
+  // IBGE Logic Setup
+  setTimeout(() => {
+    fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome')
+      .then(res => res.json())
+      .then(states => {
+        const s = document.getElementById('profState');
+        if(s) {
+          states.forEach(st => s.add(new Option(st.sigla, st.sigla)));
+          const rawCity = document.getElementById('profCityRaw')?.value || '';
+          if(rawCity.includes(' - ')) {
+            const parts = rawCity.split(' - ');
+            const uf = parts[parts.length-1].trim();
+            s.value = uf;
+            if(uf) loadProfCities(uf, parts.slice(0, parts.length-1).join(' - ').trim());
+          } else if(rawCity) {
+            const c = document.getElementById('profCity');
+            c.innerHTML = \`<option value="\${rawCity}" selected>\${rawCity}</option>\`;
+          }
+        }
+      }).catch(e => console.error('IBGE Error', e));
+  }, 100);
 
   // Setar valores de imagem via JS (evita quebrar template com base64)
   if (USER.avatar_url) {
@@ -1061,7 +1114,7 @@ async function saveProfile() {
     sponsors: document.getElementById('profSponsors').value,
     sponsor_message: document.getElementById('profSponsorMsg').value,
     instagram: document.getElementById('profIG').value,
-    twitter: document.getElementById('profTwitter').value,
+    twitter: document.getElementById('profTwitter')?.value || '',
     whatsapp: document.getElementById('profWhatsapp').value,
   });
   if (updated) { 
@@ -1159,6 +1212,29 @@ if (USER) {
     if (c1) c1.innerText = t;
     if (c2) c2.innerText = t;
   }, 1000);
+}
+
+// Function to load the Cities in Dashboard Profile Editor
+function loadProfCities(uf, preselectedCity = null) {
+  const c = document.getElementById('profCity');
+  if(!c) return;
+  c.innerHTML = '<option value="">Carregando...</option>';
+  c.disabled = true;
+  if(!uf) { c.innerHTML = '<option value="">Cidade</option>'; return; }
+  fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios?orderBy=nome`)
+    .then(res => res.json())
+    .then(cities => {
+      c.innerHTML = '<option value="">Selecione a cidade</option>';
+      cities.forEach(city => {
+        const val = city.nome + ' - ' + uf;
+        const opt = new Option(city.nome, val);
+        if(preselectedCity && val.startsWith(preselectedCity)) opt.selected = true;
+        c.add(opt);
+      });
+      c.disabled = false;
+    }).catch(e => {
+      c.innerHTML = '<option value="">Erro ao carregar</option>';
+    });
 }
 </script>
 <!-- Cropper.js -->

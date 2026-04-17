@@ -138,7 +138,16 @@ function renderCategoryPicker(containerId, initialSelected = []) {
     html += `</div></div>`;
   }
   
-  html += `</div>`;
+  html += `
+    <div class="cat-picker-group">
+      <div class="cat-picker-head">
+        <span style="font-size:12px;color:rgba(255,255,255,0.7)">Outra Categoria (Opcional)</span>
+      </div>
+      <div style="padding:10px 16px;">
+        <input type="text" class="cat-chk-custom" placeholder="Digite sua categoria..." style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:10px;border-radius:4px;font-family:var(--fm)">
+      </div>
+    </div>
+  </div>`;
   container.innerHTML = html;
   
   const chks = container.querySelectorAll('.cat-chk');
@@ -155,11 +164,23 @@ function renderCategoryPicker(containerId, initialSelected = []) {
       }
     });
   });
+  
+  // Custom category injection
+  const customInput = container.querySelector('.cat-chk-custom');
+  if(customInput) {
+     const custVal = oldCats.filter(c => !Object.values(cats).flat().includes(c));
+     if(custVal.length > 0) customInput.value = custVal[0];
+  }
 }
 
 function getSelectedCategories() {
   const chks = document.querySelectorAll('.cat-chk:checked');
-  return Array.from(chks).map(c => c.value);
+  const arr = Array.from(chks).map(c => c.value);
+  const customs = document.querySelectorAll('.cat-chk-custom');
+  customs.forEach(c => {
+    if(c.value.trim()) arr.push(c.value.trim());
+  });
+  return arr;
 }
 function initToggles() {
   document.querySelectorAll('.toggle').forEach(t=>{

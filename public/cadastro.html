@@ -118,7 +118,17 @@
         <div class="form-field"><label class="form-label">Número</label><input class="form-input" id="regNumber" type="text" placeholder="Ex: 07"></div>
       </div>
       <div class="form-grid-2">
-        <div class="form-field"><label class="form-label">Cidade / Estado</label><input class="form-input" id="regCity" type="text" placeholder="São Paulo, SP"></div>
+        <div class="form-field">
+          <label class="form-label">Cidade / Estado</label>
+          <div style="display:flex;gap:8px">
+            <select class="form-input" id="regState" style="width:80px;padding:12px" onchange="loadRegCities(this.value)">
+              <option value="">UF</option>
+            </select>
+            <select class="form-input" id="regCity" style="flex:1" disabled>
+              <option value="">Cidade</option>
+            </select>
+          </div>
+        </div>
         <div class="form-field"><label class="form-label">Data de nascimento</label><input class="form-input" id="regDob" type="date"></div>
       </div>
       <div class="form-field"><label class="form-label">Instagram</label><input class="form-input" id="regIG" type="text" placeholder="@seuinstagram"></div>
@@ -585,8 +595,36 @@ async function enhanceWithAI(fieldId, contextType) {
 const styleSheet = document.createElement("style");
 styleSheet.textContent = "@keyframes spin { 100% { transform:rotate(360deg); } }";
 document.head.appendChild(styleSheet);
+
+// IBGE Logic
+document.addEventListener('DOMContentLoaded', () => {
+  fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome')
+    .then(res => res.json())
+    .then(states => {
+      const s = document.getElementById('regState');
+      if(s) {
+        states.forEach(st => s.add(new Option(st.sigla, st.sigla)));
+      }
+    }).catch(e => console.error('IBGE Error', e));
+});
+
+function loadRegCities(uf) {
+  const c = document.getElementById('regCity');
+  if(!c) return;
+  c.innerHTML = '<option value="">Carregando...</option>';
+  c.disabled = true;
+  if(!uf) { c.innerHTML = '<option value="">Cidade</option>'; return; }
+  fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios?orderBy=nome`)
+    .then(res => res.json())
+    .then(cities => {
+      c.innerHTML = '<option value="">Selecione a cidade</option>';
+      cities.forEach(city => c.add(new Option(city.nome, city.nome + ' - ' + uf)));
+      c.disabled = false;
+    }).catch(e => {
+      c.innerHTML = '<option value="">Erro ao carregar</option>';
+    });
+}
 </script>
-<script src="/cookie-banner.js"></script>
 <script src="/cookie-banner.js"></script>
 </body>
 </html>

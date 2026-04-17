@@ -36,7 +36,7 @@ const Driver = (() => {
 
   const RACING_CATEGORIES = {
     "KART": ["Kart Indoor", "Kart Rental", "Kart Profissional 2T", "Kart F4", "Kart Graduados", "Kart Sênior", "Kart Super Sênior", "Kart Shifter", "Kart Endurance", "Kart Cadete / Mirim"],
-    "FÓRMULA": ["Fórmula Vee", "Fórmula Delta", "Fórmula 1600", "Fórmula Inter", "Fórmula Truck Light"],
+    "FÓRMULA": ["Fórmula Vee", "Fórmula Delta", "Fórmula 1600", "Fórmula Inter", "Fórmula 4", "Fórmula 3", "Fórmula Truck Light"],
     "TURISMO": ["Stock Car Pro Series", "Stock Series", "Turismo Nacional", "Copa HB20", "Copa Shell HB20", "NASCAR Brasil", "TCR South America", "Turismo 1.4", "Marcas e Pilotos", "Super Turismo"],
     "GT": ["Porsche Cup Brasil", "AMG Cup Brasil", "GT Series Brasil", "Império Endurance Brasil", "Ultimate Drift"],
     "ENDURANCE": ["Império Endurance Brasil", "6 Horas de Interlagos", "Endurance Regional"],
