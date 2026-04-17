@@ -231,34 +231,62 @@
     async function startGeneration() {
       navTo('screen-loading');
       document.getElementById('loading-error').style.display = 'none';
-      startTimer(60);
+      startTimer(20); // Reduzido pra 20 pq a IA é mt rápida na Vercel
       
       try {
-        const res = await fetch('/api/redacao/generate', {
+        // Obter contexto enriquecido (Nome do piloto, cat, etc)
+        const d_ct = \`Piloto \${currentUser.name || ''} - Categoria: \${document.getElementById('prev-cat')?.textContent || 'Automobilismo'}\`;
+        
+        // Chamada à nosa API confiável
+        const res = await fetch('/api/ai-enhance', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            user_id: currentUser.id,
-            input_titulo: DRAFT.titulo,
-            input_corpo: DRAFT.contexto,
-            input_categoria: document.getElementById('prev-cat').textContent || 'Geral',
-            input_fotos: DRAFT.fotos || []
+            tipoCampo: 'article',
+            textoOriginal: DRAFT.contexto || DRAFT.titulo,
+            contexto: d_ct
           })
         });
         
         const json = await res.json();
-        if(!json.success) throw new Error(json.error);
+        if(!json.enhancedText) throw new Error(json.error || 'Erro na geração da matéria');
         
-        STATE.materia_id = json.id;
-        // Salva para persistir no reload
-        sessionStorage.setItem('draft_materia', JSON.stringify({...DRAFT, id: json.id}));
+        // Finalizamos e salvamos na base Local.
+        const generatedHtml = json.enhancedText;
         
-        startPolling();
+        const payload = {
+          id: 'a' + Date.now(),
+          author: currentUser.name,
+          authorId: currentUser.id,
+          title: DRAFT.titulo,
+          body: generatedHtml,
+          category: document.getElementById('prev-cat')?.textContent || 'Aviso',
+          gallery: DRAFT.fotos || [],
+          img: (DRAFT.fotos && DRAFT.fotos[0]) ? DRAFT.fotos[0] : null,
+          views: 0,
+          likes: 0,
+          status: 'published',
+          submittedAt: new Date().toISOString(),
+          publishedAt: new Date().toISOString(),
+          aiGenerated: true,
+          deleted: false
+        };
+        
+        Driver.addArticle(payload);
+        sessionStorage.removeItem('draft_materia'); // Limpa a sujeira do sessionStorage
+        clearInterval(tmOut); // Para o timer
+        navTo('screen-success');
+        
+        // Deslocar para a página da matéria (Segunda tela da foto), exatamente como antes
+        setTimeout(() => {
+           window.location.href = 'materia.html?id=' + payload.id;
+        }, 800);
+        
       } catch (err) {
         console.error(err);
         document.getElementById('countdown-timer').style.display = 'none';
         document.getElementById('loading-error').style.display = 'block';
-        clearInterval(STATE.pollInterval);
+        clearInterval(tmOut);
       }
     }
 
@@ -283,31 +311,8 @@
       }, 1000);
     }
 
-    // Polling TELA 1
-    function startPolling() {
-      if(STATE.pollInterval) clearInterval(STATE.pollInterval);
-      
-      STATE.pollInterval = setInterval(async () => {
-        try {
-          const res = await fetch('/api/redacao/status?id=' + STATE.materia_id);
-          const json = await res.json();
-          if (json.success && json.data) {
-             if (json.data.status === 'revisao' || json.data.status === 'publicada') {
-                clearInterval(STATE.pollInterval);
-                clearInterval(tmOut);
-                
-                if (json.data.status === 'publicada') {
-                  navTo('screen-success');
-                } else {
-                  STATE.data = json.data;
-                  renderPreview();
-                  navTo('screen-preview');
-                }
-             }
-          }
-        } catch(e) { console.error('Polling error', e); }
-      }, 3000);
-    }
+    // Antigo Polling via Supabase - Desativado para bypass direto
+    function startPolling() {}
 
     function renderPreview() {
       document.getElementById('prev-title').textContent = STATE.data.final_titulo || 'Sem Título';
