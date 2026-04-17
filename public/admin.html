@@ -34,7 +34,9 @@
     </div>
     <ul class="dash-nav">
       <li><a class="active" onclick="adminNav('dashboard',this)"><span class="nav-icon"><i data-lucide="bar-chart-3" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Dashboard</a></li>
-      <li><a onclick="adminNav('queue',this)"><span class="nav-icon"><i data-lucide="newspaper" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Fila de Matérias</a></li>
+      <li><a onclick="adminNav('compose',this)"><span class="nav-icon"><i data-lucide="pen-tool" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Nova Matéria</a></li>
+      <li><a onclick="adminNav('all-articles',this)"><span class="nav-icon"><i data-lucide="layers" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Todas Matérias</a></li>
+      <li><a onclick="adminNav('queue',this)"><span class="nav-icon"><i data-lucide="clock" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Fila de Revisão</a></li>
       <li><a onclick="adminNav('users',this)"><span class="nav-icon"><i data-lucide="users" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Usuários</a></li>
       <li><a onclick="adminNav('rss',this)"><span class="nav-icon"><i data-lucide="bot" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Notícias Auto</a></li>
       <div class="dash-nav-sep"></div>
@@ -45,6 +47,8 @@
 
   <main class="dash-main">
     <div id="adm-dashboard"></div>
+    <div id="adm-compose" style="display:none"></div>
+    <div id="adm-all-articles" style="display:none"></div>
     <div id="adm-queue" style="display:none"></div>
     <div id="adm-users" style="display:none"></div>
     <div id="adm-rss" style="display:none"></div>
@@ -118,6 +122,163 @@ function renderDashboard() {
       }).join('')}
     </div>
   `;
+}
+
+// ============================
+// ALL ARTICLES (GERAL)
+// ============================
+function renderAllArticles() {
+  const articles = Driver.getArticles()
+    .filter(a => a.status !== '__DELETED__')
+    .sort((a,b) => (b.publishedAt||b.submittedAt||'9999').localeCompare(a.publishedAt||a.submittedAt||'9999'));
+  
+  document.getElementById('adm-all-articles').innerHTML = `
+    <div class="dash-header"><h1>Todas as Matérias</h1></div>
+    <div id="allArticlesList">
+      ${articles.map(a => {
+        const author = Driver.getUserById(a.authorId);
+        return `<div class="queue-card" data-status="${a.status}" style="border-left:3px solid var(--acc)">
+          <div class="queue-card-img" style="${a.img ? '' : 'background:var(--bg3)'}">${a.img ? `<img src="${a.img}" alt="">` : ''}</div>
+          <div class="queue-card-body">
+            <div class="queue-card-title">${a.title}</div>
+            <div class="queue-card-meta">
+              <span class="badge ${Driver.getStatusCSS(a.status)}" style="font-size:8px">${Driver.getStatusLabel(a.status)}</span>
+              · ${Driver.formatDate(a.publishedAt || a.submittedAt)}
+            </div>
+            ${author ? `<div class="queue-card-author">
+              <div class="queue-card-av" style="background:${author.type === 'equipe' ? 'var(--gold)' : author.type === 'categoria' ? '#006e3a' : 'var(--acc)'};color:${author.type==='equipe'?'#000':'#fff'}">${author.avatar}</div>
+              <div><div class="queue-card-author-name">${author.name}</div></div>
+            </div>` : ''}
+          </div>
+          <div class="queue-card-actions">
+            <button class="btn-secondary" style="padding:6px 12px;font-size:10px" onclick="adminEditArticle('${a.id}')"><i data-lucide="edit" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Editar</button>
+            <button class="btn-primary" style="padding:6px 12px;font-size:10px" onclick="window.open('materia.html?id=${a.id}','_blank')"><i data-lucide="eye" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Ver</button>
+            <button class="btn-secondary" style="padding:6px 12px;font-size:10px;color:var(--warning)" onclick="hideArticle('${a.id}')"><i data-lucide="eye-off" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Ocultar</button>
+            <button class="btn-secondary" style="padding:6px 12px;font-size:10px;color:var(--acc)" onclick="adminDeleteArticle('${a.id}')"><i data-lucide="trash-2" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Deletar</button>
+          </div>
+        </div>`;
+      }).join('')}
+      ${articles.length === 0 ? '<div style="padding:32px;text-align:center;color:var(--muted)">Nenhuma matéria cadastrada.</div>' : ''}
+    </div>
+  `;
+  lucide.createIcons();
+}
+
+function hideArticle(id) {
+  Driver.changeArticleStatus(id, 'draft');
+  showToast('<i data-lucide="eye-off" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Matéria pausada.', 'info');
+  renderAllArticles();
+}
+function adminDeleteArticle(id) {
+  if(confirm("Tem certeza que deseja DELETAR esta matéria permanentemente?")) {
+    Driver.updateArticle(id, { status: '__DELETED__' });
+    showToast('Matéria deletada.', 'ok');
+    renderAllArticles();
+    renderDashboard();
+  }
+}
+
+function adminEditArticle(id) {
+  const a = Driver.getArticleById(id);
+  if(!a) return;
+  const newTitle = prompt('Editar Título', a.title);
+  if(newTitle) {
+    Driver.updateArticle(id, { title: newTitle });
+    showToast('Título salvo com sucesso!', 'ok');
+    renderAllArticles();
+  }
+}
+
+// ============================
+// REDAÇÃO ILIMITADA (AGÊNCIA)
+// ============================
+function renderCompose() {
+  const users = Driver.getUsers().filter(u => u.type !== 'admin');
+  
+  document.getElementById('adm-compose').innerHTML = `
+    <div class="dash-header"><h1>Redação Ilimitada (Ghostwriter)</h1></div>
+    <div class="composer carbon-subtle">
+      <div class="composer-header"><span class="composer-title">Nova Matéria</span><span class="badge" style="background:var(--acc)">LIMITES IGNORADOS</span></div>
+      <div class="composer-body">
+        
+        <div class="form-field"><label class="form-label">Cliente (Piloto/Equipe)</label>
+          <select class="form-select" id="admCompAuthor">
+            ${users.map(u => `<option value="${u.id}">${u.name} (${u.type}) - ${u.category || 'Geral'}</option>`).join('')}
+          </select>
+        </div>
+
+        <div class="form-field"><label class="form-label">Título</label><input class="form-input" id="admCompTitle" type="text" placeholder="Manchete da notícia"></div>
+        <div class="form-field"><label class="form-label">Contexto do Evento</label>
+          <select class="form-select" id="admCompType">
+            <option>Corrida / Resultado</option><option>Treino / Classificação</option><option>Patrocinador</option><option>Outro</option>
+          </select>
+        </div>
+        <div class="form-field"><label class="form-label">Rascunho / Briefing</label><textarea class="form-textarea" id="admCompBrief" placeholder="Insira as notas que a I.A deverá processar e transformar em notícia..." style="min-height:150px"></textarea></div>
+      </div>
+      <div class="composer-footer">
+        <button class="btn-primary" id="btnAdminSubmit" onclick="submitAdminCompose()"><i data-lucide="bot" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Gerar e Publicar via IA</button>
+      </div>
+    </div>
+  `;
+  lucide.createIcons();
+}
+
+async function submitAdminCompose() {
+  const authorId = document.getElementById('admCompAuthor').value;
+  const t = document.getElementById('admCompTitle').value;
+  const tp = document.getElementById('admCompType').value;
+  const b = document.getElementById('admCompBrief').value;
+  const btn = document.getElementById('btnAdminSubmit');
+
+  if(!t || !b){showToast('Preencha título e briefing!', 'err'); return;}
+
+  const targetUser = Driver.getUserById(authorId);
+  const contextStr = `Nome: ${targetUser.pilot_name || targetUser.name}; Categoria: ${targetUser.category || ''}; Patrocinadores: ${targetUser.sponsors || ''}`;
+  const finalBrief = `[Contexto: ${tp}] ${b}`;
+
+  const originalText = btn.innerHTML;
+  btn.innerHTML = '⏳ Escrevendo...';
+  btn.style.pointerEvents = 'none';
+  btn.style.opacity = '0.6';
+
+  try {
+    const res = await fetch('/api/ai-enhance', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        textoOriginal: finalBrief, 
+        tipoCampo: 'article',
+        contexto: contextStr
+      })
+    });
+    const data = await res.json();
+    if (!data.enhancedText) throw new Error("Erro na IA");
+
+    Driver.addArticle({
+      authorId: authorId,
+      title: t,
+      brief: finalBrief,
+      body: data.enhancedText,
+      img: '',
+      status: 'published',
+      submittedAt: new Date().toISOString().split('T')[0],
+      publishedAt: new Date().toISOString().split('T')[0],
+      category: targetUser.category || 'Notícia Geral',
+      views: 0
+    });
+
+    showToast('✓ Matéria Criada e Publicada!', 'ok');
+    document.getElementById('admCompTitle').value = '';
+    document.getElementById('admCompBrief').value = '';
+    adminNav('all-articles');
+  } catch(e) {
+    console.error(e);
+    showToast('Erro ao processar matéria.', 'err');
+  } finally {
+    btn.innerHTML = originalText;
+    btn.style.pointerEvents = 'all';
+    btn.style.opacity = '1';
+  }
 }
 
 // ============================
@@ -372,13 +533,15 @@ function toggleSetting(key, el) {
 // NAVIGATION
 // ============================
 function adminNav(name, btn) {
-  ['dashboard', 'queue', 'users', 'rss', 'settings'].forEach(s => {
+  ['dashboard', 'compose', 'all-articles', 'queue', 'users', 'rss', 'settings'].forEach(s => {
     document.getElementById('adm-' + s).style.display = s === name ? 'block' : 'none';
   });
   document.querySelectorAll('.dash-nav a').forEach(a => a.classList.remove('active'));
   if (btn) btn.classList.add('active');
   window.scrollTo({ top: 0 });
   if (name === 'dashboard') renderDashboard();
+  if (name === 'compose') renderCompose();
+  if (name === 'all-articles') renderAllArticles();
   if (name === 'queue') renderQueue();
   if (name === 'users') renderUsers();
   if (name === 'rss') renderRSS();

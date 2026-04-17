@@ -204,8 +204,14 @@ function renderCompose() {
       </div>
       <div class="composer-body">
 
-        <div class="form-field"><label class="form-label">Título da Matéria</label>
+        <div class="form-field">
+          <label class="form-label">Título da Matéria</label>
           <input class="form-input" id="compTitle" type="text" placeholder="Ex: Como me preparei para a etapa de Interlagos">
+          <div style="display:flex;justify-content:flex-end;margin-top:8px">
+            <button type="button" style="display:flex;align-items:center;gap:6px;background:rgba(255,43,43,0.1);color:var(--acc);border:1px solid rgba(255,43,43,0.15);padding:6px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;transition:all 0.2s" onmouseover="this.style.background='rgba(255,43,43,0.2)'" onmouseout="this.style.background='rgba(255,43,43,0.1)'" onclick="enhanceTitle(this)">
+              <i class="fi fi-rr-magic-wand"></i> Gerar Título com IA
+            </button>
+          </div>
         </div>
 
         <div class="form-field"><label class="form-label">Contexto / Tipo de Matéria</label>
@@ -222,15 +228,21 @@ function renderCompose() {
           <input class="form-input" id="compTypeCustom" type="text" placeholder="Descreva o tipo de matéria..." style="display:none;margin-top:8px">
         </div>
 
-        <div class="form-field"><label class="form-label" style="display:flex;justify-content:space-between;align-items:center">
-            <span>Descrição / Briefing</span>
+        <div class="form-field">
+          <label class="form-label">Descrição / Briefing</label>
+          <textarea class="form-textarea" id="compBrief" placeholder="Descreva os detalhes do conteúdo. Inclua resultados, sentimentos, dados técnicos e destaques. Quanto mais rico o briefing, melhor a matéria profissional produzida pela redação." style="min-height:160px;margin-bottom:8px"></textarea>
+          
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
+            <div class="form-hint" style="margin:0;flex:1">Mínimo 50 caracteres · A redação transformará seu briefing em matéria jornalística profissional</div>
             <div style="display:flex;gap:8px">
-              <button type="button" class="btn-ghost btn-sm" style="color:var(--dim);border:1px solid var(--brd);padding:4px 8px;font-size:10px" onclick="suggestBriefingQuestions()"><i class="fi fi-rr-interrogation"></i> Me ajude com perguntas</button>
-              <button type="button" class="btn-ghost btn-sm" style="color:var(--acc);padding:4px 8px;font-size:10px" onclick="enhanceBriefing()"><i class="fi fi-rr-magic-wand"></i> ✨ Expandir com IA</button>
+              <button type="button" style="display:flex;align-items:center;gap:6px;background:var(--bg2);color:var(--fg);border:1px solid var(--brd);padding:6px 12px;border-radius:6px;font-size:11px;font-weight:500;cursor:pointer;transition:all 0.2s" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background='var(--bg2)'" onclick="suggestBriefingQuestions(this)">
+                <i class="fi fi-rr-interrogation"></i> Me ajude com perguntas
+              </button>
+              <button type="button" style="display:flex;align-items:center;gap:6px;background:rgba(255,43,43,0.1);color:var(--acc);border:1px solid rgba(255,43,43,0.15);padding:6px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;transition:all 0.2s" onmouseover="this.style.background='rgba(255,43,43,0.2)'" onmouseout="this.style.background='rgba(255,43,43,0.1)'" onclick="enhanceBriefing(this)">
+                <i class="fi fi-rr-magic-wand"></i> Expandir Briefing com IA
+              </button>
             </div>
-          </label>
-          <textarea class="form-textarea" id="compBrief" placeholder="Descreva os detalhes do conteúdo. Inclua resultados, sentimentos, dados técnicos e destaques. Quanto mais rico o briefing, melhor a matéria profissional produzida pela redação." style="min-height:160px"></textarea>
-          <div class="form-hint">Mínimo 50 caracteres · A redação transformará seu briefing em matéria jornalística profissional</div>
+          </div>
         </div>
 
         <div class="form-field"><label class="form-label" style="display:flex;justify-content:space-between"><span>Imagens da Matéria</span><span style="font-size:10px;color:var(--dim);text-transform:none">Até 5 imagens · Opcional</span></label>
@@ -446,7 +458,7 @@ function saveDraft() {
   renderArticles();
 }
 
-async function enhanceBriefing() {
+async function enhanceBriefing(btn) {
   const briefInput = document.getElementById('compBrief');
   const text = briefInput?.value;
   if (!text || text.trim().length < 5) {
@@ -454,11 +466,20 @@ async function enhanceBriefing() {
     return;
   }
   showToast('🤖 IA expandindo seu briefing...', 'info');
+  
+  const originalText = btn?.innerHTML;
+  if(btn) { btn.innerHTML = '⏳ Carregando...'; btn.style.opacity = '0.6'; btn.style.pointerEvents = 'none'; }
+  
   try {
+    const contextStr = `Nome: ${USER.pilot_name || USER.name}; Categoria: ${USER.category || ''}; Patrocinadores: ${USER.sponsors || ''}`;
     const res = await fetch('/api/ai-enhance', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ textoOriginal: text, tipoCampo: 'briefing' })
+      body: JSON.stringify({ 
+        textoOriginal: text, 
+        tipoCampo: 'briefing',
+        contexto: contextStr
+      })
     });
     const data = await res.json();
     if (data.enhancedText) {
@@ -470,17 +491,22 @@ async function enhanceBriefing() {
   } catch (e) {
     console.error(e);
     showToast('Erro ao contatar IA.', 'err');
+  } finally {
+    if(btn) { btn.innerHTML = originalText; btn.style.opacity = '1'; btn.style.pointerEvents = 'all'; }
   }
 }
 
-async function suggestBriefingQuestions() {
+async function suggestBriefingQuestions(btn) {
   const briefInput = document.getElementById('compBrief');
-  const text = briefInput?.value;
-  if (!text || text.trim().length < 3) {
-    showToast('Digite pelo menos o local ou evento para a IA gerar perguntas específicas.', 'err');
-    return;
-  }
+  const typeSelect = document.getElementById('compType');
+  const contextSubject = (typeSelect?.value === '__custom' ? document.getElementById('compTypeCustom')?.value : typeSelect?.value) || 'Evento não especificado';
+  const text = briefInput?.value || `Conte sua história sobre a pauta: ${contextSubject}`;
+  
   showToast('💡 Mapeando perguntas úteis...', 'info');
+  
+  const originalText = btn?.innerHTML;
+  if(btn) { btn.innerHTML = '⏳ Carregando...'; btn.style.opacity = '0.6'; btn.style.pointerEvents = 'none'; }
+  
   try {
     const contextStr = `Nome: ${USER.pilot_name || USER.name}; Categoria: ${USER.category || ''}`;
     const res = await fetch('/api/ai-enhance', {
@@ -502,6 +528,48 @@ async function suggestBriefingQuestions() {
   } catch (e) {
     console.error(e);
     showToast('Erro ao contatar IA.', 'err');
+  } finally {
+    if(btn) { btn.innerHTML = originalText; btn.style.opacity = '1'; btn.style.pointerEvents = 'all'; }
+  }
+}
+
+async function enhanceTitle(btn) {
+  const titleInput = document.getElementById('compTitle');
+  const briefInput = document.getElementById('compBrief');
+  const text = titleInput?.value || briefInput?.value;
+  
+  if (!text || text.trim().length < 5) {
+    showToast('Digite um rascunho de título ou preencha o briefing primeiro.', 'err');
+    return;
+  }
+  showToast('🤖 Criando manchete profissional...', 'info');
+  
+  const originalText = btn?.innerHTML;
+  if(btn) { btn.innerHTML = '⏳ Carregando...'; btn.style.opacity = '0.6'; btn.style.pointerEvents = 'none'; }
+  
+  try {
+    const contextStr = `Nome: ${USER.pilot_name || USER.name}; Categoria: ${USER.category || ''}`;
+    const res = await fetch('/api/ai-enhance', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        textoOriginal: text, 
+        tipoCampo: 'title',
+        contexto: contextStr
+      })
+    });
+    const data = await res.json();
+    if (data.enhancedText) {
+      titleInput.value = data.enhancedText;
+      showToast('✓ Manchete perfeita gerada!', 'ok');
+    } else {
+      showToast('Ops! Tente novamente.', 'err');
+    }
+  } catch (e) {
+    console.error(e);
+    showToast('Erro ao contatar IA.', 'err');
+  } finally {
+    if(btn) { btn.innerHTML = originalText; btn.style.opacity = '1'; btn.style.pointerEvents = 'all'; }
   }
 }
 
@@ -612,9 +680,7 @@ function approvePublish(id) {
   renderOverview(); renderArticles();
 }
 function previewArticle(id) {
-  const a = Driver.getArticleById(id);
-  if (!a) return;
-  showToast(a.title + ' — ' + Driver.getStatusLabel(a.status));
+  window.open(`materia.html?id=${id}`, '_blank');
 }
 
 // ============================

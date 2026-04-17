@@ -236,7 +236,7 @@ nav{position:sticky;top:0;z-index:500;background:rgba(3,3,10,.92);backdrop-filte
 .ncard-title{font-family:var(--fu);font-size:15px;font-weight:700;text-transform:uppercase;line-height:1.18;margin-bottom:7px;transition:color .2s}
 .ncard.feat .ncard-title{font-size:19px}
 .ncard:hover .ncard-title{color:var(--acc)}
-.ncard-excerpt{font-size:12px;font-weight:300;color:var(--dim);line-height:1.6;flex:1}
+.ncard-excerpt{font-size:12px;font-weight:300;color:var(--dim);line-height:1.6;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis}
 .ncard-footer{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:8px;border-top:1px solid var(--brd)}
 .ncard-meta{font-family:var(--fm);font-size:10px;color:var(--muted)}
 /* Botão salvar */

@@ -219,40 +219,7 @@ function subNext(step){
 
 /* ══ ARTICLE MODAL ══ */
 function openArticle(id){
-  const a=ARTICLES.find(x=>x.id===id);if(!a)return;
-  window.currentArt = a;
-  document.getElementById('artBreadcrumb').textContent='DRIVER NEWS · '+a.cat.toUpperCase();
-  document.getElementById('artImg').src=a.img;
-  const b=document.getElementById('artBadge');b.className='badge '+a.badge;b.textContent=a.badge.replace('b-','').toUpperCase();
-  document.getElementById('artKicker').textContent=a.kicker;
-  document.getElementById('artTitle').textContent=a.title;
-  document.getElementById('artAv').textContent=a.av;
-  document.getElementById('artAuthor').textContent=a.author;
-  document.getElementById('artDate').textContent=a.date;
-  document.getElementById('artText').innerHTML=a.body;
-  
-  const aiBox = document.getElementById('artAiBox');
-  const funnelBox = document.getElementById('artAiFunnel');
-  if(a.aiAnalysis) {
-    aiBox.classList.remove('hide');
-    document.getElementById('artAiContent').innerHTML=a.aiAnalysis;
-    
-    funnelBox.classList.remove('hide');
-    document.getElementById('artAiFunnelMsg').innerHTML="<b>" + a.author + " / Driver AI Engine</b><br>Deseja converter a sua própria visibilidade esportiva em caixa real? Atraia B2B e patrocínios de peso rodando nossa ferramenta em suas mídias.";
-    document.getElementById('artAiSourceLink').href = a.originalLink || '#';
-  } else {
-    aiBox.classList.add('hide');
-    funnelBox.classList.add('hide');
-  }
-  const pn=document.getElementById('artPagoNotice');
-  const sn=document.getElementById('artSourceNote');
-  if(a.pago){
-    pn.classList.remove('hide');
-    document.getElementById('artPagoPartner').textContent=a.partner;
-    sn.classList.remove('hide');sn.textContent='CONTEÚDO PATROCINADO';
-  }else{pn.classList.add('hide');sn.classList.add('hide')}
-  openO('artOverlay');
-  document.getElementById('artOverlay').scrollTop=0;
+  window.location.href = 'materia.html?id=' + id;
 }
 
 /* ══ EXTERNAL LINK ══ */
@@ -872,7 +839,7 @@ async function loadLiveNews() {
             badge: 'b-' + slugCat,
             kicker: 'PILOTO VERIFICADO',
             title: a.title,
-            link: 'noticia.html?id=' + a.id,
+            link: 'materia.html?id=' + a.id,
             author: a.authorName || 'Portal',
             date: formatNewsDate(a.publishedAt || a.submittedAt || new Date()),
             img: a.img || 'https://images.unsplash.com/photo-1541344983572-c511a5fe03fd?auto=format&fit=crop&w=1200&q=80',

@@ -188,13 +188,16 @@ function renderPilotPage(p) {
       ${articles.length > 0 ? `
         <div class="card-grid" style="grid-template-columns:repeat(3,1fr)">
           ${articles.map(a => `
-            <div class="ncard" onclick="showToast('${a.title}')">
+            <div class="ncard" onclick="window.location='materia.html?id=${a.id}'" style="cursor:pointer">
               <div class="ncard-thumb">${a.img ? `<img src="${a.img}" alt="">` : '<div style="height:100%;background:var(--bg3)"></div>'}</div>
               <div class="ncard-body">
                 <span class="badge" style="background:var(--info);font-size:8px">Matéria</span>
                 <div class="ncard-title">${a.title}</div>
                 <div class="ncard-excerpt">${a.brief || ''}</div>
-                <div class="ncard-meta"><span>${Driver.formatDate(a.publishedAt)} · ${a.views.toLocaleString()} views</span></div>
+                <div class="ncard-footer">
+                  <div class="ncard-meta"><span>${Driver.formatDate(a.publishedAt)} · ${a.views.toLocaleString()} views</span></div>
+                  <span style="font-size:10px;font-family:var(--fu);font-weight:700;color:var(--acc);letter-spacing:1px;text-transform:uppercase">Ler Notícia <i class="fi fi-rr-arrow-right" style="vertical-align:middle"></i></span>
+                </div>
               </div>
             </div>
           `).join('')}
