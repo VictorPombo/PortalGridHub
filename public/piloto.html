@@ -163,7 +163,10 @@ function renderPilotPage(p) {
     <!-- Bio -->
     <div class="pilot-section">
       <div class="sec-head"><span class="sec-title">Biografia</span></div>
-      <div class="pilot-bio"><p>${p.bio || 'Perfil em construção — o piloto ainda não adicionou sua biografia.'}</p></div>
+      <div class="pilot-bio">
+        <p>${p.bio || 'Perfil em construção — o piloto ainda não adicionou sua biografia.'}</p>
+        ${p.instagram ? `<a href="https://instagram.com/${p.instagram.replace('@','')}" target="_blank" class="btn-primary skew glow-acc" style="display:inline-block;margin-top:24px;font-size:12px;padding:12px 24px"><i data-lucide="instagram" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom;margin-right:6px"></i> Seguir ${p.name} no Instagram</a>` : ''}
+      </div>
     </div>
 
     <!-- Gallery -->
