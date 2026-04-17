@@ -1191,7 +1191,16 @@ footer{background:var(--bg1);border-top:1px solid var(--brd);padding:52px 28px 2
   .funnel-btns { flex-direction: column !important; align-items: stretch !important; width: 100%; }
   
   /* Generic element overflow prevention */
-  html, body { overflow-x: hidden !important; width: 100% !important; max-width: 100% !important; position: relative; }
-  .view, main, #app { overflow-x: hidden !important; max-width: 100% !important; }
+  html, body { 
+    overflow-x: hidden !important; 
+    width: 100% !important; 
+    max-width: 100% !important; 
+    position: relative !important; 
+    overscroll-behavior-x: none !important; 
+  }
+  .view, main, #app { 
+    overflow-x: hidden !important; 
+    max-width: 100% !important; 
+  }
 }
 
