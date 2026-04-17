@@ -81,7 +81,7 @@ if (!USER) {
 } else if ((USER.status === 'pending_payment' || !USER.status) && !location.hostname.includes('localhost')) {
   let payLink = 'index.html?view=plans';
   if (USER.plan === 'starter') payLink = 'https://www.asaas.com/c/pcd93o8dzjozlmje';
-  else if (USER.plan === 'pro') payLink = 'https://www.asaas.com/c/vz16usxyvho09ell';
+  else if (USER.plan === 'pro') payLink = 'https://www.asaas.com/c/4k06baj1ohs71v30';
   else if (USER.plan === 'equipe' || USER.plan === 'categoria') payLink = 'https://wa.me/5511976377682?text=Quero finalizar minha assinatura para ativar o painel';
 
   document.querySelector('.dash-sidebar').style.opacity = '0.3';

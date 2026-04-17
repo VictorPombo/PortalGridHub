@@ -124,6 +124,8 @@ const Driver = (() => {
           publishedAt: a.published_at,
           submittedAt: a.submitted_at
         }));
+        save(KEYS.users, __dbUsers);
+        save(KEYS.articles, __dbArticles);
         console.log("[Driver] Supabase Boot Completo:", __dbArticles.length, "Notícias locais carregadas.");
       }
     } catch (err) {
