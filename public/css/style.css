@@ -642,7 +642,7 @@ footer{background:var(--bg1);border-top:1px solid var(--brd);padding:52px 28px 2
 .f-inner{max-width:1680px;margin:0 auto}
 .f-grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:44px;margin-bottom:44px}
 .f-logo{display:flex;align-items:center;margin-bottom:16px}
-.f-logo img{height:40px;width:auto}
+.f-logo img{height:48px;width:auto}
 .f-dot{display:none}
 .f-desc{font-size:12px;font-weight:300;color:var(--muted);line-height:1.7;max-width:260px;margin-bottom:18px}
 .f-social{display:flex;gap:6px}

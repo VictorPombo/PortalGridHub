@@ -791,5 +791,101 @@ details[open] summary:after { content: '-'; }
   .lp-pain-box p {
     font-size: 18px;
   }
+
+  /* ══ MOBILE PLAN CARDS — Premium Overhaul ══ */
+  .plan-card {
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: linear-gradient(180deg, rgba(20,20,30,0.95) 0%, rgba(10,10,18,1) 100%);
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .plan-pro {
+    border-color: rgba(232,0,45,0.5);
+    box-shadow: 0 0 40px rgba(232,0,45,0.12), inset 0 1px 0 rgba(232,0,45,0.2);
+    transform: none;
+  }
+  .plan-head {
+    padding: 32px 24px 28px;
+    border-radius: 20px 20px 0 0;
+  }
+  .plan-pro .plan-head {
+    border-radius: 18px 18px 0 0;
+    background: linear-gradient(180deg, rgba(232,0,45,0.12) 0%, transparent 100%);
+  }
+  .p-name {
+    font-size: 24px;
+    letter-spacing: 0;
+  }
+  .p-desc {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+  .p-val {
+    font-size: 52px;
+  }
+  .plan-body {
+    padding: 24px 20px 28px;
+  }
+  .p-features li {
+    padding: 12px 0;
+    font-size: 14px;
+    gap: 10px;
+  }
+  .p-features li .check {
+    font-size: 16px;
+    min-width: 20px;
+    text-align: center;
+  }
+  .plan-body .btn-lp,
+  .plan-body .btn-red,
+  .plan-body .btn-outline {
+    width: 100%;
+    max-width: 100%;
+    padding: 18px 24px;
+    font-size: 15px;
+    border-radius: 14px;
+    letter-spacing: 1.5px;
+  }
+  .plan-body .btn-red {
+    box-shadow: 0 6px 24px rgba(232,0,45,0.35);
+  }
+  .p-badge {
+    font-size: 10px;
+    padding: 5px 14px;
+    top: -12px;
+  }
+  .plan-avulsa {
+    border-radius: 14px;
+    padding: 20px 16px;
+    font-size: 13px;
+  }
+  .plan-equipes {
+    border-radius: 14px;
+    padding: 28px 20px;
+  }
+  .plan-equipes h3 {
+    font-size: 22px;
+  }
+  .plan-equipes p {
+    font-size: 14px;
+  }
+  .garantia {
+    border-radius: 14px;
+    padding: 20px 16px;
+    font-size: 14px;
+  }
+  .p-note {
+    font-size: 11px;
+    margin-top: 12px;
+  }
+
+  /* ══ MOBILE LOGO — Bigger ══ */
+  .logo img {
+    height: 44px !important;
+  }
+  .f-logo img {
+    height: 38px !important;
+  }
 }
 

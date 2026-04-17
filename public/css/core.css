@@ -252,7 +252,7 @@ footer{background:var(--bg1);border-top:1px solid var(--brd);padding:56px 32px 2
 .f-inner{max-width:var(--max-w);margin:0 auto}
 .f-grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:48px;margin-bottom:48px}
 .f-logo{margin-bottom:20px;display:flex;align-items:center}
-.f-logo img{height:40px;width:auto}
+.f-logo img{height:48px;width:auto}
 .f-logo .dot{display:none}
 .f-desc{font-size:13px;font-weight:300;color:var(--muted);line-height:1.72;max-width:268px;margin-bottom:20px}
 .f-social{display:flex;gap:7px}
