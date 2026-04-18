@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabaseAdmin as supabase } from '../../../../lib/supabase';
+import { supabaseAdmin as supabase } from '../../../lib/supabase';
 import fs from 'fs';
 import path from 'path';
 
@@ -17,7 +17,10 @@ export async function GET(request: Request, { params }: { params: { id: string }
     if (id) {
       const { data: article } = await supabase
         .from('articles')
-        .select('title, brief, img')
+        .select(`
+          title, brief, img, published_at, submitted_at,
+          users:author_id ( name, slug )
+        `)
         .eq('id', id)
         .single();
 
@@ -28,8 +31,39 @@ export async function GET(request: Request, { params }: { params: { id: string }
         const canonicalUrl = `https://www.drivernews.com.br/materia/${id}`;
         const siteName = 'Driver News';
 
+        const authorObj: any = Array.isArray(article.users) ? article.users[0] : article.users;
+        const authorName = authorObj?.name || 'Driver News Redação';
+        const authorSlug = authorObj?.slug || authorObj?.id || 'equipe';
+        const datePub = article.published_at || article.submitted_at || new Date().toISOString();
+
+        const jsonLd = {
+          "@context": "https://schema.org",
+          "@type": "NewsArticle",
+          "headline": title,
+          "image": [
+            imgUrl
+          ],
+          "datePublished": datePub,
+          "author": {
+            "@type": "Person",
+            "name": authorName,
+            "url": `https://www.drivernews.com.br/usuario/${authorSlug}`
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "Driver News",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://www.drivernews.com.br/images/logo.png"
+            }
+          }
+        };
+
         const metaTags = `
 <!-- Dynamic OG Tags Injected Server-Side -->
+<script type="application/ld+json">
+${JSON.stringify(jsonLd)}
+</script>
 <meta property="og:title" content="${title}">
 <meta property="og:description" content="${desc}">
 <meta property="og:image" content="${imgUrl}">

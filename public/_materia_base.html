@@ -209,7 +209,7 @@
               <h1 class="m-title">${a.title}</h1>
               
               <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:32px;">
-                <div class="m-author" onclick="window.location='${author ? 'piloto.html?id='+author.id : '#'}'" style="margin-bottom:0">
+                <div class="m-author" onclick="window.location='${author ? '/usuario/'+(author.slug || author.id) : '#'}'" style="margin-bottom:0">
                   <img src="${authorImg}" class="m-author-img" alt="">
                   <div class="m-author-info">
                     <span class="m-author-name">${authorName} ${author && author.plan && author.plan !== 'free' ? '<i data-lucide="badge-check" style="width:14px;height:14px;color:var(--acc);display:inline-block;vertical-align:middle;margin-top:-2px"></i>' : ''}</span>

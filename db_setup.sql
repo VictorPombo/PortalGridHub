@@ -31,12 +31,19 @@ CREATE TABLE IF NOT EXISTS public.users (
   referred_by text,
   password_hash text,
   created_at timestamp with time zone DEFAULT now(),
-  is_active boolean DEFAULT false
+  updated_at timestamp with time zone DEFAULT now(),
+  is_active boolean DEFAULT false,
+  slug text UNIQUE,
+  nome_normalizado text,
+  estado text
 );
 
 -- Adiciona a coluna caso a tabela já exista de comandos anteriores
 ALTER TABLE public.users ADD COLUMN IF NOT EXISTS is_active boolean DEFAULT false;
-
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS updated_at timestamp with time zone DEFAULT now();
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS slug text UNIQUE;
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS nome_normalizado text;
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS estado text;
 ALTER TABLE public.users ADD COLUMN IF NOT EXISTS referred_by text;
 -- 2. Criação da Tabela ARTICLES (Feed do SaaS e Admin)
 CREATE TABLE IF NOT EXISTS public.articles (
@@ -49,13 +56,18 @@ CREATE TABLE IF NOT EXISTS public.articles (
   status text DEFAULT 'review',
   published_at timestamp with time zone,
   submitted_at timestamp with time zone DEFAULT now(),
+  updated_at timestamp with time zone DEFAULT now(),
   views integer DEFAULT 0,
-  category text
+  category text,
+  slug text UNIQUE
 );
 
 -- Habilitar RLS nas tabelas mas deixando uma regra inicial "pública"-- Ativar segurança
 ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.articles ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE public.articles ADD COLUMN IF NOT EXISTS updated_at timestamp with time zone DEFAULT now();
+ALTER TABLE public.articles ADD COLUMN IF NOT EXISTS slug text UNIQUE;
 
 -- Políticas super permissivas (temporárias para desenvolvimento)
 DROP POLICY IF EXISTS "Acesso público temporário User Leitura" ON public.users;

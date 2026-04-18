@@ -103,7 +103,7 @@ function renderPilotsList() {
       <div class="pilots-grid">
         ${pilots.map(p => {
           const articles = Driver.getPublishedByAuthor(p.id);
-          return `<div class="pilot-card ${articles.length > 0 ? 'card-featured' : ''}" onclick="window.location='piloto.html?id=${p.id}'" style="cursor:pointer">
+          return `<div class="pilot-card ${articles.length > 0 ? 'card-featured' : ''}" onclick="window.location='/usuario/${p.slug || p.id}'" style="cursor:pointer">
             <div class="pilot-card-img">
               <img src="${p.avatar_url || p.cover_url || 'https://images.unsplash.com/photo-1541344983572-c511a5fe03fd?auto=format&fit=crop&w=600&q=80'}" alt="${p.name}" style="object-fit:cover">
               <span class="pilot-card-num">#${p.number || '00'}</span>

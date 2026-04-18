@@ -548,7 +548,7 @@ function renderPilotsHighlight(){
   }
   g.innerHTML=pilots.map(p=>{
     const articleCount = typeof Driver !== 'undefined' ? Driver.getPublishedByAuthor(p.id).length : 0;
-    return `<div class="pcard" onclick="window.location.href='piloto.html?id=${p.id}'">
+    return `<div class="pcard" onclick="window.location.href='/usuario/${p.slug || p.id}'">
     <div class="pcard-cover"><img src="${p.img}" alt="" loading="lazy" onerror="this.style.display='none'"></div>
     <div class="pcard-body">
       <div style="position:absolute;top:10px;right:10px"><span class="badge b-piloto" style="font-size:8px">✓ Verificado</span></div>
@@ -570,7 +570,7 @@ function renderPilotsList(){
   if (countEl) countEl.textContent = pilots.length + ' pilotos ativos';
   g.innerHTML=pilots.map(p=>{
     const articleCount = typeof Driver !== 'undefined' ? Driver.getPublishedByAuthor(p.id).length : 0;
-    return `<div class="pcard" onclick="window.location.href='piloto.html?id=${p.id}'">
+    return `<div class="pcard" onclick="window.location.href='/usuario/${p.slug || p.id}'">
     <div class="pcard-cover"><img src="${p.img}" alt="" loading="lazy" onerror="this.style.display='none'"></div>
     <div class="pcard-body">
       <div style="position:absolute;top:10px;right:10px"><span class="badge b-piloto" style="font-size:8px">✓ Verificado</span></div>
@@ -581,7 +581,7 @@ function renderPilotsList(){
         <div class="pstat"><span class="pstat-n">${p.podios}</span><span class="pstat-l">Pódios</span></div>
         <div class="pstat"><span class="pstat-n">${articleCount}</span><span class="pstat-l">Matérias</span></div>
       </div>
-      <button class="btn btn-acc btn-full btn-sm" style="margin-top:12px" onclick="event.stopPropagation();window.location.href='piloto.html?id=${p.id}'">Ver perfil →</button>
+      <button class="btn btn-acc btn-full btn-sm" style="margin-top:12px" onclick="event.stopPropagation();window.location.href='/usuario/${p.slug || p.id}'">Ver perfil →</button>
     </div>
   </div>`;
   }).join('');

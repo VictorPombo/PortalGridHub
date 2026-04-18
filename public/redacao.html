@@ -262,27 +262,46 @@
       
       try {
         const prevCatEl = document.getElementById('prev-cat');
-        const d_ct = `Piloto ${currentUser.name || ''} - Categoria: ${prevCatEl ? prevCatEl.textContent : 'Automobilismo'}`;
+        const customSlug = currentUser.slug || currentUser.id;
+        const d_ct = `Piloto ${currentUser.name || ''} - [SLUG_DO_PILOTO]=${customSlug} - Categoria: ${prevCatEl ? prevCatEl.textContent : 'Automobilismo'}`;
         
-        const res = await fetch('/api/ai-enhance', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            tipoCampo: 'article',
-            textoOriginal: DRAFT.contexto || DRAFT.titulo,
-            contexto: d_ct
-          }),
-          signal: controller.signal
-        });
+        // Disparar geração do Artigo e Título simultaneamente!
+        const [resContent, resTitle] = await Promise.all([
+           fetch('/api/ai-enhance', {
+             method: 'POST',
+             headers: { 'Content-Type': 'application/json' },
+             body: JSON.stringify({
+               tipoCampo: 'article',
+               textoOriginal: DRAFT.contexto || DRAFT.titulo,
+               contexto: d_ct
+             }),
+             signal: controller.signal
+           }),
+           fetch('/api/ai-enhance', {
+             method: 'POST',
+             headers: { 'Content-Type': 'application/json' },
+             body: JSON.stringify({
+               tipoCampo: 'title',
+               textoOriginal: DRAFT.titulo,
+               contexto: d_ct
+             }),
+             signal: controller.signal
+           })
+        ]);
         
         clearTimeout(timeoutId);
-        const json = await res.json();
-        if(!json.enhancedText) throw new Error(json.error || 'Erro na geração da matéria');
+        
+        const jsonContent = await resContent.json();
+        const jsonTitle = await resTitle.json();
+        
+        if(!jsonContent.enhancedText) throw new Error(jsonContent.error || 'Erro na geração da matéria');
+        
+        const finalTitle = jsonTitle.enhancedText || DRAFT.titulo;
         
         STATE.materia_id = 'a' + Date.now() + Math.floor(Math.random()*1000);
         STATE.data = {
-          final_titulo: DRAFT.titulo,
-          final_corpo: json.enhancedText
+          final_titulo: finalTitle,
+          final_corpo: jsonContent.enhancedText
         };
         
         renderPreview();
