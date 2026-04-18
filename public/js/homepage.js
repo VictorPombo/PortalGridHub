@@ -241,25 +241,28 @@ async function loadLiveNews() {
       // Define a badge com base nas categorias
       let cat = 'f1';
       let badge = 'f1';
-      const cLower = (n.categories || []).join(' ').toLowerCase();
-      if (cLower.includes('motogp')) { cat = 'motogp'; badge = 'motogp'; }
-      else if (cLower.includes('wec') || cLower.includes('endurance') || cLower.includes('lemans')) { cat = 'wec'; badge = 'wec'; }
-      else if (cLower.includes('nascar')) { cat = 'nascar'; badge = 'nascar'; }
-      else if (cLower.includes('sim')) { cat = 'sim'; badge = 'sim'; }
+      const cStr = (n.category || '').toLowerCase();
+      if (cStr.includes('motogp')) { cat = 'motogp'; badge = 'motogp'; }
+      else if (cStr.includes('wec') || cStr.includes('endurance') || cStr.includes('lemans')) { cat = 'wec'; badge = 'wec'; }
+      else if (cStr.includes('nascar')) { cat = 'nascar'; badge = 'nascar'; }
+      else if (cStr.includes('wrc') || cStr.includes('rally')) { cat = 'wrc'; badge = 'wrc'; }
+      else if (cStr.includes('stock')) { cat = 'stockcar'; badge = 'stockcar'; }
+      else if (cStr.includes('indy')) { cat = 'indycar'; badge = 'indycar'; }
+      else if (cStr.includes('sim')) { cat = 'sim'; badge = 'sim'; }
 
       return {
-        id: 'rss' + i,
+        id: n.id || ('rss' + i),
         cat: cat,
         badge: badge,
         kicker: 'LATEST NEWS',
         title: n.title,
-        link: n.link, // Usado para redirecionar
-        author: n.author || 'Mídia',
+        link: n.url, // Usado para redirecionar
+        author: n.source || 'Mídia',
         av: '<i class="fi fi-rr-newspaper"></i>',
-        date: new Date(n.pubDate).toLocaleDateString('pt-BR'),
-        rawDate: n.pubDate,
-        img: n.thumbnail,
-        body: '',
+        date: new Date(n.published_at).toLocaleDateString('pt-BR'),
+        rawDate: n.published_at,
+        img: n.image_url,
+        body: n.abstract || '',
         isReal: true
       };
     });
