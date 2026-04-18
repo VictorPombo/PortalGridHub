@@ -204,7 +204,12 @@ function startVideo() {
 /* ====== LOAD NEWS (HYBRID RSS + SAAS) ====== */
 async function loadLiveNews() {
   // 1. Fetch SaaS Published Articles (Admin Interno)
-  const saasArticles = Driver.getArticlesByStatus('published').map(a => {
+  let saasRaw = Driver.getArticlesByStatus('published').filter(a => !a.deleted);
+  
+  // Odenar da mais nova para a mais velha rigidamente
+  saasRaw.sort((a, b) => new Date(b.publishedAt || b.submittedAt || 0) - new Date(a.publishedAt || a.submittedAt || 0));
+
+  const saasArticles = saasRaw.map(a => {
     const u = Driver.getUserById(a.authorId);
     return {
       id: a.id,
@@ -214,7 +219,8 @@ async function loadLiveNews() {
       title: a.title,
       author: u ? u.name : 'Unknown',
       av: u ? u.avatar : 'PL',
-      date: Driver.formatDate(a.publishedAt),
+      date: Driver.formatDate(a.publishedAt || a.submittedAt || new Date().toISOString()),
+      rawDate: a.publishedAt || a.submittedAt || new Date().toISOString(),
       img: a.img || 'https://loremflickr.com/760/320/racing?lock='+a.id,
       body: a.body,
       isReal: false
@@ -231,7 +237,7 @@ async function loadLiveNews() {
     const pipelineFeed = [...(data.brasil || []), ...(data.global || [])];
     
     // Formatar pro modelo do layout
-    const rssArticles = pipelineFeed.map((n, i) => {
+    let rssArticles = pipelineFeed.map((n, i) => {
       // Define a badge com base nas categorias
       let cat = 'f1';
       let badge = 'f1';
@@ -251,26 +257,76 @@ async function loadLiveNews() {
         author: n.author || 'Mídia',
         av: '<i class="fi fi-rr-newspaper"></i>',
         date: new Date(n.pubDate).toLocaleDateString('pt-BR'),
+        rawDate: n.pubDate,
         img: n.thumbnail,
         body: '',
         isReal: true
       };
     });
+
+    // Odenar RSS feed das mais novas para as mais velhas
+    rssArticles.sort((a,b) => new Date(b.rawDate) - new Date(a.rawDate));
     
-    // Mix them: Dar prioridade total absoluta às Notícias Reais (2 Reais para 1 SaaS)
-    const mixed = [];
+    // ORQUESTRADOR DOS ESPAÇOS (MIXER INTELIGENTE)
+    let finalArray = [];
+    
+    // Espaço 1: O Trono do Hero (Regra de 48 horas)
+    const newestSaas = saasArticles.length > 0 ? saasArticles[0] : null;
+    let mainHighlight = null;
+    
+    if (newestSaas) {
+      const msDiff = Date.now() - new Date(newestSaas.rawDate).getTime();
+      const hoursDiff = msDiff / (1000 * 60 * 60);
+      
+      // Se tiver menos de 48h, a matéria do piloto ganha. Removemos do banco de reserva saas.
+      if (hoursDiff <= 48) {
+        mainHighlight = newestSaas;
+        saasArticles.shift();
+      }
+    }
+    
+    // Se o piloto perdeu/esfriou, colocamos o RSS novinho. Removemos do banco de reserva RSS.
+    if (!mainHighlight) {
+      mainHighlight = rssArticles.shift();
+    }
+    
+    // Espaço 2: Notícia da F1 estritamente
+    let articleSlot2 = rssArticles.find(a => a.cat === 'f1');
+    if (articleSlot2) {
+      rssArticles = rssArticles.filter(a => a.id !== articleSlot2.id); // Tira da reserva
+    } else {
+      articleSlot2 = rssArticles.shift(); // Fallback genérico se F1 não existir
+    }
+
+    // Espaço 3: Notícia da MotoGP estritamente
+    let articleSlot3 = rssArticles.find(a => a.cat === 'motogp');
+    if (articleSlot3) {
+      rssArticles = rssArticles.filter(a => a.id !== articleSlot3.id); // Tira da reserva
+    } else {
+      articleSlot3 = rssArticles.shift(); // Fallback genérico
+    }
+
+    // Injeta as 3 recheadas para o Hero
+    finalArray.push(mainHighlight);
+    finalArray.push(articleSlot2 || saasArticles.shift());
+    finalArray.push(articleSlot3 || saasArticles.shift());
+    
+    // Espaços restantes (Misturando 2 RSS globais para cada 1 Matéria velha de SaaS para encher o site)
     let rIdx = 0, sIdx = 0;
     while (rIdx < rssArticles.length || sIdx < saasArticles.length) {
-      if (rIdx < rssArticles.length) mixed.push(rssArticles[rIdx++]);
-      if (rIdx < rssArticles.length) mixed.push(rssArticles[rIdx++]);
-      if (rIdx < rssArticles.length) mixed.push(rssArticles[rIdx++]); // 3 Reais
-      if (sIdx < saasArticles.length) mixed.push(saasArticles[sIdx++]); // 1 SaaS
+      if (rIdx < rssArticles.length) finalArray.push(rssArticles[rIdx++]);
+      if (rIdx < rssArticles.length) finalArray.push(rssArticles[rIdx++]);
+      if (sIdx < saasArticles.length) finalArray.push(saasArticles[sIdx++]);
     }
     
-    if (mixed.length < 4) {
+    // Limpar quaisquer undefined q escapem se as listas acabarem
+    finalArray = finalArray.filter(x => x);
+    
+    if (finalArray.length < 4) {
       throw new Error('API respondeu mas com noticias insuficientes. Forçando fallback mock.');
     }
-    ARTICLES = mixed;
+    
+    ARTICLES = finalArray;
     
     // Agora renderizar dinamicamente na Página inteira!
     renderHeroGrid();
