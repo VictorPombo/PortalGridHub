@@ -6,6 +6,10 @@ const nextConfig = {
         source: '/',
         destination: '/index.html',
       },
+      {
+        source: '/materia.html',
+        destination: '/api/og-materia',
+      },
     ]
   },
 }
