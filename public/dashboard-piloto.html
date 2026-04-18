@@ -761,7 +761,7 @@ function shareArticle(id, title) {
   const url = `https://www.drivernews.com.br/materia.html?id=${id}`;
   const text = `Confira minha nova matéria: ${title}`;
   
-  const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text + '  \\n\\n' + url)}`;
+  const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text + '\n\n' + url)}`;
   window.open(waUrl, '_blank');
 }
 function deleteMyArticle(id) {
