@@ -221,7 +221,7 @@ async function loadLiveNews() {
       av: u ? u.avatar : 'PL',
       date: Driver.formatDate(a.publishedAt || a.submittedAt || new Date().toISOString()),
       rawDate: a.publishedAt || a.submittedAt || new Date().toISOString(),
-      img: (a.img && a.img.trim() !== '') ? a.img : 'https://images.unsplash.com/photo-1541344983572-c511a5fe03fd?q=80&w=1200&auto=format&fit=crop',
+      img: a.img || 'https://loremflickr.com/760/320/racing?lock='+a.id,
       body: a.body,
       isReal: false
     };
@@ -234,7 +234,7 @@ async function loadLiveNews() {
     const { data } = await res.json();
     
     // Mesclar feed Brasil e Global
-    const pipelineFeed = [...(data.brasil || []), ...(data.global || [])];
+    const pipelineFeed = [...(data.br || []), ...(data.global || [])];
     
     // Formatar pro modelo do layout
     let rssArticles = pipelineFeed.map((n, i) => {
@@ -350,54 +350,24 @@ async function loadLiveNews() {
 
   } catch (err) {
     console.error("News Pipeline Falhou, caindo pro mock...", err);
-    // Cria array com a mesma estrutura de rssArticles vindo da API
-    const mockRss = [
-      { id:'m1', cat:'f1', badge:'f1', kicker:'LATEST NEWS', title:'Antonelli lidera F1 2026 com 72 pts — ANÁLISE DRIVER', author:'Driver', date: new Date().toLocaleDateString('pt-BR'), rawDate: new Date().toISOString(), img:'https://loremflickr.com/800/400/formula1?lock=31', body:'', isReal:true, link:'#' },
-      { id:'m2', cat:'motogp', badge:'motogp', kicker:'LATEST NEWS', title:'Bagnaia e Márquez disputam as décimas de segundo em final eletrizante', author:'Driver', date: new Date().toLocaleDateString('pt-BR'), rawDate: new Date().toISOString(), img:'https://loremflickr.com/400/280/motorcycle?lock=32', body:'', isReal:true, link:'#' },
-      { id:'m3', cat:'wec', badge:'wec', kicker:'LATEST NEWS', title:'Ferrari Hypercar mostra bom rendimento e desafia a Toyota em Le Mans', author:'Driver', date: new Date().toLocaleDateString('pt-BR'), rawDate: new Date().toISOString(), img:'https://loremflickr.com/400/280/hypercar?lock=33', body:'', isReal:true, link:'#' },
-      { id:'m4', cat:'nascar', badge:'nascar', kicker:'LATEST NEWS', title:'Drafting e Bump and Run: as estratégias decisivas de Talladega', author:'Driver', date: new Date().toLocaleDateString('pt-BR'), rawDate: new Date().toISOString(), img:'https://loremflickr.com/400/280/nascar?lock=34', body:'', isReal:true, link:'#' },
-      { id:'m5', cat:'f1', badge:'f1', kicker:'LATEST NEWS', title:'O mercado de pilotos agitado para a próxima janela de transferências', author:'Driver', date:'06/04/2026', rawDate:'2026-04-06T12:00:00Z', img:'https://loremflickr.com/400/280/racecar?lock=35', body:'', isReal:true, link:'#' },
-      { id:'m6', cat:'motogp', badge:'motogp', kicker:'LATEST NEWS', title:'Aerodinâmica excessiva: pilotos reclamam abertamente das turbulências', author:'Driver', date:'01/04/2026', rawDate:'2026-04-01T12:00:00Z', img:'https://loremflickr.com/400/280/bike?lock=40', body:'', isReal:true, link:'#' }
+    ARTICLES = saasArticles.length >= 15 ? saasArticles : [
+      ...saasArticles,
+      { id:'1', cat:'f1', badge:'f1', kicker:'LATEST NEWS', title:'Antonelli lidera F1 2026 com 72 pts — ANÁLISE DRIVER', link:'#', author:'Driver', av:'PL', date: new Date().toLocaleDateString('pt-BR'), img:'https://loremflickr.com/800/400/formula1?lock=31', body:'', isReal:true },
+      { id:'2', cat:'motogp', badge:'motogp', kicker:'LATEST NEWS', title:'Bagnaia e Márquez disputam as décimas de segundo em final eletrizante', link:'#', author:'Driver', av:'PL', date: new Date().toLocaleDateString('pt-BR'), img:'https://loremflickr.com/400/280/motorcycle?lock=32', body:'', isReal:true },
+      { id:'3', cat:'wec', badge:'wec', kicker:'LATEST NEWS', title:'Ferrari Hypercar mostra bom rendimento e desafia a Toyota em Le Mans', link:'#', author:'Driver', av:'PL', date: new Date().toLocaleDateString('pt-BR'), img:'https://loremflickr.com/400/280/hypercar?lock=33', body:'', isReal:true },
+      { id:'4', cat:'nascar', badge:'nascar', kicker:'LATEST NEWS', title:'Drafting e Bump and Run: as estratégias decisivas de Talladega', link:'#', author:'Driver', av:'PL', date: new Date().toLocaleDateString('pt-BR'), img:'https://loremflickr.com/400/280/nascar?lock=34', body:'', isReal:true },
+      { id:'5', cat:'f1', badge:'f1', kicker:'LATEST NEWS', title:'O mercado de pilotos agitado para a próxima janela de transferências', link:'#', author:'Driver', av:'PL', date:'06/04/2026', img:'https://loremflickr.com/400/280/racecar?lock=35', body:'', isReal:true },
+      { id:'6', cat:'sim', badge:'sim', kicker:'LATEST NEWS', title:'iRacing anuncia novo update revolucionário com clima totalmente dinâmico', link:'#', author:'Driver', av:'PL', date:'05/04/2026', img:'https://loremflickr.com/400/280/simracing?lock=36', body:'', isReal:true },
+      { id:'7', cat:'f1', badge:'f1', kicker:'LATEST NEWS', title:'Revolução aerodinâmica: o segredo da asa flexível na F1 2026', link:'#', author:'Driver', av:'PL', date:'04/04/2026', img:'https://loremflickr.com/400/280/f1?lock=37', body:'', isReal:true },
+      { id:'8', cat:'wrc', badge:'wrc', kicker:'LATEST NEWS', title:'Rally Rovanperä domina com folga as neves remotas do Norte', link:'#', author:'Driver', av:'PL', date:'03/04/2026', img:'https://loremflickr.com/400/280/rally?lock=38', body:'', isReal:true },
+      { id:'9', cat:'f1', badge:'f1', kicker:'LATEST NEWS', title:'Pit stops impressionantes na casa do 1.5s viram o novo padrão', link:'#', author:'Driver', av:'PL', date:'02/04/2026', img:'https://loremflickr.com/400/280/pitstop?lock=39', body:'', isReal:true },
+      { id:'10', cat:'motogp', badge:'motogp', kicker:'LATEST NEWS', title:'Aerodinâmica excessiva: pilotos reclamam abertamente das turbulências', link:'#', author:'Driver', av:'PL', date:'01/04/2026', img:'https://loremflickr.com/400/280/bike?lock=40', body:'', isReal:true },
+      { id:'11', cat:'wec', badge:'wec', kicker:'LATEST NEWS', title:'Porsche anuncia pacote de expansão ambicioso na classe LMDh', link:'#', author:'Driver', av:'PL', date:'31/03/2026', img:'https://loremflickr.com/400/280/lemans?lock=41', body:'', isReal:true },
+      { id:'12', cat:'sim', badge:'sim', kicker:'LATEST NEWS', title:'Assetto Corsa Evo vs iRacing: Qual a melhor engine baseada na atualidade?', link:'#', author:'Driver', av:'PL', date:'30/03/2026', img:'https://loremflickr.com/400/280/sim?lock=42', body:'', isReal:true },
+      { id:'13', cat:'f1', badge:'f1', kicker:'LATEST NEWS', title:'Rumores do Paddock: Audi prepara aquisição surpresa no grid?', link:'#', author:'Driver', av:'PL', date:'29/03/2026', img:'https://loremflickr.com/400/280/audi?lock=43', body:'', isReal:true },
+      { id:'14', cat:'motogp', badge:'motogp', kicker:'LATEST NEWS', title:'Recordes caindo: Bagnaia crava volta espetacular em testes na Ásia', link:'#', author:'Driver', av:'PL', date:'28/03/2026', img:'https://loremflickr.com/400/280/bagnaia?lock=44', body:'', isReal:true },
+      { id:'15', cat:'wec', badge:'wec', kicker:'LATEST NEWS', title:'A revolução verde: detalhes do novo bio-combustível no endurance', link:'#', author:'Driver', av:'PL', date:'27/03/2026', img:'https://loremflickr.com/400/280/fuel?lock=45', body:'', isReal:true }
     ];
-
-    // ORQUESTRADOR DOS ESPAÇOS IGUAL COMO NO FEED REAL
-    let finalArray = [];
-    const newestSaas = saasArticles.length > 0 ? saasArticles[0] : null;
-    let mainHighlight = null;
-    
-    if (newestSaas) {
-      const msDiff = Date.now() - new Date(newestSaas.rawDate).getTime();
-      const hoursDiff = msDiff / (1000 * 60 * 60);
-      if (hoursDiff <= 48) {
-        mainHighlight = newestSaas;
-        saasArticles.shift();
-      }
-    }
-    if (!mainHighlight) mainHighlight = mockRss.shift();
-    
-    let articleSlot2 = mockRss.find(a => a.cat === 'f1');
-    if (articleSlot2) mockRss.splice(mockRss.indexOf(articleSlot2), 1);
-    else articleSlot2 = mockRss.shift();
-
-    let articleSlot3 = mockRss.find(a => a.cat === 'motogp');
-    if (articleSlot3) mockRss.splice(mockRss.indexOf(articleSlot3), 1);
-    else articleSlot3 = mockRss.shift();
-
-    // Injeta
-    finalArray.push(mainHighlight);
-    finalArray.push(articleSlot2 || saasArticles.shift());
-    finalArray.push(articleSlot3 || saasArticles.shift());
-
-    // Merge
-    let rIdx = 0, sIdx = 0;
-    while (rIdx < mockRss.length || sIdx < saasArticles.length) {
-      if (rIdx < mockRss.length) finalArray.push(mockRss[rIdx++]);
-      if (rIdx < mockRss.length) finalArray.push(mockRss[rIdx++]);
-      if (sIdx < saasArticles.length) finalArray.push(saasArticles[sIdx++]);
-    }
-
-    ARTICLES = finalArray.filter(x => x);
-
     renderHeroGrid();
     renderNewsGrid();
     renderVidGrid();
@@ -414,9 +384,9 @@ function renderHeroGrid() {
   const aS1 = ARTICLES[1];
   const aS2 = ARTICLES[2];
 
-  const lM = aM.isReal ? aM.link : '/materia/' + aM.id;
-  const lS1 = aS1.isReal ? aS1.link : '/materia/' + aS1.id;
-  const lS2 = aS2.isReal ? aS2.link : '/materia/' + aS2.id;
+  const lM = aM.isReal ? aM.link : 'materia.html?id=' + aM.id;
+  const lS1 = aS1.isReal ? aS1.link : 'materia.html?id=' + aS1.id;
+  const lS2 = aS2.isReal ? aS2.link : 'materia.html?id=' + aS2.id;
   const tM = aM.isReal ? '_blank' : '_self';
   const tS1 = aS1.isReal ? '_blank' : '_self';
   const tS2 = aS2.isReal ? '_blank' : '_self';
@@ -465,7 +435,7 @@ function renderNewsGrid() {
   grid.innerHTML = displayArticles.map((a, i) => {
     // A primeira matéria fica com a classe 'feat'
     const isFeat = i === 0;
-    const lUrl = a.isReal ? a.link : '/materia/' + a.id;
+    const lUrl = a.isReal ? a.link : 'materia.html?id=' + a.id;
     const tUrl = a.isReal ? '_blank' : '_self';
     const clickAttr = a.isReal ? `onclick="showToast('Redirecionando para matéria oficial...')"` : '';
     
@@ -504,7 +474,7 @@ function renderVidGrid() {
   grid.innerHTML = displayArticles.map((a, i) => {
     // Apenas reutilizamos cards de notícia pois não temos a API do Youtube original integrada
     const isFeat = i === 0;
-    const lUrl = a.isReal ? a.link : '/materia/' + a.id;
+    const lUrl = a.isReal ? a.link : 'materia.html?id=' + a.id;
     const tUrl = a.isReal ? '_blank' : '_self';
     const clickAttr = a.isReal ? `onclick="showToast('Redirecionando...')"` : '';
     
@@ -532,7 +502,7 @@ function renderSplitGrids() {
   // Opinião -> Index 10 e 11
   const opArts = ARTICLES.slice(10, 12);
   opGrid.innerHTML = opArts.map(a => {
-    const lUrl = a.isReal ? a.link : '/materia/' + a.id;
+    const lUrl = a.isReal ? a.link : 'materia.html?id=' + a.id;
     const tUrl = a.isReal ? '_blank' : '_self';
     const clickAttr = a.isReal ? `onclick="showToast('Redirecionando...')"` : '';
     return `
@@ -551,7 +521,7 @@ function renderSplitGrids() {
   // Mercado -> Index 12, 13, 14
   const mktArts = ARTICLES.slice(12, 15);
   mktGrid.innerHTML = mktArts.map(a => {
-    const lUrl = a.isReal ? a.link : '/materia/' + a.id;
+    const lUrl = a.isReal ? a.link : 'materia.html?id=' + a.id;
     const tUrl = a.isReal ? '_blank' : '_self';
     const clickAttr = a.isReal ? `onclick="showToast('Redirecionando...')"` : '';
     return `
@@ -574,7 +544,7 @@ function renderTicker() {
   if(breaking.length === 0) return;
   
   const itemsHTML = [...breaking, ...breaking, ...breaking].map(a => {
-    const lUrl = a.isReal ? a.link : '/materia/' + a.id;
+    const lUrl = a.isReal ? a.link : 'materia.html?id=' + a.id;
     const tUrl = a.isReal ? '_blank' : '_self';
     return `<a href="${lUrl}" target="${tUrl}" class="ticker-item" style="text-decoration:none;color:inherit;">${a.title}</a>`;
   }).join('');
