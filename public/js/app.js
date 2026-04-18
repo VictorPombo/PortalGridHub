@@ -219,7 +219,7 @@ function subNext(step){
 
 /* ══ ARTICLE MODAL ══ */
 function openArticle(id){
-  window.location.href = '/materia/' + id;
+  window.location.href = 'materia.html?id=' + id;
 }
 
 /* ══ EXTERNAL LINK ══ */
@@ -548,7 +548,7 @@ function renderPilotsHighlight(){
   }
   g.innerHTML=pilots.map(p=>{
     const articleCount = typeof Driver !== 'undefined' ? Driver.getPublishedByAuthor(p.id).length : 0;
-    return `<div class="pcard" onclick="window.location.href='/usuario/${p.slug || p.id}'">
+    return `<div class="pcard" onclick="window.location.href='piloto.html?id=${p.id}'">
     <div class="pcard-cover"><img src="${p.img}" alt="" loading="lazy" onerror="this.style.display='none'"></div>
     <div class="pcard-body">
       <div style="position:absolute;top:10px;right:10px"><span class="badge b-piloto" style="font-size:8px">✓ Verificado</span></div>
@@ -570,7 +570,7 @@ function renderPilotsList(){
   if (countEl) countEl.textContent = pilots.length + ' pilotos ativos';
   g.innerHTML=pilots.map(p=>{
     const articleCount = typeof Driver !== 'undefined' ? Driver.getPublishedByAuthor(p.id).length : 0;
-    return `<div class="pcard" onclick="window.location.href='/usuario/${p.slug || p.id}'">
+    return `<div class="pcard" onclick="window.location.href='piloto.html?id=${p.id}'">
     <div class="pcard-cover"><img src="${p.img}" alt="" loading="lazy" onerror="this.style.display='none'"></div>
     <div class="pcard-body">
       <div style="position:absolute;top:10px;right:10px"><span class="badge b-piloto" style="font-size:8px">✓ Verificado</span></div>
@@ -581,7 +581,7 @@ function renderPilotsList(){
         <div class="pstat"><span class="pstat-n">${p.podios}</span><span class="pstat-l">Pódios</span></div>
         <div class="pstat"><span class="pstat-n">${articleCount}</span><span class="pstat-l">Matérias</span></div>
       </div>
-      <button class="btn btn-acc btn-full btn-sm" style="margin-top:12px" onclick="event.stopPropagation();window.location.href='/usuario/${p.slug || p.id}'">Ver perfil →</button>
+      <button class="btn btn-acc btn-full btn-sm" style="margin-top:12px" onclick="event.stopPropagation();window.location.href='piloto.html?id=${p.id}'">Ver perfil →</button>
     </div>
   </div>`;
   }).join('');
@@ -846,10 +846,10 @@ async function loadLiveNews() {
             badge: 'b-' + slugCat,
             kicker: 'PILOTO VERIFICADO',
             title: a.title,
-            link: '/materia/' + a.id,
+            link: 'materia.html?id=' + a.id,
             author: a.authorName || 'Portal',
             date: formatNewsDate(a.publishedAt || a.submittedAt || new Date()),
-            img: a.img || 'https://images.unsplash.com/photo-1541344983572-c511a5fe03fd?auto=format&fit=crop&w=1200&q=80',
+            img: (a.img && a.img !== 'null') ? a.img : 'https://images.unsplash.com/photo-1541344983572-c511a5fe03fd?auto=format&fit=crop&w=1200&q=80',
             abstract: (a.body || '').replace(/<[^>]*>?/gm, '').substring(0,180) + '...',
             isReal: false,
             rawDate: dTime
@@ -951,21 +951,20 @@ function renderHeroGrid(catFilter = 'all') {
   if (catFilter === 'all') {
     if (wrap) wrap.style.display = '';
     
-    // Prioritize slots
-    const f1A = ARTICLES.find(a => a.cat === 'f1');
-    const motoA = ARTICLES.find(a => a.cat === 'motogp' || a.cat === 'moto-gp');
-    const pilotoA = ARTICLES.find(a => a.isReal === false); // "Nossos pilotos"
-    
-    a0 = pilotoA;
-    a1 = f1A;
-    a2 = motoA;
+    // Regra das 48h (Rei da Colina)
+    const saasArts = ARTICLES.filter(a => a.isReal === false);
+    const isRecent = (ts) => (Date.now() - ts) <= (48 * 60 * 60 * 1000);
+    const recentSaas = saasArts.filter(a => isRecent(a.rawDate));
+    const heroSaas = recentSaas.length > 0 ? recentSaas[0] : null;
 
-    // Preencher slots nulos caso as opções preferenciais não existam
-    for(let i=0; i<ARTICLES.length; i++) {
-        if (!a0 && ARTICLES[i] !== a1 && ARTICLES[i] !== a2) { a0 = ARTICLES[i]; continue; }
-        if (!a1 && ARTICLES[i] !== a0 && ARTICLES[i] !== a2) { a1 = ARTICLES[i]; continue; }
-        if (!a2 && ARTICLES[i] !== a0 && ARTICLES[i] !== a1) { a2 = ARTICLES[i]; continue; }
-    }
+    const f1Arts = ARTICLES.filter(a => a.cat === 'f1' && a.id !== (heroSaas ? heroSaas.id : null));
+    const motoArts = ARTICLES.filter(a => (a.cat === 'motogp' || a.cat === 'moto-gp') && a.id !== (heroSaas ? heroSaas.id : null));
+    
+    // Slot 1 (Coroa)
+    a0 = heroSaas || f1Arts[0] || ARTICLES.find(a => !a.isReal) || ARTICLES[0];
+    // Slot 2 e 3
+    a1 = f1Arts.find(a => a.id !== a0.id) || ARTICLES.find(a => a.id !== a0.id);
+    a2 = motoArts.find(a => a.id !== a0.id && a.id !== a1.id) || ARTICLES.find(a => a.id !== a0.id && a.id !== a1.id);
   } else {
     // Exact category matching
     let catArts = ARTICLES.filter(a => a.cat === catFilter);
@@ -1064,8 +1063,8 @@ function renderNewsGrid() {
           <div class="news-card-title">${a.title}</div>
           <div class="news-card-footer">
             <span class="news-card-cta">
-              Ler no portal proprietário: ${a.author}
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:4px; margin-bottom:2px"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+              ${a.isReal ? 'Ler no portal proprietário: ' + a.author : 'Ler matéria completa ↗'}
+              ${a.isReal ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:4px; margin-bottom:2px"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>' : ''}
             </span>
           </div>
         </div>

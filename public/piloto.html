@@ -50,7 +50,7 @@
 </footer>
 
 <script src="js/core.js"></script>
-<script src="js/state.js"></script>
+<script src="js/state.js?v=20260418"></script>
 <script>
 // Aguarda o banco Sincronizar antes de buscar ID ou renderizar (evita cache vazio)
 (async function initPage() {
@@ -103,7 +103,7 @@ function renderPilotsList() {
       <div class="pilots-grid">
         ${pilots.map(p => {
           const articles = Driver.getPublishedByAuthor(p.id);
-          return `<div class="pilot-card ${articles.length > 0 ? 'card-featured' : ''}" onclick="window.location='/usuario/${p.slug || p.id}'" style="cursor:pointer">
+          return `<div class="pilot-card ${articles.length > 0 ? 'card-featured' : ''}" onclick="window.location='piloto.html?id=${p.id}'" style="cursor:pointer">
             <div class="pilot-card-img">
               <img src="${p.avatar_url || p.cover_url || 'https://images.unsplash.com/photo-1541344983572-c511a5fe03fd?auto=format&fit=crop&w=600&q=80'}" alt="${p.name}" style="object-fit:cover">
               <span class="pilot-card-num">#${p.number || '00'}</span>
@@ -190,7 +190,7 @@ function renderPilotPage(p) {
       ${articles.length > 0 ? `
         <div class="card-grid" style="grid-template-columns:repeat(3,1fr)">
           ${articles.map(a => `
-            <div class="ncard" onclick="window.location='/materia/${a.id}'" style="cursor:pointer">
+            <div class="ncard" onclick="window.location='materia.html?id=${a.id}'" style="cursor:pointer">
               <div class="ncard-thumb">${a.img ? `<img src="${a.img}" alt="">` : '<div style="height:100%;background:var(--bg3)"></div>'}</div>
               <div class="ncard-body">
                 <span class="badge" style="background:var(--info);font-size:8px">Matéria</span>

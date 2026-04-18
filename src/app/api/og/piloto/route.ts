@@ -11,52 +11,35 @@ export async function GET(request: Request) {
     const id = searchParams.get('id');
 
     // Tentar carregar HTML base
-    const filePath = path.join(process.cwd(), 'public', '_materia_base.html');
+    // Tentar carregar HTML base do piloto
+    const filePath = path.join(process.cwd(), 'public', 'piloto.html');
     let html = fs.readFileSync(filePath, 'utf8');
 
     if (id) {
-      const { data: article } = await supabase
-        .from('articles')
-        .select(`
-          title, brief, img, published_at, submitted_at,
-          users:author_id ( name, slug )
-        `)
+      const { data: pilot } = await supabase
+        .from('users')
+        .select('*')
         .eq('id', id)
         .single();
 
-      if (article) {
-        const title = (article.title || 'Driver News — Matéria').replace(/"/g, '&quot;');
-        const desc = (article.brief || 'Leia esta matéria exclusiva na Driver News.').replace(/"/g, '&quot;');
-        const imgUrl = article.img || 'https://www.drivernews.com.br/images/share.jpg';
-        const canonicalUrl = `https://www.drivernews.com.br/materia.html?id=${id}`;
+      if (pilot) {
+        const title = (pilot.name || 'Piloto Driver News').replace(/"/g, '&quot;');
+        const cat = pilot.category || 'Automobilismo';
+        const desc = `Confira o perfil, currículo e vitórias do piloto ${title} na Driver News. Categoria: ${cat}.`.replace(/"/g, '&quot;');
+        const imgUrl = pilot.avatar_url || pilot.cover_url || 'https://www.drivernews.com.br/images/share.jpg';
+        const canonicalUrl = `https://www.drivernews.com.br/piloto.html?id=${id}`;
         const siteName = 'Driver News';
-
-        const authorObj: any = Array.isArray(article.users) ? article.users[0] : article.users;
-        const authorName = authorObj?.name || 'Driver News Redação';
-        const authorSlug = authorObj?.slug || authorObj?.id || 'equipe';
-        const datePub = article.published_at || article.submitted_at || new Date().toISOString();
 
         const jsonLd = {
           "@context": "https://schema.org",
-          "@type": "NewsArticle",
-          "headline": title,
-          "articleBody": (article.body || desc).replace(/(<([^>]+)>)/gi, ""),
-          "image": [
-            imgUrl
-          ],
-          "datePublished": datePub,
-          "author": {
+          "@type": "ProfilePage",
+          "mainEntity": {
             "@type": "Person",
-            "name": authorName,
-            "url": `https://www.drivernews.com.br/piloto.html?id=${authorSlug}`
-          },
-          "publisher": {
-            "@type": "Organization",
-            "name": "Driver News",
-            "logo": {
-              "@type": "ImageObject",
-              "url": "https://www.drivernews.com.br/images/logo.png"
-            }
+            "name": title,
+            "description": desc,
+            "image": imgUrl,
+            "jobTitle": "Piloto de " + cat,
+            "url": canonicalUrl
           }
         };
 
@@ -65,11 +48,11 @@ export async function GET(request: Request) {
 <script type="application/ld+json">
 ${JSON.stringify(jsonLd)}
 </script>
-<title>${title} — ${authorName} | Driver News</title>
+<title>${title} | Perfil do Piloto na Driver News</title>
 <meta name="description" content="${desc}">
-<meta name="author" content="${authorName}">
-<meta name="keywords" content="${authorName}, automobilismo, corrida, piloto, ${title.split(' ').slice(0, 5).join(', ')}">
-<meta property="og:title" content="${title}">
+<meta name="author" content="${title}">
+<meta name="keywords" content="${title}, piloto, automobilismo, corrida, ${cat}, patrocínio">
+<meta property="og:title" content="${title} - Piloto na Driver News">
 <meta property="og:description" content="${desc}">
 <meta property="og:image" content="${imgUrl}">
 <meta property="og:image:width" content="1200">
@@ -95,12 +78,12 @@ ${JSON.stringify(jsonLd)}
         const rawContent = `
 <noscript>
   <article>
-    <h1>${title}</h1>
-    <h2>Por ${authorName}</h2>
-    <div>${article.body || desc}</div>
+    <h1>Piloto: ${title}</h1>
+    <h2>Categoria: ${cat}</h2>
+    <div>${desc}</div>
   </article>
 </noscript>
-<div style="display:none;" aria-hidden="true">${title} ${authorName} ${article.body || desc}</div>
+<div style="display:none;" aria-hidden="true">${title} ${cat} piloto automobilismo ${pilot.sponsors || ''}</div>
 `;
         html = html.replace('<body>', '<body>' + rawContent);
       }
@@ -113,9 +96,9 @@ ${JSON.stringify(jsonLd)}
       },
     });
   } catch (err: any) {
-    console.error('Erro na API OG-materia:', err);
+    console.error('Erro na API OG-piloto:', err);
     try {
-       const filePath = path.join(process.cwd(), 'public', '_materia_base.html');
+       const filePath = path.join(process.cwd(), 'public', 'piloto.html');
        let html = fs.readFileSync(filePath, 'utf8');
        return new NextResponse(html, { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
     } catch(e) {

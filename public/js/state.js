@@ -128,7 +128,7 @@ const Driver = (() => {
           avatar: u.avatar || u.name.substring(0, 2).toUpperCase(),
         }));
         
-        __dbArticles = data.articles.map(a => ({
+        __dbArticles = data.articles.filter(a => !a.deleted).map(a => ({
           ...a,
           authorId: a.author_id,
           publishedAt: a.published_at,

@@ -45,7 +45,7 @@
 </div>
 
 <script src="js/core.js"></script>
-<script src="js/state.js"></script>
+<script src="js/state.js?v=20260418"></script>
 <script>
 if (!Driver.isLoggedIn()) { window.location = 'cadastro.html'; }
 const USER = Driver.getCurrentUser();
@@ -146,7 +146,7 @@ function renderPilots() {
   const pilots = Driver.getUsersByType('piloto').filter(p => (USER.pilots || []).includes(p.id));
   document.getElementById('eq-pilots').innerHTML = `
     <div class="dash-header"><h1>Pilotos da Equipe</h1></div>
-    ${pilots.map(p=>`<div class="user-row"><div class="user-avatar-sm" style="background:var(--acc);color:#fff">${p.avatar}</div><div class="user-info"><div class="user-name">${p.name}</div><div class="user-email">#${p.number||'00'} · ${p.category||''}</div></div><div class="user-status-col"><span class="pulse-dot"></span> ${p.status==='active'?'Ativo':'Inativo'}</div><div style="flex-shrink:0"><a href="/usuario/${p.slug || p.id}" class="btn-secondary" style="padding:4px 10px;font-size:9px">Ver Página</a></div></div>`).join('')}
+    ${pilots.map(p=>`<div class="user-row"><div class="user-avatar-sm" style="background:var(--acc);color:#fff">${p.avatar}</div><div class="user-info"><div class="user-name">${p.name}</div><div class="user-email">#${p.number||'00'} · ${p.category||''}</div></div><div class="user-status-col"><span class="pulse-dot"></span> ${p.status==='active'?'Ativo':'Inativo'}</div><div style="flex-shrink:0"><a href="piloto.html?id=${p.id}" class="btn-secondary" style="padding:4px 10px;font-size:9px">Ver Página</a></div></div>`).join('')}
     ${pilots.length===0?'<div style="padding:24px;text-align:center;color:var(--muted)">Nenhum piloto vinculado.</div>':''}`;
 }
 

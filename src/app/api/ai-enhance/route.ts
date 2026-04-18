@@ -47,17 +47,15 @@ Retorne apenas o texto.`;
       systemInstruction = `Escreva 3 perguntas curtas e muito simples, em bullet points, para o piloto contar mais sobre a corrida. Sem enrolação.
 Retorne apenas as perguntas de forma limpa.`;
     } else if (tipoCampo === 'title') {
-      systemInstruction = `CRIE UM TÍTULO SEGUINDO ESTRITAMENTE A REGRA DE ENTIDADE SEO:
-O título DEVE OBRIGATORIAMENTE começar com o NOME COMPLETO do piloto seguido de uma ação ou fato. Ex: "Victor Assis vence a corrida..."
-Sem sensacionalismo. Baseie-se no rascunho do piloto. Máximo 12 palavras, sem aspas.
+      systemInstruction = `Crie um título de notícia simples e direto. Sem sensacionalismo.
+Baseie-se no rascunho do piloto. Máximo 10 palavras, sem ponto final, sem aspas.
 Retorne apenas o título.`;
     } else if (tipoCampo === 'article') {
       systemInstruction = `ESCREVA UMA MATÉRIA (em HTML <p> e <blockquote>) USANDO APENAS PALAVRAS SIMPLES E COMUNS.
-PROIBIDO USAR QUAISQUER ADJETIVOS DRAMÁTICOS OU POÉTICOS: "saga", "inquestionável", "maestria", "triunfo", "elite".
-REGRA SEO OBRIGATÓRIA: Insira o NOME COMPLETO do piloto pelo menos 2 a 3 vezes no texto de forma orgânica. EM UMA DAS VEZES, converta-o num hiperlink EXATO neste formato: <a href="/usuario/[SLUG_DO_PILOTO]">NOME COMPLETO (OU PARCIAL) AQUI</a>.
-O [SLUG_DO_PILOTO] será fornecido na Diretriz de Identidade.
-Escreva como um jornalista esportivo. Adicione um "quote" (aspas) natural no 3º parágrafo.
-Retorne apenas o HTML.`;
+PROIBIDO USAR QUAISQUER ADJETIVOS DRAMÁTICOS OU POÉTICOS: "saga", "inquestionável", "maestria", "triunfo", "elite", "avassalador", "sagrar-se".
+Escreva como um jornalista escreve hoje: seco, informativo, focado no fato. Sem emoção robótica.
+Adicione um "quote" (aspas) natural no 3º parágrafo imitando a fala de uma pessoa comum.
+Retorne apenas o HTML, nada mais.`;
     } else {
       systemInstruction = `Reescreva o texto corrigindo o português, usando palavras simples como em uma conversa normal. PROIBIDO drama ou adjetivos exagerados.`;
     }
