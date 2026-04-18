@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
 <link rel="stylesheet" href="css/core.css?v=20260417_0320">
 <link rel="stylesheet" href="css/carbon.css">
-<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/dashboard.css?v=20260418">
 <link rel="stylesheet" href="css/admin.css">
 <!-- Cropper.js -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
@@ -106,7 +106,7 @@ function __renderDashboardNav() {
   document.getElementById('navUserInfo').innerHTML = `
     <span style="font-family:var(--fm);font-size:10px;color:var(--dim)" class="hide-mob">${USER.name || 'Piloto'}</span>
     <div id="topAvatar" style="width:32px;height:32px;border-radius:50%;background:var(--acc);display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:11px;font-weight:700;color:#fff;overflow:hidden" class="hide-mob">${USER.avatar_url ? '<img src="'+USER.avatar_url+'" style="width:100%;height:100%;object-fit:cover">' : (USER.avatar || 'VA')}</div>
-    <button class="btn-hamburger" style="display:flex;margin-left:16px;border-color:transparent" onclick="document.querySelector('.dash-sidebar').classList.toggle('open')">
+    <button class="btn-hamburger" style="margin-left:16px;border-color:transparent" onclick="document.querySelector('.dash-sidebar').classList.toggle('open')">
       <span></span><span></span><span></span>
     </button>
   `;
@@ -126,12 +126,15 @@ __renderDashboardNav();
 function renderOverview() {
   const stats = Driver.getUserStats(USER.id);
   const articles = Driver.getArticlesByAuthor(USER.id);
-  const recent = articles.filter(a => a.status !== 'draft').sort((a, b) => String(b.publishedAt || b.submittedAt || '').localeCompare(String(a.publishedAt || a.submittedAt || ''))).slice(0, 5);
+  const recent = articles.sort((a, b) => String(b.publishedAt || b.submittedAt || '').localeCompare(String(a.publishedAt || a.submittedAt || ''))).slice(0, 5);
   const usagePct = stats.limit > 0 ? ((stats.limit - stats.remaining) / stats.limit * 100) : 0;
 
   // Count by status
   const statusCounts = {};
   articles.forEach(a => { statusCounts[a.status] = (statusCounts[a.status] || 0) + 1; });
+  const draftCount = statusCounts.draft || 0;
+  const publishedCount = statusCounts.published || 0;
+  const inProcessCount = (statusCounts.review || 0) + (statusCounts.sent || 0) + (statusCounts.approved || 0);
 
   document.getElementById('sec-overview').innerHTML = `
     <div class="dash-header">
@@ -156,19 +159,20 @@ function renderOverview() {
         <div class="stat-detail">total acumulado</div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">Em Andamento</div>
-        <div class="stat-value">${(statusCounts.review || 0) + (statusCounts.sent || 0) + (statusCounts.approved || 0)}</div>
-        <div class="stat-detail">${statusCounts.review || 0} revisão · ${statusCounts.sent || 0} enviado · ${statusCounts.approved || 0} aprovado</div>
+        <div class="stat-label">Em Processo</div>
+        <div class="stat-value">${inProcessCount}</div>
+        <div class="stat-detail">${inProcessCount > 0 ? inProcessCount + ' matéria(s) em processamento' : 'nenhuma em andamento'}</div>
       </div>
     </div>
 
-    <div style="font-family:var(--fu);font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin:32px 0 12px">Fluxo de Publicação</div>
+    <div style="font-family:var(--fu);font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin:32px 0 12px">Suas Matérias</div>
     <div class="status-flow">
-      <div class="status-step ${statusCounts.draft ? 'active' : ''}"><span class="status-step-num">${statusCounts.draft || 0}</span><span class="status-step-label">Rascunho</span></div>
-      <div class="status-step ${statusCounts.sent ? 'active' : ''}"><span class="status-step-num">${statusCounts.sent || 0}</span><span class="status-step-label">Enviado</span></div>
-      <div class="status-step ${statusCounts.review ? 'active' : ''}"><span class="status-step-num">${statusCounts.review || 0}</span><span class="status-step-label">Em Revisão</span></div>
-      <div class="status-step ${statusCounts.approved ? 'active' : ''}"><span class="status-step-num">${statusCounts.approved || 0}</span><span class="status-step-label">Aprovado</span></div>
-      <div class="status-step ${statusCounts.published ? 'active' : ''}"><span class="status-step-num">${statusCounts.published || 0}</span><span class="status-step-label">Publicado</span></div>
+      <div class="status-step ${draftCount ? 'active' : ''}" style="cursor:pointer" onclick="showSection('articles');setTimeout(()=>{const b=document.querySelector('#articleTabs .tab:nth-child(4)');if(b)b.click();},100)">
+        <span class="status-step-num">${draftCount}</span><span class="status-step-label">Rascunho</span>
+      </div>
+      <div class="status-step ${publishedCount ? 'active' : ''}" style="cursor:pointer" onclick="showSection('articles');setTimeout(()=>{const b=document.querySelector('#articleTabs .tab:nth-child(2)');if(b)b.click();},100)">
+        <span class="status-step-num">${publishedCount}</span><span class="status-step-label">Publicado</span>
+      </div>
     </div>
 
     <div style="font-family:var(--fu);font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin:32px 0 12px">Matérias Recentes</div>
@@ -285,7 +289,16 @@ function renderCompose() {
                   <input type="checkbox" id="incSponsor" checked>
                   <span style="font-size:13px;color:#fff;font-weight:500">🤝 Patrocinadores</span>
                 </label>
-                <input class="form-input" id="incSponsorVal" type="text" value="${USER.sponsors || ''}" placeholder="Ex: Red Bull, Monster Energy, Pirelli..." style="font-size:12px;padding:8px 10px;margin-left:26px">
+                <div id="composeSponsorList" style="margin-left:26px;display:grid;gap:6px">
+                  ${(USER.sponsors_list && USER.sponsors_list.length > 0) ? USER.sponsors_list.map((s, i) => `
+                    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:6px 10px;background:var(--bg2);border:1px solid var(--brd);border-radius:6px">
+                      <input type="checkbox" class="spnCheck" data-idx="${i}" checked style="accent-color:var(--acc)">
+                      ${s.logo ? '<img src="'+s.logo+'" style="width:20px;height:20px;border-radius:4px;object-fit:contain">' : ''}
+                      <span style="font-size:12px;color:#fff;font-weight:500">${s.name}</span>
+                      ${s.desc ? '<span style="font-size:10px;color:var(--dim);margin-left:auto">'+s.desc+'</span>' : ''}
+                    </label>
+                  `).join('') : '<div style="font-size:11px;color:var(--muted)">Nenhum patrocinador cadastrado. <a href=\"#\" onclick=\"showSection(\'profile\');return false\" style=\"color:var(--acc)\">Cadastrar →</a></div>'}
+                </div>
               </div>
 
               <div style="display:grid;gap:6px">
@@ -385,7 +398,13 @@ function _getFinalBrief() {
   
   if (USER.plan === 'pro' || USER.plan === 'equipe' || USER.plan === 'categoria') {
     let appends = [];
-    if (document.getElementById('incSponsor')?.checked) appends.push('Patrocinadores: ' + (document.getElementById('incSponsorVal')?.value || 'Nenhum registrado.'));
+    if (document.getElementById('incSponsor')?.checked) {
+      const checkedSponsors = [...document.querySelectorAll('.spnCheck:checked')].map(cb => {
+        const idx = parseInt(cb.dataset.idx);
+        return USER.sponsors_list && USER.sponsors_list[idx] ? USER.sponsors_list[idx].name : '';
+      }).filter(Boolean);
+      appends.push('Patrocinadores: ' + (checkedSponsors.length > 0 ? checkedSponsors.join(', ') : 'Nenhum registrado.'));
+    }
     if (document.getElementById('incSpnMsg')?.checked) appends.push('Mensagem ao Patrocinador: ' + (document.getElementById('incSpnMsgVal')?.value || 'Nenhuma registrada.'));
     if (document.getElementById('incNextRace')?.checked) appends.push('Próxima Corrida: ' + (document.getElementById('incNextRaceVal')?.value || 'Nenhuma registrada.'));
     if (document.getElementById('incGoals')?.checked) appends.push('Meta/Objetivos: ' + (document.getElementById('incGoalsVal')?.value || 'Nenhuma registrada.'));
@@ -913,7 +932,14 @@ function renderProfile() {
 
         <!-- PATROCÍNIO -->
         <h3>🤝 Mídia e Patrocínio</h3>
-        <div class="form-field"><label class="form-label">Suas Marcas/Patrocinadores</label><input class="form-input" id="profSponsors" type="text" placeholder="Red Bull, Monster Energy, Pirelli..." value="${USER.sponsors || ''}"></div>
+        <div class="form-field">
+          <label class="form-label" style="display:flex;justify-content:space-between;align-items:center">
+            <span>Seus Patrocinadores</span>
+            <button type="button" class="btn-secondary" style="padding:5px 10px;font-size:10px;border-radius:6px" onclick="addSponsorCard()">+ Adicionar</button>
+          </label>
+          <div id="sponsorCardsList" style="display:grid;gap:10px;margin-bottom:12px"></div>
+          <div class="form-hint">Cadastre cada patrocinador com nome, descrição e logo. Na matéria, você seleciona quais incluir.</div>
+        </div>
         <div class="form-field">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
             <label class="form-label" style="margin-bottom:0">Mensagem Institucional (para Redação)</label>
@@ -926,8 +952,12 @@ function renderProfile() {
 
         <!-- REDES SOCIAIS -->
         <h3>🔗 Redes Sociais</h3>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-          <div class="form-field"><label class="form-label">Instagram</label><input class="form-input" id="profIG" type="text" placeholder="@seuperfil" value="${USER.instagram || ''}"></div>
+        <div class="form-field">
+          <label class="form-label" style="display:flex;align-items:center;justify-content:space-between">
+            <span>Instagram</span>
+            <a id="profIGLink" href="#" target="_blank" style="display:none;font-size:10px;color:var(--acc);font-family:var(--fu);font-weight:700;letter-spacing:1px;text-decoration:none" title="Abrir perfil no Instagram">↗ ABRIR PERFIL</a>
+          </label>
+          <input class="form-input" id="profIG" type="text" placeholder="@seuperfil" value="${USER.instagram || ''}" oninput="updateIGLink()">
         </div>
         <div class="form-field"><label class="form-label">WhatsApp Contato</label><input class="form-input" id="profWhatsapp" type="text" placeholder="(11) 99999-9999" value="${USER.whatsapp || ''}"></div>
 
@@ -985,6 +1015,8 @@ function renderProfile() {
     const img = document.querySelector('.galPreloadImg[data-idx="'+(i+1)+'"]');
     if (img) img.src = url;
   });
+  // Inicializar cards de patrocinadores e link do Instagram
+  initSponsorCards();
 }
 
 // Recorte de imagem (WhatsApp flow) com proporção livre (NaN)
@@ -1082,6 +1114,143 @@ function clearImg(inputId, previewId, fallbackText) {
   showToast('Imagem removida. Clique em Salvar para confirmar.', 'info');
 }
 
+// ============================
+// Instagram Link Helper
+// ============================
+function updateIGLink() {
+  const val = (document.getElementById('profIG')?.value || '').trim().replace('@','');
+  const link = document.getElementById('profIGLink');
+  if (link) {
+    if (val) {
+      link.href = 'https://instagram.com/' + val;
+      link.style.display = 'inline';
+    } else {
+      link.style.display = 'none';
+    }
+  }
+}
+
+// ============================
+// Sponsor Cards System
+// ============================
+let sponsorsList = [];
+
+function initSponsorCards() {
+  // Load from USER.sponsors_list (array) or fallback from USER.sponsors (string)
+  if (USER.sponsors_list && Array.isArray(USER.sponsors_list) && USER.sponsors_list.length > 0) {
+    sponsorsList = [...USER.sponsors_list];
+  } else if (USER.sponsors) {
+    // Convert old string format to array
+    sponsorsList = USER.sponsors.split(',').map(s => s.trim()).filter(Boolean).map(name => ({ name, desc: '', logo: '' }));
+  } else {
+    sponsorsList = [];
+  }
+  renderSponsorCards();
+  updateIGLink();
+}
+
+function renderSponsorCards() {
+  const container = document.getElementById('sponsorCardsList');
+  if (!container) return;
+  if (sponsorsList.length === 0) {
+    container.innerHTML = '<div style="padding:16px;text-align:center;border:1px dashed var(--brd);border-radius:8px;color:var(--muted);font-size:12px">Nenhum patrocinador cadastrado. Clique em "+ Adicionar" acima.</div>';
+    return;
+  }
+  container.innerHTML = sponsorsList.map((s, i) => `
+    <div style="display:flex;gap:12px;align-items:flex-start;padding:14px;background:var(--bg2);border:1px solid var(--brd);border-radius:8px;position:relative">
+      <div style="width:48px;height:48px;border-radius:8px;border:1px solid var(--brd);background:var(--bg1);overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer" onclick="document.getElementById('spnLogoFile${i}').click()" title="Clique para enviar logo">
+        ${s.logo ? '<img src="'+s.logo+'" style="width:100%;height:100%;object-fit:contain">' : '<span style="font-size:18px;color:var(--muted)">🏢</span>'}
+      </div>
+      <input type="file" id="spnLogoFile${i}" accept="image/*" style="display:none" onchange="uploadSponsorLogo(${i}, this)">
+      <div style="flex:1;min-width:0">
+        <input class="form-input" type="text" value="${s.name || ''}" placeholder="Nome do patrocinador" style="font-size:13px;padding:8px 10px;margin-bottom:6px;font-weight:600" onchange="sponsorsList[${i}].name=this.value">
+        <input class="form-input" type="text" value="${s.desc || ''}" placeholder="Descrição curta (ex: Energéticos, Pneus...)" style="font-size:11px;padding:6px 10px;color:var(--dim)" onchange="sponsorsList[${i}].desc=this.value">
+      </div>
+      <button type="button" style="position:absolute;top:8px;right:8px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:4px" onclick="removeSponsorCard(${i})" title="Remover">✕</button>
+    </div>
+  `).join('');
+}
+
+function addSponsorCard() {
+  sponsorsList.push({ name: '', desc: '', logo: '' });
+  renderSponsorCards();
+  showToast('Novo patrocinador adicionado. Preencha os dados.', 'info');
+}
+
+function removeSponsorCard(idx) {
+  sponsorsList.splice(idx, 1);
+  renderSponsorCards();
+}
+
+async function uploadSponsorLogo(idx, fileInput) {
+  const file = fileInput.files[0];
+  if (!file) return;
+  if (file.size > 2 * 1024 * 1024) { showToast('Logo muito grande (max 2MB)', 'err'); return; }
+  const dataUrl = await readFileDataUrl(file);
+  sponsorsList[idx].logo = dataUrl;
+  renderSponsorCards();
+  showToast('✓ Logo adicionada!', 'ok');
+  fileInput.value = '';
+}
+
+function getSponsorsList() {
+  return sponsorsList.filter(s => s.name && s.name.trim());
+}
+
+// ============================
+// Enhance With AI (Profile fields)
+// ============================
+async function enhanceWithAI(fieldId, contextType) {
+  const inputEl = document.getElementById(fieldId);
+  if (!inputEl) return;
+  const rawText = inputEl.value.trim();
+  
+  if (!rawText || rawText.length < 5) {
+    showToast('Digite pelo menos uma frase curta para a IA trabalhar!', 'info');
+    return;
+  }
+
+  const pilotName = USER.pilot_name || USER.name || 'Piloto';
+  const category = USER.category || 'Categoria desconhecida';
+  
+  showToast('Processando aprimoramento via IA...', 'info');
+  const btn = event.currentTarget;
+  const oldText = btn.innerHTML;
+  btn.innerHTML = '<span style="display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin 0.6s linear infinite;vertical-align:middle"></span> Processando...';
+  btn.style.pointerEvents = 'none';
+
+  try {
+    const response = await fetch('/api/ai-enhance', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        textoOriginal: rawText, 
+        tipoCampo: contextType,
+        contexto: `Nome: ${pilotName} | Categoria: ${category}` 
+      })
+    });
+
+    if (!response.ok) throw new Error('Erro na resposta do servidor IA');
+    const data = await response.json();
+    
+    if (data && data.enhancedText) {
+      inputEl.value = data.enhancedText;
+      showToast('Texto aprimorado com sucesso!', 'ok');
+      inputEl.style.boxShadow = '0 0 24px rgba(232,0,45,0.7)';
+      inputEl.style.borderColor = 'var(--acc)';
+      setTimeout(() => { inputEl.style.boxShadow = ''; inputEl.style.borderColor = ''; }, 1500);
+    } else {
+      throw new Error('Formato inválido retornado pela IA');
+    }
+  } catch (error) {
+    console.error('Enhance Error:', error);
+    showToast('Falha ao aprimorar texto. Tente novamente.', 'err');
+  } finally {
+    btn.innerHTML = oldText;
+    btn.style.pointerEvents = 'all';
+  }
+}
+
 async function saveProfile() {
   const cats = typeof getSelectedCategories === 'function' ? getSelectedCategories() : [];
   const galleryUrls = [1,2,3,4,5,6].map(i => document.getElementById('profGal'+i)?.value).filter(Boolean);
@@ -1108,7 +1277,8 @@ async function saveProfile() {
     career: document.getElementById('profCareer').value,
     goals: document.getElementById('profGoals').value,
     gallery: galleryUrls,
-    sponsors: document.getElementById('profSponsors').value,
+    sponsors: getSponsorsList().map(s => s.name).join(', '),
+    sponsors_list: getSponsorsList(),
     sponsor_message: document.getElementById('profSponsorMsg').value,
     instagram: document.getElementById('profIG').value,
     twitter: document.getElementById('profTwitter')?.value || '',

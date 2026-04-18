@@ -33,9 +33,10 @@
     h1 { font-size: 28px; margin-bottom: 12px; font-weight: 600; }
     p { color: var(--dim); margin-bottom: 32px; max-width: 400px; }
     
-    .countdown { font-size: 48px; font-family: 'Bebas Neue', sans-serif; color: var(--acc); margin-bottom: 24px; }
     .progress-bar { width: 100%; max-width: 320px; height: 6px; background: var(--bg1); border-radius: 4px; overflow: hidden; margin-bottom: 16px; }
     .progress-fill { height: 100%; background: var(--acc); width: 0%; transition: width 1s linear; }
+    .spinner { width: 48px; height: 48px; border: 4px solid var(--bg1); border-top: 4px solid var(--acc); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 24px; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
     /* Screen 2 - Preview */
     .preview-container { text-align: left; max-width: 800px; width: 100%; margin: 40px auto; background: var(--bg1); padding: 40px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
@@ -78,8 +79,8 @@
     <h1 id="loading-title">Aguarde enquanto nossa equipe<br>redige sua matéria profissional</h1>
     <p id="loading-desc">Estamos transformando suas informações em uma matéria jornalística de alto nível.</p>
     
-    <div class="countdown" id="countdown-timer">00:60</div>
-    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    <div class="spinner" id="loading-spinner"></div>
+    <div class="progress-bar" style="display:none;"><div class="progress-fill" id="progress-fill" style="display:none;"></div></div>
     
     <div id="loading-error" style="display:none; color: var(--acc); margin-top: 20px;">
       Houve um erro na comunicação. <button class="secondary" onclick="startGeneration()" style="padding: 6px 12px; margin-left: 10px;">Tentar Novamente</button>
@@ -249,14 +250,20 @@
     async function startGeneration() {
       navTo('screen-loading');
       document.getElementById('loading-error').style.display = 'none';
-      startTimer(20); // Reduzido pra 20 pq a IA é mt rápida na Vercel
+      document.getElementById('loading-title').textContent = 'Aguarde enquanto nossa equipe\nredige sua matéria profissional';
+      document.getElementById('loading-desc').textContent = 'Estamos transformando suas informações em uma matéria jornalística de alto nível.';
+      
+      const spinner = document.getElementById('loading-spinner');
+      if (spinner) spinner.style.display = 'block';
+      
+      // AbortController com timeout de 30s
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000);
       
       try {
-        // Obter contexto enriquecido (Nome do piloto, cat, etc)
         const prevCatEl = document.getElementById('prev-cat');
         const d_ct = `Piloto ${currentUser.name || ''} - Categoria: ${prevCatEl ? prevCatEl.textContent : 'Automobilismo'}`;
         
-        // Chamada à nosa API confiável
         const res = await fetch('/api/ai-enhance', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -264,53 +271,41 @@
             tipoCampo: 'article',
             textoOriginal: DRAFT.contexto || DRAFT.titulo,
             contexto: d_ct
-          })
+          }),
+          signal: controller.signal
         });
         
+        clearTimeout(timeoutId);
         const json = await res.json();
         if(!json.enhancedText) throw new Error(json.error || 'Erro na geração da matéria');
         
-        // Mantém a estrutura de dados esperada pelo restante da tela (Preview/Correção)
         STATE.materia_id = 'a' + Date.now() + Math.floor(Math.random()*1000);
         STATE.data = {
           final_titulo: DRAFT.titulo,
           final_corpo: json.enhancedText
         };
         
-        clearInterval(tmOut); // Para o timer
-        
-        // Em vez de pular e publicar direto, enviamos para a Tela de Preview e Aceite Legal:
         renderPreview();
         navTo('screen-preview');
         
       } catch (err) {
+        clearTimeout(timeoutId);
         console.error(err);
-        document.getElementById('countdown-timer').style.display = 'none';
-        document.getElementById('loading-error').style.display = 'block';
-        clearInterval(tmOut);
+        
+        const spinnerEl = document.getElementById('loading-spinner');
+        if (spinnerEl) spinnerEl.style.display = 'none';
+        const errEl = document.getElementById('loading-error');
+        if (errEl) {
+          errEl.style.display = 'block';
+          errEl.innerHTML = err.name === 'AbortError' 
+            ? 'A requisição demorou demais (timeout). <button class="secondary" onclick="startGeneration()" style="padding: 6px 12px; margin-left: 10px;">Tentar Novamente</button>'
+            : 'Houve um erro na comunicação. <button class="secondary" onclick="startGeneration()" style="padding: 6px 12px; margin-left: 10px;">Tentar Novamente</button>';
+        }
       }
     }
 
-    // Timer visual TELA 1
-    let tmOut;
-    function startTimer(seconds) {
-      let s = seconds;
-      const el = document.getElementById('countdown-timer');
-      const bar = document.getElementById('progress-fill');
-      el.style.display = 'block';
-      clearInterval(tmOut);
-      
-      tmOut = setInterval(() => {
-        s--;
-        if(s < 0) {
-           el.textContent = "Finalizando...";
-           bar.style.width = "100%";
-           return;
-        }
-        el.textContent = `00:${s.toString().padStart(2,'0')}`;
-        bar.style.width = ((seconds - s)/seconds)*100 + "%";
-      }, 1000);
-    }
+    // Simulando tempo para a barra de progresso do chat
+    function dummyFunc() {}
 
     // Antigo Polling via Supabase - Desativado para bypass direto
     function startPolling() {}
