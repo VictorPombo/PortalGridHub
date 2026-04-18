@@ -18,7 +18,7 @@ export async function GET(request: Request) {
       const { data: article } = await supabase
         .from('articles')
         .select(`
-          title, brief, img, published_at, submitted_at,
+          title, brief, body, img, published_at, submitted_at,
           users:author_id ( name, slug )
         `)
         .eq('id', id)

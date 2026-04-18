@@ -33,10 +33,9 @@
     h1 { font-size: 28px; margin-bottom: 12px; font-weight: 600; }
     p { color: var(--dim); margin-bottom: 32px; max-width: 400px; }
     
+    .countdown { font-size: 48px; font-family: 'Bebas Neue', sans-serif; color: var(--acc); margin-bottom: 24px; }
     .progress-bar { width: 100%; max-width: 320px; height: 6px; background: var(--bg1); border-radius: 4px; overflow: hidden; margin-bottom: 16px; }
     .progress-fill { height: 100%; background: var(--acc); width: 0%; transition: width 1s linear; }
-    .spinner { width: 48px; height: 48px; border: 4px solid var(--bg1); border-top: 4px solid var(--acc); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 24px; }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
     /* Screen 2 - Preview */
     .preview-container { text-align: left; max-width: 800px; width: 100%; margin: 40px auto; background: var(--bg1); padding: 40px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
@@ -79,8 +78,8 @@
     <h1 id="loading-title">Aguarde enquanto nossa equipe<br>redige sua matéria profissional</h1>
     <p id="loading-desc">Estamos transformando suas informações em uma matéria jornalística de alto nível.</p>
     
-    <div class="spinner" id="loading-spinner"></div>
-    <div class="progress-bar" style="display:none;"><div class="progress-fill" id="progress-fill" style="display:none;"></div></div>
+    <div class="countdown" id="countdown-timer">00:60</div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
     
     <div id="loading-error" style="display:none; color: var(--acc); margin-top: 20px;">
       Houve um erro na comunicação. <button class="secondary" onclick="startGeneration()" style="padding: 6px 12px; margin-left: 10px;">Tentar Novamente</button>
@@ -206,8 +205,18 @@
   </div>
 
   <script src="js/core.js"></script>
-  <script src="js/state.js?v=20260418"></script>
+  <script src="js/state.js"></script>
   <script>
+    window.onerror = function(msg, url, lineNo, columnNo, error) {
+      console.error('GLOBAL ERROR:', msg, url, lineNo);
+      alert('ERRO GLOBAL: ' + msg);
+      document.body.innerHTML += '<div style="position:fixed;top:0;left:0;background:red;color:white;z-index:9999;padding:20px;">' + msg + '</div>';
+    };
+    window.addEventListener('unhandledrejection', function(event) {
+      console.error('UNHANDLED PROMISE REJECTION:', event.reason);
+      document.body.innerHTML += '<div style="position:fixed;top:50px;left:0;background:orange;color:white;z-index:9999;padding:20px;">Promise Rejection: ' + event.reason + '</div>';
+    });
+
     lucide.createIcons();
     
     let STATE = {
@@ -215,6 +224,8 @@
       pollInterval: null,
       data: null // { titulo, corpo, versao... }
     };
+    
+    let tmOut = null; // Hoisted above to avoid TDZ errors
 
     const draftStr = sessionStorage.getItem('draft_materia');
     let DRAFT = draftStr ? JSON.parse(draftStr) : null;
@@ -250,17 +261,10 @@
     async function startGeneration() {
       navTo('screen-loading');
       document.getElementById('loading-error').style.display = 'none';
-      document.getElementById('loading-title').textContent = 'Aguarde enquanto nossa equipe\nredige sua matéria profissional';
-      document.getElementById('loading-desc').textContent = 'Estamos transformando suas informações em uma matéria jornalística de alto nível.';
-      
-      const spinner = document.getElementById('loading-spinner');
-      if (spinner) spinner.style.display = 'block';
-      
-      // AbortController com timeout de 30s
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000);
+      startTimer(20); // Reduzido pra 20 pq a IA é mt rápida na Vercel
       
       try {
+        // Obter contexto enriquecido (Nome do piloto, cat, etc)
         const prevCatEl = document.getElementById('prev-cat');
         const d_ct = `Piloto ${currentUser.name || ''} - Categoria: ${prevCatEl ? prevCatEl.textContent : 'Automobilismo'}`;
         
@@ -271,41 +275,52 @@
             tipoCampo: 'article',
             textoOriginal: DRAFT.contexto || DRAFT.titulo,
             contexto: d_ct
-          }),
-          signal: controller.signal
+          })
         });
         
-        clearTimeout(timeoutId);
         const json = await res.json();
         if(!json.enhancedText) throw new Error(json.error || 'Erro na geração da matéria');
         
+        // Mantém a estrutura de dados esperada pelo restante da tela (Preview/Correção)
         STATE.materia_id = 'a' + Date.now() + Math.floor(Math.random()*1000);
         STATE.data = {
           final_titulo: DRAFT.titulo,
           final_corpo: json.enhancedText
         };
         
+        clearInterval(tmOut); // Para o timer
+        
+        // Em vez de pular e publicar direto, enviamos para a Tela de Preview e Aceite Legal:
         renderPreview();
         navTo('screen-preview');
         
       } catch (err) {
-        clearTimeout(timeoutId);
         console.error(err);
-        
-        const spinnerEl = document.getElementById('loading-spinner');
-        if (spinnerEl) spinnerEl.style.display = 'none';
-        const errEl = document.getElementById('loading-error');
-        if (errEl) {
-          errEl.style.display = 'block';
-          errEl.innerHTML = err.name === 'AbortError' 
-            ? 'A requisição demorou demais (timeout). <button class="secondary" onclick="startGeneration()" style="padding: 6px 12px; margin-left: 10px;">Tentar Novamente</button>'
-            : 'Houve um erro na comunicação. <button class="secondary" onclick="startGeneration()" style="padding: 6px 12px; margin-left: 10px;">Tentar Novamente</button>';
-        }
+        document.getElementById('countdown-timer').style.display = 'none';
+        document.getElementById('loading-error').style.display = 'block';
+        clearInterval(tmOut);
       }
     }
 
-    // Simulando tempo para a barra de progresso do chat
-    function dummyFunc() {}
+    // Timer visual TELA 1
+    function startTimer(seconds) {
+      let s = seconds;
+      const el = document.getElementById('countdown-timer');
+      const bar = document.getElementById('progress-fill');
+      el.style.display = 'block';
+      clearInterval(tmOut);
+      
+      tmOut = setInterval(() => {
+        s--;
+        if(s < 0) {
+           el.textContent = "Finalizando...";
+           bar.style.width = "100%";
+           return;
+        }
+        el.textContent = `00:${s.toString().padStart(2,'0')}`;
+        bar.style.width = ((seconds - s)/seconds)*100 + "%";
+      }, 1000);
+    }
 
     // Antigo Polling via Supabase - Desativado para bypass direto
     function startPolling() {}
@@ -344,48 +359,32 @@
        navTo('screen-loading');
        document.getElementById('loading-title').textContent = 'Aplicando suas correções...';
        document.getElementById('loading-desc').textContent = 'Nossa equipe de IA está ajustando a matéria conforme seu pedido.';
-       
-       const spinner = document.getElementById('loading-spinner');
-       if (spinner) spinner.style.display = 'block';
-
-       const controller = new AbortController();
-       const timeoutId = setTimeout(() => controller.abort(), 30000);
+       startTimer(45);
 
        try {
-         const res = await fetch('/api/ai-enhance', {
+         const res = await fetch('/api/redacao/rewrite', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-               tipoCampo: 'article',
-               textoOriginal: STATE.data.final_corpo,
-               contexto: 'ATENÇÃO: O Piloto pediu uma alteração neste conteúdo da matéria. Aplique APENAS O QUE FOI PEDIDO AQUI e mantenha o resto como estava: "' + inst + '"'
-            }),
-            signal: controller.signal
+               materia_id: STATE.materia_id,
+               instructions: inst,
+               final_titulo: STATE.data.final_titulo,
+               final_corpo: STATE.data.final_corpo,
+               ia_versao: STATE.data.ia_versao || 1
+            })
          });
          
-         clearTimeout(timeoutId);
          const json = await res.json();
-         if(!json.enhancedText) throw new Error(json.error || 'Erro na re-geração da matéria');
-         
-         STATE.data.final_corpo = json.enhancedText;
-         STATE.data.ia_versao = (STATE.data.ia_versao || 1) + 1;
+         if(!json.success) throw new Error(json.error);
          
          document.getElementById('chat-instruction').value = '';
-         
-         renderPreview();
-         navTo('screen-preview');
+         startPolling();
 
        } catch(e) {
-         clearTimeout(timeoutId);
          console.error(e);
-         if (spinner) spinner.style.display = 'none';
-         const errEl = document.getElementById('loading-error');
-         if (errEl) {
-           errEl.style.display = 'block';
-           errEl.innerHTML = e.name === 'AbortError' 
-             ? 'A requisição demorou demais. <button class="secondary" onclick="submitRewrite()" style="padding: 6px 12px; margin-left: 10px;">Tentar Novamente</button>'
-             : 'Houve um erro no ajuste. <button class="secondary" onclick="submitRewrite()" style="padding: 6px 12px; margin-left: 10px;">Tentar Novamente</button>';
-         }
+         clearInterval(tmOut);
+         alert("Houve um erro enviando a correção.");
+         navTo('screen-options');
        }
     }
 
@@ -401,9 +400,8 @@
        
        try {
           // Cria carga completa da matéria unindo rascunhos e correções do preview
-          const targetId = DRAFT.id || STATE.materia_id;
           const payload = {
-            id: targetId,
+            id: STATE.materia_id,
             author: currentUser.name,
             authorId: currentUser.id,
             title: STATE.data.final_titulo,
@@ -420,12 +418,10 @@
             deleted: false
           };
           
-          let finalArticle;
-          if (DRAFT.id) {
-            finalArticle = await Driver.updateArticle(DRAFT.id, payload);
-            if (!finalArticle) finalArticle = await Driver.addArticle(payload);
-          } else {
-            finalArticle = await Driver.addArticle(payload);
+          const savedArticle = await Driver.addArticle(payload);
+          // Update local ID with the one returned from the backend/Supabase
+          if (savedArticle && savedArticle.id) {
+            STATE.materia_id = savedArticle.id;
           }
 
           // Tenta acionar consentimento persistente no DB online
@@ -434,7 +430,7 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               user_id: currentUser.id,
-              materia_id: finalArticle.id,
+              materia_id: STATE.materia_id,
               final_titulo: STATE.data.final_titulo,
               final_corpo: STATE.data.final_corpo
             })
@@ -445,7 +441,7 @@
 
           // Deslocar para a página da matéria final (Segunda tela da foto do usuário)
           setTimeout(() => {
-             window.location.href = 'materia.html?id=' + finalArticle.id;
+             window.location.href = 'materia.html?id=' + STATE.materia_id;
           }, 2000);
 
        } catch(e) {

@@ -351,7 +351,7 @@ function renderCompose() {
         </div>
 
         <div class="form-field"><label class="form-label" style="display:flex;justify-content:space-between"><span>Categoria do Automobilismo</span><span style="font-size:10px;color:var(--dim);text-transform:none">Associar à matéria</span></label>
-          <select class="form-select" id="compCategory">
+          <select class="form-select" id="compCategory" onchange="document.getElementById('compCategoryCustom').style.display = this.value === '__custom' ? 'block' : 'none'">
             ${(USER.categories?.length ? USER.categories : (USER.category ? USER.category.split(',').map(c=>c.trim()) : [])).map(c => `<option value="${c}" selected>${c.includes(' - ') ? c.split(' - ')[1] : c}</option>`).join('')}
             <optgroup label="Categorias Internacionais">
               <option value="F1">Fórmula 1</option>
@@ -376,8 +376,9 @@ function renderCompose() {
               <option value="Kart">Kart</option>
               <option value="F-Vee">Fórmula Vee</option>
             </optgroup>
-            <option value="Notícia Geral">Geral / Outras</option>
+            <option value="__custom">Geral / Outras (Digitar manualmente...)</option>
           </select>
+          <input class="form-input" id="compCategoryCustom" type="text" placeholder="Qual categoria?..." style="display:none;margin-top:8px">
         </div>
 
       </div>
@@ -397,7 +398,10 @@ function _getFinalBrief() {
   if (type === '__custom') {
     type = document.getElementById('compTypeCustom')?.value || 'Outro';
   }
-  const cat = document.getElementById('compCategory')?.value || 'N/A';
+  let cat = document.getElementById('compCategory')?.value || 'N/A';
+  if (cat === '__custom') {
+    cat = document.getElementById('compCategoryCustom')?.value || 'N/A';
+  }
   if(brief) brief = `[Contexto: ${type}]\n[Categoria Relacionada: ${cat}]\n\n` + brief;
 
   
@@ -494,7 +498,10 @@ function renderComposeImgGrid() {
 function saveDraft() {
   const t = document.getElementById('compTitle')?.value;
   if (!t) { showToast('Informe o título', 'err'); return; }
-  const c = document.getElementById('compCategory')?.value || '';
+  let c = document.getElementById('compCategory')?.value || '';
+  if (c === '__custom') {
+    c = document.getElementById('compCategoryCustom')?.value || '';
+  }
   
   const payload = {
     authorId: USER.id,
@@ -1345,7 +1352,21 @@ function showSection(name, btnEl) {
       if (art) {
         document.getElementById('compTitle').value = art.title || '';
         document.getElementById('compBrief').value = art.brief || '';
-        if (art.category) document.getElementById('compCategory').value = art.category;
+        if (art.category) {
+          const catSelect = document.getElementById('compCategory');
+          if (Array.from(catSelect.options).some(o => o.value === art.category)) {
+            catSelect.value = art.category;
+            const customIn = document.getElementById('compCategoryCustom');
+            if(customIn) customIn.style.display = 'none';
+          } else {
+            catSelect.value = '__custom';
+            const customIn = document.getElementById('compCategoryCustom');
+            if(customIn) {
+               customIn.style.display = 'block';
+               customIn.value = art.category;
+            }
+          }
+        }
         composeImages = art.images && art.images.length ? [...art.images] : (art.img ? [art.img] : []);
         setTimeout(() => renderComposeImgGrid(), 50);
       }
