@@ -299,11 +299,9 @@ const Driver = (() => {
   }
 
   async function updateArticle(id, updates) {
-    const idx = __dbArticles.findIndex(a => a.id === id);
-    if (idx === -1) return null;
-    __dbArticles[idx] = { ...__dbArticles[idx], ...updates };
+    let idx = __dbArticles.findIndex(a => a.id === id);
     
-    // ATUALIZAR no Supabase via API
+    // ATUALIZAR no Supabase via API de forma direta para evitar race condition
     try {
       const resp = await fetch('/api/db/articles', {
         method: 'PUT',
@@ -312,14 +310,35 @@ const Driver = (() => {
       });
       const data = await resp.json();
       if (data.success && data.article) {
-        __dbArticles[idx] = { ...__dbArticles[idx], ...data.article, id: data.article.id };
+        if (idx !== -1) {
+          __dbArticles[idx] = { ...__dbArticles[idx], ...data.article, id: data.article.id };
+        } else {
+          // It existed in the database but our local array hadn't fetched it yet. Add it now!
+          __dbArticles.push({
+            ...data.article,
+            authorId: data.article.author_id,
+            publishedAt: data.article.published_at,
+            submittedAt: data.article.submitted_at
+          });
+          idx = __dbArticles.length - 1;
+        }
+      } else {
+        if (idx === -1) return null;
       }
     } catch(err) {
-      console.warn('API DB inacessível na atualização, mantendo local.', err);
+      console.warn('API DB inacessível na atualização, mantendo local se existir.', err);
+      if (idx === -1) return null;
     }
 
-    save(KEYS.articles, __dbArticles);
-    return __dbArticles[idx];
+    if (idx !== -1) {
+      if (__dbArticles[idx].deleted) {
+         // Opcional: remover lógicamente
+         __dbArticles[idx].deleted = true;
+      }
+      save(KEYS.articles, __dbArticles);
+      return __dbArticles[idx];
+    }
+    return null;
   }
 
   async function changeArticleStatus(id, newStatus) {

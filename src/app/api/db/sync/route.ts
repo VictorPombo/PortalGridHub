@@ -23,9 +23,21 @@ export async function GET() {
     if (!usersRes.ok) throw new Error(await usersRes.text());
     const users = await usersRes.json();
 
-    // Articles can stay on SDK (no new columns added there)
-    const { data: articles, error: errArticles } = await supabase.from('articles').select('*');
-    if (errArticles) throw errArticles;
+    // Como a coluna 'deleted' foi adicionada direto no banco fora das migrations originiais, 
+    // precisamos ler via RAW REST para contornar o cache do PostgREST SDK.
+    const articlesRes = await fetch(
+      `${supabaseUrl}/rest/v1/articles?select=*`,
+      {
+        method: 'GET',
+        headers: {
+          'apikey': serviceKey,
+          'Authorization': `Bearer ${serviceKey}`,
+        },
+        cache: 'no-store',
+      }
+    );
+    if (!articlesRes.ok) throw new Error(await articlesRes.text());
+    const articles = await articlesRes.json();
 
     return NextResponse.json({ success: true, users, articles });
   } catch (error: any) {

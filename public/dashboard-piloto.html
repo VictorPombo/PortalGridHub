@@ -101,7 +101,7 @@ if (!USER) {
 // ============================
 // Atualiza "Minha Página" com ID do piloto logado
 function __renderDashboardNav() {
-  document.querySelector('a[href="piloto.html"]').href = '/usuario/' + (USER.slug || USER.id);
+  document.querySelector('a[href="piloto.html"]').href = 'piloto.html?id=' + USER.id;
 
   document.getElementById('navUserInfo').innerHTML = `
     <span style="font-family:var(--fm);font-size:10px;color:var(--dim)" class="hide-mob">${USER.name || 'Piloto'}</span>
@@ -139,7 +139,12 @@ function renderOverview() {
   document.getElementById('sec-overview').innerHTML = `
     <div class="dash-header">
       <h1>Visão Geral</h1>
-      <div class="dash-header-actions"><button class="btn-primary" onclick="showSection('compose')"><i class="fi fi-rr-pencil"></i> Nova Matéria</button></div>
+      <div class="dash-header-actions">
+        ${stats.remaining > 0 
+          ? `<button class="btn-primary" onclick="showSection('compose')"><i class="fi fi-rr-pencil"></i> Nova Matéria</button>`
+          : `<button class="btn-primary" style="opacity:0.5;cursor:not-allowed" onclick="showToast('Limite do plano atingido! Assine para gerar mais matérias.','err')"><i class="fi fi-rr-lock"></i> Limite Atingido</button>`
+        }
+      </div>
     </div>
     <div class="stat-grid">
       <div class="stat-card accent">
@@ -742,7 +747,7 @@ function republishArticle(id) {
   renderOverview(); renderArticles();
 }
 function previewArticle(id) {
-  window.open(`/materia/${id}`, '_blank');
+  window.open(`materia.html?id=${id}`, '_blank');
 }
 function deleteMyArticle(id) {
   const overlay = document.createElement('div');
@@ -778,7 +783,7 @@ function deleteMyArticle(id) {
 function renderProfile() {
   const gallery = USER.gallery || [];
   document.getElementById('sec-profile').innerHTML = `
-    <div class="dash-header"><h1>Editar Perfil</h1><span style="font-family:var(--fm);font-size:11px;color:var(--dim)">Todas as alterações refletem em <a href="/usuario/${USER.slug || USER.id}" style="color:var(--acc)">Minha Página</a></span></div>
+    <div class="dash-header"><h1>Editar Perfil</h1><span style="font-family:var(--fm);font-size:11px;color:var(--dim)">Todas as alterações refletem em <a href="piloto.html?id=${USER.id}" style="color:var(--acc)">Minha Página</a></span></div>
     <div class="profile-grid">
       <div class="profile-section">
 
@@ -963,7 +968,7 @@ function renderProfile() {
         <div class="form-field"><label class="form-label">WhatsApp Contato</label><input class="form-input" id="profWhatsapp" type="text" placeholder="(11) 99999-9999" value="${USER.whatsapp || ''}"></div>
 
         <button class="btn-primary" onclick="saveProfile()" style="margin-top:24px;width:100%;font-size:16px;padding:14px">💾 SALVAR TODOS OS DADOS</button>
-        <div class="form-hint" style="text-align:center;margin-top:8px">Após salvar, acesse <a href="/usuario/${USER.slug || USER.id}" style="color:var(--acc)">Minha Página</a> para ver as alterações</div>
+        <div class="form-hint" style="text-align:center;margin-top:8px">Após salvar, acesse <a href="piloto.html?id=${USER.id}" style="color:var(--acc)">Minha Página</a> para ver as alterações</div>
       </div>
     </div>
     </div>
