@@ -129,19 +129,19 @@ function inferCategory(item: any, feedCat: string): string {
   ).toLowerCase();
 
   // ── MotoGP (antes de F1 porque "moto" pode dar match falso) ──
-  if (text.includes('motogp') || text.includes('moto gp') || text.includes('moto2') || text.includes('moto3') || text.includes('motoe') || text.includes('superbike') || text.includes('sbk') || text.includes('ducati') && text.includes('moto')) return 'MotoGP';
+  if (text.includes('motogp') || text.includes('moto gp') || text.includes('moto2') || text.includes('moto3') || text.includes('motoe') || text.includes('superbike') || text.includes('sbk') || (text.includes('ducati') && text.includes('moto'))) return 'MotoGP';
   
   // ── Stock Car / Corridas BR ──
   if (text.includes('stock car') || text.includes('stockcar') || text.includes('copa truck') || text.includes('porsche cup') || text.includes('porsche supercup') || text.includes('fórmula 4 brasil') || text.includes('f4 brasil') || text.includes('copa hyundai') || text.includes('corridas de turismo')) return 'Stock Car';
 
   // ── WEC / Endurance ──
-  if (text.includes('wec') || text.includes('le mans') || text.includes('endurance') || text.includes('hypercar') || text.includes('lmgt') || text.includes('24 horas') || text.includes('imsa') || text.includes('daytona') && !text.includes('nascar') || text.includes('sebring') || text.includes('lmdh')) return 'WEC';
+  if (text.includes('wec') || text.includes('le mans') || text.includes('endurance') || text.includes('hypercar') || text.includes('lmgt') || text.includes('24 horas') || text.includes('imsa') || (text.includes('daytona') && !text.includes('nascar')) || text.includes('sebring') || text.includes('lmdh')) return 'WEC';
 
   // ── NASCAR ──
   if (text.includes('nascar') || text.includes('cup series') || text.includes('xfinity') || text.includes('craftsman truck')) return 'NASCAR';
 
   // ── IndyCar ──
-  if (text.includes('indycar') || text.includes('indy 500') || text.includes('indianapolis') || text.includes('caio collet') && text.includes('indy') || text.includes('fórmula indy')) return 'IndyCar';
+  if (text.includes('indycar') || text.includes('indy 500') || text.includes('indianapolis') || (text.includes('caio collet') && text.includes('indy')) || text.includes('fórmula indy')) return 'IndyCar';
 
   // ── WRC / Rally ──
   if (text.includes('wrc') || text.includes('rally') || text.includes('rali') || text.includes('dakar') || text.includes('ogier') || text.includes('t\u00e4nak') || text.includes('neuville') || text.includes('rallycross')) return 'WRC';

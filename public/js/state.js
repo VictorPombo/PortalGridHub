@@ -71,7 +71,7 @@ const Driver = (() => {
 
   const PLAN_LIMITS = {
     starter: 1,
-    pro: 2,
+    pro: 4, // Temporário para testes (original era 2)
     equipe: 10,
     categoria: 30,
     admin: 999999, // Sem limite de postagens

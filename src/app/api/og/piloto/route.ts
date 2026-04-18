@@ -3,7 +3,7 @@ import { supabaseAdmin as supabase } from '../../../../lib/supabase';
 import fs from 'fs';
 import path from 'path';
 
-export const revalidate = 300;
+export const revalidate = 0;
 
 export async function GET(request: Request) {
   try {
@@ -26,7 +26,10 @@ export async function GET(request: Request) {
         const title = (pilot.name || 'Piloto Driver News').replace(/"/g, '&quot;');
         const cat = pilot.category || 'Automobilismo';
         const desc = `Confira o perfil, currículo e vitórias do piloto ${title} na Driver News. Categoria: ${cat}.`.replace(/"/g, '&quot;');
-        const imgUrl = pilot.avatar_url || pilot.cover_url || 'https://www.drivernews.com.br/images/share.jpg';
+        let imgUrl = pilot.avatar_url || pilot.cover_url || 'https://www.drivernews.com.br/images/share.jpg';
+        if (imgUrl.startsWith('data:image/')) {
+          imgUrl = `https://www.drivernews.com.br/api/image?type=pilot&id=${id}`;
+        }
         const canonicalUrl = `https://www.drivernews.com.br/piloto.html?id=${id}`;
         const siteName = 'Driver News';
 

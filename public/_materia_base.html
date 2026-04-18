@@ -161,12 +161,16 @@
 <script src="/js/core.js"></script>
 <script src="/js/state.js?v=20260418"></script>
 <script>
-  lucide.createIcons();
+  if (window.lucide) { lucide.createIcons(); }
   
   if (Driver.isLoggedIn()) {
     const u = Driver.getCurrentUser();
-    const dash = u.type === 'equipe' ? 'dashboard-equipe.html' : u.type === 'categoria' ? 'dashboard-categoria.html' : 'dashboard-piloto.html';
-    document.getElementById('navRight').innerHTML = '<a href="'+dash+'" class="btn-nav-action">Meu Painel</a>';
+    if (u) {
+      const dash = u.type === 'equipe' ? 'dashboard-equipe.html' : u.type === 'categoria' ? 'dashboard-categoria.html' : 'dashboard-piloto.html';
+      document.getElementById('navRight').innerHTML = '<a href="'+dash+'" class="btn-nav-action">Meu Painel</a>';
+    } else {
+      document.getElementById('navRight').innerHTML = '<a href="/dashboard-piloto.html" class="btn-nav-action">Meu Painel</a>';
+    }
   }
 
   const params = new URLSearchParams(window.location.search);
@@ -181,16 +185,26 @@
         <a href="/index.html" class="btn-primary skew glow-acc">Voltar para a Capa</a>
       </div>
     `;
-    lucide.createIcons();
+    if (window.lucide) lucide.createIcons();
   }
 
   if (!articleId) {
     renderError();
   } else {
-    let attempts = 0;
-    
-    function tryLoad() {
-      const a = Driver.getArticleById(articleId);
+    async function loadArticleData() {
+      // 1. Tentar ler do cache local
+      let a = Driver.getArticleById(articleId);
+      
+      // 2. Se não encontrou no cache, força a comunicação com a API remota!
+      if (!a) {
+         try {
+           await Driver.bootSupabase();
+           a = Driver.getArticleById(articleId);
+         } catch(e) {
+           console.warn('Erro ao carregar banco remoto:', e);
+         }
+      }
+
       if (a) {
         // Increment views
         Driver.updateArticle(a.id, { views: (a.views || 0) + 1 });
@@ -198,7 +212,7 @@
 
         const author = Driver.getUserById(a.authorId);
         const authorName = author ? author.name : 'Redação Driver News';
-        const authorImg = author ? (author.avatar_url || ('https://loremflickr.com/100/100/driver?lock='+parseInt(author.id.replace(/\\D/g,'')))) : 'https://loremflickr.com/100/100/news';
+        const authorImg = author ? (author.avatar_url || ('https://loremflickr.com/100/100/driver?lock='+parseInt((author.id||'0').replace(/\\D/g,'')))) : 'https://loremflickr.com/100/100/news';
         
         document.title = a.title + ' — Driver News';
 
@@ -209,36 +223,33 @@
               <h1 class="m-title">${a.title}</h1>
               
               <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:32px;">
-                <div class="m-author" onclick="window.location='/piloto.html?id=${author ? author.id : ''}'" style="margin-bottom:0">
+                <div class="m-author" onclick="window.location='/piloto.html?id=${author ? (author.slug || author.id) : ''}'" style="margin-bottom:0">
                   <img src="${authorImg}" class="m-author-img" alt="">
                   <div class="m-author-info">
                     <span class="m-author-name">${authorName} ${author && author.plan && author.plan !== 'free' ? '<i data-lucide="badge-check" style="width:14px;height:14px;color:var(--acc);display:inline-block;vertical-align:middle;margin-top:-2px"></i>' : ''}</span>
                     Publicado em ${Driver.formatDate(a.publishedAt || a.submittedAt || new Date().toISOString())} · ${a.views} visualizações
                   </div>
                 </div>
-                ${(author && author.instagram) ? \`<a href="https://instagram.com/${author.instagram.replace('@','')}" target="_blank" class="btn-primary skew glow-acc" style="font-size:11px;padding:8px 16px"><i data-lucide="instagram" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom;margin-right:6px"></i> Seguir Piloto</a>\` : ''}
+                ${(author && author.instagram) ? '<a href="https://instagram.com/' + author.instagram.replace('@','') + '" target="_blank" class="btn-primary skew glow-acc" style="font-size:11px;padding:8px 16px"><i data-lucide="instagram" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom;margin-right:6px"></i> Seguir Piloto</a>' : ''}
               </div>
             </div>
           </header>
 
           <main class="m-content">
-            ${a.img && a.img !== 'null' ? '<img src="'+a.img+'" class="m-content-img" alt="" onerror="this.style.display=\'none\'">' : ''}
+            ${a.img && a.img !== 'null' ? '<img src="'+a.img+'" class="m-content-img" alt="" onerror="this.style.display=\'none\';">' : ''}
             
             <article class="m-body">
               ${a.body || '<p>O conteúdo completo desta matéria não está disponível.</p>'}
             </article>
           </main>
         `;
-        lucide.createIcons();
-      } else if (attempts < 20) {
-        attempts++;
-        setTimeout(tryLoad, 250); // wait max 5 seconds
+        if (window.lucide) lucide.createIcons();
       } else {
         renderError();
       }
     }
     
-    tryLoad();
+    loadArticleData();
   }
 </script>
 </body>

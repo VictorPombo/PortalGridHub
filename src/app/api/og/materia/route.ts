@@ -3,7 +3,7 @@ import { supabaseAdmin as supabase } from '../../../../lib/supabase';
 import fs from 'fs';
 import path from 'path';
 
-export const revalidate = 300;
+export const revalidate = 0;
 
 export async function GET(request: Request) {
   try {
@@ -27,7 +27,11 @@ export async function GET(request: Request) {
       if (article) {
         const title = (article.title || 'Driver News — Matéria').replace(/"/g, '&quot;');
         const desc = (article.brief || 'Leia esta matéria exclusiva na Driver News.').replace(/"/g, '&quot;');
-        const imgUrl = article.img || 'https://www.drivernews.com.br/images/share.jpg';
+        let imgUrl = article.img || 'https://www.drivernews.com.br/images/share.jpg';
+        if (imgUrl.startsWith('data:image/')) {
+          imgUrl = `https://www.drivernews.com.br/api/image?type=article&id=${id}`;
+        }
+
         const canonicalUrl = `https://www.drivernews.com.br/materia.html?id=${id}`;
         const siteName = 'Driver News';
 

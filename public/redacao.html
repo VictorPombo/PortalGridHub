@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Driver News — Redação IA</title>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet">
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/quill-blot-formatter@1.0.5/dist/quill-blot-formatter.min.js"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     :root {
@@ -132,7 +135,8 @@
   <div id="screen-editor" class="screen" style="justify-content: flex-start; padding-top: 60px;">
     <h1>Editor Manual</h1>
     <input type="text" id="ed-in-title" class="ed-title" placeholder="Título da Matéria">
-    <textarea id="ed-in-body" class="ed-body" placeholder="Corpo da Matéria... <p>HTML permitido</p>"></textarea>
+    <div id="editor-gallery"></div>
+    <div id="ed-in-body" class="ed-body" style="height:400px;background:var(--bg1);"></div>
     
     <div class="actions">
       <button class="secondary" onclick="navTo('screen-preview')">CANCELAR</button>
@@ -325,25 +329,80 @@
     // Antigo Polling via Supabase - Desativado para bypass direto
     function startPolling() {}
 
+    let quillInstance = null;
+
     function renderPreview() {
       document.getElementById('prev-title').textContent = STATE.data.final_titulo || 'Sem Título';
       document.getElementById('prev-body').innerHTML = STATE.data.final_corpo || '<p>Erro ao ler o corpo</p>';
       
       // Update form editors
       document.getElementById('ed-in-title').value = STATE.data.final_titulo || '';
-      document.getElementById('ed-in-body').value = STATE.data.final_corpo || '';
+      if (document.getElementById('ed-in-body').tagName.toLowerCase() === 'textarea') {
+         document.getElementById('ed-in-body').value = STATE.data.final_corpo || '';
+      }
+    }
+
+    function insertImageToQuill(url) {
+      if (!quillInstance) return;
+      const range = quillInstance.getSelection(true) || { index: 0 };
+      quillInstance.insertEmbed(range.index, 'image', url);
+      quillInstance.setSelection(range.index + 1);
     }
 
     function openManualEditor() {
       navTo('screen-editor');
+      
+      if (!quillInstance) {
+        if (window.Quill && window.QuillBlotFormatter) {
+           Quill.register('modules/blotFormatter', QuillBlotFormatter.default);
+        }
+        quillInstance = new Quill('#ed-in-body', {
+          theme: 'snow',
+          modules: {
+            blotFormatter: {},
+            toolbar: [
+              ['bold', 'italic', 'underline', 'strike'],
+              ['blockquote'],
+              [{ 'header': 1 }, { 'header': 2 }],
+              [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+              ['clean']
+            ]
+          }
+        });
+        
+        // Estilizar barra e texto para modo escuro
+        const qlToolbar = document.querySelector('.ql-toolbar');
+        if (qlToolbar) {
+           qlToolbar.style.background = 'rgba(255,255,255,0.05)';
+           qlToolbar.style.border = '1px solid rgba(255,255,255,0.1)';
+           document.querySelectorAll('.ql-stroke').forEach(el => el.style.stroke = '#fff');
+           document.querySelectorAll('.ql-fill').forEach(el => el.style.fill = '#fff');
+           document.querySelectorAll('.ql-picker-label').forEach(el => el.style.color = '#fff');
+        }
+        
+        const qlEditor = document.querySelector('.ql-editor');
+        if (qlEditor) {
+           qlEditor.style.color = '#fff';
+        }
+
+        // Criar a galeria de fotos enviadas pelo usuario
+        if (DRAFT && DRAFT.fotos && DRAFT.fotos.length > 0) {
+          let galHtml = '<div style="margin-top:16px; margin-bottom:8px; font-size:14px; color:var(--dim)">📸 Clique em uma imagem que você fez upload para inserí-la no texto onde o cursor estiver:</div><div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:12px">';
+          DRAFT.fotos.forEach(foto => {
+             galHtml += `<img src="${foto}" alt="Upload" title="Inserir esta imagem na redação" style="height:60px;border-radius:4px;cursor:pointer;border:1px solid rgba(255,255,255,0.2);transition:transform 0.1s" onclick="insertImageToQuill('${foto}')" onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform='none'">`;
+          });
+          galHtml += '</div>';
+          document.getElementById('editor-gallery').innerHTML = galHtml;
+        }
+      }
+      
+      quillInstance.root.innerHTML = STATE.data.final_corpo || '';
     }
 
     async function saveManualEdit() {
       const nt = document.getElementById('ed-in-title').value;
-      const nb = document.getElementById('ed-in-body').value;
+      const nb = quillInstance ? quillInstance.root.innerHTML : document.getElementById('ed-in-body').value;
       
-      // Salario em um caso real faria POST pro banco tb.
-      // Para o teste assumimos a UI salvando na variavel antes de publicar
       STATE.data.final_titulo = nt;
       STATE.data.final_corpo = nb;
       
