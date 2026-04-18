@@ -2,7 +2,6 @@ import Parser from 'rss-parser';
 import { NextResponse } from 'next/server';
 
 export const revalidate = 600; // 10 min cache (notícias mais frescas)
-export const dynamic = 'force-dynamic';
 
 export interface NewsItem {
   id: string;
