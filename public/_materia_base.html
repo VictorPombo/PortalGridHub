@@ -8,9 +8,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
 <script src="https://unpkg.com/lucide@latest"></script>
-<link rel="stylesheet" href="css/core.css?v=20260417_0320">
-<link rel="stylesheet" href="css/carbon.css">
-<link rel="stylesheet" href="css/homepage.css">
+<link rel="stylesheet" href="/css/core.css?v=20260417_0320">
+<link rel="stylesheet" href="/css/carbon.css">
+<link rel="stylesheet" href="/css/homepage.css">
 <style>
   .materia-header {
     background: var(--bg0);
@@ -130,15 +130,15 @@
 <body class="carbon-bg">
 <nav class="carbon-subtle">
   <div class="nav-inner">
-    <a class="logo" href="index.html">
-      <img src="images/logo.png" alt="Driver News">
+    <a class="logo" href="/index.html">
+      <img src="/images/logo.png" alt="Driver News">
     </a>
     <ul class="nav-links">
-      <li><a href="index.html">Início</a></li>
-      <li><a href="piloto.html">Pilotos</a></li>
+      <li><a href="/index.html">Início</a></li>
+      <li><a href="/piloto.html">Pilotos</a></li>
     </ul>
     <div class="nav-right" id="navRight">
-      <a href="cadastro.html" class="btn-nav-action">Entrar</a>
+      <a href="/cadastro.html" class="btn-nav-action">Entrar</a>
     </div>
   </div>
 </nav>
@@ -150,16 +150,16 @@
 <footer class="carbon-subtle">
   <div class="f-inner">
     <div class="f-grid">
-      <div><div class="f-logo"><img src="images/logo.png" alt="Driver News"></div><p class="f-desc">Mídia digital de automobilismo. Plataforma profissional para pilotos, equipes e categorias.</p></div>
-      <div class="f-col"><h4>Plataforma</h4><ul><li><a href="index.html?view=plans">Planos</a></li><li><a href="cadastro.html">Cadastro</a></li></ul></div>
-      <div class="f-col"><h4>Legal</h4><ul><li><a href="politica.html">Privacidade</a></li><li><a href="termos.html">Termos</a></li></ul></div>
+      <div><div class="f-logo"><img src="/images/logo.png" alt="Driver News"></div><p class="f-desc">Mídia digital de automobilismo. Plataforma profissional para pilotos, equipes e categorias.</p></div>
+      <div class="f-col"><h4>Plataforma</h4><ul><li><a href="/index.html?view=plans">Planos</a></li><li><a href="/cadastro.html">Cadastro</a></li></ul></div>
+      <div class="f-col"><h4>Legal</h4><ul><li><a href="/politica.html">Privacidade</a></li><li><a href="/termos.html">Termos</a></li></ul></div>
     </div>
     <div class="f-bottom"><div class="f-copy">© 2026 DRIVER MEDIA</div><div class="f-love">FEITO COM ❤ PARA QUEM AMA O ESPORTE</div></div>
   </div>
 </footer>
 
-<script src="js/core.js"></script>
-<script src="js/state.js"></script>
+<script src="/js/core.js"></script>
+<script src="/js/state.js"></script>
 <script>
   lucide.createIcons();
   
@@ -170,7 +170,7 @@
   }
 
   const params = new URLSearchParams(window.location.search);
-  const articleId = window.__PRELOADED_ARTICLE_ID || params.get('id');
+  const articleId = params.get('id');
 
   function renderError() {
     document.getElementById('articleContainer').innerHTML = `
@@ -178,7 +178,7 @@
         <i data-lucide="file-x-2" style="width:48px;height:48px;color:var(--danger);margin-bottom:20px;opacity:0.8"></i>
         <h1 style="font-family:var(--fu);font-size:32px;color:var(--fg);margin-bottom:12px;text-transform:uppercase">Matéria Não Encontrada</h1>
         <p style="color:var(--dim);margin-bottom:32px">O conteúdo que você está procurando foi removido ou nunca existiu.</p>
-        <a href="index.html" class="btn-primary skew glow-acc">Voltar para a Capa</a>
+        <a href="/index.html" class="btn-primary skew glow-acc">Voltar para a Capa</a>
       </div>
     `;
     lucide.createIcons();
@@ -209,7 +209,7 @@
               <h1 class="m-title">${a.title}</h1>
               
               <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:32px;">
-                <div class="m-author" onclick="window.location='${author ? '/usuario/'+(author.slug || author.id) : '#'}'" style="margin-bottom:0">
+                <div class="m-author" onclick="window.location='/piloto.html?id=${author ? author.id : ''}'" style="margin-bottom:0">
                   <img src="${authorImg}" class="m-author-img" alt="">
                   <div class="m-author-info">
                     <span class="m-author-name">${authorName} ${author && author.plan && author.plan !== 'free' ? '<i data-lucide="badge-check" style="width:14px;height:14px;color:var(--acc);display:inline-block;vertical-align:middle;margin-top:-2px"></i>' : ''}</span>
