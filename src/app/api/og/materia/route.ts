@@ -19,7 +19,7 @@ export async function GET(request: Request) {
         .from('articles')
         .select(`
           title, brief, body, img, published_at, submitted_at,
-          users:author_id ( name, slug )
+          users:author_id ( name, id )
         `)
         .eq('id', id)
         .single();
