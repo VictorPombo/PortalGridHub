@@ -646,7 +646,8 @@ async function submitArticle() {
   sessionStorage.setItem('draft_materia', JSON.stringify({
     titulo: t,
     contexto: finalBrief,
-    fotos: typeof composeImages !== 'undefined' ? composeImages : []
+    fotos: typeof composeImages !== 'undefined' ? composeImages : [],
+    id: typeof currentComposeId !== 'undefined' ? currentComposeId : null
   }));
 
   window.location.href = 'redacao.html';

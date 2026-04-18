@@ -344,32 +344,48 @@
        navTo('screen-loading');
        document.getElementById('loading-title').textContent = 'Aplicando suas correções...';
        document.getElementById('loading-desc').textContent = 'Nossa equipe de IA está ajustando a matéria conforme seu pedido.';
-       startTimer(45);
+       
+       const spinner = document.getElementById('loading-spinner');
+       if (spinner) spinner.style.display = 'block';
+
+       const controller = new AbortController();
+       const timeoutId = setTimeout(() => controller.abort(), 30000);
 
        try {
-         const res = await fetch('/api/redacao/rewrite', {
+         const res = await fetch('/api/ai-enhance', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-               materia_id: STATE.materia_id,
-               instructions: inst,
-               final_titulo: STATE.data.final_titulo,
-               final_corpo: STATE.data.final_corpo,
-               ia_versao: STATE.data.ia_versao || 1
-            })
+               tipoCampo: 'article',
+               textoOriginal: STATE.data.final_corpo,
+               contexto: 'ATENÇÃO: O Piloto pediu uma alteração neste conteúdo da matéria. Aplique APENAS O QUE FOI PEDIDO AQUI e mantenha o resto como estava: "' + inst + '"'
+            }),
+            signal: controller.signal
          });
          
+         clearTimeout(timeoutId);
          const json = await res.json();
-         if(!json.success) throw new Error(json.error);
+         if(!json.enhancedText) throw new Error(json.error || 'Erro na re-geração da matéria');
+         
+         STATE.data.final_corpo = json.enhancedText;
+         STATE.data.ia_versao = (STATE.data.ia_versao || 1) + 1;
          
          document.getElementById('chat-instruction').value = '';
-         startPolling();
+         
+         renderPreview();
+         navTo('screen-preview');
 
        } catch(e) {
+         clearTimeout(timeoutId);
          console.error(e);
-         clearInterval(tmOut);
-         alert("Houve um erro enviando a correção.");
-         navTo('screen-options');
+         if (spinner) spinner.style.display = 'none';
+         const errEl = document.getElementById('loading-error');
+         if (errEl) {
+           errEl.style.display = 'block';
+           errEl.innerHTML = e.name === 'AbortError' 
+             ? 'A requisição demorou demais. <button class="secondary" onclick="submitRewrite()" style="padding: 6px 12px; margin-left: 10px;">Tentar Novamente</button>'
+             : 'Houve um erro no ajuste. <button class="secondary" onclick="submitRewrite()" style="padding: 6px 12px; margin-left: 10px;">Tentar Novamente</button>';
+         }
        }
     }
 
@@ -385,8 +401,9 @@
        
        try {
           // Cria carga completa da matéria unindo rascunhos e correções do preview
+          const targetId = DRAFT.id || STATE.materia_id;
           const payload = {
-            id: STATE.materia_id,
+            id: targetId,
             author: currentUser.name,
             authorId: currentUser.id,
             title: STATE.data.final_titulo,
@@ -403,7 +420,13 @@
             deleted: false
           };
           
-          await Driver.addArticle(payload);
+          let finalArticle;
+          if (DRAFT.id) {
+            finalArticle = await Driver.updateArticle(DRAFT.id, payload);
+            if (!finalArticle) finalArticle = await Driver.addArticle(payload);
+          } else {
+            finalArticle = await Driver.addArticle(payload);
+          }
 
           // Tenta acionar consentimento persistente no DB online
           fetch('/api/redacao/consent', {
@@ -411,7 +434,7 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               user_id: currentUser.id,
-              materia_id: STATE.materia_id,
+              materia_id: finalArticle.id,
               final_titulo: STATE.data.final_titulo,
               final_corpo: STATE.data.final_corpo
             })
@@ -422,7 +445,7 @@
 
           // Deslocar para a página da matéria final (Segunda tela da foto do usuário)
           setTimeout(() => {
-             window.location.href = 'materia.html?id=' + STATE.materia_id;
+             window.location.href = 'materia.html?id=' + finalArticle.id;
           }, 2000);
 
        } catch(e) {

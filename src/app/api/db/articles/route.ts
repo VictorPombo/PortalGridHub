@@ -27,7 +27,8 @@ export async function POST(request: Request) {
           img: body.img || '',
           status: body.status || 'draft',
           category: body.category || '',
-          submitted_at: body.status === 'sent' ? new Date().toISOString() : null
+          submitted_at: body.status === 'sent' ? new Date().toISOString() : null,
+          published_at: body.status === 'published' ? (body.publishedAt || new Date().toISOString()) : null
         }
       ])
       .select()
