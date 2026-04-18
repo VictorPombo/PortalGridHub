@@ -92,7 +92,7 @@ export async function POST(req: Request) {
       await supabase
         .from("users")
         .update({ 
-          is_active: true,
+          status: 'active',
           plan: plan
         })
         .eq("id", userId)
@@ -116,7 +116,7 @@ export async function POST(req: Request) {
       if (diasAtraso >= 3) {
         await supabase
           .from("users")
-          .update({ is_active: false })
+          .update({ status: 'inactive' })
           .eq("id", userId)
 
         console.log(`[Webhook] Inadimplência ${diasAtraso} dias: usuário ${userId} desativado.`);
@@ -162,7 +162,7 @@ export async function POST(req: Request) {
         // bloqueia usuário
         await supabase
           .from("users")
-          .update({ is_active: false })
+          .update({ status: 'inactive' })
           .eq("id", sub.user_id)
       }
 
@@ -186,7 +186,7 @@ export async function POST(req: Request) {
       // Desativa o usuário (reembolso = perda de acesso)
       await supabase
         .from("users")
-        .update({ is_active: false })
+        .update({ status: 'inactive' })
         .eq("id", userId)
 
       console.log(`[Webhook] Reembolso/Exclusão: usuário ${userId} desativado.`);
