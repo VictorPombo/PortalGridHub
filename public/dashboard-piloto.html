@@ -742,7 +742,7 @@ function republishArticle(id) {
   renderOverview(); renderArticles();
 }
 function previewArticle(id) {
-  window.open(`materia.html?id=${id}`, '_blank');
+  window.open(`/materia/${id}`, '_blank');
 }
 function deleteMyArticle(id) {
   const overlay = document.createElement('div');

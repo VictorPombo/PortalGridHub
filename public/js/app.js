@@ -219,7 +219,7 @@ function subNext(step){
 
 /* ══ ARTICLE MODAL ══ */
 function openArticle(id){
-  window.location.href = 'materia.html?id=' + id;
+  window.location.href = '/materia/' + id;
 }
 
 /* ══ EXTERNAL LINK ══ */
@@ -846,7 +846,7 @@ async function loadLiveNews() {
             badge: 'b-' + slugCat,
             kicker: 'PILOTO VERIFICADO',
             title: a.title,
-            link: 'materia.html?id=' + a.id,
+            link: '/materia/' + a.id,
             author: a.authorName || 'Portal',
             date: formatNewsDate(a.publishedAt || a.submittedAt || new Date()),
             img: a.img || 'https://images.unsplash.com/photo-1541344983572-c511a5fe03fd?auto=format&fit=crop&w=1200&q=80',
