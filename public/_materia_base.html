@@ -187,11 +187,11 @@
   if (!articleId) {
     renderError();
   } else {
-    setTimeout(() => {
+    let attempts = 0;
+    
+    function tryLoad() {
       const a = Driver.getArticleById(articleId);
-      if (!a) {
-        renderError();
-      } else {
+      if (a) {
         // Increment views
         Driver.updateArticle(a.id, { views: (a.views || 0) + 1 });
         a.views = (a.views || 0) + 1;
@@ -205,33 +205,40 @@
         document.getElementById('articleContainer').innerHTML = `
           <header class="materia-header">
             <div class="materia-wrap">
-              <span class="m-cat">${a.category || 'Notícia'}</span>
-              <h1 class="m-title">${a.title}</h1>
+              <span class="m-cat">\${a.category || 'Notícia'}</span>
+              <h1 class="m-title">\${a.title}</h1>
               
               <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:32px;">
-                <div class="m-author" onclick="window.location='/piloto.html?id=${author ? author.id : ''}'" style="margin-bottom:0">
-                  <img src="${authorImg}" class="m-author-img" alt="">
+                <div class="m-author" onclick="window.location='/piloto.html?id=\${author ? author.id : ''}'" style="margin-bottom:0">
+                  <img src="\${authorImg}" class="m-author-img" alt="">
                   <div class="m-author-info">
-                    <span class="m-author-name">${authorName} ${author && author.plan && author.plan !== 'free' ? '<i data-lucide="badge-check" style="width:14px;height:14px;color:var(--acc);display:inline-block;vertical-align:middle;margin-top:-2px"></i>' : ''}</span>
-                    Publicado em ${Driver.formatDate(a.publishedAt || a.submittedAt || new Date().toISOString())} · ${a.views} visualizações
+                    <span class="m-author-name">\${authorName} \${author && author.plan && author.plan !== 'free' ? '<i data-lucide="badge-check" style="width:14px;height:14px;color:var(--acc);display:inline-block;vertical-align:middle;margin-top:-2px"></i>' : ''}</span>
+                    Publicado em \${Driver.formatDate(a.publishedAt || a.submittedAt || new Date().toISOString())} · \${a.views} visualizações
                   </div>
                 </div>
-                ${(author && author.instagram) ? `<a href="https://instagram.com/${author.instagram.replace('@','')}" target="_blank" class="btn-primary skew glow-acc" style="font-size:11px;padding:8px 16px"><i data-lucide="instagram" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom;margin-right:6px"></i> Seguir Piloto</a>` : ''}
+                \${(author && author.instagram) ? \`<a href="https://instagram.com/\${author.instagram.replace('@','')}" target="_blank" class="btn-primary skew glow-acc" style="font-size:11px;padding:8px 16px"><i data-lucide="instagram" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom;margin-right:6px"></i> Seguir Piloto</a>\` : ''}
               </div>
             </div>
           </header>
 
           <main class="m-content">
-            ${a.img ? '<img src="'+a.img+'" class="m-content-img" alt="">' : ''}
+            \${a.img ? '<img src="'+a.img+'" class="m-content-img" alt="">' : ''}
             
             <article class="m-body">
-              ${a.body || '<p>O conteúdo completo desta matéria não está disponível.</p>'}
+              \${a.body || '<p>O conteúdo completo desta matéria não está disponível.</p>'}
             </article>
           </main>
         `;
         lucide.createIcons();
+      } else if (attempts < 20) {
+        attempts++;
+        setTimeout(tryLoad, 250); // wait max 5 seconds
+      } else {
+        renderError();
       }
-    }, 300); // Simulate network load
+    }
+    
+    tryLoad();
   }
 </script>
 </body>
