@@ -78,12 +78,16 @@
 function toggleSidebar() {
   const sb = document.querySelector('.dash-sidebar');
   const ov = document.getElementById('sidebarOverlay');
+  const layout = document.querySelector('.dash-layout');
   sb.classList.toggle('open');
-  ov.classList.toggle('show', sb.classList.contains('open'));
+  const isOpen = sb.classList.contains('open');
+  ov.classList.toggle('show', isOpen);
+  layout.classList.toggle('sidebar-open', isOpen);
 }
 function closeSidebar() {
   document.querySelector('.dash-sidebar').classList.remove('open');
   document.getElementById('sidebarOverlay').classList.remove('show');
+  document.querySelector('.dash-layout').classList.remove('sidebar-open');
 }
 
 // ============================
