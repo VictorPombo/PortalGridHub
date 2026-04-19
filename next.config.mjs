@@ -11,12 +11,16 @@ const nextConfig = {
 
     return [
       {
-        source: '/',
-        destination: '/index.html',
+        source: '/robots.txt',
+        destination: '/robots.txt',
       },
       {
         source: '/sitemap.xml',
-        destination: '/api/sitemap',
+        destination: '/api/sitemap.xml',
+      },
+      {
+        source: '/',
+        destination: '/index.html',
       },
       {
         source: '/materia.html',
