@@ -1052,22 +1052,28 @@ function renderNewsGrid() {
     const catCls = getCatClass(a.cat);
     const safeUrl = (a.link || '').replace(/'/g, "\\'");
     
+    // Matérias internas usam a imagem direta sem proxy (para evitar erro de hotlinking do Supabase/Unsplash)
+    const imgSrc = a.isReal ? `/api/img-proxy?url=${encodeURIComponent(a.img)}` : a.img;
+    const target = a.isReal ? '_blank' : '_top';
+    const isPremium = !a.isReal;
+    
     return `
-      <a href="${safeUrl}" target="_blank" rel="noopener nofollow" class="news-card" data-cat="${a.cat}" style="text-decoration:none; color:inherit;">
+      <a href="${safeUrl}" target="${target}" rel="${a.isReal ? 'noopener nofollow' : ''}" class="news-card ${isPremium ? 'premium-card' : ''}" data-cat="${a.cat}" style="text-decoration:none; color:inherit;">
         <div class="news-card-thumb">
-          <img src="/api/img-proxy?url=${encodeURIComponent(a.img)}" alt="" loading="lazy">
+          <img src="${imgSrc}" alt="" loading="lazy">
           <span class="news-card-cat ${catCls}">${a.cat.toUpperCase()}</span>
         </div>
         <div class="news-card-body">
           <div class="news-card-source">
-            <span class="source-dot"></span>
-            <span class="source-name">${a.author.toUpperCase()}</span>
+            ${isPremium ? '<i data-lucide="award" style="width:12px;height:12px;color:var(--acc);margin-right:4px"></i>' : '<span class="source-dot"></span>'}
+            <span class="source-name" style="${isPremium ? 'color:var(--acc)' : ''}">${a.author.toUpperCase()}</span>
             <span class="source-date">· ${a.date}</span>
           </div>
           <div class="news-card-title">${a.title}</div>
+          ${isPremium ? `<div class="news-card-excerpt" style="margin-top:6px;font-size:13px;line-height:1.5;color:var(--dim);font-weight:300">${a.abstract || ''}</div>` : ''}
           <div class="news-card-footer">
             <span class="news-card-cta">
-              ${a.isReal ? 'Ler no portal proprietário: ' + a.author : 'Ler matéria completa ↗'}
+              ${a.isReal ? 'Ler portal: ' + a.author : 'Ler matéria completa ↗'}
               ${a.isReal ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:4px; margin-bottom:2px"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>' : ''}
             </span>
           </div>

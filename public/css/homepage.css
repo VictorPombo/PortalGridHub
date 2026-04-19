@@ -82,6 +82,11 @@
 .ncard-bm{background:transparent;border:none;cursor:pointer;color:var(--muted);padding:0;line-height:1;font-size:14px;transition:color .2s}
 .ncard-bm:hover,.ncard-bm.saved{color:var(--acc)}
 
+/* Premium Cards for Internal Articles */
+.premium-card { border-bottom: 2px solid var(--acc); background: rgba(20,20,30,0.4); box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+.premium-card:hover { background: rgba(232,0,45,0.05); transform: translateY(-3px); box-shadow: 0 10px 30px rgba(232,0,45,0.15); }
+.premium-card .news-card-title { font-size: 18px; line-height: 1.25; margin-bottom: 4px; }
+
 /* ============================
    STANDINGS + RACE
    ============================ */
