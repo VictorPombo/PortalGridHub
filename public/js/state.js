@@ -128,7 +128,7 @@ const Driver = (() => {
           avatar: u.avatar || u.name.substring(0, 2).toUpperCase(),
         }));
         
-        __dbArticles = data.articles.filter(a => !a.deleted).map(a => ({
+        __dbArticles = data.articles.map(a => ({
           ...a,
           authorId: a.author_id,
           publishedAt: a.published_at,
@@ -414,8 +414,8 @@ const Driver = (() => {
     const teams = users.filter(u => u.type === 'equipe' && u.is_active);
     const cats = users.filter(u => u.type === 'categoria' && u.is_active);
     const totalActive = pilots.length + teams.length + cats.length;
-    const pending = articles.filter(a => ['sent', 'review', 'approved'].includes(a.status)).length;
-    const totalViews = articles.reduce((s, a) => s + (a.views || 0), 0);
+    const pending = articles.filter(a => ['sent', 'review', 'approved'].includes(a.status) && !a.deleted).length;
+    const totalViews = articles.filter(a => !a.deleted).reduce((s, a) => s + (a.views || 0), 0);
 
     // Revenue calculation
     let revenue = 0;
