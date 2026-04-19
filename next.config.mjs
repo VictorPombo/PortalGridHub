@@ -34,21 +34,5 @@ const nextConfig = {
       },
     ]
   },
-  async redirects() {
-    return [
-      {
-        source: '/:path*',
-        has: [{ type: 'host', value: 'www.drivernews.com.br' }],
-        destination: 'https://drivernews.com.br/:path*',
-        permanent: true,
-      },
-      {
-        source: '/:path*',
-        has: [{ type: 'host', value: 'www.drivernews.com.br:3000' }],
-        destination: 'https://drivernews.com.br/:path*',
-        permanent: true,
-      },
-    ];
-  },
 }
 export default nextConfig;
