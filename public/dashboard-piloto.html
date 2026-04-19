@@ -799,10 +799,7 @@ function previewArticle(id) {
   window.open(`materia.html?id=${id}`, '_blank');
 }
 function shareArticle(id, title) {
-  // O cache-buster (wa_cb) força o robô do WhatsApp a raspar a página ao vivo em vez de usar uma versão velha armazenada nos servidores do FB.
-  const wa_cb = Date.now().toString(36);
-  const url = `https://www.drivernews.com.br/materia.html?id=${id}&wa_cb=${wa_cb}`;
-  
+  const url = `https://www.drivernews.com.br/materia.html?id=${id}`;
   const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(url)}`;
   window.open(waUrl, '_blank');
 }
