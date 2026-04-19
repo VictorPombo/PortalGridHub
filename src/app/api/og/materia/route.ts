@@ -49,17 +49,20 @@ export async function GET(request: Request) {
             imgUrl
           ],
           "datePublished": datePub,
+          "dateModified": datePub,
+          "description": desc,
+          "mainEntityOfPage": canonicalUrl,
           "author": {
             "@type": "Person",
             "name": authorName,
-            "url": `https://www.drivernews.com.br/piloto.html?id=${authorSlug}`
+            "url": `https://drivernews.com.br/piloto.html?id=${authorSlug}`
           },
           "publisher": {
             "@type": "Organization",
             "name": "Driver News",
             "logo": {
               "@type": "ImageObject",
-              "url": "https://www.drivernews.com.br/images/logo.png"
+              "url": "https://drivernews.com.br/images/logo.png"
             }
           }
         };
@@ -94,16 +97,17 @@ ${JSON.stringify(jsonLd)}
         // Injeta as tags no ÍNICIO do <head> para priorizá-las para os robôs do Facebook/WhatsApp
         html = html.replace('<head>', '<head>\n' + metaTags);
         
-        // Injete o texto raw para bots que não rodam JS
+        // Injete o texto raw para bots e SEO lerem nativamente no body
         const rawContent = `
-<noscript>
-  <article>
-    <h1>${title}</h1>
-    <h2>Por ${authorName}</h2>
-    <div>${article.body || desc}</div>
-  </article>
-</noscript>
-<div style="display:none;" aria-hidden="true">${title} ${authorName} ${article.body || desc}</div>
+<style>
+.seo-crawler-content { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
+</style>
+<article class="seo-crawler-content">
+  <h1>${title}</h1>
+  <h2>Por <a href="https://drivernews.com.br/piloto.html?id=${authorSlug}">${authorName}</a></h2>
+  <img src="${imgUrl}" alt="${title}" />
+  <div>${article.body || desc}</div>
+</article>
 `;
         html = html.replace('<body>', '<body>' + rawContent);
       }

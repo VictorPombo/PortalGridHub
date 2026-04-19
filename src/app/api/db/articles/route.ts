@@ -50,6 +50,16 @@ export async function POST(request: Request) {
 
     if (error) throw error;
 
+    // Disparo Assíncrono SEO (Fire And Forget)
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://drivernews.com.br';
+      fetch(`${baseUrl}/api/seo/ping-google`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ articleId: newArticle.id, authorId: newArticle.author_id })
+      }).catch(() => {}); // catch silent
+    } catch (e) { console.error('SEO Ping error no POST:', e); }
+
     return NextResponse.json({ success: true, article: newArticle });
   } catch (error: any) {
     console.error('Add article error:', error);
@@ -119,6 +129,16 @@ export async function PUT(request: Request) {
 
     const rows = await res.json();
     const updatedArticle = rows[0];
+
+    // Disparo Assíncrono SEO (Fire And Forget)
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://drivernews.com.br';
+      fetch(`${baseUrl}/api/seo/ping-google`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ articleId: updatedArticle.id, authorId: updatedArticle.author_id })
+      }).catch(() => {});
+    } catch (e) { console.error('SEO Ping error no PUT:', e); }
 
     return NextResponse.json({ success: true, article: updatedArticle });
   } catch (error: any) {

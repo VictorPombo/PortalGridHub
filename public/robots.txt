@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
-
-Sitemap: https://drivernews.com.br/api/sitemap.xml
+Disallow: /dashboard-piloto.html
+Disallow: /redacao.html
+Disallow: /admin.html
+Disallow: /api/
+Allow: /api/og/
+Sitemap: https://drivernews.com.br/sitemap.xml

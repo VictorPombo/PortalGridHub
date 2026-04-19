@@ -9,19 +9,36 @@ export async function GET() {
   const { data: articles } = await supabase
     .from('articles')
     .select('slug, published_at, submitted_at, id')
-    .not('slug', 'is', null)
+    .eq('deleted', false)
     .eq('status', 'published');
+
+  const { data: pilots } = await supabase
+    .from('users')
+    .select('id, slug, created_at')
+    .eq('status', 'active');
 
   const base = 'https://drivernews.com.br';
 
-  const urls = (articles ?? []).map((a: any) => {
+  const artigoUrls = (articles ?? []).map((a: any) => {
     const rawDate = a.published_at || a.submitted_at || new Date().toISOString();
     return `
   <url>
-    <loc>${base}/materia/${a.slug}</loc>
+    <loc>${base}/materia.html?id=${a.id}</loc>
     <lastmod>${new Date(rawDate).toISOString().split('T')[0]}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+  </url>`;
+  }).join('');
+
+  const pilotoUrls = (pilots ?? []).map((p: any) => {
+    const rawDate = p.created_at || new Date().toISOString();
+    const cleanId = p.slug || p.id;
+    return `
+  <url>
+    <loc>${base}/piloto.html?id=${cleanId}</loc>
+    <lastmod>${new Date(rawDate).toISOString().split('T')[0]}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>`;
   }).join('');
 
@@ -31,7 +48,7 @@ export async function GET() {
     <loc>${base}/</loc>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
-  </url>${urls}
+  </url>${artigoUrls}${pilotoUrls}
 </urlset>`;
 
   return new Response(xml, {

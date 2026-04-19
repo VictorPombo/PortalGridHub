@@ -77,16 +77,17 @@ ${JSON.stringify(jsonLd)}
         html = html.replace(/<title>.*<\/title>/i, '');
         html = html.replace('</head>', metaTags + '</head>');
         
-        // Injete o texto raw para bots que não rodam JS
+        // Injete o texto raw para SEO crawler content
         const rawContent = `
-<noscript>
-  <article>
-    <h1>Piloto: ${title}</h1>
-    <h2>Categoria: ${cat}</h2>
-    <div>${desc}</div>
-  </article>
-</noscript>
-<div style="display:none;" aria-hidden="true">${title} ${cat} piloto automobilismo ${pilot.sponsors || ''}</div>
+<style>
+.seo-crawler-content { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
+</style>
+<div class="seo-crawler-content">
+  <h1>Piloto: ${title}</h1>
+  <img src="${imgUrl}" alt="Avatar de ${title}" />
+  <h2>Categoria: ${cat}</h2>
+  <div>${desc}</div>
+</div>
 `;
         html = html.replace('<body>', '<body>' + rawContent);
       }
