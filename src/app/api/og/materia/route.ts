@@ -97,19 +97,36 @@ ${JSON.stringify(jsonLd)}
         // Injeta as tags no ÍNICIO do <head> para priorizá-las para os robôs do Facebook/WhatsApp
         html = html.replace('<head>', '<head>\n' + metaTags);
         
-        // Injete o texto raw para bots e SEO lerem nativamente no body
-        const rawContent = `
-<style>
-.seo-crawler-content { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
-</style>
-<article class="seo-crawler-content">
-  <h1>${title}</h1>
-  <h2>Por <a href="https://drivernews.com.br/piloto.html?id=${authorSlug}">${authorName}</a></h2>
-  <img src="${imgUrl}" alt="${title}" />
-  <div>${article.body || desc}</div>
-</article>
-`;
-        html = html.replace('<body>', '<body>' + rawContent);
+        const botHtmlContent = `
+<div id="articleContainer">
+  <header class="materia-header">
+    <div class="materia-wrap">
+      <span class="m-cat">${article.category || 'Notícia'}</span>
+      <h1 class="m-title">${title}</h1>
+      <div class="m-author">
+        <div class="m-author-info">
+          <span class="m-author-name">${authorName}</span>
+          Publicado em ${new Date(datePub).toLocaleDateString('pt-BR')}
+        </div>
+      </div>
+    </div>
+  </header>
+  <main class="m-content">
+    ${imgUrl && !imgUrl.includes('share.jpg') ? '<img src="' + imgUrl + '" class="m-content-img" alt="' + title + '">' : ''}
+    <article class="m-body">
+      ${article.body || desc}
+    </article>
+  </main>
+</div>`;
+
+        // Substituir o container original pelo HTML preenchido
+        html = html.replace(/<div id="articleContainer">[\s\S]*?<\/div>/, botHtmlContent);
+
+        // ARRANCAR scripts do final para garantir que o javascript no client (renderError)
+        // do fallback nunca execute no browser headless do Google, garantindo 200 OK absoluto
+        html = html.replace(/<script src="\/js\/core\.js">[\s\S]*?<\/script>/, '');
+        html = html.replace(/<script src="\/js\/state\.js[\s\S]*?<\/script>/, '');
+        html = html.replace(/<script>[\s\S]*?loadArticleData\(\);[\s\S]*?<\/script>/, '');
       }
     }
 

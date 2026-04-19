@@ -77,19 +77,26 @@ ${JSON.stringify(jsonLd)}
         html = html.replace(/<title>.*<\/title>/i, '');
         html = html.replace('</head>', metaTags + '</head>');
         
-        // Injete o texto raw para SEO crawler content
-        const rawContent = `
-<style>
-.seo-crawler-content { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
-</style>
-<div class="seo-crawler-content">
-  <h1>Piloto: ${title}</h1>
-  <img src="${imgUrl}" alt="Avatar de ${title}" />
-  <h2>Categoria: ${cat}</h2>
-  <div>${desc}</div>
+        // Substituir o container original pelo HTML estático (para bots nunca lidarem com renders JS)
+        const botHtmlContent = `
+<div id="pilotContainer" class="seo-crawler-content">
+  <div class="pilot-header">
+    <div class="pilot-wrap">
+      <h1>Piloto: ${title}</h1>
+      <img src="${imgUrl}" alt="Avatar de ${title}" style="max-width:200px" />
+      <h2>Categoria: ${cat}</h2>
+      <div>${desc}</div>
+      ${articlesHtml}
+    </div>
+  </div>
 </div>
 `;
-        html = html.replace('<body>', '<body>' + rawContent);
+        html = html.replace(/<div id="pilotContainer">[\s\S]*?<\/div>/, botHtmlContent);
+        
+        // MATAR Javascripts client-side para GoogleBot não cair no callback renderError
+        html = html.replace(/<script src="\/js\/core\.js">[\s\S]*?<\/script>/, '');
+        html = html.replace(/<script src="\/js\/state\.js[\s\S]*?<\/script>/, '');
+        html = html.replace(/<script>[\s\S]*?loadPilotData\(\);[\s\S]*?<\/script>/, '');
       }
     }
 
