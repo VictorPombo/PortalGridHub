@@ -96,6 +96,54 @@ export async function POST(req: Request) {
           plan: plan
         })
         .eq("id", userId)
+
+      // Fetch the updated user to process commission
+      const { data: user } = await supabase
+        .from('users')
+        .select('id, name, referred_by')
+        .eq('id', userId)
+        .single();
+      
+      // Sistema de comissões de embaixadores
+      if (user && user.referred_by) {
+        const { data: ambassador } = await supabase
+          .from('users')
+          .select('id, coupon_code')
+          .eq('coupon_code', user.referred_by)
+          .single();
+
+        if (ambassador) {
+          // Criar comissão
+          await supabase.from('commissions').insert({
+            ambassador_code: user.referred_by,
+            user_id: user.id,
+            amount: value, // valor do 1º mês do plano que o piloto assinou
+            status: 'pending'
+          });
+
+          // Notificar embaixador
+          await supabase.from('notifications').insert({
+            user_id: ambassador.id,
+            type: 'new_commission',
+            message: `Novo piloto ${user.name} gerou comissão de R$${value}`
+          });
+
+          // Notificar admin
+          const { data: admin } = await supabase
+            .from('users')
+            .select('id')
+            .eq('role', 'admin')
+            .single();
+
+          if (admin) {
+            await supabase.from('notifications').insert({
+              user_id: admin.id,
+              type: 'commission_pending',
+              message: `Embaixadora ${user.referred_by.toUpperCase()} tem comissão pendente por ${user.name}`
+            });
+          }
+        }
+      }
     }
 
     // ============================

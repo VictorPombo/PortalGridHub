@@ -167,7 +167,12 @@ function showView(id){
   // init views
   if(id==='pilots-list')renderPilotsList();
   if(id==='teams-list')renderTeamsList();
-  if(id==='portal')renderPilotsHighlight();
+  if(id==='portal'){
+    renderPilotsHighlight();
+    if (typeof filterCat === 'function') filterCat('all'); // Force reset on navigation per step 2
+    document.querySelectorAll('.ftag').forEach(t=>t.classList.remove('active'));
+    document.querySelector('.ftag.active-default')?.classList.add('active');
+  }
   if(id==='calendar')renderCalendar();
   if(id==='standings')renderFullStandings('drv');
 }
@@ -652,6 +657,10 @@ async function doLogin(){
     
     // Redirect logic
     setTimeout(() => {
+      if (user.role === 'ambassador') {
+        window.location.href = '/dashboard-embaixador.html';
+        return;
+      }
       const t = user.type === 'equipe' ? 'dashboard-equipe.html' : user.type === 'categoria' ? 'dashboard-categoria.html' : 'dashboard-piloto.html';
       window.location.href = t;
     }, 800);

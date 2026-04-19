@@ -190,3 +190,40 @@ CREATE INDEX IF NOT EXISTS idx_subs_asaas ON public.subscriptions (asaas_subscri
 -- [SEO TÉCNICO COMPLETO] Coluna Slug para Matérias
 ALTER TABLE articles ADD COLUMN IF NOT EXISTS slug TEXT UNIQUE;
 CREATE INDEX IF NOT EXISTS idx_articles_slug ON articles(slug);
+
+
+-- CORREÇÃO DEFINITIVA BUGS E EMBAIXADORES (1 E 2)
+ALTER TABLE users ADD COLUMN IF NOT EXISTS coupon_code TEXT;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS referred_by TEXT;
+
+INSERT INTO users (email, password_hash, role, coupon_code)
+VALUES (
+  'katyembaixadora@gmail.com',
+  '240be518fabd2724ddb6f04eebc0a9c39b5f7c0c6b2d6cdb0f6b0d89e6c8f3c1',
+  'ambassador',
+  'katy'
+) ON CONFLICT (email) DO UPDATE SET
+  password_hash = EXCLUDED.password_hash,
+  role = EXCLUDED.role,
+  coupon_code = EXCLUDED.coupon_code;
+
+CREATE TABLE IF NOT EXISTS commissions (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  ambassador_code TEXT NOT NULL,
+  user_id UUID REFERENCES users(id),
+  amount NUMERIC(10,2) NOT NULL,
+  status TEXT DEFAULT 'pending' CHECK (status IN (''pending'',''paid'')),
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS notifications (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES users(id),
+  type TEXT NOT NULL,
+  message TEXT NOT NULL,
+  read BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_commissions_ambassador ON commissions(ambassador_code);
+CREATE INDEX IF NOT EXISTS idx_notifications_user ON notifications(user_id);

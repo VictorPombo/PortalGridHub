@@ -6,7 +6,7 @@
 <title>Admin Panel — Driver News</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
-<link rel="stylesheet" href="css/core.css?v=20260417_0320">
+<link rel="stylesheet" href="css/core.css?v=20260419_0320">
 <link rel="stylesheet" href="css/carbon.css">
 <link rel="stylesheet" href="css/dashboard.css">
 <link rel="stylesheet" href="css/admin.css">
@@ -39,8 +39,8 @@
       <li><a onclick="adminNav('all-articles',this)"><span class="nav-icon"><i data-lucide="layers" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Todas Matérias</a></li>
       <li><a onclick="adminNav('queue',this)"><span class="nav-icon"><i data-lucide="clock" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Fila de Revisão</a></li>
       <li><a onclick="adminNav('users',this)"><span class="nav-icon"><i data-lucide="users" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Usuários</a></li>
+      <li><a onclick="adminNav('ambassadors',this)"><span class="nav-icon"><i class="fi fi-rr-star"></i></span> Embaixadores</a></li>
       <li><a onclick="adminNav('rss',this)"><span class="nav-icon"><i data-lucide="bot" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Notícias Auto</a></li>
-      <div class="dash-nav-sep"></div>
       <li><a onclick="adminNav('settings',this)"><span class="nav-icon"><i data-lucide="settings" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Configurações</a></li>
       <li><a href="#" onclick="Driver.logout(); window.location.href='index.html'; return false;"><span class="nav-icon"><i data-lucide="log-out" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Sair</a></li>
     </ul>
@@ -52,13 +52,14 @@
     <div id="adm-all-articles" style="display:none"></div>
     <div id="adm-queue" style="display:none"></div>
     <div id="adm-users" style="display:none"></div>
+    <div id="adm-ambassadors" style="display:none"></div>
     <div id="adm-rss" style="display:none"></div>
     <div id="adm-settings" style="display:none"></div>
   </main>
 </div>
 
 <script src="js/core.js"></script>
-<script src="js/state.js?v=20260420"></script>
+<script src="js/state.js?v=20260419"></script>
 <script>
 // ============================
 // DASHBOARD
@@ -534,8 +535,9 @@ function toggleSetting(key, el) {
 // NAVIGATION
 // ============================
 function adminNav(name, btn) {
-  ['dashboard', 'compose', 'all-articles', 'queue', 'users', 'rss', 'settings'].forEach(s => {
-    document.getElementById('adm-' + s).style.display = s === name ? 'block' : 'none';
+  ['dashboard', 'compose', 'all-articles', 'queue', 'users', 'rss', 'settings', 'ambassadors'].forEach(s => {
+    const section = document.getElementById('adm-' + s);
+    if(section) section.style.display = s === name ? 'block' : 'none';
   });
   document.querySelectorAll('.dash-nav a').forEach(a => a.classList.remove('active'));
   if (btn) btn.classList.add('active');
@@ -545,9 +547,73 @@ function adminNav(name, btn) {
   if (name === 'all-articles') renderAllArticles();
   if (name === 'queue') renderQueue();
   if (name === 'users') renderUsers();
+  if (name === 'ambassadors') renderAmbassadors();
   if (name === 'rss') renderRSS();
   if (name === 'settings') renderSettings();
 }
+
+async function renderAmbassadors() {
+  const container = document.getElementById('adm-ambassadors');
+  container.innerHTML = `<div class="dash-header"><h1>Embaixadores</h1></div><div style="color:#aaa">Carregando embaixadores...</div>`;
+  lucide.createIcons();
+  try {
+    const res = await fetch('/api/ambassador/commission');
+    const data = await res.json();
+    if (data.success) {
+      if (data.ambassadors.length === 0) {
+        container.innerHTML = `<div class="dash-header"><h1>Embaixadores</h1></div><div style="color:#aaa">Nenhum embaixador e nenhuma comissão até o momento.</div>`;
+        return;
+      }
+
+      container.innerHTML = \`<div class="dash-header"><h1>Embaixadores Ativos</h1></div>
+      <div class="articles-list">
+        \${data.ambassadors.map(a => \`
+          <div class="article-row" style="display:flex; flex-direction:column; background:#111; margin-bottom:15px; border-radius:8px; padding:15px; border:1px solid #222;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <strong style="color:#fff; font-size:16px;">\${a.name}</strong>
+                <div style="color:var(--acc); font-size:12px; margin-top:5px; font-weight:bold; letter-spacing:1px">CUPOM: \${a.coupon_code.toUpperCase()}</div>
+              </div>
+              <div style="text-align:right">
+                <div style="color:#888; font-size:12px">Pendente / Pago</div>
+                <div style="color:var(--warning); font-size:16px; font-weight:bold">
+                  R$ \${a.totalPending.toFixed(2)} <span style="color:#888">/</span> <span style="color:var(--success)">R$ \${a.totalPaid.toFixed(2)}</span>
+                </div>
+              </div>
+            </div>
+            
+            <details style="margin-top:15px; border-top:1px solid #222; padding-top:10px;">
+              <summary style="cursor:pointer; color:#888; font-size:13px; font-weight:bold">Ver Pilotos Indicados (\${a.details.length})</summary>
+              <div style="margin-top:10px; font-size:13px;">
+                \${a.details.length === 0 ? '<div style="color:#666">Nenhum piloto até agora.</div>' : 
+                  '<table style="width:100%; border-collapse:collapse"><tr style="color:#888; border-bottom:1px solid #222"><th>Piloto</th><th>Valor</th><th>Status</th></tr>' +
+                  a.details.map(d => \`<tr><td style="padding:5px 0;color:#fff">\${d.pilot_name}</td><td style="padding:5px 0;color:#ccc">R$ \${d.amount}</td><td style="padding:5px 0"><span class="badge \${d.status === 'paid' ? 'status-paid' : 'status-pending'}">\${d.status}</span></td></tr>\`).join('') +
+                  '</table>'
+                }
+                \${a.totalPending > 0 ? \`<button class="btn-primary" style="margin-top:15px" onclick="payAmbassador('\${a.coupon_code}')">💰 Dar Baixa em Tudo (Pagar R$ \${a.totalPending.toFixed(2)})</button>\` : ''}
+              </div>
+            </details>
+          </div>
+        \`).join('')}
+      </div>\`;
+    }
+  } catch(e) {}
+}
+
+window.payAmbassador = async (code) => {
+  if(!confirm('Confirma que você já transferiu o dinheiro via PIX/Banco para esta pessoa?')) return;
+  try {
+    const res = await fetch('/api/ambassador/commission', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ ambassador_code: code })
+    });
+    const result = await res.json();
+    if(result.success) { showToast('Pagos confirmados no sistema!', 'ok'); renderAmbassadors(); }
+    else { showToast('Erro', 'err'); }
+  } catch(e) {}
+};
+
 
 // Initial render
 renderDashboard();

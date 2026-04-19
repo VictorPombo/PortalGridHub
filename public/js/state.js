@@ -115,8 +115,12 @@ const Driver = (() => {
   // ============================
   // BOOTSTRAP: FETCH SUPABASE
   // ============================
-  async function bootSupabase() {
+  async function bootSupabase(force = false) {
     try {
+      if (force) {
+        localStorage.removeItem(KEYS.articles);
+        localStorage.removeItem(KEYS.users);
+      }
       const resp = await fetch('/api/db/sync');
       if (!resp.ok) throw new Error('Falha ao conectar com Supabase DB via App Router');
       const data = await resp.json();
@@ -130,7 +134,7 @@ const Driver = (() => {
           avatar: u.avatar || u.name.substring(0, 2).toUpperCase(),
         }));
         
-        __dbArticles = data.articles.map(a => ({
+        __dbArticles = data.articles.filter(a => !a.deleted).map(a => ({
           ...a,
           authorId: a.author_id,
           publishedAt: a.published_at,
