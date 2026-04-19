@@ -16,11 +16,20 @@ export async function GET(request: Request) {
     let html = fs.readFileSync(filePath, 'utf8');
 
     if (id) {
-      const { data: pilot } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', id)
-        .single();
+      // Read via raw fetch to bypass PostgREST cache issues exactly like the other dev did
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+      
+      const res = await fetch(
+        `${supabaseUrl}/rest/v1/users?select=*&id=eq.${id}`,
+        {
+          headers: { apikey: key!, Authorization: `Bearer ${key}` },
+          cache: 'no-store'
+        }
+      );
+      
+      const pilotsData = await res.json();
+      const pilot = pilotsData?.[0];
 
       if (pilot) {
         const title = (pilot.name || 'Piloto Driver News').replace(/"/g, '&quot;');
