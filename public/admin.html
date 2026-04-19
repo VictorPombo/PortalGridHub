@@ -615,8 +615,17 @@ window.payAmbassador = async (code) => {
 };
 
 
-// Initial render
-renderDashboard();
+// Initial render and Auth
+async function bootAdmin() {
+  await Driver.bootSupabase();
+  const cu = Driver.getCurrentUser();
+  if (!cu || cu.type !== 'admin') {
+    window.location.replace('index.html');
+    return;
+  }
+  renderDashboard();
+}
+bootAdmin();
 </script>
 <script src="cookie-banner.js"></script>
 </body>

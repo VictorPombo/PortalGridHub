@@ -685,7 +685,7 @@ async function submitArticle() {
 // ============================
 function renderArticles() {
   const articles = Driver.getArticlesByAuthor(USER.id).sort((a, b) => String(b.publishedAt || b.submittedAt || '9999').localeCompare(String(a.publishedAt || a.submittedAt || '9999')));
-  const filterBtns = ['all','published','review','sent','draft','hidden'];
+  const filterBtns = ['all','published','sent','draft'];
   document.getElementById('sec-articles').innerHTML = `
     <div class="dash-header"><h1>Minhas Matérias</h1></div>
     <div class="tabs" id="articleTabs">
