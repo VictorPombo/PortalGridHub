@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Driver News — Matéria</title>
+<meta name="description" content="Leia esta matéria exclusiva na Driver News.">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
+<script src="https://unpkg.com/lucide@latest"></script>
+<link rel="stylesheet" href="/css/core.css?v=1776576777167">
+<link rel="stylesheet" href="/css/carbon.css">
+<link rel="stylesheet" href="/css/homepage.css">
+<style>
+  .materia-header {
+    background: var(--bg0);
+    padding: 80px 20px 40px;
+    border-bottom: 1px solid var(--brd);
+    position: relative;
+    overflow: hidden;
+  }
+  .materia-header::before {
+    content:''; position:absolute; top:0; left:0; right:0; bottom:0;
+    pointer-events:none;
+    background: radial-gradient(circle at 100% 0%, rgba(255,43,43,0.08) 0%, transparent 50%);
+  }
+  .materia-wrap {
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+  .m-cat {
+    display: inline-block;
+    background: var(--acc);
+    color: #fff;
+    font-family: var(--fu);
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+  }
+  .m-title {
+    font-family: var(--fu);
+    font-size: 52px;
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--fg);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    text-wrap: balance;
+  }
+  .m-brief {
+    font-size: 18px;
+    color: var(--dim);
+    line-height: 1.6;
+    margin-bottom: 32px;
+    font-weight: 300;
+  }
+  .m-author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-top: 24px;
+    border-top: 1px dashed var(--brd);
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .m-author:hover { opacity: 0.8; }
+  .m-author-img {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: var(--bg3);
+  }
+  .m-author-info { font-size: 13px; color: var(--muted); }
+  .m-author-name { font-size: 14px; font-weight: 600; color: var(--fg); display: block; margin-bottom: 2px;}
+
+  .m-content {
+    max-width: 800px;
+    margin: 60px auto;
+    padding: 0 20px;
+  }
+  .m-content-img {
+    width: 100%;
+    max-height: 500px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 40px;
+  }
+  .m-body {
+    font-size: 18px;
+    line-height: 1.8;
+    color: #d0d0d0;
+  }
+  .m-body p { margin-bottom: 24px; }
+  .m-body img { max-width: 100%; border-radius: 6px; height: auto !important; }
+  
+  /* Robust Alignment Support for Text and Images (Quill Bridge) */
+  .ql-align-center { text-align: center !important; }
+  .ql-align-right { text-align: right !important; }
+  .ql-align-justify { text-align: justify !important; }
+  
+  .ql-align-center img { display: block; margin: 0 auto !important; }
+  .ql-align-right img { display: block; margin-left: auto !important; margin-right: 0 !important; }
+  
+  /* For inline injected styles from blotFormatter */
+  img[style*="margin: auto"] { display: block !important; margin: 0 auto !important; }
+  img[style*="float: right"] { float: right !important; margin-left: 20px !important; }
+  img[style*="float: left"] { float: left !important; margin-right: 20px !important; }
+
+  .m-body strong { color: var(--fg); font-weight: 600; }
+  .m-body em { color: var(--dim); }
+  .m-body h1, .m-body h2, .m-body h3 {
+    font-family: var(--fu);
+    color: var(--fg);
+    text-transform: uppercase;
+    margin: 40px 0 16px;
+    line-height: 1.2;
+  }
+  .m-body blockquote {
+    border-left: 4px solid var(--acc);
+    padding: 24px 32px;
+    background: var(--bg1);
+    font-size: 20px;
+    font-style: italic;
+    color: var(--fg);
+    margin: 40px 0;
+    border-radius: 0 8px 8px 0;
+    position: relative;
+  }
+  .m-body blockquote::before {
+    content:'"';
+    position:absolute;
+    top:-10px; left:16px;
+    font-family: serif;
+    font-size: 60px;
+    color: var(--acc);
+    opacity: 0.2;
+  }
+  @keyframes form-spin-anim { 100% { transform: rotate(360deg); } }
+  .form-spin { animation: form-spin-anim 1s linear infinite; display: inline-block; }
+</style>
+</head>
+<body class="carbon-bg">
+<nav class="carbon-subtle">
+  <div class="nav-inner">
+    <a class="logo" href="/index.html">
+      <img src="/images/logo.png" alt="Driver News">
+    </a>
+    <ul class="nav-links">
+      <li><a href="/index.html">Início</a></li>
+      <li><a href="/piloto.html">Pilotos</a></li>
+    </ul>
+    <div class="nav-right" id="navRight">
+      <a href="/cadastro.html" class="btn-nav-action">Entrar</a>
+    </div>
+  </div>
+</nav>
+
+<div id="articleContainer">
+  <div style="padding:100px;text-align:center"><i class="fi fi-rr-spinner form-spin" style="font-size:40px;color:var(--dim)"></i></div>
+</div>
+
+<footer class="carbon-subtle">
+  <div class="f-inner">
+    <div class="f-grid">
+      <div><div class="f-logo"><img src="/images/logo.png" alt="Driver News"></div><p class="f-desc">Mídia digital de automobilismo. Plataforma profissional para pilotos, equipes e categorias.</p></div>
+      <div class="f-col"><h4>Plataforma</h4><ul><li><a href="/index.html?view=plans">Planos</a></li><li><a href="/cadastro.html">Cadastro</a></li></ul></div>
+      <div class="f-col"><h4>Legal</h4><ul><li><a href="/politica.html">Privacidade</a></li><li><a href="/termos.html">Termos</a></li></ul></div>
+    </div>
+    <div class="f-bottom"><div class="f-copy">© 2026 DRIVER MEDIA</div><div class="f-love">FEITO COM ❤ PARA QUEM AMA O ESPORTE</div></div>
+  </div>
+</footer>
+
+<script src="/js/core.js"></script>
+<script src="/js/state.js?v=1776576777167"></script>
+<script>
+  if (window.lucide) { lucide.createIcons(); }
+  
+  if (Driver.isLoggedIn()) {
+    const u = Driver.getCurrentUser();
+    if (u) {
+      const dash = u.type === 'equipe' ? 'dashboard-equipe.html' : u.type === 'categoria' ? 'dashboard-categoria.html' : 'dashboard-piloto.html';
+      document.getElementById('navRight').innerHTML = '<a href="'+dash+'" class="btn-nav-action">Meu Painel</a>';
+    } else {
+      document.getElementById('navRight').innerHTML = '<a href="/dashboard-piloto.html" class="btn-nav-action">Meu Painel</a>';
+    }
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const articleId = params.get('id');
+
+  function renderError() {
+    document.getElementById('articleContainer').innerHTML = `
+      <div style="padding:160px 20px;text-align:center">
+        <i data-lucide="file-x-2" style="width:48px;height:48px;color:var(--danger);margin-bottom:20px;opacity:0.8"></i>
+        <h1 style="font-family:var(--fu);font-size:32px;color:var(--fg);margin-bottom:12px;text-transform:uppercase">Matéria Não Encontrada</h1>
+        <p style="color:var(--dim);margin-bottom:32px">O conteúdo que você está procurando foi removido ou nunca existiu.</p>
+        <a href="/index.html" class="btn-primary skew glow-acc">Voltar para a Capa</a>
+      </div>
+    `;
+    if (window.lucide) lucide.createIcons();
+  }
+
+  if (!articleId) {
+    renderError();
+  } else {
+    async function loadArticleData() {
+      // 1. Tentar ler do cache local
+      let a = Driver.getArticleById(articleId);
+      
+      // 2. Se não encontrou no cache, força a comunicação com a API remota!
+      if (!a) {
+         try {
+           await Driver.bootSupabase();
+           a = Driver.getArticleById(articleId);
+         } catch(e) {
+           console.warn('Erro ao carregar banco remoto:', e);
+         }
+      }
+
+      if (a) {
+        // Increment views
+        Driver.updateArticle(a.id, { views: (a.views || 0) + 1 });
+        a.views = (a.views || 0) + 1;
+
+        const author = Driver.getUserById(a.authorId);
+        const authorName = author ? author.name : 'Redação Driver News';
+        const authorImg = author ? (author.avatar_url || ('https://loremflickr.com/100/100/driver?lock='+parseInt((author.id||'0').replace(/\\D/g,'')))) : 'https://loremflickr.com/100/100/news';
+        
+        document.title = a.title + ' — Driver News';
+
+        document.getElementById('articleContainer').innerHTML = `
+          <header class="materia-header">
+            <div class="materia-wrap">
+              <span class="m-cat">${a.category || 'Notícia'}</span>
+              <h1 class="m-title">${a.title}</h1>
+              
+              <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:32px;">
+                <div class="m-author" onclick="window.location='/piloto.html?id=${author ? (author.slug || author.id) : ''}'" style="margin-bottom:0">
+                  <img src="${authorImg}" class="m-author-img" alt="">
+                  <div class="m-author-info">
+                    <span class="m-author-name">${authorName} ${author && author.plan && author.plan !== 'free' ? '<i data-lucide="badge-check" style="width:14px;height:14px;color:var(--acc);display:inline-block;vertical-align:middle;margin-top:-2px"></i>' : ''}</span>
+                    Publicado em ${Driver.formatDate(a.publishedAt || a.submittedAt || new Date().toISOString())} · ${a.views} visualizações
+                  </div>
+                </div>
+                ${(author && author.instagram) ? '<a href="https://instagram.com/' + author.instagram.replace('@','') + '" target="_blank" class="btn-primary skew glow-acc" style="font-size:11px;padding:8px 16px"><i data-lucide="instagram" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom;margin-right:6px"></i> Seguir Piloto</a>' : ''}
+              </div>
+            </div>
+          </header>
+
+          <main class="m-content">
+            ${a.img && a.img !== 'null' ? '<img src="'+a.img+'" class="m-content-img" alt="" onerror="this.style.display=\'none\';">' : ''}
+            
+            <article class="m-body">
+              ${a.body || '<p>O conteúdo completo desta matéria não está disponível.</p>'}
+            </article>
+          </main>
+        `;
+        if (window.lucide) lucide.createIcons();
+      } else {
+        renderError();
+      }
+    }
+    
+    loadArticleData();
+  }
+</script>
+</body>
+</html>
