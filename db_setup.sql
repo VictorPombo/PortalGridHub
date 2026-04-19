@@ -203,7 +203,7 @@ VALUES (
   'embaixador',
   'katy',
   'Katy Embaixadora',
-  'embaixador'
+  'katy'
 ) ON CONFLICT (email) DO UPDATE SET
   password_hash = EXCLUDED.password_hash,
   type = EXCLUDED.type,

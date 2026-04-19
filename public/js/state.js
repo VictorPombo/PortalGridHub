@@ -33,7 +33,7 @@ const Driver = (() => {
   if (__dbUsers.length < 5) {
     __dbUsers.push({ id: 'superadmin_1', name: 'Victor Assis', email: 'victordeassis2010@hotmail.com', password: '29183627Mae', type: 'piloto', plan: 'pro', is_active: true, avatar: 'VA' });
     __dbUsers.push({ id: 'admin_1', email: 'admin@demo.com', name: 'Admin', type: 'admin', is_active: true, password: 'senha' });
-    __dbUsers.push({ id: 'emb_1', email: 'katyembaixadora@gmail.com', name: 'Katy Embaixadora', type: 'embaixador', is_active: true, password: 'senha' });
+    __dbUsers.push({ id: 'emb_1', email: 'katyembaixadora@gmail.com', name: 'Katy Embaixadora', type: 'embaixador', coupon_code: 'katy', is_active: true, password: 'senha' });
     __dbUsers.push({ id: 'pil_1', email: 'piloto@demo.com', name: 'Victor Piloto', type: 'piloto', is_active: true, password: 'senha' });
     __dbUsers.push({ id: 'eq_1', email: 'equipe@demo.com', name: 'Demo Racing', type: 'equipe', is_active: true, password: 'senha' });
     __dbUsers.push({ id: 'cat_1', email: 'cat@demo.com', name: 'Categoria Demo', type: 'categoria', is_active: true, password: 'senha' });
