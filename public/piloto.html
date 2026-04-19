@@ -111,10 +111,8 @@ function renderPilotsList() {
             <div class="pilot-card-body">
               <div class="pilot-card-name">${p.name}</div>
               <div class="pilot-card-cat">${p.category || 'Automobilismo'} · Brasil</div>
-              <div class="pilot-card-stats">
-                <div class="pilot-card-stat"><span class="pilot-card-stat-val">${p.conquests?.wins || 0}</span><span class="pilot-card-stat-lbl">Vitórias</span></div>
-                <div class="pilot-card-stat"><span class="pilot-card-stat-val">${p.conquests?.titles || 0}</span><span class="pilot-card-stat-lbl">Títulos</span></div>
-                <div class="pilot-card-stat"><span class="pilot-card-stat-val">${articles.length}</span><span class="pilot-card-stat-lbl">Matérias</span></div>
+              <div class="pilot-card-stats" style="grid-template-columns:1fr">
+                <div class="pilot-card-stat"><span class="pilot-card-stat-val">${articles.length}</span><span class="pilot-card-stat-lbl">Matérias Publicadas</span></div>
               </div>
             </div>
           </div>`;

@@ -101,7 +101,11 @@ tr:last-child td { border-bottom: none; }
   </main>
 </div>
 
-<script src="js/state.js?v=1776576777170"></script>
+<script>
+  let cb = Date.now();
+  document.write('<script src="js/core.js?v=' + cb + '"><\\/script>');
+  document.write('<script src="js/state.js?v=' + cb + '"><\\/script>');
+</script>
 <script>
 let currentUser = null;
 

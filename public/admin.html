@@ -58,8 +58,11 @@
   </main>
 </div>
 
-<script src="js/core.js"></script>
-<script src="js/state.js?v=1776576777168"></script>
+<script>
+  let cbx = Date.now();
+  document.write('<script src="js/core.js?v=' + cbx + '"><\\/script>');
+  document.write('<script src="js/state.js?v=' + cbx + '"><\\/script>');
+</script>
 <script>
 // ============================
 // DASHBOARD

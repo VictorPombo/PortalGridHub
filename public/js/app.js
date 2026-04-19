@@ -563,10 +563,8 @@ function renderPilotsHighlight(){
       <div style="position:absolute;top:10px;right:10px"><span class="badge b-piloto" style="font-size:8px">✓ Verificado</span></div>
       <div class="pcard-name">${p.name}</div>
       <div class="pcard-cats">${p.cats}</div>
-      <div class="pcard-stats">
-        <div class="pstat"><span class="pstat-n">${p.wins}</span><span class="pstat-l">Vitórias</span></div>
-        <div class="pstat"><span class="pstat-n">${p.podios}</span><span class="pstat-l">Pódios</span></div>
-        <div class="pstat"><span class="pstat-n">${articleCount}</span><span class="pstat-l">Matérias</span></div>
+      <div class="pcard-stats" style="grid-template-columns:1fr">
+        <div class="pstat"><span class="pstat-n">${articleCount}</span><span class="pstat-l">Matérias Publicadas</span></div>
       </div>
     </div>
   </div>`;
@@ -585,10 +583,8 @@ function renderPilotsList(){
       <div style="position:absolute;top:10px;right:10px"><span class="badge b-piloto" style="font-size:8px">✓ Verificado</span></div>
       <div class="pcard-name">${p.name}</div>
       <div class="pcard-cats">${p.cats}</div>
-      <div class="pcard-stats">
-        <div class="pstat"><span class="pstat-n">${p.wins}</span><span class="pstat-l">Vitórias</span></div>
-        <div class="pstat"><span class="pstat-n">${p.podios}</span><span class="pstat-l">Pódios</span></div>
-        <div class="pstat"><span class="pstat-n">${articleCount}</span><span class="pstat-l">Matérias</span></div>
+      <div class="pcard-stats" style="grid-template-columns:1fr">
+        <div class="pstat"><span class="pstat-n">${articleCount}</span><span class="pstat-l">Matérias Publicadas</span></div>
       </div>
       <button class="btn btn-acc btn-full btn-sm" style="margin-top:12px" onclick="event.stopPropagation();window.location.href='piloto.html?id=${p.id}'">Ver perfil →</button>
     </div>
@@ -659,6 +655,10 @@ async function doLogin(){
     setTimeout(() => {
       if (user.type && (user.type.toLowerCase() === 'ambassador' || user.type.toLowerCase() === 'embaixador')) {
         window.location.href = 'dashboard-embaixador.html?cb=' + Date.now();
+        return;
+      }
+      if (user.type === 'admin') {
+        window.location.href = 'admin.html?cb=' + Date.now();
         return;
       }
       const t = (user.type === 'equipe') ? 'dashboard-equipe.html' : (user.type === 'categoria') ? 'dashboard-categoria.html' : 'dashboard-piloto.html';
