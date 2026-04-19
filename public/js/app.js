@@ -499,8 +499,12 @@ function applyFilter(){
     if(catOk && count < window.newsLimit){
       c.style.display='';
       c.classList.remove('filtered-out');
-      c.classList.add('filtered-in');
+      
+      // Force DOM Reflow for Safari CSS animation sync
+      void c.offsetWidth;
+      
       c.style.animationDelay=(delay*0.04)+'s';
+      c.classList.add('filtered-in');
       delay++;
       count++;
     }else{
