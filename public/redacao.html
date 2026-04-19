@@ -256,7 +256,25 @@
       }
 
       if (DRAFT) {
-        startGeneration();
+        if (DRAFT.skip_ai) {
+          STATE.materia_id = DRAFT.id;
+          STATE.data = {
+            final_titulo: DRAFT.titulo,
+            final_corpo: DRAFT.corpo
+          };
+          
+          document.getElementById('ed-in-title').value = STATE.data.final_titulo;
+          // Wait for editor initialization if needed, or set directly
+          setTimeout(() => {
+            if (typeof quillInstance !== 'undefined' && quillInstance) {
+              quillInstance.root.innerHTML = STATE.data.final_corpo;
+            }
+          }, 100);
+          
+          navTo('screen-editor');
+        } else {
+          startGeneration();
+        }
       } else {
         document.getElementById('screen-loading').innerHTML = '<h1 style="color:#fff;margin-bottom:16px;">Nenhum rascunho encontrado.</h1><button class="secondary" onclick="window.history.back()">Voltar</button>';
       }

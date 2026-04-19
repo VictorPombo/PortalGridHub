@@ -688,7 +688,7 @@ function renderArticles() {
           </div>
           <div class="article-row-status"><span class="badge ${Driver.getStatusCSS(a.status)}">${Driver.getStatusLabel(a.status)}</span></div>
           <div class="article-row-actions">
-            ${a.status === 'draft' && !a.wasPublished ? `<button class="btn-secondary" style="padding:6px 12px;font-size:10px" onclick="event.stopPropagation();editDraft('${a.id}')"><i data-lucide="pencil" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Editar</button>` : ''}
+            ${a.status === 'draft' ? `<button class="btn-secondary" style="padding:6px 12px;font-size:10px" onclick="event.stopPropagation();editDraft('${a.id}')"><i data-lucide="pencil" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Editar</button>` : ''}
             ${a.status === 'draft' && a.wasPublished ? `<button class="btn-success" style="padding:6px 12px;font-size:10px" onclick="event.stopPropagation();republishArticle('${a.id}')"><i data-lucide="eye" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Desocultar</button>` : ''}
             ${a.status === 'approved' ? `<button class="btn-success" style="padding:6px 12px;font-size:10px" onclick="event.stopPropagation();approvePublish('${a.id}')"><i data-lucide="check-circle-2" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Aprovar</button>` : ''}
             ${a.status === 'published' ? `<button class="btn-secondary" style="padding:6px 12px;font-size:10px;color:var(--warning)" onclick="event.stopPropagation();hideMyArticle('${a.id}')"><i data-lucide="eye-off" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Ocultar</button>` : ''}
@@ -712,9 +712,22 @@ function filterArticles(status, btn) {
 }
 
 function editDraft(id) { 
-  currentComposeId = id; 
-  showToast('Abrindo rascunho para edição...'); 
-  showSection('compose'); 
+  const a = Driver.getArticlesByAuthor(USER.id).find(x => x.id === id);
+  if (a && a.body && a.body.length > 50) {
+    sessionStorage.setItem('draft_materia', JSON.stringify({
+      titulo: a.title,
+      contexto: a.brief || '',
+      corpo: a.body,
+      id: a.id,
+      skip_ai: true,
+      fotos: typeof composeImages !== 'undefined' ? composeImages : []
+    }));
+    window.location.href = 'redacao.html';
+  } else {
+    currentComposeId = id; 
+    showToast('Abrindo rascunho para edição...'); 
+    showSection('compose'); 
+  }
 }
 function approvePublish(id) {
   Driver.changeArticleStatus(id, 'published');
