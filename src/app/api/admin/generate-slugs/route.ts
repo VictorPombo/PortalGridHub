@@ -1,5 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
-import { slugify } from '../../../../../lib/slugify';
+import { NextResponse } from 'next/server';
+import { supabaseAdmin } from '../../../../lib/supabase';
+import { slugify } from '../../../../lib/slugify';
 
 export async function GET() {
   const supabase = createClient(
