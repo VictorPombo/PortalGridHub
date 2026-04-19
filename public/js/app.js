@@ -657,7 +657,7 @@ async function doLogin(){
     
     // Redirect logic
     setTimeout(() => {
-      if (user.role === 'ambassador') {
+      if (user.type === 'ambassador') {
         window.location.href = '/dashboard-embaixador.html';
         return;
       }

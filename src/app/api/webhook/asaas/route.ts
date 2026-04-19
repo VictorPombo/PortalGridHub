@@ -132,7 +132,7 @@ export async function POST(req: Request) {
           const { data: admin } = await supabase
             .from('users')
             .select('id')
-            .eq('role', 'admin')
+            .eq('type', 'admin')
             .single();
 
           if (admin) {
