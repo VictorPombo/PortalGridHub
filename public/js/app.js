@@ -671,18 +671,9 @@ async function doLogin(){
 async function loginAs(type){
   toast('Entrando como '+type+'...','info');
   if (typeof Driver !== 'undefined') {
-    // Fixed demo accounts per type
-    const DEMO_IDS = {
-      piloto: 'b0d74e3a-0b2f-48d6-8bfc-31a89c8a99a1', // Rafael Mendes
-    };
-    const fixedId = DEMO_IDS[type];
-    if (fixedId) {
-      Driver.forceLoginById(fixedId);
-    } else {
-      const users = Driver.getUsers().filter(u => u.type === type || (type === 'embaixador' && u.type === 'ambassador') || (type === 'ambassador' && u.type === 'embaixador'));
-      if (users.length > 0) {
-        Driver.forceLoginById(users[0].id);
-      }
+    const users = Driver.getUsers().filter(u => u.type === type || (type === 'embaixador' && u.type === 'ambassador') || (type === 'ambassador' && u.type === 'embaixador'));
+    if (users.length > 0) {
+      Driver.forceLoginById(users[0].id);
     }
   }
   setTimeout(() => {
