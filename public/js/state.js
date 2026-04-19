@@ -151,8 +151,16 @@ const Driver = (() => {
       }
     } catch (err) {
       console.warn("[Driver] Boot Supabase falhou, usando local storage.", err);
-      // Fallback para não quebrar a UI
+      // Fallback para não quebrar a UI quando banco live estiver deslogado
       __dbUsers = load(KEYS.users, typeof SEED_USERS !== 'undefined' ? SEED_USERS : []);
+      if (__dbUsers.length === 0) {
+        __dbUsers.push({ id: 'admin_1', email: 'admin@demo.com', name: 'Admin', type: 'admin', is_active: true, password: 'senha' });
+        __dbUsers.push({ id: 'emb_1', email: 'katyembaixadora@gmail.com', name: 'Katy Embaixadora', type: 'embaixador', is_active: true, password: 'senha' });
+        __dbUsers.push({ id: 'pil_1', email: 'piloto@demo.com', name: 'Victor Piloto', type: 'piloto', is_active: true, password: 'senha' });
+        __dbUsers.push({ id: 'eq_1', email: 'equipe@demo.com', name: 'Demo Racing', type: 'equipe', is_active: true, password: 'senha' });
+        __dbUsers.push({ id: 'cat_1', email: 'cat@demo.com', name: 'Categoria Demo', type: 'categoria', is_active: true, password: 'senha' });
+        save(KEYS.users, __dbUsers);
+      }
       __dbArticles = load(KEYS.articles, typeof SEED_ARTICLES !== 'undefined' ? SEED_ARTICLES : []);
     }
   }
