@@ -76,8 +76,6 @@ ${JSON.stringify(jsonLd)}
 <meta property="og:title" content="${title}">
 <meta property="og:description" content="${desc}">
 <meta property="og:image" content="${imgUrl}">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
 <meta property="og:url" content="${canonicalUrl}">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="${siteName}">
@@ -93,7 +91,8 @@ ${JSON.stringify(jsonLd)}
         
         // Remove default title if it exists to avoid duplication
         html = html.replace(/<title>.*<\/title>/i, '');
-        html = html.replace('</head>', metaTags + '</head>');
+        // Injeta as tags no ÍNICIO do <head> para priorizá-las para os robôs do Facebook/WhatsApp
+        html = html.replace('<head>', '<head>\n' + metaTags);
         
         // Injete o texto raw para bots que não rodam JS
         const rawContent = `
