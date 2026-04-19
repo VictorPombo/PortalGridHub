@@ -170,6 +170,8 @@ function renderOverview() {
   const publishedCount = statusCounts.published || 0;
   const inProcessCount = (statusCounts.review || 0) + (statusCounts.sent || 0) + (statusCounts.approved || 0);
 
+  const deletedCount = statusCounts.deleted || 0;
+
   document.getElementById('sec-overview').innerHTML = `
     <div class="dash-header">
       <h1>Visão Geral</h1>
@@ -197,11 +199,6 @@ function renderOverview() {
         <div class="stat-value">${stats.totalViewsFormatted}</div>
         <div class="stat-detail">total acumulado</div>
       </div>
-      <div class="stat-card">
-        <div class="stat-label">Em Processo</div>
-        <div class="stat-value">${inProcessCount}</div>
-        <div class="stat-detail">${inProcessCount > 0 ? inProcessCount + ' matéria(s) em processamento' : 'nenhuma em andamento'}</div>
-      </div>
     </div>
 
     <div style="font-family:var(--fu);font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin:32px 0 12px">Suas Matérias</div>
@@ -209,8 +206,8 @@ function renderOverview() {
       <div class="status-step ${draftCount ? 'active' : ''}" style="cursor:pointer" onclick="showSection('articles');setTimeout(()=>{const b=document.querySelector('#articleTabs .tab:nth-child(4)');if(b)b.click();},100)">
         <span class="status-step-num">${draftCount}</span><span class="status-step-label">Rascunho</span>
       </div>
-      <div class="status-step ${publishedCount ? 'active' : ''}" style="cursor:pointer" onclick="showSection('articles');setTimeout(()=>{const b=document.querySelector('#articleTabs .tab:nth-child(2)');if(b)b.click();},100)">
-        <span class="status-step-num">${publishedCount}</span><span class="status-step-label">Publicado</span>
+      <div class="status-step ${deletedCount ? 'active' : ''}" style="cursor:pointer" onclick="showSection('articles');setTimeout(()=>{const b=document.querySelector('#articleTabs .tab:nth-child(5)');if(b)b.click();},100)">
+        <span class="status-step-num">${deletedCount}</span><span class="status-step-label">Apagadas</span>
       </div>
     </div>
 
@@ -707,7 +704,7 @@ async function submitArticle() {
 // ============================
 function renderArticles() {
   const articles = Driver.getArticlesByAuthor(USER.id).sort((a, b) => String(b.publishedAt || b.submittedAt || '9999').localeCompare(String(a.publishedAt || a.submittedAt || '9999')));
-  const filterBtns = ['all','published','sent','draft'];
+  const filterBtns = ['all','published','sent','draft','deleted'];
   document.getElementById('sec-articles').innerHTML = `
     <div class="dash-header"><h1>Minhas Matérias</h1></div>
     <div class="tabs" id="articleTabs">
