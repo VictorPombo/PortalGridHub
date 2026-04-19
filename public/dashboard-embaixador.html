@@ -74,15 +74,16 @@ tr:last-child td { border-bottom: none; }
       </div>
     </div>
 
-    <div class="qr-container">
-      <img id="qrCode" src="" style="width:140px;height:140px;border-radius:8px;background:#fff;padding:5px;" alt="QR Code">
-      <div>
-        <h3 style="margin-bottom:10px;font-size:18px;color:#fff">Seu Link de Cadastro</h3>
-        <p style="color:#888;font-size:14px;margin-bottom:15px">Compartilhe o QR Code ou o link abaixo para registrar pilotos sob o seu código de cupom.</p>
-        <div style="display:flex;gap:10px">
-          <input type="text" id="shareLink" readonly style="background:#000;border:1px solid #333;color:#fff;padding:10px;border-radius:4px;flex:1;font-family:monospace;font-size:13px">
-          <button class="btn-primary" onclick="copyLink()" style="cursor:pointer;background:var(--acc);color:#fff;border:none;padding:0 20px;border-radius:4px;font-weight:bold">Copiar</button>
+    <div style="display:flex;gap:20px;margin-bottom:30px;flex-wrap:wrap">
+      <div class="chart-container carbon-subtle" style="flex:1;min-width:300px;margin-top:0">
+        <div class="chart-header"><span class="chart-title">Volume de Indicações</span><span class="chart-period">Últimos meses</span></div>
+        <div class="chart-bars" id="cadastrosChart">
+          <div class="chart-bar-wrap"><div class="chart-bar" style="height:0%"></div><span class="chart-bar-label">-</span></div>
         </div>
+      </div>
+      <div class="carbon-subtle" style="min-width:280px;border-radius:12px;padding:30px 20px;display:flex;flex-direction:column;justify-content:center;align-items:center;background:var(--bg2);border:1px solid var(--brd)">
+        <div style="font-family:var(--fd);font-size:62px;color:var(--acc);line-height:1" id="bigTotalPilots">0</div>
+        <div style="font-family:var(--fu);font-size:13px;font-weight:700;letter-spacing:1px;text-align:center;color:var(--dim);margin-top:12px">USUÁRIOS CADASTRADOS<br>USANDO SEU CUPOM <span id="bigCouponName" style="color:#fff">...</span></div>
       </div>
     </div>
 
@@ -131,11 +132,9 @@ async function bootstrapDashboard() {
   document.getElementById('welcomeName').textContent = firstName;
   document.getElementById('ambAvatar').textContent = firstName.charAt(0).toUpperCase();
 
-  // Prepara QrCode e Links
+  // Update visual coupon
   const coupon = (currentUser.coupon_code || firstName).toLowerCase();
-  const link = `https://drivernews.com.br/planos.html?cupom=${coupon}`;
-  document.getElementById('shareLink').value = link;
-  document.getElementById('qrCode').src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(link)}`;
+  document.getElementById('bigCouponName').textContent = coupon.toUpperCase();
 
   fetchStats(coupon);
   setInterval(() => fetchStats(coupon), 60000); // Polling a cada 60s sugerido
@@ -147,6 +146,7 @@ async function fetchStats(coupon) {
     const data = await res.json();
     if (data.success) {
       document.getElementById('totalPilots').textContent = data.pilots.length;
+      document.getElementById('bigTotalPilots').textContent = data.pilots.length;
       document.getElementById('totalPaid').textContent = 'R$ ' + (data.totalPaid || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2});
       document.getElementById('totalPending').textContent = 'R$ ' + (data.totalPending || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2});
 
@@ -174,6 +174,8 @@ async function fetchStats(coupon) {
           `;
         }).join('');
       }
+
+      renderChart(data.pilots);
     }
   } catch(e) {
     console.error('Erro buscando dados do embaixador', e);
@@ -192,10 +194,36 @@ async function markRead() {
   } catch(e) {}
 }
 
-function copyLink() {
-  const l = document.getElementById('shareLink').value;
-  navigator.clipboard.writeText(l);
-  alert('Link copiado para a área de transferência!');
+function renderChart(pilots) {
+  const months = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
+  const counts = Array(6).fill(0);
+  const labels = Array(6).fill('');
+  
+  const now = new Date();
+  for (let i = 5; i >= 0; i--) {
+    let d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    labels[5 - i] = months[d.getMonth()];
+  }
+
+  pilots.forEach(p => {
+    const pDate = new Date(p.created_at);
+    const mDiff = (now.getFullYear() - pDate.getFullYear()) * 12 + now.getMonth() - pDate.getMonth();
+    if (mDiff >= 0 && mDiff < 6) {
+      counts[5 - mDiff]++;
+    }
+  });
+
+  const max = Math.max(...counts, 1); // evita divisão por 0
+  const chartEl = document.getElementById('cadastrosChart');
+  chartEl.innerHTML = counts.map((count, i) => {
+    const pct = Math.max((count / max) * 100, 5); // min 5% height
+    return `
+      <div class="chart-bar-wrap">
+        <div class="chart-bar" style="height:${pct}%"><span class="chart-bar-value">${count}</span></div>
+        <span class="chart-bar-label">${labels[i]}</span>
+      </div>
+    `;
+  }).join('');
 }
 
 function requestWithdraw() {
