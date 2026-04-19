@@ -657,12 +657,12 @@ async function doLogin(){
     
     // Redirect logic
     setTimeout(() => {
-      if (user.type === 'ambassador') {
-        window.location.href = '/dashboard-embaixador.html';
+      if (user.type && user.type.toLowerCase() === 'ambassador') {
+        window.location.href = 'dashboard-embaixador.html?cb=' + Date.now();
         return;
       }
-      const t = user.type === 'equipe' ? 'dashboard-equipe.html' : user.type === 'categoria' ? 'dashboard-categoria.html' : 'dashboard-piloto.html';
-      window.location.href = t;
+      const t = (user.type === 'equipe') ? 'dashboard-equipe.html' : (user.type === 'categoria') ? 'dashboard-categoria.html' : 'dashboard-piloto.html';
+      window.location.href = t + '?cb=' + Date.now();
     }, 800);
   } else {
     toast('Erro no sistema (Driver não encontrado)','err');

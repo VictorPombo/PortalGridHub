@@ -50,9 +50,9 @@
 if (!Driver.isLoggedIn()) { window.location = 'cadastro.html'; }
 const USER = Driver.getCurrentUser();
 if (!USER) {
-  window.location = 'cadastro.html'; 
-} else if (USER.type === 'ambassador') {
-  window.location = 'dashboard-embaixador.html';
+  window.location.replace('cadastro.html'); 
+} else if (USER.type && USER.type.toLowerCase() === 'ambassador') {
+  window.location.replace('dashboard-embaixador.html?cb=' + Date.now());
 } else if ((USER.is_active === false) && !location.hostname.includes('localhost')) {
   let payLink = '/checkout?plan=' + (USER.plan || 'starter');
 

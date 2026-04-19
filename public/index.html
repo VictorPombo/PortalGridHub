@@ -1217,7 +1217,8 @@
     if (typeof Driver !== 'undefined' && Driver.isLoggedIn()) {
       const u = Driver.getCurrentUser();
       if (u) {
-        const dash = u.type === 'admin' ? 'admin.html' : u.type === 'ambassador' ? 'dashboard-embaixador.html' : u.type === 'equipe' ? 'dashboard-equipe.html' : u.type === 'categoria' ? 'dashboard-categoria.html' : 'dashboard-piloto.html';
+        const baseDash = u.type === 'admin' ? 'admin.html' : u.type === 'ambassador' ? 'dashboard-embaixador.html' : u.type === 'equipe' ? 'dashboard-equipe.html' : u.type === 'categoria' ? 'dashboard-categoria.html' : 'dashboard-piloto.html';
+        const dash = baseDash + '?cb=' + Date.now();
         // Navbar desktop
         const enterBtn = document.querySelector('.nav-right .btn-out.btn-sm');
         if (enterBtn) {
