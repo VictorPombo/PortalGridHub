@@ -51,8 +51,10 @@
 <script>
 if (!Driver.isLoggedIn()) { window.location = 'cadastro.html'; }
 const USER = Driver.getCurrentUser();
-if (!USER) { 
+if (!USER) {
   window.location = 'cadastro.html'; 
+} else if (USER.type === 'ambassador') {
+  window.location = 'dashboard-embaixador.html';
 } else if ((USER.is_active === false) && !location.hostname.includes('localhost')) {
   let payLink = '/checkout?plan=' + (USER.plan || 'starter');
 
