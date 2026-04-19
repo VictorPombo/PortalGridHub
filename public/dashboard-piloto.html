@@ -36,16 +36,17 @@
   </div>
 </nav>
 
+<div class="dash-sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 <div class="dash-layout">
   <!-- SIDEBAR -->
   <aside class="dash-sidebar carbon-subtle">
     <div class="dash-profile" id="sidebarProfile"></div>
     <ul class="dash-nav">
-      <li><a class="active" onclick="showSection('overview',this);document.querySelector('.dash-sidebar').classList.remove('open')"><span class="nav-icon"><i data-lucide="bar-chart-3" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Visão Geral</a></li>
-      <li><a onclick="showSection('compose',this);document.querySelector('.dash-sidebar').classList.remove('open')"><span class="nav-icon"><i class="fi fi-rr-pencil"></i></span> Nova Matéria</a></li>
-      <li><a onclick="showSection('articles',this);document.querySelector('.dash-sidebar').classList.remove('open')"><span class="nav-icon"><i data-lucide="newspaper" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Minhas Matérias</a></li>
+      <li><a class="active" onclick="showSection('overview',this);closeSidebar()"><span class="nav-icon"><i data-lucide="bar-chart-3" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Visão Geral</a></li>
+      <li><a onclick="showSection('compose',this);closeSidebar()"><span class="nav-icon"><i class="fi fi-rr-pencil"></i></span> Nova Matéria</a></li>
+      <li><a onclick="showSection('articles',this);closeSidebar()"><span class="nav-icon"><i data-lucide="newspaper" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Minhas Matérias</a></li>
       <div class="dash-nav-sep"></div>
-      <li><a onclick="showSection('profile',this);document.querySelector('.dash-sidebar').classList.remove('open')"><span class="nav-icon"><i data-lucide="user-check" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Editar Perfil</a></li>
+      <li><a onclick="showSection('profile',this);closeSidebar()"><span class="nav-icon"><i data-lucide="user-check" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Editar Perfil</a></li>
       <li><a style="cursor:not-allowed;opacity:.6" onclick="showToast('Disponível no lançamento','info')"><span class="nav-icon"><i data-lucide="paperclip" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i></span> Mídia Kit <span id="count_mk" style="font-family:var(--fu);font-size:9px;font-weight:700;color:var(--acc);margin-left:auto;letter-spacing:0.5px;text-transform:uppercase;background:rgba(232,0,45,0.1);padding:3px 6px;border-radius:3px"></span></a></li>
       <div class="dash-nav-sep"></div>
       <li><a style="cursor:not-allowed;opacity:.6" onclick="showToast('Disponível no lançamento','info')"><span class="nav-icon"><i data-lucide="globe" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i></span> Ver Landing Page <span id="count_lp" style="font-family:var(--fu);font-size:9px;font-weight:700;color:var(--acc);margin-left:auto;letter-spacing:0.5px;text-transform:uppercase;background:rgba(232,0,45,0.1);padding:3px 6px;border-radius:3px"></span></a></li>
@@ -71,6 +72,20 @@
 <script src="js/state.js?v=20260418"></script>
 <style>@keyframes spin { 100% { transform:rotate(360deg); } }</style>
 <script>
+// ============================
+// SIDEBAR TOGGLE (RESPONSIVE)
+// ============================
+function toggleSidebar() {
+  const sb = document.querySelector('.dash-sidebar');
+  const ov = document.getElementById('sidebarOverlay');
+  sb.classList.toggle('open');
+  ov.classList.toggle('show', sb.classList.contains('open'));
+}
+function closeSidebar() {
+  document.querySelector('.dash-sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('show');
+}
+
 // ============================
 // Auth guard
 // ============================
@@ -106,7 +121,7 @@ function __renderDashboardNav() {
   document.getElementById('navUserInfo').innerHTML = `
     <span style="font-family:var(--fm);font-size:10px;color:var(--dim)" class="hide-mob">${USER.name || 'Piloto'}</span>
     <div id="topAvatar" style="width:32px;height:32px;border-radius:50%;background:var(--acc);display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:11px;font-weight:700;color:#fff;overflow:hidden" class="hide-mob">${USER.avatar_url ? '<img src="'+USER.avatar_url+'" style="width:100%;height:100%;object-fit:cover">' : (USER.avatar || 'VA')}</div>
-    <button class="btn-hamburger" style="margin-left:16px;border-color:transparent" onclick="document.querySelector('.dash-sidebar').classList.toggle('open')">
+    <button class="btn-hamburger" style="margin-left:16px;border-color:transparent" onclick="toggleSidebar()">
       <span></span><span></span><span></span>
     </button>
   `;
