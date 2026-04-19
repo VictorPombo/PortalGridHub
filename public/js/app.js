@@ -799,6 +799,7 @@ async function loadLiveNews() {
   const grid = document.getElementById('cardGrid');
   const sourceCount = document.getElementById('newsSourceCount');
   
+  try {
     let json = null;
     try {
       const cachedStr = localStorage.getItem('__pl_news_cache');
