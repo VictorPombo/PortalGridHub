@@ -86,29 +86,58 @@ export async function GET(
   <link rel="stylesheet" href="/css/core.css?v=20260420" />
   <link rel="stylesheet" href="/css/style.css?v=20260420" />
   <style>
-    .materia-container { max-width: 800px; margin: 40px auto; padding: 20px; font-family: sans-serif; }
-    .materia-imagem img { width: 100%; border-radius: 8px; }
-    .btn-voltar { display: inline-block; margin-top: 30px; color: var(--acc); text-decoration: none; font-weight: bold; }
-    .navbar { padding: 15px; background: #000; color: white; display:flex; align-items: center; }
-    .navbar a { color: white; text-decoration: none; font-weight: bold; }
+    /* Premium Article Layout */
+    body { background-color: var(--bg0, #0a0a0a); color: rgba(255, 255, 255, 0.85); font-family: 'Inter', -apple-system, sans-serif; margin: 0; padding: 0; line-height: 1.7; }
+    
+    .navbar { display: flex; align-items: center; justify-content: space-between; padding: 20px 40px; background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.05); position: sticky; top: 0; z-index: 100; }
+    .navbar a { color: #fff; text-decoration: none; font-family: var(--fu, 'Bebas Neue', sans-serif); font-size: 24px; letter-spacing: 1.5px; transition: 0.3s; }
+    .navbar a:hover { color: var(--acc, #E8002D); }
+
+    .materia-container { max-width: 760px; margin: 60px auto; padding: 0 30px; }
+    
+    .materia-header { margin-bottom: 40px; text-align: center; }
+    .materia-cat { display: inline-block; background: var(--acc, #E8002D); color: #fff; padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(232,0,45,0.3); }
+    .materia-titulo { font-family: var(--fd, 'Outfit', sans-serif); font-size: 42px; font-weight: 800; line-height: 1.2; color: #fff; margin: 0 0 24px; letter-spacing: -1px; text-wrap: balance; }
+    
+    .materia-meta { display: flex; align-items: center; justify-content: center; gap: 15px; color: rgba(255,255,255,0.5); font-size: 14px; font-family: var(--fm, monospace); }
+    .materia-meta strong { color: #fff; }
+    
+    .materia-imagem { margin: 0 0 50px; position: relative; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+    .materia-imagem img { width: 100%; height: auto; display: block; object-fit: cover; aspect-ratio: 16/9; }
+    .materia-imagem::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 30%; background: linear-gradient(to top, var(--bg0, #0a0a0a), transparent); }
+    
+    .materia-corpo { font-size: 18px; line-height: 1.8; color: rgba(255,255,255,0.85); margin-bottom: 60px; }
+    .materia-corpo p { margin-bottom: 2em; }
+    .materia-corpo h2, .materia-corpo h3 { font-family: var(--fd, 'Outfit', sans-serif); color: #fff; margin: 2em 0 1em; line-height: 1.3; }
+    
+    .materia-footer { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px; display: flex; justify-content: space-between; align-items: center; }
+    .btn-voltar { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.05); color: #fff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 600; border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; }
+    .btn-voltar:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+    
+    @media (max-width: 768px) {
+      .navbar { padding: 15px 20px; }
+      .materia-titulo { font-size: 32px; }
+      .materia-container { margin: 30px auto; }
+      .materia-corpo { font-size: 16px; }
+    }
   </style>
 </head>
 <body>
 
-  <!-- Navbar nativa simples -->
   <nav class="navbar" id="navbar">
-    <a href="/" class="logo">← Driver News</a>
+    <a href="/" class="logo">DRIVER NEWS</a>
   </nav>
 
   <main class="materia-container">
     <article itemscope itemtype="https://schema.org/NewsArticle">
 
       <header class="materia-header">
-        ${article.category ? `<span style="background:var(--acc);color:#fff;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:bold;">${escapeHtml(article.category.toUpperCase())}</span>` : ''}
+        ${article.category ? `<span class="materia-cat">${escapeHtml(article.category)}</span>` : ''}
         <h1 class="materia-titulo" itemprop="headline">${escapeHtml(title)}</h1>
-        <div style="color:#666; font-size:14px; margin-bottom: 20px;">
-          Por <strong>${escapeHtml(authorName)}</strong> &middot; 
-          <time class="materia-data" itemprop="datePublished" datetime="${publishedAt}">${new Date(publishedAt).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}</time>
+        <div class="materia-meta">
+          <span>Por <strong>${escapeHtml(authorName)}</strong></span>
+          <span>&middot;</span>
+          <time itemprop="datePublished" datetime="${publishedAt}">${new Date(publishedAt).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}</time>
         </div>
       </header>
 
@@ -116,14 +145,15 @@ export async function GET(
         <img src="${image}" alt="${escapeHtml(title)}" itemprop="image" loading="eager" />
       </figure>` : ''}
 
-      <div class="materia-corpo" itemprop="articleBody" style="line-height: 1.6; margin-top: 20px; font-size: 1.1rem; color: #222;">
+      <div class="materia-corpo" itemprop="articleBody">
         ${article.body ?? summary}
       </div>
 
     </article>
 
-    <!-- Voltar para home -->
-    <a href="/" class="btn-voltar">← Voltar para o portal</a>
+    <div class="materia-footer">
+      <a href="/" class="btn-voltar">← Voltar para o portal</a>
+    </div>
   </main>
 
   <script src="/js/state.js?v=20260420"></script>
