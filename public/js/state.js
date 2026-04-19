@@ -99,6 +99,7 @@ const Driver = (() => {
     adjust: 'Ajustar',
     approved: 'Aprovada',
     published: 'Publicado',
+    hidden: 'Oculto',
   };
 
   const STATUS_CSS = {
@@ -108,6 +109,7 @@ const Driver = (() => {
     adjust: 'status-adjust',
     approved: 'status-approved',
     published: 'status-published',
+    hidden: 'status-draft',
   };
 
   // ============================
@@ -243,7 +245,14 @@ const Driver = (() => {
   // ============================
   // ARTICLES
   // ============================
-  function getArticles() { return __dbArticles; }
+  function getArticles() { 
+    return __dbArticles.map(a => {
+      if (a.status === 'draft' && a.wasPublished) {
+        a.status = 'hidden';
+      }
+      return a;
+    }); 
+  }
   function getArticleById(id) { return getArticles().find(a => a.id === id); }
   function getArticlesByAuthor(authorId) { return getArticles().filter(a => a.authorId === authorId && !a.deleted); }
   function getArticlesByStatus(status) { return getArticles().filter(a => a.status === status && !a.deleted); }
