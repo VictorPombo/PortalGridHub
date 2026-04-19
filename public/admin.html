@@ -67,7 +67,7 @@
 function renderDashboard() {
   const s = Driver.getAdminStats();
   const articles = Driver.getArticles();
-  const recentPub = articles.filter(a => a.status === 'published').sort((a, b) => (b.publishedAt || '').localeCompare(a.publishedAt || '')).slice(0, 5);
+  const recentPub = articles.filter(a => a.status === 'published').sort((a, b) => String(b.publishedAt || '').localeCompare(String(a.publishedAt || ''))).slice(0, 5);
 
   document.getElementById('adm-dashboard').innerHTML = `
     <div class="dash-header">
@@ -117,7 +117,7 @@ function renderDashboard() {
           <div class="article-row-thumb" style="${a.img ? '' : 'background:var(--bg3)'}">${a.img ? `<img src="${a.img}" alt="">` : ''}</div>
           <div class="article-row-info">
             <div class="article-row-title">${a.title}</div>
-            <div class="article-row-meta">${author ? author.name : 'Desconhecido'} · ${Driver.formatDate(a.publishedAt)} · ${a.views.toLocaleString()} views</div>
+            <div class="article-row-meta">${author ? author.name : 'Desconhecido'} · ${Driver.formatDate(a.publishedAt)} · ${(a.views || 0).toLocaleString()} views</div>
           </div>
           <div class="article-row-status"><span class="badge ${Driver.getStatusCSS(a.status)}">${Driver.getStatusLabel(a.status)}</span></div>
         </div>`;
@@ -132,7 +132,7 @@ function renderDashboard() {
 function renderAllArticles() {
   const articles = Driver.getArticles()
     .filter(a => a.status !== '__DELETED__')
-    .sort((a,b) => (b.publishedAt||b.submittedAt||'9999').localeCompare(a.publishedAt||a.submittedAt||'9999'));
+    .sort((a,b) => String(b.publishedAt||b.submittedAt||'9999').localeCompare(String(a.publishedAt||a.submittedAt||'9999')));
   
   document.getElementById('adm-all-articles').innerHTML = `
     <div class="dash-header"><h1>Todas as Matérias</h1></div>
