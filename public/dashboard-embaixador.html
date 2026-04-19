@@ -129,7 +129,7 @@ async function bootstrapDashboard() {
 
   // Prepara QrCode e Links
   const coupon = (currentUser.coupon_code || firstName).toLowerCase();
-  const link = \`https://drivernews.com.br/cadastro.html?cupom=\${coupon}\`;
+  const link = \`https://drivernews.com.br/planos.html?cupom=\${coupon}\`;
   document.getElementById('shareLink').value = link;
   document.getElementById('qrCode').src = \`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=\${encodeURIComponent(link)}\`;
 

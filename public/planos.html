@@ -442,5 +442,17 @@
 
 <script src="cookie-banner.js"></script>
 <script src="/cookie-banner.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const params = new URLSearchParams(window.location.search);
+  const cupom = params.get('cupom');
+  if(cupom) {
+    document.querySelectorAll("a[href^='cadastro.html']").forEach(link => {
+      if(link.href.includes('?')) link.href += '&cupom=' + cupom;
+      else link.href += '?cupom=' + cupom;
+    });
+  }
+});
+</script>
 </body>
 </html>
