@@ -54,20 +54,33 @@
 <script src="js/state.js?v=20260420"></script>
 <script>
 // Aguarda o banco Sincronizar antes de buscar ID ou renderizar (evita cache vazio)
-(async function initPage() {
-  await Driver.bootSupabase();
-
-  // Get pilot ID from URL or default to u1 (Rafael Mendes)
+(function initPage() {
+  // Get pilot ID from URL
   const params = new URLSearchParams(window.location.search);
-  const pilotId = params.get('id') || 'u1';
-  let pilot = Driver.getUserById(pilotId);
+  const pilotId = params.get('id');
 
-  if (!pilot || pilot.type !== 'piloto') {
-    // Show all pilots listing
-    renderPilotsList();
-  } else {
-    renderPilotPage(pilot);
+  function render(pilot) {
+    if (!pilot || pilot.type !== 'piloto') {
+      renderPilotsList();
+    } else {
+      renderPilotPage(pilot);
+    }
   }
+
+  // FIRST RENDER: Cache
+  if (pilotId) {
+    let p = Driver.getUserById(pilotId);
+    if (p) render(p);
+  } else {
+    renderPilotsList();
+  }
+
+  // BACKGROUND UPDATE
+  Driver.bootSupabase().then(() => {
+    let p2 = pilotId ? Driver.getUserById(pilotId) : null;
+    if (pilotId && p2) renderPilotPage(p2);
+    else if (!pilotId) renderPilotsList();
+  }).catch(()=>{});
 
   // Update nav se estiver logado
   if (Driver.isLoggedIn()) {

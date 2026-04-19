@@ -331,7 +331,7 @@ body.loaded #driverGlobalLoader{opacity:0;visibility:hidden;pointer-events:none}
   </div>
 
   <!-- STANDINGS + RACE -->
-  <div class="section reveal" id="champSection" style="display:none">
+  <div class="section" id="champSection" style="display:none">
     <div class="two-col">
       <div>
         <div class="sec-head"><span class="sec-title">Campeonato F1 2026</span><button class="sec-link btn-ghost btn-sm" onclick="showView('standings')">COMPLETO →</button></div>
@@ -351,7 +351,7 @@ body.loaded #driverGlobalLoader{opacity:0;visibility:hidden;pointer-events:none}
   </div>
 
   <!-- NEWS SECTION -->
-  <div class="section reveal" id="newsSection">
+  <div class="section" id="newsSection">
     <div class="sec-head">
       <div>
         <span class="sec-title" id="newsSectionTitle">Últimas Notícias</span>
@@ -503,16 +503,7 @@ body.loaded #driverGlobalLoader{opacity:0;visibility:hidden;pointer-events:none}
      VIEW: PILOTS LIST
 ════════════════════════════════════════ -->
 <div class="view" id="view-pilots-list">
-  <section class="sec-hero reveal grid-herobg">
-    <div class="container" style="padding-top:60px; padding-bottom:60px;">
-      <div class="hero-badge" style="position:relative;z-index:1"><span class="hb-dot"></span> PLATAFORMA OFICIAL</div>
-      <h1 style="position:relative;z-index:1">NOSSOS <span class="hl-red">PILOTOS</span></h1>
-      <p class="sub" style="position:relative;z-index:1">Atletas clientes com página profissional, matérias no Google e vitrine para patrocinadores.</p>
-      <div class="hero-actions" style="position:relative;z-index:1">
-        <button class="btn-lp btn-red btn-pill" onclick="showView('plans')">Quero entrar para o Grid &rarr;</button>
-      </div>
-    </div>
-  </section>
+<!-- removed sec-hero -->
   <div class="section">
     <div class="sec-head"><span class="sec-title">Todos os Pilotos</span><span class="sec-sub" id="pilotsCount">4 pilotos ativos</span></div>
     <div class="pilots-grid" id="pilotsListGrid"></div>

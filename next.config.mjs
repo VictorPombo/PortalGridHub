@@ -14,6 +14,10 @@ const nextConfig = {
         source: '/',
         destination: '/index.html',
       },
+      {
+        source: '/materia.html',
+        destination: '/_materia_base.html',
+      }
     ]
   },
 }
