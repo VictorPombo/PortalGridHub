@@ -140,6 +140,21 @@ function renderPilotsList() {
 }
 
 function renderPilotPage(p) {
+  let spList = [];
+  try {
+    if (p.sponsors) {
+      if (p.sponsors.trim().startsWith('[')) {
+        spList = JSON.parse(p.sponsors);
+      } else {
+        spList = p.sponsors.split(',').map(s => ({ name: s.trim() })).filter(s => s.name);
+      }
+    }
+  } catch(e) {}
+
+  if (p.sponsors_list && Array.isArray(p.sponsors_list) && p.sponsors_list.length > 0) {
+    spList = p.sponsors_list;
+  }
+
   const articles = Driver.getPublishedByAuthor(p.id);
   const stats = Driver.getUserStats(p.id);
   const conquests = p.conquests || {};
@@ -226,9 +241,9 @@ function renderPilotPage(p) {
     <!-- Sponsors -->
     <div class="pilot-section">
       <div class="sec-head"><span class="sec-title">Patrocinadores Oficiais</span></div>
-      ${(p.sponsors_list && p.sponsors_list.length > 0) ? `
+      ${(spList && spList.length > 0) ? `
         <div class="sponsors-grid" style="display:flex;gap:16px;flex-wrap:wrap">
-          ${p.sponsors_list.map(s => `
+          ${spList.map(s => `
             <div style="background:var(--bg1);border:1px solid var(--brd);border-radius:12px;padding:24px;text-align:center;width:calc(33.333% - 11px);min-width:180px">
               ${s.logo ? `<img src="${s.logo}" style="height:48px;max-width:100%;object-fit:contain;margin-bottom:16px">` : `<div style="height:48px;width:48px;border-radius:50%;background:var(--bg3);margin:0 auto 16px;display:flex;align-items:center;justify-content:center"><i data-lucide="shield" style="width:20px;height:20px;color:var(--dim)"></i></div>`}
               <div style="font-family:var(--fu);font-weight:700;font-size:14px;color:#fff">${s.name}</div>

@@ -194,10 +194,30 @@ function renderOverview() {
         <div class="stat-value">${stats.totalPublished}</div>
         <div class="stat-detail">total geral</div>
       </div>
-      <div class="stat-card">
-        <div class="stat-label">Visualizações</div>
-        <div class="stat-value">${stats.totalViewsFormatted}</div>
-        <div class="stat-detail">total acumulado</div>
+      <!-- Gráfico de Visualizações Full Width -->
+      <div class="stat-card" style="grid-column: 1 / -1; padding: 24px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 24px;">
+          <div>
+            <div class="stat-label">Desempenho de Leitura</div>
+            <div class="stat-value" style="font-size:36px; line-height:1">${stats.totalViewsFormatted}</div>
+            <div class="stat-detail">visualizações acumuladas</div>
+          </div>
+          <div style="background:rgba(255,43,43,0.1); color:var(--acc); font-size:11px; font-weight:700; padding:6px 12px; border-radius:30px; font-family:var(--fu); text-transform:uppercase;">+14% em 7 dias</div>
+        </div>
+        
+        <!-- CSS Mock Chart -->
+        <div style="display:flex; align-items:flex-end; gap:6px; height:80px; width:100%; margin-top:16px;">
+          <div style="flex:1; background:var(--bg3); height:25%; border-radius:4px 4px 0 0; transition:all 0.3s; cursor:pointer;" onmouseover="this.style.background='var(--acc)'" onmouseout="this.style.background='var(--bg3)'"></div>
+          <div style="flex:1; background:var(--bg3); height:40%; border-radius:4px 4px 0 0; transition:all 0.3s; cursor:pointer;" onmouseover="this.style.background='var(--acc)'" onmouseout="this.style.background='var(--bg3)'"></div>
+          <div style="flex:1; background:var(--bg3); height:30%; border-radius:4px 4px 0 0; transition:all 0.3s; cursor:pointer;" onmouseover="this.style.background='var(--acc)'" onmouseout="this.style.background='var(--bg3)'"></div>
+          <div style="flex:1; background:var(--bg3); height:60%; border-radius:4px 4px 0 0; transition:all 0.3s; cursor:pointer;" onmouseover="this.style.background='var(--acc)'" onmouseout="this.style.background='var(--bg3)'"></div>
+          <div style="flex:1; background:var(--bg3); height:45%; border-radius:4px 4px 0 0; transition:all 0.3s; cursor:pointer;" onmouseover="this.style.background='var(--acc)'" onmouseout="this.style.background='var(--bg3)'"></div>
+          <div style="flex:1; background:var(--bg3); height:75%; border-radius:4px 4px 0 0; transition:all 0.3s; cursor:pointer;" onmouseover="this.style.background='var(--acc)'" onmouseout="this.style.background='var(--bg3)'"></div>
+          <div style="flex:1; background:var(--acc); height:100%; border-radius:4px 4px 0 0; box-shadow: 0 -4px 20px rgba(255,43,43,0.3); transition:all 0.3s; cursor:pointer;"></div>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-top:12px; font-size:10px; color:var(--muted); font-family:var(--fm); text-transform:uppercase; letter-spacing:1px">
+          <span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span><span style="color:var(--acc); font-weight:700">Hoje</span>
+        </div>
       </div>
     </div>
 
@@ -1215,15 +1235,20 @@ function updateIGLink() {
 let sponsorsList = [];
 
 function initSponsorCards() {
-  // Load from USER.sponsors_list (array) or fallback from USER.sponsors (string)
-  if (USER.sponsors_list && Array.isArray(USER.sponsors_list) && USER.sponsors_list.length > 0) {
-    sponsorsList = [...USER.sponsors_list];
-  } else if (USER.sponsors) {
-    // Convert old string format to array
-    sponsorsList = USER.sponsors.split(',').map(s => s.trim()).filter(Boolean).map(name => ({ name, desc: '', logo: '' }));
+  if (USER.sponsors) {
+    if (USER.sponsors.trim().startsWith('[')) {
+      try { sponsorsList = JSON.parse(USER.sponsors); } catch(e) { sponsorsList = []; }
+    } else {
+      sponsorsList = USER.sponsors.split(',').map(s => s.trim()).filter(Boolean).map(name => ({ name, desc: '', logo: '' }));
+    }
   } else {
     sponsorsList = [];
   }
+  
+  if (USER.sponsors_list && Array.isArray(USER.sponsors_list) && USER.sponsors_list.length > 0) {
+    sponsorsList = [...USER.sponsors_list];
+  }
+  
   renderSponsorCards();
   updateIGLink();
 }
@@ -1356,8 +1381,7 @@ async function saveProfile() {
     career: document.getElementById('profCareer').value,
     goals: document.getElementById('profGoals').value,
     gallery: galleryUrls,
-    sponsors: getSponsorsList().map(s => s.name).join(', '),
-    sponsors_list: getSponsorsList(),
+    sponsors: JSON.stringify(getSponsorsList()),
     sponsor_message: document.getElementById('profSponsorMsg').value,
     instagram: document.getElementById('profIG').value,
     twitter: document.getElementById('profTwitter')?.value || '',
