@@ -729,8 +729,8 @@ function editDraft(id) {
     showSection('compose'); 
   }
 }
-function approvePublish(id) {
-  Driver.changeArticleStatus(id, 'published');
+async function approvePublish(id) {
+  await Driver.changeArticleStatus(id, 'published');
   showToast('✓ Matéria publicada!','ok');
   renderOverview(); renderArticles();
 }
@@ -754,16 +754,16 @@ function hideMyArticle(id) {
 
   document.getElementById('hideConfirmCancel').onclick = () => overlay.remove();
   overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
-  document.getElementById('hideConfirmOk').onclick = () => {
+  document.getElementById('hideConfirmOk').onclick = async () => {
     // Marca como hidden para separar de rascunhos comuns
-    Driver.updateArticle(id, { status: 'hidden', wasPublished: true });
+    await Driver.updateArticle(id, { status: 'hidden', wasPublished: true });
     showToast('Matéria ocultada com sucesso.','ok');
     overlay.remove();
     renderOverview(); renderArticles();
   };
 }
-function republishArticle(id) {
-  Driver.changeArticleStatus(id, 'published');
+async function republishArticle(id) {
+  await Driver.changeArticleStatus(id, 'published');
   showToast('✓ Matéria desocultada com sucesso!','ok');
   renderOverview(); renderArticles();
 }
