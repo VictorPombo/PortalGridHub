@@ -279,10 +279,10 @@ let selectedPlan = 'starter'; // starter | pro | equipe | categoria
 let currentStep = 1;
 
 const PLAN_CONFIG = {
-  starter:  { name: 'Piloto Starter',    price: 'R$99,90',    daily: 'Menos de R$3,50 por dia',           link: 'https://www.asaas.com/c/pcd93o8dzjozlmje' },
-  pro:      { name: 'Piloto Pro',        price: 'R$149,90',   daily: 'Menos de R$5 por dia — o preço de um café', link: 'https://www.asaas.com/c/4k06baj1ohs71v30' },
-  equipe:   { name: 'Equipe Parceira',   price: 'R$499,90',   daily: 'Cobertura completa da equipe',      link: null },
-  categoria:{ name: 'Categoria',         price: 'R$999,90',   daily: 'Plano completo de categoria',       link: null },
+  starter:  { name: 'Piloto Starter',    price: 'R$99,90',    daily: 'Menos de R$3,50 por dia' },
+  pro:      { name: 'Piloto Pro',        price: 'R$149,90',   daily: 'Menos de R$5 por dia — o preço de um café' },
+  equipe:   { name: 'Equipe Parceira',   price: 'R$499,90',   daily: 'Cobertura completa da equipe' },
+  categoria:{ name: 'Categoria',         price: 'R$999,90',   daily: 'Plano completo de categoria' },
 };
 
 // Detect plan from URL
@@ -379,11 +379,8 @@ async function doLogin() {
   
   // If login with a plan selected, redirect to upgrade
   if (selectedPlan !== 'free' && selectedPlan !== user.plan) {
-    const config = PLAN_CONFIG[selectedPlan];
-    if (config && config.link) {
-      showToast('Redirecionando para pagamento...','ok');
-      setTimeout(() => window.open(config.link, '_blank'), 1000);
-    }
+    showToast('Redirecionando para pagamento...','ok');
+    setTimeout(() => window.location.href = '/checkout?plan=' + selectedPlan, 1000);
     return;
   }
   

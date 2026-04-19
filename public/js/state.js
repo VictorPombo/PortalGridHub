@@ -302,7 +302,8 @@ const Driver = (() => {
     if (!user) return 0;
     const limit = PLAN_LIMITS[user.plan] || 0;
     const used = getMonthlyUsage(userId);
-    return Math.max(0, limit - used);
+    const extra = user.extra_credits || 0;
+    return Math.max(0, limit - used) + extra;
   }
 
   async function addArticle(article) {

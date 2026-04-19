@@ -33,22 +33,41 @@ const PLANS: Record<string, { name: string; price: string; value: number; daily:
       'Prioridade no grid de destaque',
     ],
   },
+  extra: {
+    name: 'Matéria Extra (Avulsa)',
+    price: 'R$ 59,90',
+    value: 59.90,
+    daily: 'Pagamento Único',
+    features: [
+      '+1 matéria profissional adicional',
+      'Não expira (cumulativa)',
+      'Elaboração especializada de IA',
+      'Página pública e compartilhável',
+    ],
+  },
 };
 
 export default function CheckoutPage() {
   const [plan, setPlan] = useState<string>('starter');
-  const [loading, setLoading] = useState(true);
+  const [cpf, setCpf] = useState<string>('');
+  const [loading, setLoading] = useState(false);
   const [invoiceUrl, setInvoiceUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [termos, setTermos] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
+  const [isUpgrade, setIsUpgrade] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<'PIX' | 'CREDIT_CARD'>('CREDIT_CARD');
 
   useEffect(() => {
     // Detectar plano da URL
     const params = new URLSearchParams(window.location.search);
     const urlPlan = params.get('plan');
+    const urlUpgrade = params.get('upgrade');
     if (urlPlan && PLANS[urlPlan]) {
       setPlan(urlPlan);
+    }
+    if (urlUpgrade === 'true') {
+      setIsUpgrade(true);
     }
   }, []);
 
@@ -81,7 +100,10 @@ export default function CheckoutPage() {
           user_id: user.id || user.userId,
           user_name: user.name || 'Assinante',
           user_email: user.email || '',
+          user_cpf: cpf,
           plan: plan,
+          isUpgrade: isUpgrade,
+          paymentMethod: paymentMethod
         }),
       });
 
@@ -90,9 +112,8 @@ export default function CheckoutPage() {
 
       setError(`ESTADO 4: Payload Lido! success=${data.success}`);
 
-      if (data.success && data.invoice_url) {
-        setInvoiceUrl(data.invoice_url);
-        setShowPayment(true);
+      if (data.success && (data.invoice_url || data.invoiceUrl)) {
+        window.location.href = data.invoice_url || data.invoiceUrl;
       } else {
         setError(data.error || 'Erro ao gerar: ' + JSON.stringify(data));
       }
@@ -155,47 +176,70 @@ export default function CheckoutPage() {
 
               {/* Métodos aceitos */}
               <div className="bg-zinc-900/50 border border-zinc-800/50 rounded-xl p-5">
-                <p className="text-xs text-zinc-500 uppercase tracking-widest font-bold mb-3">Aceitamos</p>
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2 text-zinc-400">
-                    <CreditCard className="w-4 h-4" />
-                    <span className="text-xs">Cartão</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-zinc-400">
-                    <QrCode className="w-4 h-4" />
-                    <span className="text-xs">Pix</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-zinc-400">
-                    <Barcode className="w-4 h-4" />
-                    <span className="text-xs">Boleto</span>
-                  </div>
+                <p className="text-xs text-zinc-500 uppercase tracking-widest font-bold mb-3">Selecione a Forma de Pagamento</p>
+                <div className="flex flex-col gap-3">
+                  <label className={`flex items-center p-4 rounded-xl border cursor-pointer transition ${paymentMethod === 'CREDIT_CARD' ? 'bg-zinc-800/50 border-emerald-500/50' : 'border-zinc-800'}`} onClick={() => setPaymentMethod('CREDIT_CARD')}>
+                    <input type="radio" name="paymethod" className="hidden" checked={paymentMethod === 'CREDIT_CARD'} readOnly />
+                    <CreditCard className="w-5 h-5 text-emerald-500 mr-3" />
+                    <span className="text-sm font-semibold text-white">Cartão de Crédito</span>
+                  </label>
+
+                  {plan === 'extra' && !isUpgrade && (
+                    <label className={`flex items-center p-4 rounded-xl border cursor-pointer transition ${paymentMethod === 'PIX' ? 'bg-zinc-800/50 border-emerald-500/50' : 'border-zinc-800'}`} onClick={() => setPaymentMethod('PIX')}>
+                      <input type="radio" name="paymethod" className="hidden" checked={paymentMethod === 'PIX'} readOnly />
+                      <QrCode className="w-5 h-5 text-emerald-500 mr-3" />
+                      <span className="text-sm font-semibold text-white">Pix</span>
+                    </label>
+                  )}
                 </div>
+
+                {plan !== 'extra' && !isUpgrade && (
+                  <p className="text-[10px] text-zinc-500 mt-4 pt-3 border-t border-zinc-800/50">
+                    Para assinaturas mensais, aceitamos apenas Cartão de Crédito para garantia e segurança da recorrência automática.
+                  </p>
+                )}
+                {isUpgrade && (
+                  <p className="text-[10px] text-zinc-500 mt-4 pt-3 border-t border-zinc-800/50">
+                    A taxa avulsa de diferença deve ser paga no Cartão de Crédito para garantir a sincronia e validação no sistema financeiro.
+                  </p>
+                )}
               </div>
 
-              {/* Garantia */}
-              <div className="flex items-start gap-4 bg-emerald-500/5 border border-emerald-500/10 rounded-xl p-5">
-                <Shield className="w-6 h-6 text-emerald-500 flex-shrink-0 mt-0.5" />
-                <div>
-                  <p className="text-sm font-bold text-white mb-1">Garantia de 7 dias</p>
-                  <p className="text-xs text-zinc-400 leading-relaxed">
-                    Não ficou satisfeito? Cancele em até 7 dias e devolvemos 100% do valor, conforme Art. 49 do CDC.
-                  </p>
+              {/* Garantia (Apenas para assinaturas) */}
+              {plan !== 'extra' && (
+                <div className="flex items-start gap-4 bg-emerald-500/5 border border-emerald-500/10 rounded-xl p-5">
+                  <Shield className="w-6 h-6 text-emerald-500 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-bold text-white mb-1">Garantia de 7 dias</p>
+                    <p className="text-xs text-zinc-400 leading-relaxed">
+                      Não ficou satisfeito? Cancele em até 7 dias e devolvemos 100% do valor, conforme Art. 49 do CDC.
+                    </p>
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Trocar plano */}
               <div className="text-center">
-                <Link
-                  href={`/checkout?plan=${plan === 'pro' ? 'starter' : 'pro'}`}
-                  className="text-xs text-zinc-500 hover:text-red-500 transition"
-                  onClick={() => {
-                    setPlan(plan === 'pro' ? 'starter' : 'pro');
-                    setShowPayment(false);
-                    setInvoiceUrl(null);
-                  }}
-                >
-                  Trocar para plano {plan === 'pro' ? 'Starter' : 'Pro'} →
-                </Link>
+                {plan === 'extra' ? (
+                  <Link
+                    href={`/`}
+                    className="text-xs text-zinc-500 hover:text-red-500 transition"
+                  >
+                    ← Voltar ao painel
+                  </Link>
+                ) : (
+                  <Link
+                    href={`/checkout?plan=${plan === 'pro' ? 'starter' : 'pro'}`}
+                    className="text-xs text-zinc-500 hover:text-red-500 transition"
+                    onClick={() => {
+                      setPlan(plan === 'pro' ? 'starter' : 'pro');
+                      setShowPayment(false);
+                      setInvoiceUrl(null);
+                    }}
+                  >
+                    Trocar para plano {plan === 'pro' ? 'Starter' : 'Pro'} →
+                  </Link>
+                )}
               </div>
             </div>
 
@@ -243,11 +287,18 @@ export default function CheckoutPage() {
             Checkout Seguro
           </div>
           <h1 className="font-['Bebas_Neue'] text-4xl lg:text-5xl text-white mb-2">
-            {planData.name}
+            {isUpgrade ? `UPGRADE PARA ${planData.name.toUpperCase()}` : planData.name}
           </h1>
-          <p className="text-zinc-400 text-sm">
-            {planData.price}/mês · {planData.daily}
-          </p>
+          {isUpgrade ? (
+            <p className="text-zinc-400 text-sm">
+              Cobrança <strong className="text-white">imediata da diferença (R$ 50,00)</strong> para ativar o plano Pro.
+              O novo valor recorrente de R$ 149,90 será descontado apenas a partir do próximo ciclo do mês que vem.
+            </p>
+          ) : (
+            <p className="text-zinc-400 text-sm">
+              {planData.price}{plan === 'extra' ? '' : '/mês'} · {planData.daily}
+            </p>
+          )}
         </div>
 
         {/* Card de aceite */}
@@ -259,6 +310,18 @@ export default function CheckoutPage() {
           </h3>
 
           <div className="space-y-3">
+            <div className="mb-4">
+              <label className="block text-sm text-zinc-400 mb-2 font-medium">CPF (Obrigatório para emissão)</label>
+              <input
+                type="text"
+                placeholder="Apenas números"
+                value={cpf}
+                onChange={(e) => setCpf(e.target.value.replace(/\D/g, ''))}
+                maxLength={11}
+                className="w-full bg-black border border-zinc-800 focus:border-red-500 rounded-xl px-4 py-3 text-white placeholder-zinc-600 outline-none transition"
+              />
+            </div>
+          
             <label className={`flex items-start gap-4 p-4 rounded-xl border transition-colors cursor-pointer ${termos ? 'bg-zinc-800/50 border-zinc-700' : 'bg-black border-zinc-800 hover:border-zinc-700'}`}>
               <input
                 type="checkbox"
@@ -286,10 +349,10 @@ export default function CheckoutPage() {
           )}
 
           <button
-            disabled={!termos || loading}
+            disabled={!termos || loading || cpf.length < 11}
             onClick={gerarPagamento}
             className={`w-full mt-8 flex items-center justify-center gap-2 py-4 rounded-xl text-lg font-bold transition-all ${
-              !termos
+              !termos || cpf.length < 11
                 ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed'
                 : 'bg-red-600 hover:bg-red-500 text-white shadow-lg shadow-red-600/20'
             }`}
@@ -308,26 +371,37 @@ export default function CheckoutPage() {
           </button>
         </div>
 
-        {/* Garantia */}
-        <div className="flex items-start gap-4 mt-6 bg-emerald-500/5 border border-emerald-500/10 rounded-xl p-5">
-          <Shield className="w-6 h-6 text-emerald-500 flex-shrink-0" />
-          <div>
-            <p className="text-sm font-bold text-white mb-1">Garantia de 7 dias</p>
-            <p className="text-xs text-zinc-400 leading-relaxed">
-              Cancele em até 7 dias e receba 100% de volta (Art. 49, CDC).
-            </p>
+        {/* Garantia (Apenas para assinaturas) */}
+        {plan !== 'extra' && (
+          <div className="flex items-start gap-4 mt-6 bg-emerald-500/5 border border-emerald-500/10 rounded-xl p-5">
+            <Shield className="w-6 h-6 text-emerald-500 flex-shrink-0" />
+            <div>
+              <p className="text-sm font-bold text-white mb-1">Garantia de 7 dias</p>
+              <p className="text-xs text-zinc-400 leading-relaxed">
+                Cancele em até 7 dias e receba 100% de volta (Art. 49, CDC).
+              </p>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Trocar plano */}
         <div className="text-center mt-6">
-          <Link
-            href={`/checkout?plan=${plan === 'pro' ? 'starter' : 'pro'}`}
-            className="text-xs text-zinc-500 hover:text-red-500 transition"
-            onClick={() => setPlan(plan === 'pro' ? 'starter' : 'pro')}
-          >
-            Prefiro o plano {plan === 'pro' ? 'Starter (R$ 99,90)' : 'Pro (R$ 149,90)'} →
-          </Link>
+          {plan === 'extra' ? (
+            <Link
+              href={`/`}
+              className="text-xs text-zinc-500 hover:text-red-500 transition"
+            >
+              ← Voltar ao painel
+            </Link>
+          ) : (
+            <Link
+              href={`/checkout?plan=${plan === 'pro' ? 'starter' : 'pro'}`}
+              className="text-xs text-zinc-500 hover:text-red-500 transition"
+              onClick={() => setPlan(plan === 'pro' ? 'starter' : 'pro')}
+            >
+              Prefiro o plano {plan === 'pro' ? 'Starter (R$ 99,90)' : 'Pro (R$ 149,90)'} →
+            </Link>
+          )}
         </div>
       </div>
     </div>

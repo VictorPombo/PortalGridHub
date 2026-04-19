@@ -40,7 +40,12 @@ export async function POST(req: Request) {
 
     // 🛠️ Função Helper: Extrair User ID (Fallback para ler da description do link de pagamento Asaas)
     const extractUserId = (obj: any): string | null => {
-      if (obj?.externalReference) return obj.externalReference;
+      let extRef = obj?.externalReference;
+      if (extRef) {
+        if (extRef.startsWith('EXTRA_')) return extRef.replace('EXTRA_', '');
+        if (extRef.startsWith('UPGRADE_')) return extRef.replace('UPGRADE_', '');
+        return extRef;
+      }
       if (obj?.description && obj.description.includes('| user: ')) {
         const parts = obj.description.split('| user: ');
         if (parts.length > 1) return parts[1].trim();
@@ -75,33 +80,64 @@ export async function POST(req: Request) {
 
       if (existing) return new Response("ok")
 
-      // 💾 salva pagamento
-      await supabase.from("payments").insert({
+      // 💾 tenta salvar pagamento (ignora se a tabela não existir)
+      const { error: pErr } = await supabase.from("payments").insert({
         user_id: userId,
         payment_id: paymentId,
         status: "paid",
         value: payment.value
-      })
+      });
+      if (pErr) console.log("Aviso: Falha ao inserir na tabela payments");
 
-      // Update plan based on value
       const value = payment.value || 0
-      let plan = "starter"
-      if (value >= 149.9) plan = "pro"
+      
+      // ✅ MATÉRIA EXTRA (Avulsa)
+      if (value === 59.90 || (payment.externalReference && payment.externalReference.startsWith('EXTRA_'))) {
+        const actualUserId = payment.externalReference?.replace('EXTRA_', '') || userId;
+        
+        // Buscar saldo atual e adicionar +1
+        const { data: userRef } = await supabase.from('users').select('extra_credits').eq('id', actualUserId).single();
+        const currentCredits = userRef?.extra_credits || 0;
+        
+        await supabase
+          .from("users")
+          .update({ extra_credits: currentCredits + 1 })
+          .eq("id", actualUserId);
+          
+        console.log(`[Webhook] Matéria Extra (+1) concedida ao usuário ${actualUserId}`);
+      } else if (payment?.externalReference && payment.externalReference.startsWith("UPGRADE_")) {
+        // ✅ UPGRADE PRO (Diferença de assinatura avulsa, mas ativa plan Pro definitivo)
+        const actualUserId = payment.externalReference.replace('UPGRADE_', '');
+        await supabase
+          .from("users")
+          .update({ 
+            status: 'active',
+            plan: 'pro'
+          })
+          .eq("id", actualUserId)
+          
+        console.log(`[Webhook] UPGRADE PRO (+ R$50) concedido ao usuário ${actualUserId}`);
+      } else {
+        // ✅ ASSINATURAS PADRÃO (Starter ou Pro)
+        let plan = "starter"
+        if (value >= 149.9) plan = "pro"
 
-      // ✅ ativa usuário e atualiza o plano pago
-      await supabase
-        .from("users")
-        .update({ 
-          status: 'active',
-          plan: plan
-        })
-        .eq("id", userId)
+        await supabase
+          .from("users")
+          .update({ 
+            status: 'active',
+            plan: plan
+          })
+          .eq("id", userId)
+        
+        console.log(`[Webhook] Assinatura ${plan} ativada para usuário ${userId}`);
+      }
 
       // Fetch the updated user to process commission
       const { data: user } = await supabase
         .from('users')
         .select('id, name, referred_by')
-        .eq('id', userId)
+        .eq('id', payment.externalReference?.replace('EXTRA_', '') || userId)
         .single();
       
       // Sistema de comissões de embaixadores

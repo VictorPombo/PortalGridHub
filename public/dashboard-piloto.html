@@ -91,7 +91,7 @@ if (!USER) {
   window.location.replace('cadastro.html');
 } else if (USER.type && (USER.type.toLowerCase() === 'ambassador' || USER.type.toLowerCase() === 'embaixador')) {
   window.location.replace('dashboard-embaixador.html?cb=' + Date.now());
-} else if ((USER.is_active === false) && !location.hostname.includes('localhost')) {
+} else if ((USER.is_active === false || USER.status === 'pending')) {
   let payLink = '/checkout?plan=' + (USER.plan || 'starter');
 
   document.querySelector('.dash-sidebar').style.opacity = '0.3';
@@ -104,9 +104,29 @@ if (!USER) {
       <h1 style="font-family:var(--fd);font-size:36px;letter-spacing:1px;margin-bottom:16px;color:#fff">Assinatura Pendente</h1>
       <p style="font-size:14px;color:var(--dim);margin-bottom:32px;line-height:1.6">O seu plano <b>${Driver.getPlanName(USER.plan)}</b> ainda está aguardando pagamento ou processamento. O painel será liberado automaticamente após a confirmação.</p>
       <a href="${payLink}" target="_blank" class="btn-primary" style="font-size:16px;padding:16px" id="payBtnDash">Finalizar Pagamento Agora →</a>
-      <div style="margin-top:24px;font-size:11px;color:var(--muted)">Já pagou por PIX/Cartão? Atualize a página se o e-mail for o mesmo do cadastro.<br>Boletos podem levar até 2 dias úteis. <a href="index.html" style="color:var(--dim);text-decoration:underline">Sair para o Portal</a></div>
+      <div style="margin-top:24px;font-size:11px;color:var(--muted)">Já pagou por PIX/Cartão? A página verificará seu status automaticamente.<br>Boletos podem levar até 2 dias úteis. <a href="index.html" style="color:var(--dim);text-decoration:underline">Sair para o Portal</a></div>
     </div>
   `;
+
+  // Polling automático a cada 4 segundos (Executado no contexto principal, não via innerHTML)
+  setInterval(() => {
+    fetch('/api/auth/status?id=' + USER.id)
+      .then(res => res.json())
+      .then(data => {
+        if (data.is_active || data.status === 'active') {
+          USER.is_active = true;
+          USER.status = 'active';
+          
+          let users = JSON.parse(localStorage.getItem('pl_users') || '[]');
+          let idx = users.findIndex(u => u.id === USER.id);
+          if (idx > -1) { users[idx].is_active = true; users[idx].status = 'active'; }
+          localStorage.setItem('pl_users', JSON.stringify(users));
+          localStorage.setItem('pl_session', JSON.stringify(USER));
+          
+          window.location.reload();
+        }
+      }).catch(err => console.error(err));
+  }, 4000);
 } else {
 
 // ============================
@@ -128,6 +148,7 @@ function __renderDashboardNav() {
     <div class="dash-user-name">${USER.name || 'Piloto'}</div>
     <div class="dash-user-plan">${Driver.getPlanName(USER.plan)} · ${USER.type ? (USER.type.charAt(0).toUpperCase() + USER.type.slice(1)) : 'Piloto'}</div>
     <div class="dash-plan-badge">${(USER.plan || '').toUpperCase()}</div>
+    ${USER.plan === 'starter' ? '<a href="/checkout?plan=pro&upgrade=true" style="display:block;margin-top:12px;font-size:11px;color:var(--acc);font-weight:600;text-decoration:underline;">⬆ Fazer Upgrade para PRO</a>' : ''}
   `;
 }
 __renderDashboardNav();
@@ -226,8 +247,11 @@ function renderCompose() {
       <div class="card" style="padding:32px;text-align:center;border-color:var(--acc)">
         <div style="font-size:32px;margin-bottom:12px"><i class="fi fi-rr-ban" style="color:var(--acc)"></i></div>
         <div style="font-family:var(--fd);font-size:24px;margin-bottom:8px">Limite Atingido</div>
-        <p style="font-size:13px;color:var(--dim);margin-bottom:16px">Você já usou todas as ${stats.limit} matéria(s) deste mês (${Driver.getPlanName(USER.plan)}). Faça upgrade para publicar mais!</p>
-        <a href="index.html?view=plans" class="btn-primary">Ver Planos →</a>
+        <p style="font-size:13px;color:var(--dim);margin-bottom:16px">Você já usou todas as ${stats.limit} matéria(s) que você possui base de assinatura. Compre uma matéria extra avulsa para continuar publicando!</p>
+        <div style="display:flex;gap:10px;justify-content:center;margin-top:10px">
+          <a href="index.html?view=plans" class="btn-primary" style="background:#222;color:#fff;">Ver Planos</a>
+          <a href="/checkout?plan=extra" class="btn-primary" style="background:var(--acc);color:#fff;"><i class="fi fi-rr-shopping-cart"></i> Comprar Matéria Extra +1</a>
+        </div>
       </div>
     ` : `
     <div class="composer carbon-subtle">

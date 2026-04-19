@@ -607,6 +607,16 @@
             STATE.materia_id = DRAFT.id;
           } else {
             // CRIANDO matéria nova
+
+            // Consumo de Matéria Extra (apenas se o limite base foi estourado e há extras na conta)
+            const stats = Driver.getUserStats(currentUser.id);
+            const baseRemaining = stats.limit - Driver.getMonthlyUsage(currentUser.id);
+            const extra = currentUser.extra_credits || 0;
+            if (baseRemaining <= 0 && extra > 0) {
+               await Driver.updateUser(currentUser.id, { extra_credits: extra - 1 });
+               // Atualização reflete instantaneamente porque `updateUser` atualiza o memory cache também.
+            }
+
             const payload = {
               id: STATE.materia_id,
               author: currentUser.name,
