@@ -97,6 +97,20 @@
   }
   .m-body p { margin-bottom: 24px; }
   .m-body img { max-width: 100%; border-radius: 6px; }
+  
+  /* Robust Alignment Support for Text and Images (Quill Bridge) */
+  .ql-align-center { text-align: center !important; }
+  .ql-align-right { text-align: right !important; }
+  .ql-align-justify { text-align: justify !important; }
+  
+  .ql-align-center img { display: block; margin: 0 auto !important; }
+  .ql-align-right img { display: block; margin-left: auto !important; margin-right: 0 !important; }
+  
+  /* For inline injected styles from blotFormatter */
+  img[style*="margin: auto"] { display: block !important; margin: 0 auto !important; }
+  img[style*="float: right"] { float: right !important; margin-left: 20px !important; }
+  img[style*="float: left"] { float: left !important; margin-right: 20px !important; }
+
   .m-body strong { color: var(--fg); font-weight: 600; }
   .m-body em { color: var(--dim); }
   .m-body h1, .m-body h2, .m-body h3 {

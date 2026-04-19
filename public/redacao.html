@@ -58,8 +58,19 @@
 
     /* Editor and Preview Image Fix */
     .ql-editor img, .preview-body img { max-width: 100%; border-radius: 6px; }
-
-    /* Screen 5 - Legal */
+    
+    /* Robust Alignment Support for Text and Images */
+    .ql-align-center { text-align: center !important; }
+    .ql-align-right { text-align: right !important; }
+    .ql-align-justify { text-align: justify !important; }
+    
+    .ql-align-center img { display: block; margin: 0 auto !important; }
+    .ql-align-right img { display: block; margin-left: auto !important; margin-right: 0 !important; }
+    
+    /* For inline injected styles from blotFormatter */
+    img[style*="margin: auto"] { display: block !important; margin: 0 auto !important; }
+    img[style*="float: right"] { float: right !important; margin-left: 20px !important; }
+    img[style*="float: left"] { float: left !important; margin-right: 20px !important; }
     .legal-box { max-width: 500px; background: rgba(232, 0, 45, 0.05); border: 1px solid var(--acc); padding: 32px; border-radius: 8px; text-align: left; }
     .legal-box li { color: var(--dim); font-size: 14px; margin-bottom: 16px; margin-left: 20px; }
     .legal-box strong { color: #fff; display: block; margin-bottom: 4px;}
