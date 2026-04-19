@@ -264,14 +264,10 @@
           };
           
           document.getElementById('ed-in-title').value = STATE.data.final_titulo;
-          // Wait for editor initialization if needed, or set directly
-          setTimeout(() => {
-            if (typeof quillInstance !== 'undefined' && quillInstance) {
-              quillInstance.root.innerHTML = STATE.data.final_corpo;
-            }
-          }, 100);
           
-          navTo('screen-editor');
+          // Initializes Quill and loads STATE.data.final_corpo
+          openManualEditor();
+          
         } else {
           startGeneration();
         }
