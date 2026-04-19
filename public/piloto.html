@@ -211,21 +211,22 @@ function renderPilotPage(p) {
       `}
     </div>
 
-    <!-- Sponsorship -->
+    <!-- Sponsors -->
     <div class="pilot-section">
-      <div class="sponsor-section carbon-subtle checkered">
-        <div class="sponsor-content">
-          <div style="font-family:var(--fm);font-size:10px;color:var(--acc);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px"><i data-lucide="briefcase" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom"></i> Oportunidade de Patrocínio</div>
-          <div class="sponsor-title">Seja Patrocinador<br>de ${p.name}</div>
-          <p class="sponsor-desc">Associe sua marca a ${p.name}. ${stats.totalViewsFormatted} visualizações acumuladas nas matérias da Driver News.</p>
-          <div class="sponsor-tiers">
-            <div class="sponsor-tier bronze"><span class="sponsor-tier-icon"><i data-lucide="medal" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom;color:#b07040"></i></span><div class="sponsor-tier-name">Bronze</div><div style="font-family:var(--fm);font-size:10px;color:var(--dim);margin-top:4px">Logo + menções</div></div>
-            <div class="sponsor-tier silver"><span class="sponsor-tier-icon"><i data-lucide="medal" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom;color:#a0a0c0"></i></span><div class="sponsor-tier-name">Prata</div><div style="font-family:var(--fm);font-size:10px;color:var(--dim);margin-top:4px">Logo no carro + conteúdo</div></div>
-            <div class="sponsor-tier gold"><span class="sponsor-tier-icon"><i data-lucide="medal" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom;color:#f0a000"></i></span><div class="sponsor-tier-name">Ouro</div><div style="font-family:var(--fm);font-size:10px;color:var(--dim);margin-top:4px">Naming rights</div></div>
-          </div>
-          <button class="btn-primary skew glow-acc" onclick="showToast('✓ Formulário de contato enviado para ${p.name}!','ok')">Entrar em Contato →</button>
+      <div class="sec-head"><span class="sec-title">Patrocinadores Oficiais</span></div>
+      ${(p.sponsors_list && p.sponsors_list.length > 0) ? `
+        <div class="sponsors-grid" style="display:flex;gap:16px;flex-wrap:wrap">
+          ${p.sponsors_list.map(s => `
+            <div style="background:var(--bg1);border:1px solid var(--brd);border-radius:12px;padding:24px;text-align:center;width:calc(33.333% - 11px);min-width:180px">
+              ${s.logo ? `<img src="${s.logo}" style="height:48px;max-width:100%;object-fit:contain;margin-bottom:16px">` : `<div style="height:48px;width:48px;border-radius:50%;background:var(--bg3);margin:0 auto 16px;display:flex;align-items:center;justify-content:center"><i data-lucide="shield" style="width:20px;height:20px;color:var(--dim)"></i></div>`}
+              <div style="font-family:var(--fu);font-weight:700;font-size:14px;color:#fff">${s.name}</div>
+              ${s.desc ? `<div style="font-size:12px;color:var(--dim);margin-top:6px">${s.desc}</div>` : ''}
+            </div>
+          `).join('')}
         </div>
-      </div>
+      ` : `
+        <div style="color:var(--dim);text-align:center;padding:24px;width:100%;font-size:14px;background:var(--bg1);border:1px solid var(--brd);border-radius:12px;">Sem patrocinadores cadastrados no momento.</div>
+      `}
     </div>
   `;
 }

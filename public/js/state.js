@@ -67,10 +67,10 @@ const Driver = (() => {
 
   const PLAN_LIMITS = {
     starter: 1,
-    pro: 6, // Temporário para testes (original era 2)
+    pro: 2,
     equipe: 10,
     categoria: 30,
-    admin: 999999, // Sem limite de postagens
+    admin: 999999,
   };
 
   const PLAN_NAMES = {
