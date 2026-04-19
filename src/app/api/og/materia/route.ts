@@ -20,7 +20,7 @@ export async function GET(request: Request) {
       const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
       
       const res = await fetch(
-        `${supabaseUrl}/rest/v1/articles?select=title,brief,body,img,category,published_at,submitted_at,users:author_id(name,id,slug)&id=eq.${id}`,
+        `${supabaseUrl}/rest/v1/articles?select=title,brief,body,img,category,published_at,submitted_at,users:author_id(name,id)&id=eq.${id}`,
         {
           headers: { apikey: key!, Authorization: `Bearer ${key}` },
           cache: 'no-store'

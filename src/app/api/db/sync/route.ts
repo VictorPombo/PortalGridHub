@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 export async function GET() {
   try {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+    const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
     // Raw fetch for users to bypass PostgREST SDK schema cache
     const usersRes = await fetch(
@@ -14,8 +14,8 @@ export async function GET() {
       {
         method: 'GET',
         headers: {
-          'apikey': serviceKey,
-          'Authorization': `Bearer ${serviceKey}`,
+          'apikey': anonKey,
+          'Authorization': `Bearer ${anonKey}`,
         },
         cache: 'no-store',
       }
@@ -30,8 +30,8 @@ export async function GET() {
       {
         method: 'GET',
         headers: {
-          'apikey': serviceKey,
-          'Authorization': `Bearer ${serviceKey}`,
+          'apikey': anonKey,
+          'Authorization': `Bearer ${anonKey}`,
         },
         cache: 'no-store',
       }
