@@ -77,9 +77,11 @@
 function toggleSidebar() {
   const sb = document.querySelector('.dash-sidebar');
   sb.classList.toggle('open');
+  document.body.classList.toggle('sidebar-locked', sb.classList.contains('open'));
 }
 function closeSidebar() {
   document.querySelector('.dash-sidebar').classList.remove('open');
+  document.body.classList.remove('sidebar-locked');
 }
 
 // ============================
