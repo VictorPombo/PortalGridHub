@@ -28,8 +28,9 @@
 <!-- NAV -->
 <nav class="carbon-subtle">
   <div class="nav-inner">
-    <a class="logo" href="index.html">
-      <img src="images/logo.png" alt="Driver News">
+    <a class="logo dn-logo" href="index.html">
+      <div class="dn-logo-icon"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+      <div class="dn-logo-text"><div class="dn-logo-driver">DRIVER</div><div class="dn-logo-news">NEWS</div></div>
     </a>
     <ul class="nav-links"><li><a href="index.html">Portal</a></li><li><a href="piloto.html">Minha Página</a></li></ul>
     <div class="nav-right" id="navUserInfo"></div>
@@ -1014,16 +1015,13 @@ function renderProfile() {
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
           ${[0,1,2,3,4,5].map(i => `
             <div class="form-field" style="text-align:center">
-              <div id="profGalPrev${i+1}" style="width:100%;height:80px;border:2px dashed var(--brd);border-radius:6px;overflow:hidden;margin-bottom:6px;background:var(--bg2);display:flex;align-items:center;justify-content:center">
+              <label id="profGalPrev${i+1}" style="width:100%;height:80px;border:2px dashed var(--brd);border-radius:6px;overflow:hidden;margin-bottom:6px;background:var(--bg2);display:flex;align-items:center;justify-content:center;cursor:pointer">
                 ${gallery[i] ? '<img class="galPreloadImg" data-idx="'+(i+1)+'" style="width:100%;height:100%;object-fit:cover">' : '<span style="font-size:20px;color:var(--muted)">'+(i+1)+'</span>'}
-              </div>
+                <input type="file" accept="image/*" style="display:none" onchange="handleImgUpload(this, 'profGal${i+1}', 'profGalPrev${i+1}')">
+              </label>
               <input class="form-input galInput" id="profGal${i+1}" data-idx="${i+1}" type="text" placeholder="URL..." style="font-size:10px;padding:6px;margin-bottom:4px">
-              <div style="display:flex;gap:8px;justify-content:center">
-                <label style="display:inline-flex;align-items:center;gap:4px;cursor:pointer;font-size:9px;color:var(--acc);font-family:var(--fu);font-weight:700">
-                  📁 UPLOAD
-                  <input type="file" accept="image/*" style="display:none" onchange="handleImgUpload(this, 'profGal${i+1}', 'profGalPrev${i+1}')">
-                </label>
-                <span class="galClearBtn" data-idx="${i+1}" style="display:${gallery[i]?'inline-flex':'none'};align-items:center;gap:4px;cursor:pointer;font-size:9px;color:var(--muted);font-family:var(--fu);font-weight:700" onclick="clearImg('profGal${i+1}','profGalPrev${i+1}')">🗑</span>
+              <div style="display:flex;justify-content:center;height:14px">
+                <span class="galClearBtn" data-idx="${i+1}" style="display:${gallery[i]?'inline-flex':'none'};align-items:center;gap:4px;cursor:pointer;font-size:9px;color:var(--muted);font-family:var(--fu);font-weight:700" onclick="clearImg('profGal${i+1}','profGalPrev${i+1}')">🗑 REMOVER</span>
               </div>
             </div>
           `).join('')}

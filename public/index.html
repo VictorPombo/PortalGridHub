@@ -209,8 +209,9 @@ body.loaded #driverGlobalLoader{opacity:0;visibility:hidden;pointer-events:none}
 ════════════════════════════════════════ -->
 <nav id="mainNav">
   <div class="nav-inner">
-    <a class="logo" onclick="showView('portal')">
-      <img src="images/logo.png" alt="Driver News">
+    <a class="logo dn-logo" onclick="showView('portal')" style="cursor:pointer">
+      <div class="dn-logo-icon"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+      <div class="dn-logo-text"><div class="dn-logo-driver">DRIVER</div><div class="dn-logo-news">NEWS</div></div>
     </a>
     <ul class="nav-links" id="mainNavLinks">
       <li><a class="active" onclick="showView('portal');setNavActive(this)">Início</a></li>
@@ -225,7 +226,7 @@ body.loaded #driverGlobalLoader{opacity:0;visibility:hidden;pointer-events:none}
       <button class="btn btn-ghost" onclick="openSearch()" title="Ctrl+K">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
       </button>
-      <button class="btn btn-out btn-sm" onclick="showView('login')">Entrar</button>
+      <button class="btn-nav-action" onclick="showView('login')">Entrar</button>
       <button class="hamburger" id="hamburger" onclick="openMob()"><span></span><span></span><span></span></button>
     </div>
   </div>
@@ -402,7 +403,10 @@ body.loaded #driverGlobalLoader{opacity:0;visibility:hidden;pointer-events:none}
     <div class="f-inner">
       <div class="f-grid">
         <div>
-          <div class="f-logo"><img src="images/logo.png" alt="Driver News"></div>
+          <div class="f-logo dn-logo" style="margin-bottom:16px;">
+            <div class="dn-logo-icon"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+            <div class="dn-logo-text"><div class="dn-logo-driver">DRIVER</div><div class="dn-logo-news">NEWS</div></div>
+          </div>
           <p class="f-desc">Portal de referência em automobilismo no Brasil. Cobertura em tempo real + plataforma de visibilidade para pilotos e equipes.</p>
           <div class="f-social">
             <div class="f-soc" onclick="toast('Abrindo X/Twitter...','info')">X</div>
@@ -1052,7 +1056,10 @@ body.loaded #driverGlobalLoader{opacity:0;visibility:hidden;pointer-events:none}
   <div class="auth-page">
     <div class="auth-box">
       <div class="auth-logo">
-        <img src="images/logo.png" alt="Driver News" style="height: 72px; margin: 0 auto 10px; display: block;">
+        <div class="dn-logo" style="justify-content:center;transform:scale(1.5);margin:20px 0 30px">
+          <div class="dn-logo-icon"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+          <div class="dn-logo-text" style="text-align:left"><div class="dn-logo-driver">DRIVER</div><div class="dn-logo-news">NEWS</div></div>
+        </div>
       </div>
       <div class="auth-tabs">
         <button class="auth-tab active" onclick="authTab(this,'login')">Entrar</button>

@@ -85,6 +85,17 @@ nav{position:sticky;top:0;z-index:500;background:rgba(3,3,10,.92);backdrop-filte
 .logo{display:flex;align-items:center;cursor:pointer;flex-shrink:0;text-decoration:none}
 .logo img{height:52px;width:auto;display:block}
 .logo-badge,.logo-text{display:none} /* Hidden for transition to image logo */
+/* Pure CSS Logo (DRIVER NEWS) */
+.dn-logo{display:flex;align-items:center;gap:8px;text-decoration:none}
+.dn-logo-icon{width:32px;height:32px;background:var(--acc);border-radius:4px;display:flex;align-items:center;justify-content:center;transform:skewX(-12deg)}
+.dn-logo-icon svg{width:18px;height:18px;fill:#fff;transform:skewX(12deg)}
+.dn-logo-text{display:flex;flex-direction:column;line-height:1}
+.dn-logo-driver{font-family:var(--fd, 'Bebas Neue', sans-serif);font-size:24px;letter-spacing:1px;color:#fff}
+.dn-logo-news{font-family:var(--fd, 'Bebas Neue', sans-serif);font-size:13px;color:var(--acc);margin-top:-3px}
+
+/* Slanted Entrar button */
+.btn-nav-action{font-family:var(--fu, 'Barlow Condensed', sans-serif);font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:var(--acc);color:#fff;border:none;padding:10px 24px;clip-path:polygon(0 0,100% 0,90% 100%,0 100%);padding-right:30px;cursor:pointer;transition:background .2s;text-decoration:none}
+.btn-nav-action:hover{background:#ff1840}
 .nav-links{display:flex;list-style:none;gap:1px;flex:1;justify-content:center}
 .nav-links a{font-family:var(--fu);font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);padding:6px 12px;position:relative;transition:color .2s;cursor:pointer;display:block;text-decoration:none}
 .nav-links a::after{content:'';position:absolute;bottom:-1px;left:12px;right:12px;height:2px;background:var(--acc);transform:scaleX(0);transform-origin:left;transition:transform .22s}
