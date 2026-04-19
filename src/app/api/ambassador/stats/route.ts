@@ -26,8 +26,9 @@ export async function GET(request: Request) {
 
     if (comError) throw comError;
 
-    const totalPaid = commissions.filter(c => c.status === 'paid').reduce((a, b) => a + Number(b.amount), 0);
-    const totalPending = commissions.filter(c => c.status === 'pending').reduce((a, b) => a + Number(b.amount), 0);
+    const safeCommissions = commissions || [];
+    const totalPaid = safeCommissions.filter(c => c.status === 'paid').reduce((a, b) => a + Number(b.amount), 0);
+    const totalPending = safeCommissions.filter(c => c.status === 'pending').reduce((a, b) => a + Number(b.amount), 0);
 
     // Notificações
     const { data: ambassador } = await supabase
@@ -47,7 +48,7 @@ export async function GET(request: Request) {
     }
 
     const enrichedPilots = (pilots || []).map(p => {
-      const comm = commissions.find(c => c.user_id === p.id);
+      const comm = safeCommissions.find(c => c.user_id === p.id);
       return {
         ...p,
         commission_status: comm ? comm.status : 'none',

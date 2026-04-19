@@ -150,6 +150,7 @@ export async function POST(req: Request) {
               message: `Embaixadora ${user.referred_by.toUpperCase()} tem comissão pendente por ${user.name}`
             });
           }
+          }
         }
       }
     }
