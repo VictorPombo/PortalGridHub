@@ -86,7 +86,6 @@ ${JSON.stringify(jsonLd)}
       <img src="${imgUrl}" alt="Avatar de ${title}" style="max-width:200px" />
       <h2>Categoria: ${cat}</h2>
       <div>${desc}</div>
-      ${articlesHtml}
     </div>
   </div>
 </div>
