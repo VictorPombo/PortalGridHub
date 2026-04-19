@@ -5,7 +5,7 @@ const nextConfig = {
       {
         type: 'header',
         key: 'user-agent',
-        value: '(?i).*(Googlebot|Google-InspectionTool|Googlebot-Image|bingbot|YandexBot|DuckDuckBot|Baiduspider|Applebot|facebookexternalhit|WhatsApp|Twitterbot|LinkedInBot|Slurp|Pinterest).*',
+        value: '.*([Gg]ooglebot|[Gg]oogle-[Ii]nspection[Tt]ool|[Bb]ingbot|[Yy]andex|[Ff]acebookexternalhit|[Ww]hats[Aa]pp|[Tt]witterbot|[Ll]inked[Ii]n[Bb]ot|[Aa]pplebot|[Dd]uck[Dd]uck[Bb]ot|[Ss]lurp).*',
       }
     ];
 
