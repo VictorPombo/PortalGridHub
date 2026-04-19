@@ -24,7 +24,7 @@ export async function middleware(request: NextRequest) {
   }
 
   try {
-    const res = await fetch(`${supabaseUrl}/rest/v1/articles?id=eq.${id}&select=title,brief,cover_url,id`, {
+    const res = await fetch(`${supabaseUrl}/rest/v1/articles?id=eq.${id}&select=title,brief,img,id`, {
       method: 'GET',
       headers: {
         'apikey': serviceKey,
@@ -51,7 +51,7 @@ export async function middleware(request: NextRequest) {
   <!-- Open Graph Data for WhatsApp, Facebook, LinkedIn -->
   <meta property="og:title" content="${article.title}">
   <meta property="og:description" content="${article.brief || ''}">
-  <meta property="og:image" content="${article.cover_url || ''}">
+  <meta property="og:image" content="${article.img || ''}">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:url" content="https://www.drivernews.com.br/materia.html?id=${id}">
@@ -62,7 +62,7 @@ export async function middleware(request: NextRequest) {
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${article.title}">
   <meta name="twitter:description" content="${article.brief || ''}">
-  <meta name="twitter:image" content="${article.cover_url || ''}">
+  <meta name="twitter:image" content="${article.img || ''}">
 
   <!-- Fallback redirect if a weird browser ever receives this payload -->
   <script>
@@ -74,7 +74,7 @@ export async function middleware(request: NextRequest) {
 <body>
   <h1>${article.title}</h1>
   <p>${article.brief}</p>
-  <img src="${article.cover_url}" alt="Article Cover" />
+  <img src="${article.img}" alt="Article Cover" />
 </body>
 </html>`;
 
