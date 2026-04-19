@@ -200,10 +200,10 @@ INSERT INTO users (email, password_hash, type, coupon_code, name, plan)
 VALUES (
   'katyembaixadora@gmail.com',
   '240be518fabd2724ddb6f04eebc0a9c39b5f7c0c6b2d6cdb0f6b0d89e6c8f3c1',
-  'ambassador',
+  'embaixador',
   'katy',
   'Katy Embaixadora',
-  'ambassador'
+  'embaixador'
 ) ON CONFLICT (email) DO UPDATE SET
   password_hash = EXCLUDED.password_hash,
   type = EXCLUDED.type,

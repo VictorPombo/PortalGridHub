@@ -657,7 +657,7 @@ async function doLogin(){
     
     // Redirect logic
     setTimeout(() => {
-      if (user.type && user.type.toLowerCase() === 'ambassador') {
+      if (user.type && (user.type.toLowerCase() === 'ambassador' || user.type.toLowerCase() === 'embaixador')) {
         window.location.href = 'dashboard-embaixador.html?cb=' + Date.now();
         return;
       }

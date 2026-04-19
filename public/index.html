@@ -1071,6 +1071,7 @@
           <div style="font-family:var(--fm);font-size:10px;color:var(--muted);margin-bottom:10px">DEMO — Clique para simular acesso:</div>
           <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap">
             <button class="btn btn-out btn-sm" onclick="loginAs('admin')"><i class="fi fi-rr-crown"></i> Admin</button>
+            <button class="btn btn-out btn-sm" onclick="loginAs('embaixador')"><i class="fi fi-rr-star"></i> Embaixador</button>
             <button class="btn btn-out btn-sm" onclick="loginAs('piloto')"><i class="fi fi-rr-user"></i> Piloto</button>
             <button class="btn btn-out btn-sm" onclick="loginAs('equipe')"><i class="fi fi-rr-flag-checkered"></i> Equipe</button>
             <button class="btn btn-out btn-sm" onclick="loginAs('categoria')"><i class="fi fi-rr-trophy"></i> Categoria</button>
@@ -1217,7 +1218,7 @@
     if (typeof Driver !== 'undefined' && Driver.isLoggedIn()) {
       const u = Driver.getCurrentUser();
       if (u) {
-        const baseDash = u.type === 'admin' ? 'admin.html' : u.type === 'ambassador' ? 'dashboard-embaixador.html' : u.type === 'equipe' ? 'dashboard-equipe.html' : u.type === 'categoria' ? 'dashboard-categoria.html' : 'dashboard-piloto.html';
+        const baseDash = u.type === 'admin' ? 'admin.html' : (u.type === 'ambassador' || u.type === 'embaixador') ? 'dashboard-embaixador.html' : u.type === 'equipe' ? 'dashboard-equipe.html' : u.type === 'categoria' ? 'dashboard-categoria.html' : 'dashboard-piloto.html';
         const dash = baseDash + '?cb=' + Date.now();
         // Navbar desktop
         const enterBtn = document.querySelector('.nav-right .btn-out.btn-sm');
