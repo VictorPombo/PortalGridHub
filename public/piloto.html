@@ -7,7 +7,7 @@
 <meta name="description" content="Perfil profissional de piloto na Driver News. Conheça a trajetória e patrocine.">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
-<link rel="stylesheet" href="css/core.css?v=1776576777173">
+<link rel="stylesheet" href="css/core.css?v=20260420">
 <link rel="stylesheet" href="css/carbon.css">
 <link rel="stylesheet" href="css/homepage.css">
 <link rel="stylesheet" href="css/admin.css">
@@ -50,7 +50,8 @@
 </footer>
 
 <script src="js/core.js"></script>
-<script src="js/state.js?v=1776576777173"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="js/state.js?v=20260420"></script>
 <script>
 // Aguarda o banco Sincronizar antes de buscar ID ou renderizar (evita cache vazio)
 (async function initPage() {
@@ -188,7 +189,7 @@ function renderPilotPage(p) {
       ${articles.length > 0 ? `
         <div class="card-grid" style="grid-template-columns:repeat(3,1fr)">
           ${articles.map(a => `
-            <div class="ncard" onclick="window.location='materia.html?id=${a.id}'" style="cursor:pointer">
+            <div class="ncard" onclick="window.location='/materia/${a.slug || a.id}'" style="cursor:pointer">
               <div class="ncard-thumb">${a.img ? `<img src="${a.img}" alt="">` : '<div style="height:100%;background:var(--bg3)"></div>'}</div>
               <div class="ncard-body">
                 <span class="badge" style="background:var(--info);font-size:8px">Matéria</span>
@@ -227,6 +228,10 @@ function renderPilotPage(p) {
       `}
     </div>
   `;
+
+  setTimeout(() => {
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }, 100);
 }
 </script>
 </body>

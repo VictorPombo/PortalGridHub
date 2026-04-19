@@ -612,7 +612,7 @@ const Driver = (() => {
     RACING_CATEGORIES,
     getUsers, getUserById, getUsersByType, addUser, updateUser,
     // Articles
-    getArticles, getArticleById, getArticlesByAuthor, getArticlesByStatus,
+    getArticles, getArticleById, getArticlesByAuthor, getArticlesByStatus, getPublishedByAuthor,
     getPublishedByAuthor, getPendingArticles, getMonthlyUsage, getRemainingArticles,
     addArticle, updateArticle, changeArticleStatus, deleteArticle,
     // Session
