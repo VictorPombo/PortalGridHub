@@ -207,7 +207,7 @@
 /* Sidebar overlay backdrop */
 .dash-sidebar-overlay{
   display:none;position:fixed;inset:0;z-index:599;
-  background:rgba(4,4,10,.7);backdrop-filter:blur(4px);
+  background:rgba(4,4,10,.6);
 }
 .dash-sidebar-overlay.show{display:block}
 
