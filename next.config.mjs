@@ -5,7 +5,7 @@ const nextConfig = {
       {
         type: 'header',
         key: 'user-agent',
-        value: '(?i).*(Googlebot|Googlebot-Image|bingbot|YandexBot|DuckDuckBot|Baiduspider|Applebot|facebookexternalhit|WhatsApp|Twitterbot|LinkedInBot|Slurp|Pinterest).*',
+        value: '(?i).*(Googlebot|Google-InspectionTool|Googlebot-Image|bingbot|YandexBot|DuckDuckBot|Baiduspider|Applebot|facebookexternalhit|WhatsApp|Twitterbot|LinkedInBot|Slurp|Pinterest).*',
       }
     ];
 
@@ -33,6 +33,22 @@ const nextConfig = {
         destination: '/api/og/piloto',
       },
     ]
+  },
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'www.drivernews.com.br' }],
+        destination: 'https://drivernews.com.br/:path*',
+        permanent: true,
+      },
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'www.drivernews.com.br:3000' }],
+        destination: 'https://drivernews.com.br/:path*',
+        permanent: true,
+      },
+    ];
   },
 }
 export default nextConfig;
