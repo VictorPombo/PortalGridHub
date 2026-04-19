@@ -838,8 +838,10 @@ function previewArticle(id) {
   window.open(`materia.html?id=${id}`, '_blank');
 }
 function shareArticle(id, title) {
-  const url = `https://www.drivernews.com.br/materia.html?id=${id}`;
-  const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(url)}`;
+  const ts = new Date().getTime();
+  const url = `https://www.drivernews.com.br/materia.html?id=${id}&ref=${ts}`;
+  const text = `Confira a matéria: ${title}\n\n`;
+  const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text + url)}`;
   window.open(waUrl, '_blank');
 }
 function deleteMyArticle(id) {

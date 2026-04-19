@@ -721,8 +721,10 @@ function copyLink() {
 }
 
 function shareWhatsApp() {
+  const ts = new Date().getTime();
   const url = getShareUrl();
-  window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent('Confira no PitLane News: ' + url), '_blank');
+  const splitUrl = url.includes('?') ? `${url}&ref=${ts}` : `${url}?ref=${ts}`;
+  window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent('Confira na Driver News: ' + splitUrl), '_blank');
 }
 /* ══ UTILS ══ */
 function isEmail(e){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)}
