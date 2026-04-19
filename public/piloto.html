@@ -217,7 +217,7 @@ function renderPilotPage(p) {
       ${articles.length > 0 ? `
         <div class="card-grid" style="grid-template-columns:repeat(3,1fr)">
           ${articles.map(a => `
-            <div class="ncard" onclick="window.location='/materia/${a.slug || a.id}'" style="cursor:pointer">
+            <div class="ncard" onclick="window.location='/materia.html?id=${a.slug || a.id}'" style="cursor:pointer">
               <div class="ncard-thumb">${a.img ? `<img src="${a.img}" alt="">` : '<div style="height:100%;background:var(--bg3)"></div>'}</div>
               <div class="ncard-body">
                 <span class="badge" style="background:var(--info);font-size:8px">Matéria</span>
