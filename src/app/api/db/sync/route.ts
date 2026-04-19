@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin as supabase } from '../../../../lib/supabase';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export async function GET() {
   try {
@@ -17,7 +17,7 @@ export async function GET() {
           'apikey': serviceKey,
           'Authorization': `Bearer ${serviceKey}`,
         },
-        cache: 'no-store',
+        next: { revalidate: 60 },
       }
     );
     if (!usersRes.ok) throw new Error(await usersRes.text());
@@ -33,7 +33,7 @@ export async function GET() {
           'apikey': serviceKey,
           'Authorization': `Bearer ${serviceKey}`,
         },
-        cache: 'no-store',
+        next: { revalidate: 60 },
       }
     );
     if (!articlesRes.ok) throw new Error(await articlesRes.text());

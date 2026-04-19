@@ -799,10 +799,24 @@ async function loadLiveNews() {
   const grid = document.getElementById('cardGrid');
   const sourceCount = document.getElementById('newsSourceCount');
   
-  try {
-    const res = await fetch('/api/news');
-    if (!res.ok) throw new Error('API ' + res.status);
-    const json = await res.json();
+    let json = null;
+    try {
+      const cachedStr = localStorage.getItem('__pl_news_cache');
+      const cachedTime = localStorage.getItem('__pl_news_time');
+      if (cachedStr && cachedTime && (Date.now() - parseInt(cachedTime)) < 300000) {
+        json = JSON.parse(cachedStr);
+      }
+    } catch(e) {}
+
+    if (!json) {
+      const res = await fetch('/api/news');
+      if (!res.ok) throw new Error('API ' + res.status);
+      json = await res.json();
+      try {
+        localStorage.setItem('__pl_news_cache', JSON.stringify(json));
+        localStorage.setItem('__pl_news_time', Date.now().toString());
+      } catch(e) {}
+    }
     
     if (!json.success || !json.data?.br?.length) {
       throw new Error('Empty feed');

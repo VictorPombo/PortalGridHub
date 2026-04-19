@@ -116,7 +116,20 @@ const Driver = (() => {
       if (force) {
         localStorage.removeItem(KEYS.articles);
         localStorage.removeItem(KEYS.users);
+        localStorage.removeItem('pl_last_sync_time');
+      } else {
+        const lastSync = load('pl_last_sync_time', 0);
+        // Se sincronizou há menos de 1 minuto (60000 ms) e tem dados, aborta req e usa memória. Instância instantânea!
+        if (Date.now() - lastSync < 60000 && __dbUsers && __dbUsers.length > 5) {
+          console.log("[Driver] Cache local ativado. Pulando fetch pesado.");
+          window.dispatchEvent(new Event('driver-data-ready'));
+          if (typeof window.renderPilotsHighlight === 'function') window.renderPilotsHighlight();
+          if (typeof window.renderPilotsList === 'function' && document.getElementById('pilotsListGrid')) window.renderPilotsList();
+          return;
+        }
       }
+
+      console.log("[Driver] Sincronizando dados com o servidor...");
       const resp = await fetch('/api/db/sync');
       if (!resp.ok) throw new Error('Falha ao conectar com Supabase DB via App Router');
       const data = await resp.json();
@@ -138,6 +151,7 @@ const Driver = (() => {
         }));
         save(KEYS.users, __dbUsers);
         save(KEYS.articles, __dbArticles);
+        save('pl_last_sync_time', Date.now());
         console.log("[Driver] Supabase Boot Completo:", __dbUsers.length, "Users,", __dbArticles.length, "Artigos carregados.");
         // Notify the UI that data is ready
         window.dispatchEvent(new Event('driver-data-ready'));
