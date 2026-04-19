@@ -57,7 +57,7 @@
     textarea.chat-input { width: 100%; max-width: 500px; height: 150px; background: var(--bg1); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 16px; border-radius: 8px; margin-bottom: 24px; }
 
     /* Editor and Preview Image Fix */
-    .ql-editor img, .preview-body img { max-width: 100%; height: auto !important; border-radius: 6px; }
+    .ql-editor img, .preview-body img { max-width: 100%; border-radius: 6px; }
 
     /* Screen 5 - Legal */
     .legal-box { max-width: 500px; background: rgba(232, 0, 45, 0.05); border: 1px solid var(--acc); padding: 32px; border-radius: 8px; text-align: left; }
@@ -386,6 +386,27 @@
         const qlEditor = document.querySelector('.ql-editor');
         if (qlEditor) {
            qlEditor.style.color = '#fff';
+           
+           // Enforce strict aspect ratio locks on images actively during blotFormatter drags
+           const imgObserver = new MutationObserver((mutations) => {
+             mutations.forEach((m) => {
+               if (m.target.tagName === 'IMG' && m.type === 'attributes' && (m.attributeName === 'width' || m.attributeName === 'height' || m.attributeName === 'style')) {
+                 const img = m.target;
+                 if (img.naturalWidth && !img.dataset.syncing) {
+                   img.dataset.syncing = "true";
+                   // Prefer inline width as the source of truth, fallback to attribute
+                   const currentWidth = parseInt(img.style.width || img.getAttribute('width') || img.clientWidth);
+                   if (currentWidth && currentWidth > 0) {
+                     const correctHeight = currentWidth * (img.naturalHeight / img.naturalWidth);
+                     img.style.height = correctHeight + 'px';
+                     img.setAttribute('height', correctHeight);
+                   }
+                   setTimeout(() => { img.dataset.syncing = ""; }, 10);
+                 }
+               }
+             });
+           });
+           imgObserver.observe(qlEditor, { attributes: true, subtree: true });
         }
 
         // Criar a galeria de fotos enviadas pelo usuario
