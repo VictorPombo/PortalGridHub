@@ -14,23 +14,29 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Driver News">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
-<link rel="stylesheet" href="css/style.css?v=20260420">
-<link rel="stylesheet" href="css/toast.css?v=1776576777173">
-<link rel="stylesheet" href="css/plans.css?v=1776576777173">
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css" media="print" onload="this.media='all'">
+<style>
+/* CSS CRÍTICO INLINE — renderiza antes de qualquer arquivo externo */
+body{background:#0a0a0f;color:#fff;margin:0;font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+@keyframes driverSpin{to{transform:rotate(360deg)}}
+body.loaded #driverGlobalLoader{opacity:0;visibility:hidden;pointer-events:none}
+</style>
+<link rel="stylesheet" href="css/style.css?v=20260419b">
+<link rel="stylesheet" href="css/toast.css?v=20260419b" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="css/plans.css?v=20260419b" media="print" onload="this.media='all'">
 </head>
 <body>
 
 <!-- GLOBAL LOADER -->
-<div id="driverGlobalLoader" style="position:fixed;inset:0;background:rgba(4,4,10,1);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.6s cubic-bezier(0.8,0,0.2,1), visibility 0.6s;">
-  <div style="width:48px;height:48px;border:3px solid var(--brdb);border-top-color:var(--acc);border-radius:50%;animation:driverSpin 0.75s linear infinite;box-shadow:inset 0 0 10px rgba(232,0,45,0.2), 0 0 15px rgba(232,0,45,0.4);"></div>
-  <div style="margin-top:24px;font-family:'Bebas Neue',var(--fd);font-size:18px;letter-spacing:4px;color:rgba(255,255,255,0.5);text-transform:uppercase;">Iniciando Motor...</div>
+<div id="driverGlobalLoader" style="position:fixed;inset:0;background:rgba(4,4,10,1);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.4s ease-out, visibility 0.4s;">
+  <div style="width:48px;height:48px;border:3px solid rgba(255,255,255,0.08);border-top-color:#e8002d;border-radius:50%;animation:driverSpin 0.75s linear infinite;box-shadow:inset 0 0 10px rgba(232,0,45,0.2), 0 0 15px rgba(232,0,45,0.4);"></div>
+  <div style="margin-top:24px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:4px;color:rgba(255,255,255,0.5);text-transform:uppercase;">Iniciando Motor...</div>
 </div>
-<style>
-@keyframes driverSpin { to { transform: rotate(360deg); } }
-body.loaded #driverGlobalLoader { opacity:0; visibility:hidden; pointer-events:none; }
-</style>
+<script>/* HARD TIMEOUT: loader some em 1s ACONTEÇA O QUE ACONTECER */setTimeout(function(){document.body.classList.add('loaded')},1000);</script>
 
 
 <!-- ════════════════════════════════════════
@@ -1201,27 +1207,43 @@ body.loaded #driverGlobalLoader { opacity:0; visibility:hidden; pointer-events:n
 <!-- ════════════════════════════════════════
      JAVASCRIPT
 ════════════════════════════════════════ -->
-<script src="js/app.js?v=20260420"></script>
-<script src="js/state.js?v=20260420"></script>
+<script src="js/app.js?v=20260419b" defer></script>
+<script src="js/state.js?v=20260419b" defer></script>
 <script>
-  document.addEventListener("DOMContentLoaded", async () => {
+  document.addEventListener("DOMContentLoaded", () => {
     
-    // Fallback paint to make the screen look full ASAP
-    if (typeof renderHeroGrid === 'function') renderHeroGrid();
-    if (typeof renderNewsGrid === 'function') renderNewsGrid();
+    // CACHE-FIRST: renderizar do cache ANTES de qualquer fetch
+    try {
+      const cachedNews = localStorage.getItem('__pl_news_cache');
+      if (cachedNews) {
+        const json = JSON.parse(cachedNews);
+        if (json && json.success && json.data && json.data.br && json.data.br.length) {
+          if (typeof window.ARTICLES !== 'undefined' && typeof renderHeroGrid === 'function') {
+            const allFeed = json.data.br;
+            window.allFeedArticles = allFeed;
+            ARTICLES = allFeed.map((n, i) => {
+              const slugCat = (n.category || 'F1').toLowerCase().replace(/\s+/g, '-');
+              return { id:'rss'+i, cat:slugCat, badge:'b-'+slugCat, kicker:'NOTÍCIAS', title:n.title, link:n.url, author:n.source||'Portal', date:typeof formatNewsDate==='function'?formatNewsDate(n.published_at):'', img:n.image_url, abstract:n.abstract||'', isReal:true, rawDate:new Date(n.published_at).getTime()||0 };
+            });
+            renderHeroGrid();
+            renderNewsGrid();
+            if (typeof applyFilter === 'function') applyFilter();
+            if (typeof renderTicker === 'function') renderTicker();
+            if (typeof updateCatCounts === 'function') updateCatCounts();
+          }
+        }
+      }
+    } catch(e) { console.warn('Cache-first render failed:', e); }
 
-    // Boot Supabase data first
-    if (typeof Driver !== 'undefined' && typeof Driver.bootSupabase === 'function') {
-      try {
-        await Driver.bootSupabase();
-      } catch(e) { console.error('Boot fail:', e); }
-    }
-    
-    // Hide Global Loader
+    // Loader some AGORA (dados do cache já estão na tela)
     document.body.classList.add('loaded');
 
-    // Re-render pilots section after data loads
-    if (typeof renderPilotsHighlight === 'function') renderPilotsHighlight();
+    // Boot Supabase em BACKGROUND — NÃO bloquear a tela
+    if (typeof Driver !== 'undefined' && typeof Driver.bootSupabase === 'function') {
+      Driver.bootSupabase().then(() => {
+        if (typeof renderPilotsHighlight === 'function') renderPilotsHighlight();
+      }).catch(e => console.error('Boot fail:', e));
+    }
 
     const params = new URLSearchParams(window.location.search);
     const viewParam = params.get("view");
@@ -1229,39 +1251,25 @@ body.loaded #driverGlobalLoader { opacity:0; visibility:hidden; pointer-events:n
       setTimeout(() => showView(viewParam), 100);
     }
 
-    // Persistir sessão: se já está logado, trocar "Entrar" pelo nome + link do painel
+    // Persistir sessão: se já está logado, trocar "Entrar" pelo painel
     if (typeof Driver !== 'undefined' && Driver.isLoggedIn()) {
       const u = Driver.getCurrentUser();
       if (u) {
         const baseDash = u.type === 'admin' ? 'admin.html' : (u.type === 'ambassador' || u.type === 'embaixador') ? 'dashboard-embaixador.html' : u.type === 'equipe' ? 'dashboard-equipe.html' : u.type === 'categoria' ? 'dashboard-categoria.html' : 'dashboard-piloto.html';
         const dash = baseDash + '?cb=' + Date.now();
-        // Navbar desktop
         const enterBtn = document.querySelector('.nav-right .btn-out.btn-sm');
         if (enterBtn) {
           const avatarHtml = u.avatar_url
             ? `<img src="${u.avatar_url}" style="width:22px;height:22px;border-radius:50%;object-fit:cover">`
             : `<div style="width:22px;height:22px;border-radius:50%;background:var(--acc);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;font-family:var(--fu)">${u.avatar}</div>`;
-          enterBtn.outerHTML = `
-            <a href="${dash}" class="btn btn-out btn-sm" style="display:flex;align-items:center;gap:6px">
-              ${avatarHtml}
-              Meu Painel
-            </a>`;
+          enterBtn.outerHTML = `<a href="${dash}" class="btn btn-out btn-sm" style="display:flex;align-items:center;gap:6px">${avatarHtml} Meu Painel</a>`;
         }
-        // Mobile menu
         const mobMenuAuthBlock = document.querySelector('.mob-menu > div[style*="flex-direction:column"]');
         if (mobMenuAuthBlock) {
-          mobMenuAuthBlock.outerHTML = `
-            <div style="margin-top:20px;display:flex;flex-direction:column;gap:8px">
-              <button class="btn btn-acc btn-full" onclick="window.location.href='${dash}'">Acessar Meu Painel</button>
-              <button class="btn btn-out btn-full" onclick="Driver.logout();window.location.reload()">Sair</button>
-            </div>
-          `;
+          mobMenuAuthBlock.outerHTML = `<div style="margin-top:20px;display:flex;flex-direction:column;gap:8px"><button class="btn btn-acc btn-full" onclick="window.location.href='${dash}'">Acessar Meu Painel</button><button class="btn btn-out btn-full" onclick="Driver.logout();window.location.reload()">Sair</button></div>`;
         }
       }
     }
-    
-    // Safety net layout release
-    setTimeout(() => { document.body.classList.add('loaded'); }, 2000);
   });
 </script>
 

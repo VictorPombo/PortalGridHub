@@ -773,21 +773,23 @@ async function loadDynamicHeroAll() {
 }
 
 /* ══ DYNAMIC LIVE NEWS PIPELINE ══ */
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
+  // Disparar notícias IMEDIATAMENTE — não esperar nada
+  loadLiveNews().catch(e => console.warn('[News] Pipeline error:', e));
+  
+  // Boot Supabase em BACKGROUND (não bloquear)
   if (window.Driver && typeof window.Driver.bootSupabase === 'function') {
-    try {
-      await window.Driver.bootSupabase();
-      // Re-render pilots after data is loaded from Supabase
-      renderPilotsHighlight();
-      if (document.getElementById('pilotsListGrid')) renderPilotsList();
-    } catch(e) { console.error('Supabase boot fail', e); }
+    window.Driver.bootSupabase().then(() => {
+      if (typeof renderPilotsHighlight === 'function') renderPilotsHighlight();
+      if (document.getElementById('pilotsListGrid') && typeof renderPilotsList === 'function') renderPilotsList();
+      // Re-injetar notícias internas após boot
+      loadLiveNews().catch(() => {});
+    }).catch(e => console.error('Supabase boot fail', e));
   }
-  await loadLiveNews();
   
   // Auto-refresh every 5 minutes
-  setInterval(async () => {
-    console.log('[Timer] Refreshing news feeds...');
-    await loadLiveNews();
+  setInterval(() => {
+    loadLiveNews().catch(() => {});
   }, 300000);
 });
 
@@ -804,7 +806,7 @@ async function loadLiveNews() {
     try {
       const cachedStr = localStorage.getItem('__pl_news_cache');
       const cachedTime = localStorage.getItem('__pl_news_time');
-      if (cachedStr && cachedTime && (Date.now() - parseInt(cachedTime)) < 300000) {
+      if (cachedStr && cachedTime && (Date.now() - parseInt(cachedTime)) < 900000) {
         json = JSON.parse(cachedStr);
       }
     } catch(e) {}

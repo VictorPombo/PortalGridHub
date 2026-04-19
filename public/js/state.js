@@ -112,6 +112,7 @@ const Driver = (() => {
   // BOOTSTRAP: FETCH SUPABASE
   // ============================
   async function bootSupabase(force = false) {
+    const BOOT_TIMEOUT = 4000; // 4 segundos máximo
     try {
       if (force) {
         localStorage.removeItem(KEYS.articles);
@@ -119,8 +120,8 @@ const Driver = (() => {
         localStorage.removeItem('pl_last_sync_time');
       } else {
         const lastSync = load('pl_last_sync_time', 0);
-        // Se sincronizou há menos de 1 minuto (60000 ms) e tem dados, aborta req e usa memória. Instância instantânea!
-        if (Date.now() - lastSync < 60000 && __dbUsers && __dbUsers.length > 5) {
+        // Se sincronizou há menos de 2 minutos e tem dados, usa cache
+        if (Date.now() - lastSync < 120000 && __dbUsers && __dbUsers.length > 5) {
           console.log("[Driver] Cache local ativado. Pulando fetch pesado.");
           window.dispatchEvent(new Event('driver-data-ready'));
           if (typeof window.renderPilotsHighlight === 'function') window.renderPilotsHighlight();
@@ -130,7 +131,10 @@ const Driver = (() => {
       }
 
       console.log("[Driver] Sincronizando dados com o servidor...");
-      const resp = await fetch('/api/db/sync');
+      const resp = await Promise.race([
+        fetch('/api/db/sync'),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), BOOT_TIMEOUT))
+      ]);
       if (!resp.ok) throw new Error('Falha ao conectar com Supabase DB via App Router');
       const data = await resp.json();
       
