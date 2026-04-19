@@ -506,29 +506,44 @@
        btn.textContent = "PUBLICANDO...";
        
        try {
-          // Cria carga completa da matéria unindo rascunhos e correções do preview
-          const payload = {
-            id: STATE.materia_id,
-            author: currentUser.name,
-            authorId: currentUser.id,
-            title: STATE.data.final_titulo,
-            body: STATE.data.final_corpo,
-            category: document.getElementById('prev-cat')?.textContent || 'Geral',
-            gallery: DRAFT.fotos || [],
-            img: (DRAFT.fotos && DRAFT.fotos[0]) ? DRAFT.fotos[0] : null,
-            views: 0,
-            likes: 0,
-            status: 'published',
-            submittedAt: new Date().toISOString(),
-            publishedAt: new Date().toISOString(),
-            aiGenerated: true,
-            deleted: false
-          };
+          const isEditing = DRAFT && DRAFT.skip_ai && DRAFT.id;
           
-          const savedArticle = await Driver.addArticle(payload);
-          // Update local ID with the one returned from the backend/Supabase
-          if (savedArticle && savedArticle.id) {
-            STATE.materia_id = savedArticle.id;
+          if (isEditing) {
+            // ATUALIZANDO matéria existente — não cria duplicata
+            await Driver.updateArticle(DRAFT.id, {
+              title: STATE.data.final_titulo,
+              body: STATE.data.final_corpo,
+              category: document.getElementById('prev-cat')?.textContent || 'Geral',
+              gallery: DRAFT.fotos || [],
+              img: (DRAFT.fotos && DRAFT.fotos[0]) ? DRAFT.fotos[0] : null,
+              status: 'published',
+              publishedAt: new Date().toISOString(),
+            });
+            STATE.materia_id = DRAFT.id;
+          } else {
+            // CRIANDO matéria nova
+            const payload = {
+              id: STATE.materia_id,
+              author: currentUser.name,
+              authorId: currentUser.id,
+              title: STATE.data.final_titulo,
+              body: STATE.data.final_corpo,
+              category: document.getElementById('prev-cat')?.textContent || 'Geral',
+              gallery: DRAFT.fotos || [],
+              img: (DRAFT.fotos && DRAFT.fotos[0]) ? DRAFT.fotos[0] : null,
+              views: 0,
+              likes: 0,
+              status: 'published',
+              submittedAt: new Date().toISOString(),
+              publishedAt: new Date().toISOString(),
+              aiGenerated: true,
+              deleted: false
+            };
+            
+            const savedArticle = await Driver.addArticle(payload);
+            if (savedArticle && savedArticle.id) {
+              STATE.materia_id = savedArticle.id;
+            }
           }
 
           // Tenta acionar consentimento persistente no DB online
