@@ -689,7 +689,7 @@ function renderArticles() {
           <div class="article-row-status"><span class="badge ${Driver.getStatusCSS(a.status)}">${Driver.getStatusLabel(a.status)}</span></div>
           <div class="article-row-actions">
             ${a.status === 'draft' && !a.wasPublished ? `<button class="btn-secondary" style="padding:6px 12px;font-size:10px" onclick="event.stopPropagation();editDraft('${a.id}')"><i data-lucide="pencil" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Editar</button>` : ''}
-            ${a.status === 'draft' && a.wasPublished ? `<button class="btn-success" style="padding:6px 12px;font-size:10px" onclick="event.stopPropagation();republishArticle('${a.id}')"><i data-lucide="upload" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Republicar</button>` : ''}
+            ${a.status === 'draft' && a.wasPublished ? `<button class="btn-success" style="padding:6px 12px;font-size:10px" onclick="event.stopPropagation();republishArticle('${a.id}')"><i data-lucide="eye" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Desocultar</button>` : ''}
             ${a.status === 'approved' ? `<button class="btn-success" style="padding:6px 12px;font-size:10px" onclick="event.stopPropagation();approvePublish('${a.id}')"><i data-lucide="check-circle-2" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Aprovar</button>` : ''}
             ${a.status === 'published' ? `<button class="btn-secondary" style="padding:6px 12px;font-size:10px;color:var(--warning)" onclick="event.stopPropagation();hideMyArticle('${a.id}')"><i data-lucide="eye-off" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Ocultar</button>` : ''}
             ${['published','review','approved'].includes(a.status) ? `<button class="btn-secondary" style="padding:6px 12px;font-size:10px" onclick="event.stopPropagation();previewArticle('${a.id}')"><i data-lucide="eye" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom"></i> Ver</button>` : ''}
@@ -751,7 +751,7 @@ function hideMyArticle(id) {
 }
 function republishArticle(id) {
   Driver.changeArticleStatus(id, 'published');
-  showToast('✓ Matéria republicada com sucesso!','ok');
+  showToast('✓ Matéria desocultada com sucesso!','ok');
   renderOverview(); renderArticles();
 }
 function previewArticle(id) {
