@@ -249,6 +249,7 @@
     let DRAFT = draftStr ? JSON.parse(draftStr) : null;
     
     let currentUser = typeof Driver !== 'undefined' ? Driver.getCurrentUser() : null;
+    let quillInstance = null;
     
     function navTo(id) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -356,8 +357,6 @@
 
     // Antigo Polling via Supabase - Desativado para bypass direto
     function startPolling() {}
-
-    let quillInstance = null;
 
     function renderPreview() {
       document.getElementById('prev-title').textContent = STATE.data.final_titulo || 'Sem Título';
