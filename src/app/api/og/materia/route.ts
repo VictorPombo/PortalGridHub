@@ -18,8 +18,8 @@ export async function GET(request: Request) {
       const { data: article } = await supabase
         .from('articles')
         .select(`
-          title, brief, body, img, published_at, submitted_at,
-          users:author_id ( name, id )
+          title, brief, body, img, category, published_at, submitted_at,
+          users:author_id ( name, id, slug )
         `)
         .eq('id', id)
         .single();
