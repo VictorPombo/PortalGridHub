@@ -437,7 +437,7 @@
         if (DRAFT && DRAFT.fotos && DRAFT.fotos.length > 0) {
           let galHtml = '<div style="margin-top:16px; margin-bottom:8px; font-size:14px; color:var(--dim)">📸 Clique em uma imagem que você fez upload para inserí-la no texto onde o cursor estiver:</div><div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:12px">';
           DRAFT.fotos.forEach(foto => {
-             galHtml += `<img src="${foto}" alt="Upload" title="Inserir esta imagem na redação" style="height:60px;border-radius:4px;cursor:pointer;border:1px solid rgba(255,255,255,0.2);transition:transform 0.1s" onclick="insertImageToQuill('${foto}')" onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform='none'">`;
+             galHtml += `<img src="${foto}" style="height:60px;border-radius:4px;cursor:pointer;border:1px solid rgba(255,255,255,0.2);transition:transform 0.1s" onclick="insertImageToQuill('${foto}')" onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform='none'">`;
           });
           galHtml += '</div>';
           document.getElementById('editor-gallery').innerHTML = galHtml;
