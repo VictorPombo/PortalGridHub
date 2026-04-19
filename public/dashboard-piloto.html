@@ -714,13 +714,26 @@ function filterArticles(status, btn) {
 function editDraft(id) { 
   const a = Driver.getArticlesByAuthor(USER.id).find(x => x.id === id);
   if (a && a.body && a.body.length > 50) {
+    // Extract image URLs embedded in the article body HTML
+    let extractedPhotos = [];
+    const imgRegex = /<img[^>]+src=["']([^"']+)["']/gi;
+    let match;
+    while ((match = imgRegex.exec(a.body)) !== null) {
+      if (!extractedPhotos.includes(match[1])) extractedPhotos.push(match[1]);
+    }
+    // Also include cover image if available
+    if (a.img && !extractedPhotos.includes(a.img)) extractedPhotos.unshift(a.img);
+    
+    // Use compose images if currently composing, otherwise use extracted
+    const fotosToSend = (typeof composeImages !== 'undefined' && composeImages.length > 0) ? composeImages : extractedPhotos;
+    
     sessionStorage.setItem('draft_materia', JSON.stringify({
       titulo: a.title,
       contexto: a.brief || '',
       corpo: a.body,
       id: a.id,
       skip_ai: true,
-      fotos: typeof composeImages !== 'undefined' ? composeImages : []
+      fotos: fotosToSend
     }));
     window.location.href = 'redacao.html';
   } else {
