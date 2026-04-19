@@ -378,9 +378,9 @@ function renderHeroGrid() {
   const aS1 = ARTICLES[1];
   const aS2 = ARTICLES[2];
 
-  const lM = aM.isReal ? aM.link : 'materia.html?id=' + aM.id;
-  const lS1 = aS1.isReal ? aS1.link : 'materia.html?id=' + aS1.id;
-  const lS2 = aS2.isReal ? aS2.link : 'materia.html?id=' + aS2.id;
+  const lM = aM.isReal ? aM.link : '/materia/' + aM.slug;
+  const lS1 = aS1.isReal ? aS1.link : '/materia/' + aS1.slug;
+  const lS2 = aS2.isReal ? aS2.link : '/materia/' + aS2.slug;
   const tM = aM.isReal ? '_blank' : '_self';
   const tS1 = aS1.isReal ? '_blank' : '_self';
   const tS2 = aS2.isReal ? '_blank' : '_self';
@@ -429,7 +429,7 @@ function renderNewsGrid() {
   grid.innerHTML = displayArticles.map((a, i) => {
     // A primeira matéria fica com a classe 'feat'
     const isFeat = i === 0;
-    const lUrl = a.isReal ? a.link : 'materia.html?id=' + a.id;
+    const lUrl = a.isReal ? a.link : '/materia/' + a.slug;
     const tUrl = a.isReal ? '_blank' : '_self';
     const clickAttr = a.isReal ? `onclick="showToast('Redirecionando para matéria oficial...')"` : '';
     
@@ -468,7 +468,7 @@ function renderVidGrid() {
   grid.innerHTML = displayArticles.map((a, i) => {
     // Apenas reutilizamos cards de notícia pois não temos a API do Youtube original integrada
     const isFeat = i === 0;
-    const lUrl = a.isReal ? a.link : 'materia.html?id=' + a.id;
+    const lUrl = a.isReal ? a.link : '/materia/' + a.slug;
     const tUrl = a.isReal ? '_blank' : '_self';
     const clickAttr = a.isReal ? `onclick="showToast('Redirecionando...')"` : '';
     
@@ -496,7 +496,7 @@ function renderSplitGrids() {
   // Opinião -> Index 10 e 11
   const opArts = ARTICLES.slice(10, 12);
   opGrid.innerHTML = opArts.map(a => {
-    const lUrl = a.isReal ? a.link : 'materia.html?id=' + a.id;
+    const lUrl = a.isReal ? a.link : '/materia/' + a.slug;
     const tUrl = a.isReal ? '_blank' : '_self';
     const clickAttr = a.isReal ? `onclick="showToast('Redirecionando...')"` : '';
     return `
@@ -515,7 +515,7 @@ function renderSplitGrids() {
   // Mercado -> Index 12, 13, 14
   const mktArts = ARTICLES.slice(12, 15);
   mktGrid.innerHTML = mktArts.map(a => {
-    const lUrl = a.isReal ? a.link : 'materia.html?id=' + a.id;
+    const lUrl = a.isReal ? a.link : '/materia/' + a.slug;
     const tUrl = a.isReal ? '_blank' : '_self';
     const clickAttr = a.isReal ? `onclick="showToast('Redirecionando...')"` : '';
     return `
@@ -538,7 +538,7 @@ function renderTicker() {
   if(breaking.length === 0) return;
   
   const itemsHTML = [...breaking, ...breaking, ...breaking].map(a => {
-    const lUrl = a.isReal ? a.link : 'materia.html?id=' + a.id;
+    const lUrl = a.isReal ? a.link : '/materia/' + a.slug;
     const tUrl = a.isReal ? '_blank' : '_self';
     return `<a href="${lUrl}" target="${tUrl}" class="ticker-item" style="text-decoration:none;color:inherit;">${a.title}</a>`;
   }).join('');

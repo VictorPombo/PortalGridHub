@@ -186,3 +186,7 @@ CREATE TABLE IF NOT EXISTS public.webhook_events (
 
 CREATE INDEX IF NOT EXISTS idx_payments_asaas ON public.payments (payment_id);
 CREATE INDEX IF NOT EXISTS idx_subs_asaas ON public.subscriptions (asaas_subscription_id);
+
+-- [SEO TÉCNICO COMPLETO] Coluna Slug para Matérias
+ALTER TABLE articles ADD COLUMN IF NOT EXISTS slug TEXT UNIQUE;
+CREATE INDEX IF NOT EXISTS idx_articles_slug ON articles(slug);

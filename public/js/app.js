@@ -218,8 +218,8 @@ function subNext(step){
 }
 
 /* ══ ARTICLE MODAL ══ */
-function openArticle(id){
-  window.location.href = 'materia.html?id=' + id;
+function openArticle(idOrSlug){
+  window.location.href = '/materia/' + idOrSlug;
 }
 
 /* ══ EXTERNAL LINK ══ */
@@ -233,7 +233,7 @@ function renderSearch(q){
   if(!q.trim()){w.innerHTML='';return}
   const r=ARTICLES.filter(a=>a.title.toLowerCase().includes(q.toLowerCase())||a.cat.includes(q.toLowerCase())||a.author.toLowerCase().includes(q.toLowerCase()));
   if(!r.length){w.innerHTML='<div class="search-empty">Nenhum resultado para "'+q+'"</div>';return}
-  w.innerHTML=r.map(a=>`<div class="sr-item" onclick="closeOverlay('searchOverlay');openArticle(${a.id})">
+  w.innerHTML=r.map(a=>`<div class="sr-item" onclick="closeOverlay('searchOverlay');openArticle('${a.slug || a.id}')">
     <img class="sr-img" src="${a.img}" alt="">
     <div><div class="sr-title">${a.title}</div>
     <div class="sr-meta"><span class="badge ${a.badge}" style="font-size:8px">${a.cat.toUpperCase()}</span><span>${a.author}</span>${a.pago?'<span class="tag-pago" style="font-size:8px;padding:1px 6px"><i class="fi fi-rr-star"></i> Patrocinado</span>':'<span class="tag-int" style="font-size:8px;padding:1px 6px"><i class="fi fi-rr-pencil"></i> Driver</span>'}</div></div>
@@ -850,7 +850,7 @@ async function loadLiveNews() {
             badge: 'b-' + slugCat,
             kicker: 'PILOTO VERIFICADO',
             title: a.title,
-            link: 'materia.html?id=' + a.id,
+            link: '/materia/' + a.slug,
             author: a.authorName || 'Portal',
             date: formatNewsDate(a.publishedAt || a.submittedAt || new Date()),
             img: (a.img && a.img !== 'null') ? a.img : 'https://images.unsplash.com/photo-1541344983572-c511a5fe03fd?auto=format&fit=crop&w=1200&q=80',

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin as supabase } from '../../../../lib/supabase';
+import { slugify } from '../../../../lib/slugify';
 
 export async function POST(request: Request) {
   try {
@@ -16,12 +17,25 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: 'Acesso negado. Assinatura pendente ou inativa.' }, { status: 403 });
     }
 
+    let slug = slugify(body.title || 'materia-sem-titulo');
+    let attempt = 0;
+    while (true) {
+      const candidateSlug = attempt === 0 ? slug : `${slug}-${attempt}`;
+      const { data: existing } = await supabase.from('articles').select('id').eq('slug', candidateSlug).single();
+      if (!existing) {
+        slug = candidateSlug;
+        break;
+      }
+      attempt++;
+    }
+
     const { data: newArticle, error } = await supabase
       .from('articles')
       .insert([
         {
           author_id: body.authorId,
           title: body.title,
+          slug: slug,
           brief: body.brief || '',
           body: body.body || '',
           img: body.img || '',

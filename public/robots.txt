@@ -1,15 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /dashboard-piloto.html
-Disallow: /dashboard-equipe.html
-Disallow: /dashboard-categoria.html
-Disallow: /admin.html
-Disallow: /api/
 
-User-agent: Driver News-Bot
-Allow: /
-
-Sitemap: https://www.drivernews.com.br/sitemap.xml
-
-# Driver News - Portal de automobilismo
-# Operado por NextHub - CNPJ 65.934.326/0001-31
+Sitemap: https://drivernews.com.br/api/sitemap.xml

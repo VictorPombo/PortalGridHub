@@ -354,6 +354,12 @@ const Driver = (() => {
     const updates = { status: newStatus };
     if (newStatus === 'published') updates.publishedAt = new Date().toISOString().split('T')[0];
     if (newStatus === 'sent') updates.submittedAt = new Date().toISOString().split('T')[0];
+    
+    // Slugs requirement Step 4.2
+    if (newStatus === 'published') {
+      try { fetch('/api/ping-google', { method: 'POST' }); } catch(err){}
+    }
+
     return await updateArticle(id, updates);
   }
 
