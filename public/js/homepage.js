@@ -273,23 +273,14 @@ async function loadLiveNews() {
     // ORQUESTRADOR DOS ESPAÇOS (MIXER INTELIGENTE)
     let finalArray = [];
     
-    // Espaço 1: O Trono do Hero (Regra de 48 horas)
-    const newestSaas = saasArticles.length > 0 ? saasArticles[0] : null;
+    // Espaço 1: O Trono do Hero (Prioridade Absoluta para Pilotos)
     let mainHighlight = null;
     
-    if (newestSaas) {
-      const msDiff = Date.now() - new Date(newestSaas.rawDate).getTime();
-      const hoursDiff = msDiff / (1000 * 60 * 60);
-      
-      // Se tiver menos de 48h, a matéria do piloto ganha. Removemos do banco de reserva saas.
-      if (hoursDiff <= 48) {
-        mainHighlight = newestSaas;
-        saasArticles.shift();
-      }
-    }
-    
-    // Se o piloto perdeu/esfriou, colocamos o RSS novinho. Removemos do banco de reserva RSS.
-    if (!mainHighlight) {
+    if (saasArticles.length > 0) {
+      // Piloto SEMPRE tem prioridade absoluta neste slot 1, independentemente da idade da matéria.
+      mainHighlight = saasArticles.shift();
+    } else {
+      // Fallback apenas se não houver NENHUMA matéria de piloto na base inteira.
       mainHighlight = rssArticles.shift();
     }
     
