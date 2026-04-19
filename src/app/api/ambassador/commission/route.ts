@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabaseAdmin as supabase } from '../../../../../lib/supabase';
+import { supabaseAdmin as supabase } from '../../../../lib/supabase';
 
 // Lista embaixadores e totais
 export async function GET() {
@@ -25,7 +25,7 @@ export async function GET() {
       const pilotsList = uComms.map(c => ({
         amount: c.amount,
         status: c.status,
-        pilot_name: c.users?.name || 'Desconhecido'
+        pilot_name: (c.users as any)?.name || (Array.isArray(c.users) ? (c.users[0] as any)?.name : 'Desconhecido')
       }));
 
       return {
