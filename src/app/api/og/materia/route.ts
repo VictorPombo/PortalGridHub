@@ -33,8 +33,11 @@ export async function GET(request: Request) {
       if (article) {
         const title = (article.title || 'Driver News — Matéria').replace(/"/g, '&quot;');
         const desc = (article.brief || 'Leia esta matéria exclusiva na Driver News.').replace(/"/g, '&quot;');
-        let imgUrl = article.img || 'https://www.drivernews.com.br/images/share.jpg';
-        if (imgUrl.startsWith('data:image/')) {
+        let imgUrl = article.img;
+        if (!imgUrl) {
+          const numId = parseInt((id || '0').replace(/\\D/g, '')) || 1;
+          imgUrl = `https://loremflickr.com/1200/630/racing?lock=${numId}`;
+        } else if (imgUrl.startsWith('data:image/')) {
           imgUrl = `https://www.drivernews.com.br/api/image?type=article&id=${id}`;
         }
 
