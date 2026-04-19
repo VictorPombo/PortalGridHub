@@ -302,7 +302,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const storedRef = localStorage.getItem('pl_affiliate_ref');
   if (storedRef) {
     const refInput = document.getElementById('regRef');
-    if (refInput) refInput.value = storedRef;
+    if (refInput) {
+      refInput.value = storedRef;
+      refInput.readOnly = true;
+      refInput.style.opacity = '0.7';
+      refInput.style.pointerEvents = 'none';
+      refInput.title = 'Cupom de indicação ativado automaticamente';
+    }
   }
 });
 

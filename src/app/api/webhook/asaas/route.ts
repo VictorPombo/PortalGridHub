@@ -112,8 +112,16 @@ export async function POST(req: Request) {
           .eq('coupon_code', user.referred_by)
           .single();
 
-        if (ambassador) {
-          // Criar comissão
+        if (ambassador && ambassador.id !== user.id) {
+          // Check se já existe comissão para este usuário (1ª mensalidade apenas)
+          const { data: existingComm } = await supabase
+            .from('commissions')
+            .select('id')
+            .eq('user_id', user.id)
+            .single();
+            
+          if (!existingComm) {
+            // Criar comissão
           await supabase.from('commissions').insert({
             ambassador_code: user.referred_by,
             user_id: user.id,

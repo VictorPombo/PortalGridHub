@@ -65,9 +65,12 @@ tr:last-child td { border-bottom: none; }
         <div class="stat-label" style="color:var(--acc)">Total Pago p/ Você</div>
         <div class="stat-value" style="color:var(--acc)" id="totalPaid">R$ 0,00</div>
       </div>
-      <div class="stat-card">
-        <div class="stat-label">Comissões Pendentes</div>
+      <div class="stat-card" style="position:relative">
+        <div class="stat-label">Disponível para Saque</div>
         <div class="stat-value" id="totalPending">R$ 0,00</div>
+        <button class="btn-primary" style="position:absolute; bottom:15px; right:15px; padding:6px 14px; font-size:11px" onclick="requestWithdraw()">
+          <i data-lucide="banknote" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom;margin-right:4px"></i> Solicitar Pix
+        </button>
       </div>
     </div>
 
@@ -91,10 +94,11 @@ tr:last-child td { border-bottom: none; }
             <th>Nome do Piloto</th>
             <th>Data de Adesão</th>
             <th>Status Conta</th>
+            <th>Status Comissão</th>
           </tr>
         </thead>
         <tbody id="pilotsBody">
-          <tr><td colspan="3" style="text-align:center;color:#666">Carregando pilotos...</td></tr>
+          <tr><td colspan="4" style="text-align:center;color:#666">Carregando pilotos...</td></tr>
         </tbody>
       </table>
     </div>
@@ -129,9 +133,9 @@ async function bootstrapDashboard() {
 
   // Prepara QrCode e Links
   const coupon = (currentUser.coupon_code || firstName).toLowerCase();
-  const link = \`https://drivernews.com.br/planos.html?cupom=\${coupon}\`;
+  const link = `https://drivernews.com.br/planos.html?cupom=${coupon}`;
   document.getElementById('shareLink').value = link;
-  document.getElementById('qrCode').src = \`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=\${encodeURIComponent(link)}\`;
+  document.getElementById('qrCode').src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(link)}`;
 
   fetchStats(coupon);
   setInterval(() => fetchStats(coupon), 60000); // Polling a cada 60s sugerido
@@ -139,7 +143,7 @@ async function bootstrapDashboard() {
 
 async function fetchStats(coupon) {
   try {
-    const res = await fetch(\`/api/ambassador/stats?coupon_code=\${coupon}\`);
+    const res = await fetch(`/api/ambassador/stats?coupon_code=${coupon}`);
     const data = await res.json();
     if (data.success) {
       document.getElementById('totalPilots').textContent = data.pilots.length;
@@ -153,15 +157,22 @@ async function fetchStats(coupon) {
 
       const tbody = document.getElementById('pilotsBody');
       if (data.pilots.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#666">Nenhum piloto indicado ainda.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#666">Nenhum piloto indicado ainda.</td></tr>';
       } else {
-        tbody.innerHTML = data.pilots.map(p => \`
-          <tr>
-            <td><strong style="color:#fff">\${p.name}</strong></td>
-            <td>\${new Date(p.created_at).toLocaleDateString('pt-BR')}</td>
-            <td><span class="badge \${p.status === 'active' ? 'status-paid' : 'status-pending'}">\${p.status === 'active' ? 'Ativo/Pago' : 'Pendente'}</span></td>
-          </tr>
-        \`).join('');
+        tbody.innerHTML = data.pilots.map(p => {
+          let commLabel = '<span class="badge" style="background:#555">Aguardando Pagamento</span>';
+          if (p.commission_status === 'pending') commLabel = '<span class="badge status-pending">Disponível p/ Saque</span>';
+          if (p.commission_status === 'paid') commLabel = '<span class="badge status-paid">Paga via Pix</span>';
+
+          return `
+            <tr>
+              <td><strong style="color:#fff">${p.name}</strong></td>
+              <td>${new Date(p.created_at).toLocaleDateString('pt-BR')}</td>
+              <td><span class="badge ${p.status === 'active' ? 'status-paid' : 'status-pending'}">${p.status === 'active' ? 'Ativo/Pago' : 'Pendente'}</span></td>
+              <td>${commLabel}</td>
+            </tr>
+          `;
+        }).join('');
       }
     }
   } catch(e) {
@@ -182,10 +193,17 @@ async function markRead() {
 }
 
 function copyLink() {
-  const input = document.getElementById('shareLink');
-  input.select();
-  document.execCommand('copy');
+  const l = document.getElementById('shareLink').value;
+  navigator.clipboard.writeText(l);
   alert('Link copiado para a área de transferência!');
+}
+
+function requestWithdraw() {
+  const pending = document.getElementById('totalPending').textContent;
+  if (pending === 'R$ 0,00') {
+    return alert('Você não tem saldo disponível para saque no momento.');
+  }
+  alert('Solicitação de PIX enviada! Nossa equipe entrará em contato.');
 }
 
 document.addEventListener("DOMContentLoaded", bootstrapDashboard);

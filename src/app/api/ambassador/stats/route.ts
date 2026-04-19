@@ -21,7 +21,7 @@ export async function GET(request: Request) {
     // Comissões
     const { data: commissions, error: comError } = await supabase
       .from('commissions')
-      .select('amount, status')
+      .select('user_id, amount, status')
       .eq('ambassador_code', coupon_code.toLowerCase());
 
     if (comError) throw comError;
@@ -46,9 +46,18 @@ export async function GET(request: Request) {
       unreadNotifications = count || 0;
     }
 
+    const enrichedPilots = (pilots || []).map(p => {
+      const comm = commissions.find(c => c.user_id === p.id);
+      return {
+        ...p,
+        commission_status: comm ? comm.status : 'none',
+        commission_amount: comm ? comm.amount : 0
+      }
+    });
+
     return NextResponse.json({
       success: true,
-      pilots: pilots || [],
+      pilots: enrichedPilots,
       totalPaid,
       totalPending,
       unreadNotifications
