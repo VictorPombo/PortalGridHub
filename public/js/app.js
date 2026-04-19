@@ -679,7 +679,7 @@ async function loginAs(type){
     if (fixedId) {
       Driver.forceLoginById(fixedId);
     } else {
-      const users = Driver.getUsers().filter(u => u.type === type);
+      const users = Driver.getUsers().filter(u => u.type === type || (type === 'embaixador' && u.type === 'ambassador') || (type === 'ambassador' && u.type === 'embaixador'));
       if (users.length > 0) {
         Driver.forceLoginById(users[0].id);
       }
